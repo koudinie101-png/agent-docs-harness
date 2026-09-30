@@ -225,153 +225,187 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
 
 # --- GENERATORS FOR AGENTS & REPO RULES ---
 
-def generate_agents_md(project_name: str, stack_key: str) -> str:
+_RULES_BODY = ("## Docs-as-Code (12 Disciplines)\n"
+    "Language: {lang}\n"
+    "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start.\n"
+    "2. Kanban: move cards with date `(YYYY-MM-DD)`.\n"
+    "3. Roadmap: mark `[x]` + link `[[Specs/.../TASK-XXX|TASK-XXX]]`.\n"
+    "4. ADR & Rejected-ADR: log all decisions incl. rejected (`status: rejected`).\n"
+    "5. Research: worst-case tests; record discarded prototypes in `RESEARCH-XXX`.\n"
+    "6. Devlog: write entry at task/session end.\n"
+    "7. Obsidian: wikilinks `[[...]]` + tags.\n"
+    "8. Permalinks: NEVER move `TASK-XXX`/`BUG-XXX` to Done/Archive.\n"
+    "9. Regression-First: failing test BEFORE fixing any bug.\n"
+    "10. QA: checklists `- [ ]` in `docs/05_Testing/`, separate from Plans.\n"
+    "11. Graph: 7 Obsidian color groups (White/Purple/Cyan/Yellow/Orange/Red/Green).\n"
+    "12. Git: Remote/Local/None + Trunk-Based docs + Feature Branching.\n")
+
+
+def _rules(doc_lang: str) -> str:
+    lang = "Documentation/Devlog **Russian**, code/commits **English**." if doc_lang == "ru" else "All documentation **English**."
+    return _RULES_BODY.format(lang=lang)
+
+
+
+
+def generate_gemini_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# 🤖 AGENTS.md — AI Agent Guidelines & Operating Modes
+    rules = _rules(doc_lang)
+    return f"""# GEMINI.md -- Google Antigravity & Gemini CLI Rules for {project_name}
 
-> **Project:** {project_name}  
-> **Stack:** {stack['name']}  
-> **Master Spec:** [[SPEC|SPEC.md]] | **Knowledge Base:** [[docs/00_Index|00_Index]] | **Onboarding:** [[docs/Onboarding|Onboarding Guide]]
+> **Stack:** {stack['name']} | **Full Guidelines:** `AGENTS.md` | **Onboarding:** `docs/Onboarding.md`
+
+{rules}
+## 🔄 3-Mode Workflow
+
+**Mode 1 -- Planning (`/kb-plan`) STRICTLY NO CODE CHANGES.** User approval before any plan doc.
+**Mode 2 -- Task Spec (`/kb-task`) STRICTLY NO CODE CHANGES.** `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.
+**Mode 3 -- Implementation (`/kb-implement`):**
+```bash
+{stack['test_cmd']}
+python3 scripts/kb_lint.py --path docs
+```
+Auto-complete: spec->done · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push.
+
+Skills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-adr` `/kb-research` `/kb-lint`
+"""
+
+
+def generate_windsurfrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# .windsurfrules -- Windsurf Cascade AI Rules for {project_name}
+
+Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}`
+
+{rules}
+## 3-Mode Discipline
+
+**Mode 1 (Planning):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Plans/PLAN-XXX.md` after user approval.
+**Mode 2 (Spec):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Specs/<Phase>/TASK-XXX.md` with `[NEW]`/`[MODIFY]`/`[DELETE]`.
+**Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> DoD checklist.
+
+Senior Partner: flag risks. Rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).
+"""
+
+
+def generate_clinerules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# Cline / Roo Code AI Rules for {project_name}
+
+Stack: **{stack['name']}** | Read `AGENTS.md` and `docs/Onboarding.md` first.
+
+{rules}
+## Mode Rules
+
+1. **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. Output: `docs/02_Tasks/Plans/PLAN-XXX.md` after user approval.
+2. **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. Output: `docs/02_Tasks/Specs/<Phase>/TASK-XXX.md` with file contracts.
+3. **Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> full DoD checklist.
+
+Senior Partner: flag flaws, propose alternatives, document rejected ADRs.
+"""
+
+
+def generate_claude_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# CLAUDE.md -- Claude Code Guidelines for {project_name}
+
+Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}` | Lint: `python3 scripts/kb_lint.py --path docs`
+Read: `AGENTS.md` · `docs/Onboarding.md` · `docs/02_Tasks/Kanban.md` · `docs/02_Tasks/Roadmap.md`
+
+{rules}
+## 3-Mode Discipline
+
+- **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. User approval required before writing plan docs.
+- **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD + verification plan.
+- **Mode 3 (Implementation):** Code per spec -> verify -> DoD (spec+date, Kanban, Roadmap `[x]`, Devlog, kb_lint, git push).
+
+Senior Partner: flag risks and anti-patterns. Document rejected approaches in `docs/03_Decisions_ADR/`.
+"""
+
+
+def generate_cursorrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# Cursor Rules for {project_name}
+
+You are a **Senior Engineering Partner**. Stack: **{stack['name']}**
+Read `AGENTS.md` and `docs/Onboarding.md` before any architectural decisions.
+
+{rules}
+## 3 Strict Modes
+
+- **Mode 1 (`/kb-plan`):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Plans/` (after user approval).
+- **Mode 2 (`/kb-task`):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Specs/` with `[NEW]`/`[MODIFY]`/`[DELETE]`.
+- **Mode 3 (`/kb-implement`):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> `/kb-complete` (spec, Kanban+date, Roadmap `[x]`, Devlog, git push).
+
+Flag risks, propose alternatives, rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).
+"""
+
+
+def generate_copilot_instructions(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# GitHub Copilot Instructions for {project_name}
+
+Stack: **{stack['name']}** | Read `AGENTS.md` for full guidelines.
+
+{rules}
+## 3-Mode Discipline
+
+- **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. Research/discussion only. Output: `docs/02_Tasks/Plans/PLAN-XXX.md`.
+- **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.
+- **Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> DoD checklist.
+
+Permalinks: never move specs/bugs to archive. Regression-First: failing test first. Rejected ADRs: `docs/03_Decisions_ADR/`.
+"""
+
+
+def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
+    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
+    rules = _rules(doc_lang)
+    return f"""# 🤖 AGENTS.md -- AI Agent Guidelines & Operating Modes
+
+> **Project:** {project_name} | **Stack:** {stack['name']}
+> **Spec:** [[SPEC|SPEC.md]] | **KB:** [[docs/00_Index|00_Index]] | **Onboarding:** [[docs/Onboarding|Onboarding Guide]]
 
 ---
 
-## 🏛️ Docs-as-Code Knowledge Base Standard
-
-All project knowledge, task tracking, and architectural decisions are maintained strictly inside `docs/`:
-- `docs/00_Templates/` — 12 canonical templates with YAML frontmatter.
-- `docs/01_Architecture/` — System architecture, module diagrams, and contracts.
-- `docs/02_Tasks/` — Backlog, Kanban (`Kanban.md`), Roadmap (`Roadmap.md`), Plans (`Plans/`), Task Specs (`Specs/`), and Defect Reports (`Bugs/`).
-- `docs/03_Decisions_ADR/` — Architectural Decision Records (`ADR-XXXX`).
-- `docs/04_Research/` — Platform investigations, quirks, and trade-off matrices (`RESEARCH-XXX`).
-- `docs/05_Testing/` — Acceptance testing checklists (E2E UX) with interactive checkboxes (`- [ ]`).
-- `docs/Devlog.md` — Chronological development journal.
-
-### Core Rules & Principles
-1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
-2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass.
-3. **Graph Color Scheme:** Visual categories are preserved via `.obsidian/graph.json`.
-
+{rules}
 ---
 
-## 🧠 Critical Thinking & Constructive Partnership Standard
+## 🧠 Senior Engineering Partner Standard
 
-You act as a senior software engineering partner, not a passive "yes-man":
-1. **Critical Review:** Evaluate proposals against industry best practices ({stack['language']} conventions, Clean Architecture, Memory Safety, UI responsiveness).
-2. **Constructive Challenge:** If an idea introduces technical debt, architectural drift, or hidden runtime crashes:
-   - Highlight the flaw directly.
-   - Justify the technical consequences.
-   - Offer 1–2 robust, idiomatic alternatives.
-3. **Document Rejected Ideas:** Preserve discarded candidate options and unviable approaches in ADRs (`status: rejected`) or Research notes to prevent recurring mistakes.
+You are a **Senior Engineering Partner**, not a passive assistant:
+1. **Critical Review:** Evaluate against best practices ({stack['language']}, Clean Architecture, Zero Dependencies).
+2. **Constructive Challenge:** Flag flaws -> justify consequences -> offer 1--2 robust alternatives.
+3. **User Confirmation Required (Mode 1 & 2):** NEVER write plan/spec docs without explicit user approval.
+4. **Rejected ADRs:** Document discarded directions (`status: rejected`) in `docs/03_Decisions_ADR/`.
 
 ---
 
 ## 🔄 The 3-Mode Development Cycle
 
-Every non-trivial task or feature strictly follows three sequential modes:
+### 🟡 Mode 1 -- Planning (`/kb-plan`)
+**🚨 STRICTLY NO CODE CHANGES.** Research, Q&A, critical review. User confirmation before any plan doc.
+Output: `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card.
 
-### 🟡 Mode 1: Planning / RFC (Trigger: "Режим 1", "Планирование", "/kb-plan")
-- **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
-- **Action:** Conceptual discussion, research, critical review, trade-off evaluation, and Q&A.
-- **Output:** Approved plan file `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md`.
-- **Kanban:** Add task card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
+### 🟠 Mode 2 -- Task Spec (`/kb-task`)
+**🚨 STRICTLY NO CODE CHANGES.** File contracts + verification plan.
+Contracts: `[NEW] path/to/file{stack['file_ext']}` / `[MODIFY]` / `[DELETE]` with signatures and DoD.
+Output: `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md` + Kanban In Progress.
 
-### 🟠 Mode 2: Task Specification (Trigger: "Режим 2", "ТЗ", "/kb-task")
-- **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
-- **Action:** Detailed technical specification with exact file contracts:
-  - `[NEW] path/to/file{stack['file_ext']}`
-  - `[MODIFY] path/to/existing_file{stack['file_ext']}`
-  - `[DELETE] path/to/file`
-  - Class/protocol signatures, error handling, and Definition of Done (DoD).
-  - Explicit **Verification Plan** with commands and expected outputs.
-- **Output:** Specification file `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`.
-- **Kanban:** Move task card to `## ⏳ В работе (In Progress)` in `docs/02_Tasks/Kanban.md`.
-
-### 🟢 Mode 3: Implementation & Verification (Trigger: "Режим 3", "Реализация", "/kb-implement")
-- **Action:** Implement code strictly adhering to the approved `TASK-XXX` spec.
-- **Verification Plan Commands:**
-  ```bash
-  # Verification & Tests:
-  {stack['test_cmd']}
-
-  # Knowledge Base Link Integrity:
-  python3 scripts/kb_lint.py --path docs
-  ```
-- **Completion Checklist:**
-  1. All verification steps pass (Exit code 0).
-  2. Spec status updated to `Выполнено` in `TASK-XXX`.
-  3. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.
-  4. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec.
-  5. `docs/Devlog.md`: record chronological summary of the session.
-  6. Run `python3 scripts/kb_lint.py --path docs` to confirm 0 broken links.
-  7. Commit and push to Git.
+### 🟢 Mode 3 -- Implementation (`/kb-implement` -> `/kb-complete`)
+Code strictly per approved spec. Run:
+```bash
+{stack['build_cmd']}
+{stack['test_cmd']}
+python3 scripts/kb_lint.py --path docs
+```
+Completion checklist: spec->done · Kanban->Done(date) · Roadmap `[x]` · Devlog · kb_lint 0 errors · git push.
 """
-
-
-def generate_clinerules(project_name: str, stack_key: str) -> str:
-    return f"""# Cline / Roo Code AI Rules for {project_name}
-
-You are working in a repository governed by the Docs-as-Code standard and a strict 3-mode workflow.
-Always read `AGENTS.md` and `docs/Onboarding.md` for full guidance.
-
-## Strict Rules:
-1. **Mode 1 (Planning / RFC):** When asked to discuss, plan, or review a feature, YOU ARE STRICTLY PROHIBITED FROM EDITING OR CREATING SOURCE CODE FILES. Only read files and generate `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md`.
-2. **Mode 2 (Task Specification):** When asked to write a spec or ТЗ, YOU ARE STRICTLY PROHIBITED FROM EDITING SOURCE CODE. Only produce `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`.
-3. **Mode 3 (Implementation):** Implement code ONLY after explicit confirmation of the approved `TASK-XXX`. Run tests and `python3 scripts/kb_lint.py --path docs`.
-4. **No Link Rot (Permalinks):** NEVER move completed task specs or bugs to archive or done folders. Update their status in-place.
-5. **Regression-First:** Always write a failing test before fixing a bug.
-"""
-
-
-def generate_claude_md(project_name: str, stack_key: str) -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# CLAUDE.md — Claude Code Project Guidelines for {project_name}
-
-This project uses the Docs-as-Code knowledge base and strict 3-mode discipline.
-
-## Commands
-- Build: `{stack['build_cmd']}`
-- Test: `{stack['test_cmd']}`
-- Lint KB: `python3 scripts/kb_lint.py --path docs`
-
-## Architecture & Workflows
-- Full instructions: `AGENTS.md`
-- Onboarding guide: `docs/Onboarding.md`
-- Kanban Board: `docs/02_Tasks/Kanban.md`
-
-## 3-Mode Operating Discipline
-- **Mode 1 (Planning):** Research & discussion only. No code modifications!
-- **Mode 2 (Spec):** File contracts `[NEW]`/`[MODIFY]`, DoD, verification plan. No code modifications!
-- **Mode 3 (Implementation):** Strict coding per spec, run tests, update Kanban & Devlog, run `kb_lint.py`.
-- **Permalinks:** Never move closed tasks or bugs to archive folders.
-"""
-
-
-def generate_cursorrules(project_name: str, stack_key: str) -> str:
-    return f"""# Cursor Rules for {project_name}
-
-You are an expert engineer adhering to Docs-as-Code standards.
-Always inspect `AGENTS.md` and `docs/Onboarding.md` before making architectural decisions.
-
-Follow the 3 strict operating modes:
-- Mode 1: Planning / RFC (NO CODE CHANGES) -> docs/02_Tasks/Plans/
-- Mode 2: Specification (NO CODE CHANGES) -> docs/02_Tasks/Specs/
-- Mode 3: Implementation & DoD -> verify tests & python3 scripts/kb_lint.py --path docs
-
-Permalinks: Do not move completed specs or bugs to different folders.
-Bugs: Enforce regression-first failing tests before patching defects.
-"""
-
-
-def generate_copilot_instructions(project_name: str, stack_key: str) -> str:
-    return f"""# GitHub Copilot Instructions for {project_name}
-
-This repository follows the Docs-as-Code methodology and 3-mode development discipline described in `AGENTS.md`.
-- Mode 1: Planning / RFC (Discussion only, no code edits).
-- Mode 2: Task Specification (Formal spec with [NEW]/[MODIFY] file list, no code edits).
-- Mode 3: Implementation (Code strictly per spec, execute verification commands, record Devlog).
-- Knowledge Base: Maintained inside `docs/`. Run `python3 scripts/kb_lint.py --path docs` to check links.
-"""
-
 
 # --- STARTER DOCS CUSTOMIZATION ---
 
@@ -453,8 +487,8 @@ tags:
 
 ## 3. Этапы разработки
 План реализации разбит на фазы в [[docs/02_Tasks/Roadmap|Дорожной карте]]:
-* **Фаза 1: Инициализация и MVP** — Базовый каркас и проверка сборки.
-* **Фаза 2: Основная функциональность** — Ключевые пользовательские сценарии.
+* **Фаза 1: Инициализация и MVP** -- Базовый каркас и проверка сборки.
+* **Фаза 2: Основная функциональность** -- Ключевые пользовательские сценарии.
 """
         spec_path.write_text(spec_content, encoding="utf-8")
 
@@ -525,9 +559,9 @@ tags:
 > **Связанные документы:** [[00_Index|00_Index]], [[02_Tasks/Kanban|Канбан-доска]], [[02_Tasks/Roadmap|Дорожная карта]], [[Devlog|Журнал разработки]].
 
 ## Режимы взаимодействия:
-1. 🟡 **Режим 1: Планирование** (`/kb-plan`) — запрет на изменение кода.
-2. 🟠 **Режим 2: Спецификация** (`/kb-task`) — запрет на изменение кода.
-3. 🟢 **Режим 3: Реализация** (`/kb-implement`) — код, тесты, сдача задачи.
+1. 🟡 **Режим 1: Планирование** (`/kb-plan`) -- запрет на изменение кода.
+2. 🟠 **Режим 2: Спецификация** (`/kb-task`) -- запрет на изменение кода.
+3. 🟢 **Режим 3: Реализация** (`/kb-implement`) -- код, тесты, сдача задачи.
 """
         onboarding_path.write_text(onboarding_content, encoding="utf-8")
 
@@ -554,7 +588,7 @@ tags:
 
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
-### [{today_str}] — Инициализация базы знаний Docs-as-Code
+### [{today_str}] -- Инициализация базы знаний Docs-as-Code
 - **Что сделано:**
   - Развернута инфраструктура базы знаний `docs/` по стандарту Docs-as-Code.
   - Настроена цветовая схема Obsidian Graph (`.obsidian/graph.json`).
@@ -575,7 +609,7 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-001-initial-mvp-setup|План: Фаза 1 — Первичный MVP и проверка сборки]] #plan #phase1
+- [ ] [[Plans/PLAN-001-initial-mvp-setup|План: Фаза 1 -- Первичный MVP и проверка сборки]] #plan #phase1
   - [ ] [[Specs/01_MVP/TASK-001-project-scaffolding|TASK-001]]: Первичный каркас проекта и базовые тесты #task
 
 ## ⏳ В работе (In Progress)
@@ -617,7 +651,7 @@ tags:
 ## Фаза 1: Инициализация и MVP
 **Цель:** Создание базового каркаса проекта и проверка сборки/тестов.
 
-- [ ] Создание каркаса репозитория и базовая конфигурация — [[Specs/01_MVP/TASK-001-project-scaffolding|TASK-001]].
+- [ ] Создание каркаса репозитория и базовая конфигурация -- [[Specs/01_MVP/TASK-001-project-scaffolding|TASK-001]].
 - [ ] Базовые функциональные модули.
 
 ---
@@ -658,7 +692,7 @@ parent_spec: "[[../../SPEC|SPEC.md]]"
 kanban: "[[../Kanban|Канбан-доска]]"
 ---
 
-# 📋 План: PLAN-001 — Инициализация проекта и первичный MVP
+# 📋 План: PLAN-001 -- Инициализация проекта и первичный MVP
 
 > **ID:** PLAN-001  
 > **Статус:** Обсуждение  
@@ -695,7 +729,7 @@ tags:
 kanban: "[[../../Kanban|Канбан-доска]]"
 ---
 
-# 🛠️ Спецификация задачи: TASK-001 — Первичный каркас проекта
+# 🛠️ Спецификация задачи: TASK-001 -- Первичный каркас проекта
 
 > **ID:** TASK-001  
 > **Статус:** К реализации  
@@ -881,27 +915,36 @@ def install_harness(
     print(f"✅ Created starter knowledge base docs (SPEC.md, 00_Index.md, Onboarding.md, Kanban.md, Roadmap.md, Devlog.md).")
 
     # 5. Generate Agent rule files
-    agents_md = generate_agents_md(project_name, stack_key)
+    agents_md = generate_agents_md(project_name, stack_key, doc_lang)
     (target_dir / "AGENTS.md").write_text(agents_md, encoding="utf-8")
     print("✅ Created root AGENTS.md (Universal Agent Standard).")
 
+    if agent_choice in ["all", "gemini"]:
+        (target_dir / "GEMINI.md").write_text(generate_gemini_md(project_name, stack_key, doc_lang), encoding="utf-8")
+        print("✅ Created GEMINI.md (Google Antigravity & Gemini CLI).")
+
     if agent_choice in ["all", "cline"]:
-        (target_dir / ".clinerules").write_text(generate_clinerules(project_name, stack_key), encoding="utf-8")
+        (target_dir / ".clinerules").write_text(generate_clinerules(project_name, stack_key, doc_lang), encoding="utf-8")
         print("✅ Created .clinerules (VS Code Cline & Roo Code).")
 
     if agent_choice in ["all", "claude"]:
-        (target_dir / "CLAUDE.md").write_text(generate_claude_md(project_name, stack_key), encoding="utf-8")
+        (target_dir / "CLAUDE.md").write_text(generate_claude_md(project_name, stack_key, doc_lang), encoding="utf-8")
         print("✅ Created CLAUDE.md (Claude Code CLI).")
 
     if agent_choice in ["all", "cursor"]:
-        (target_dir / ".cursorrules").write_text(generate_cursorrules(project_name, stack_key), encoding="utf-8")
+        (target_dir / ".cursorrules").write_text(generate_cursorrules(project_name, stack_key, doc_lang), encoding="utf-8")
         print("✅ Created .cursorrules (Cursor IDE).")
 
     if agent_choice in ["all", "copilot"]:
         copilot_dir = target_dir / ".github"
         copilot_dir.mkdir(parents=True, exist_ok=True)
-        (copilot_dir / "copilot-instructions.md").write_text(generate_copilot_instructions(project_name, stack_key), encoding="utf-8")
+        (copilot_dir / "copilot-instructions.md").write_text(generate_copilot_instructions(project_name, stack_key, doc_lang), encoding="utf-8")
         print("✅ Created .github/copilot-instructions.md (GitHub Copilot).")
+
+    if agent_choice in ["all", "windsurf"]:
+        (target_dir / ".windsurfrules").write_text(generate_windsurfrules(project_name, stack_key, doc_lang), encoding="utf-8")
+        print("✅ Created .windsurfrules (Windsurf Cascade).")
+
 
     # 6. Verify knowledge base integrity with kb_lint.py
     kb_lint_path = target_dir / "scripts" / "kb_lint.py"
@@ -999,14 +1042,16 @@ def run_interactive_wizard(args) -> tuple:
 
     # 4. AI Agent Setup
     print("\n? Select AI Agent / IDE Setup:")
-    print("  [1] All AI Agents (AGENTS.md, Cline, Claude Code, Cursor, Copilot) [Recommended]")
+    print("  [1] All AI Agents (AGENTS.md, GEMINI.md, Cline, Claude, Cursor, Copilot, Windsurf) [Recommended]")
     print("  [2] VS Code Cline & Roo Code (.clinerules)")
     print("  [3] Claude Code CLI (CLAUDE.md)")
     print("  [4] Cursor IDE (.cursorrules)")
     print("  [5] GitHub Copilot (.github/copilot-instructions.md)")
-    print("  [6] Universal AGENTS.md only")
-    agent_choice_input = prompt_user_input("Select [1-6]", default="1")
-    agent_map = {"1": "all", "2": "cline", "3": "claude", "4": "cursor", "5": "copilot", "6": "generic"}
+    print("  [6] Google Antigravity & Gemini CLI (GEMINI.md)")
+    print("  [7] Windsurf Cascade (.windsurfrules)")
+    print("  [8] Universal AGENTS.md only")
+    agent_choice_input = prompt_user_input("Select [1-8]", default="1")
+    agent_map = {"1": "all", "2": "cline", "3": "claude", "4": "cursor", "5": "copilot", "6": "gemini", "7": "windsurf", "8": "generic"}
     agent_choice = agent_map.get(agent_choice_input, "all")
 
     # 5. Git Setup
@@ -1055,7 +1100,7 @@ Examples:
     )
     parser.add_argument(
         "--agent", "-a",
-        choices=["all", "cline", "claude", "cursor", "copilot", "generic"],
+        choices=["all", "cline", "claude", "cursor", "copilot", "gemini", "windsurf", "generic"],
         default=None,
         help="AI agent / editor configuration files to generate (default: all)",
     )

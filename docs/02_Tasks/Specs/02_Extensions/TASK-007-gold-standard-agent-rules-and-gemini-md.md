@@ -1,7 +1,7 @@
 ---
 id: TASK-007
 title: "Эталонные правила агентов по канону remote-notification и генерация GEMINI.md"
-status: planned
+status: done
 type: task
 phase: 2
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-007 — Эталонные правила агентов по канону remote-notification и генерация GEMINI.md
 
 > **ID:** TASK-007  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #component/installer #component/agent-rules #component/gemini  
 > **Родительский план:** [[../../Plans/PLAN-002-full-skills-and-agent-rules-integration|PLAN-002]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  
@@ -83,12 +83,12 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и синтаксис:
-- [ ] Проверка синтаксиса: `python -m py_compile install.py` (код 0).
-- [ ] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs`.
+- [x] Проверка синтаксиса: `python -m py_compile install.py` (код 0).
+- [x] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs`.
 
 ### Интеграционная проверка генерации правил:
-- [ ] Тестовая установка: `python install.py -y --target-dir test_rules --agent all --doc-lang ru --stack generic --git none`.
-- [ ] Проверка наличия файлов:
+- [x] Тестовая установка: `python install.py -y --target-dir test_rules --agent all --doc-lang ru --stack generic --git none`.
+- [x] Проверка наличия файлов:
   - `test_rules/AGENTS.md`
   - `test_rules/GEMINI.md`
   - `test_rules/.clinerules`
@@ -96,13 +96,13 @@ kanban: "[[../../Kanban|Канбан-доска]]"
   - `test_rules/.cursorrules`
   - `test_rules/.windsurfrules`
   - `test_rules/.github/copilot-instructions.md`
-- [ ] Проверка содержания: наличие маркеров 12 дисциплин, языкового регламента, отказных ADR и запретов Режима 1/2.
-- [ ] Очистка временного каталога `test_rules`.
+- [x] Проверка содержания: наличие маркеров 12 дисциплин, языкового регламента, отказных ADR и запретов Режима 1/2.
+- [x] Очистка временного каталога `test_rules`.
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Все генераторы правил (`GEMINI.md`, `AGENTS.md`, адаптеры) обновлены в `install.py`.
-- [ ] В `install.py` поддерживаются опции `gemini` и `windsurf`.
-- [ ] Все пункты Плана верификации пройдены успешно.
+- [x] Все генераторы правил (`GEMINI.md`, `AGENTS.md`, адаптеры) обновлены в `install.py`.
+- [x] В `install.py` поддерживаются опции `gemini` и `windsurf`.
+- [x] Все пункты Плана верификации пройдены успешно.

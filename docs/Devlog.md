@@ -20,6 +20,24 @@ tags:
 
 ---
 
+### [2026-09-30] — Завершение TASK-007: Эталонные правила агентов по канону remote-notification и генерация GEMINI.md
+- **Что сделано:**
+  - Во все генераторы правил инсталлятора `install.py` интегрирован полный канонический регламент из эталонного проекта `remote_notification`:
+    - 12 канонических дисциплин Docs-as-Code (онбординг, Kanban, Roadmap, ADR и отказные ADR, платформа/Research, Devlog, Obsidian, Permalinks, Regression-First, QA-реестр `05_Testing/`, Obsidian Graph, Git-интеграция).
+    - Строгая защита 3 режимов с маркером `STRICTLY NO CODE CHANGES` для Режимов 1 и 2.
+    - Роль Senior Engineering Partner с обязательным подтверждением пользователя перед записью планов и ТЗ.
+    - Поддержка языкового регламента `doc_lang` (`ru` vs `en`).
+  - Добавлен генератор `generate_gemini_md` для создания корневого файла `GEMINI.md` (поддержка Google Antigravity и Gemini CLI с перечислением доступных скиллов).
+  - Добавлен генератор `generate_windsurfrules` для поддержки Windsurf Cascade (`.windsurfrules`).
+  - Обновлены генераторы `generate_agents_md`, `generate_clinerules`, `generate_claude_md`, `generate_cursorrules`, `generate_copilot_instructions`.
+  - В опции `--agent` CLI и интерактивного визарда добавлены варианты `gemini` и `windsurf`.
+  - Проведена оптимизация размера: итоговый размер `install.py` составил 79.3 КБ / 81,153 байта (строго в рамках DoD < 80 КБ / 81,920 байт).
+  - Успешно пройдены все верификационные тесты: сборка `build_installer.py` (код 0), `py_compile` (код 0), `kb_lint.py` (0 битых ссылок), интеграционный прогон генерации всех 7 файлов правил и проверка наличия ключевых маркеров, полный набор тестов `unittest` (5/5 тестов OK).
+- **Следующий шаг:**
+  - Реализация `TASK-008`: Сквозное E2E тестирование в `tests/test_installer.py` и обновление документации `README.md` (включая гайд для новичков).
+
+---
+
 ### [2026-09-30] — Завершение TASK-006: Упаковка 11 скиллов .agents/skills/ в сборщик и install.py
 - **Что сделано:**
   - В `scripts/build_installer.py` добавлен сборщик скиллов: обход каталога `.agents/skills/` и упаковка канонических файлов `SKILL.md` для всех 11 скиллов без дублирования лишних файлов.
