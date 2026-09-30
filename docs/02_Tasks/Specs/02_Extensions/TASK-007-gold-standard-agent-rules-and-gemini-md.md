@@ -13,6 +13,7 @@ created: 2026-09-30
 updated: 2026-09-30
 tags:
   - task/spec
+  - phase2
   - component/installer
   - component/agent-rules
   - component/gemini

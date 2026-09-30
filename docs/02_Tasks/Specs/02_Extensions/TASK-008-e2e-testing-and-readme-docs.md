@@ -12,6 +12,7 @@ created: 2026-09-30
 updated: 2026-09-30
 tags:
   - task/spec
+  - phase2
   - component/tests
   - component/documentation
 kanban: "[[../../Kanban|Канбан-доска]]"

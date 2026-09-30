@@ -1,6 +1,6 @@
 ---
 id: PLAN-002
-title: Интеграция полного набора скиллов .agents/skills, мультиязычности и эталонных правил агентов в install.py
+title: "Фаза 2: Интеграция полного набора скиллов, мультиязычности и эталонных правил агентов в install.py"
 status: approved
 type: plan
 phase: 2
@@ -8,6 +8,7 @@ created: 2026-09-30
 updated: 2026-09-30
 tags:
   - plan
+  - phase2
   - skills
   - agent-rules
   - installer
@@ -17,11 +18,11 @@ parent_spec: "[[../../SPEC|SPEC.md]]"
 kanban: "[[../Kanban|Канбан-доска]]"
 ---
 
-# 📋 План: PLAN-002 — Интеграция скиллов .agents/skills, мультиязычности и эталонных правил агентов в install.py
+# 📋 План: PLAN-002 — Фаза 2: Интеграция полного набора скиллов, мультиязычности и эталонных правил агентов в install.py
 
 > **ID:** PLAN-002  
 > **Статус:** Утвержден (Завершение Режима 1, переход к Режиму 2)  
-> **Теги:** #plan #skills #agent-rules #installer #research #multilang  
+> **Теги:** #plan #phase2 #skills #agent-rules #installer #research #multilang  
 > **Родительская спецификация:** [[../../SPEC|SPEC.md]]  
 > **Канбан:** [[../Kanban|Канбан-доска]]  
 > **Эталонный проект:** `remote_notification`  
