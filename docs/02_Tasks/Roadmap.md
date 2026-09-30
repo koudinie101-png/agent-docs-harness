@@ -33,7 +33,7 @@ tags:
 **Цель:** Интеграция 11 исполняемых скиллов `.agents/skills/`, эталонных правил агентов по канону `remote_notification`, мультиязычности и расширенной матрицы AI-сред.  
 **Первоисточник плана:** [[Plans/PLAN-002-full-skills-and-agent-rules-integration|PLAN-002]]
 
-- [ ] Исследование экосистемы AI-агентов, IDE и моделей (`RESEARCH-001`) и архитектура мультиязычности — TASK-005.
+- [x] Исследование экосистемы AI-агентов, IDE и моделей ([[../../04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001]]) и архитектура мультиязычности — [[Specs/02_Extensions/TASK-005-ai-agent-ecosystem-research-and-multilang|TASK-005]].
 - [ ] Упаковка всех 11 скиллов `.agents/skills/` в сборщик `build_installer.py` и `install.py` — TASK-006.
 - [ ] Эталонные правила агентов по канону `remote_notification` (12 дисциплин, языковая параметризация, роль Senior Partner, отказные ADR, `GEMINI.md` и адаптеры) — TASK-007.
 - [ ] Сквозное E2E тестирование в `tests/test_installer.py` и обновление документации `README.md` — TASK-008.

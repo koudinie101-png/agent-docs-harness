@@ -882,12 +882,14 @@ def install_harness(
     stack_key: str,
     agent_choice: str,
     git_choice: str,
+    doc_lang: str = "ru",
     force: bool = False,
 ):
     print(f"\n🚀 Installing Agent Docs-as-Code Harness into: {target_dir.resolve()}")
     print(f"   • Project Name: {project_name}")
     print(f"   • Stack: {STACK_PRESETS.get(stack_key, STACK_PRESETS['generic'])['name']}")
     print(f"   • AI Agent configs: {agent_choice}")
+    print(f"   • Documentation language: {doc_lang}")
     print(f"   • Git mode: {git_choice}\n")
 
     docs_dir = target_dir / "docs"
@@ -1037,7 +1039,22 @@ def run_interactive_wizard(args) -> tuple:
     # 1. Project Name
     project_name = prompt_user_input("? Enter Project Name", default=default_name)
 
-    # 2. Technology Stack
+    # 2. Documentation & Agent Communication Language
+    print("\n? Preferred documentation & agent communication language:")
+    print("  [1] Russian (Русский) [Recommended for RU teams]")
+    print("  [2] English")
+    print("  [3] Custom language (type name)")
+    lang_choice_input = prompt_user_input("Select [1-3]", default="1")
+    if lang_choice_input == "1":
+        doc_lang = "ru"
+    elif lang_choice_input == "2":
+        doc_lang = "en"
+    elif lang_choice_input == "3":
+        doc_lang = prompt_user_input("Enter language name", default="ru")
+    else:
+        doc_lang = "ru"
+
+    # 3. Technology Stack
     print("\n? Select Technology Stack:")
     print("  [1] iOS / macOS (Swift, SwiftUI, Xcode) [Target Apple Stack]")
     print("  [2] Web / Node (TypeScript, JavaScript, Next.js)")
@@ -1048,7 +1065,7 @@ def run_interactive_wizard(args) -> tuple:
     stack_map = {"1": "swift", "2": "ts", "3": "python", "4": "dotnet", "5": "generic"}
     stack_key = stack_map.get(stack_choice, "swift")
 
-    # 3. AI Agent Setup
+    # 4. AI Agent Setup
     print("\n? Select AI Agent / IDE Setup:")
     print("  [1] All AI Agents (AGENTS.md, Cline, Claude Code, Cursor, Copilot) [Recommended]")
     print("  [2] VS Code Cline & Roo Code (.clinerules)")
@@ -1060,7 +1077,7 @@ def run_interactive_wizard(args) -> tuple:
     agent_map = {"1": "all", "2": "cline", "3": "claude", "4": "cursor", "5": "copilot", "6": "generic"}
     agent_choice = agent_map.get(agent_choice_input, "all")
 
-    # 4. Git Setup
+    # 5. Git Setup
     print("\n? Git Version Control Setup:")
     print("  [1] Local Git (Initialize repository & commit initial docs) [Recommended]")
     print("  [2] Connect to GitHub (Local commit + setup guidance)")
@@ -1069,7 +1086,7 @@ def run_interactive_wizard(args) -> tuple:
     git_map = {"1": "local", "2": "github", "3": "none"}
     git_choice = git_map.get(git_choice_input, "local")
 
-    return project_name, stack_key, agent_choice, git_choice
+    return project_name, stack_key, agent_choice, git_choice, doc_lang
 
 
 # ============================================================================
@@ -1088,12 +1105,18 @@ Examples:
   # Non-interactive mode for Swift/iOS:
   python3 install.py --non-interactive --name "MyApp" --stack swift --agent all --git local
 
-  # Install into specific target directory:
-  python3 install.py -y --target-dir ../other-project --stack ts
+  # Install into specific target directory with English documentation:
+  python3 install.py -y --target-dir ../other-project --stack ts --doc-lang en
 """,
     )
 
     parser.add_argument("--name", "-n", type=str, help="Project name (default: current directory name)")
+    parser.add_argument(
+        "--doc-lang", "-l",
+        type=str,
+        default=None,
+        help="Preferred documentation & agent communication language (e.g. ru, en, custom; default: ru)",
+    )
     parser.add_argument(
         "--stack", "-s",
         choices=["swift", "ts", "python", "dotnet", "generic"],
@@ -1140,12 +1163,13 @@ Examples:
         is_interactive = False
 
     if is_interactive:
-        project_name, stack_key, agent_choice, git_choice = run_interactive_wizard(args)
+        project_name, stack_key, agent_choice, git_choice, doc_lang = run_interactive_wizard(args)
     else:
         project_name = args.name or target_dir.name or "MyProject"
         stack_key = args.stack or "swift"
         agent_choice = args.agent or "all"
         git_choice = args.git or "local"
+        doc_lang = args.doc_lang or "ru"
 
     install_harness(
         target_dir=target_dir,
@@ -1153,6 +1177,7 @@ Examples:
         stack_key=stack_key,
         agent_choice=agent_choice,
         git_choice=git_choice,
+        doc_lang=doc_lang,
         force=args.force,
     )
 
