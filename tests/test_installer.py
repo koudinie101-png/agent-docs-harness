@@ -225,6 +225,148 @@ class TestAgentDocsHarness(unittest.TestCase):
             except Exception:
                 pass
 
+    def test_06_install_deploys_all_11_skills(self):
+        """E2E test: Verify that all 11 AI agent skills (.agents/skills/) are deployed."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "SkillsApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="SkillsApp",
+                stack_key="generic",
+                agent_choice="generic",
+                git_choice="none",
+                force=True,
+            )
+
+            skills_dir = target / ".agents" / "skills"
+            self.assertTrue(skills_dir.is_dir(), ".agents/skills directory not found")
+
+            expected_skills = [
+                "docs-as-code",
+                "kb-adr",
+                "kb-bug",
+                "kb-complete",
+                "kb-implement",
+                "kb-init",
+                "kb-lint",
+                "kb-onboard",
+                "kb-plan",
+                "kb-research",
+                "kb-task",
+            ]
+            for skill_name in expected_skills:
+                skill_file = skills_dir / skill_name / "SKILL.md"
+                self.assertTrue(skill_file.is_file(), f"Missing skill file: {skill_file}")
+                content = skill_file.read_text(encoding="utf-8")
+                self.assertGreater(len(content), 100, f"Skill file {skill_file} is suspiciously empty")
+                self.assertIn("name:", content)
+                self.assertIn("description:", content)
+
+    def test_07_install_gemini_and_windsurf_rules(self):
+        """E2E test: Verify generation of GEMINI.md and .windsurfrules configurations."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # 1. Test agent_choice="all"
+            target_all = Path(tmp_dir) / "AllAgentsApp"
+            target_all.mkdir()
+            install.install_harness(
+                target_dir=target_all,
+                project_name="AllAgentsApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            gemini_md = target_all / "GEMINI.md"
+            windsurf_rules = target_all / ".windsurfrules"
+            self.assertTrue(gemini_md.is_file(), "GEMINI.md was not created under agent_choice='all'")
+            self.assertTrue(windsurf_rules.is_file(), ".windsurfrules was not created under agent_choice='all'")
+
+            gemini_content = gemini_md.read_text(encoding="utf-8")
+            self.assertIn("Google Antigravity & Gemini CLI", gemini_content)
+            self.assertIn("STRICTLY NO CODE CHANGES", gemini_content)
+            self.assertIn("/kb-plan", gemini_content)
+
+            windsurf_content = windsurf_rules.read_text(encoding="utf-8")
+            self.assertIn("Windsurf Cascade", windsurf_content)
+            self.assertIn("STRICTLY NO CODE CHANGES", windsurf_content)
+
+            # 2. Test agent_choice="gemini"
+            target_gemini = Path(tmp_dir) / "GeminiApp"
+            target_gemini.mkdir()
+            install.install_harness(
+                target_dir=target_gemini,
+                project_name="GeminiApp",
+                stack_key="generic",
+                agent_choice="gemini",
+                git_choice="none",
+                force=True,
+            )
+            self.assertTrue((target_gemini / "GEMINI.md").is_file())
+            self.assertFalse((target_gemini / ".windsurfrules").is_file())
+
+            # 3. Test agent_choice="windsurf"
+            target_windsurf = Path(tmp_dir) / "WindsurfApp"
+            target_windsurf.mkdir()
+            install.install_harness(
+                target_dir=target_windsurf,
+                project_name="WindsurfApp",
+                stack_key="generic",
+                agent_choice="windsurf",
+                git_choice="none",
+                force=True,
+            )
+            self.assertTrue((target_windsurf / ".windsurfrules").is_file())
+            self.assertFalse((target_windsurf / "GEMINI.md").is_file())
+
+    def test_08_install_doc_lang_parameter(self):
+        """E2E test: Verify --doc-lang parameter controls documentation language directives."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Russian doc language
+            target_ru = Path(tmp_dir) / "LangRuApp"
+            target_ru.mkdir()
+            install.install_harness(
+                target_dir=target_ru,
+                project_name="LangRuApp",
+                stack_key="generic",
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="ru",
+                force=True,
+            )
+            agents_ru = (target_ru / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("Russian", agents_ru)
+
+            # English doc language
+            target_en = Path(tmp_dir) / "LangEnApp"
+            target_en.mkdir()
+            install.install_harness(
+                target_dir=target_en,
+                project_name="LangEnApp",
+                stack_key="generic",
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="en",
+                force=True,
+            )
+            agents_en = (target_en / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("English", agents_en)
+
+            # Both pass kb_lint
+            for target in [target_ru, target_en]:
+                kb_lint_script = target / "scripts" / "kb_lint.py"
+                res = subprocess.run(
+                    [sys.executable, str(kb_lint_script), "--path", str(target / "docs")],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                self.assertEqual(res.returncode, 0, f"kb_lint failed on {target.name}:\n{res.stdout}")
+
 
 if __name__ == "__main__":
     unittest.main()
+

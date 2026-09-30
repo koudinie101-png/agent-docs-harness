@@ -100,7 +100,24 @@ docs/
 └── 05_Testing/               # E2E acceptance test scenarios
 ```
 
-### 2. Autonomous Knowledge Base Linter (`scripts/kb_lint.py`)
+### 2. 11 Executable AI Agent Skills (`.agents/skills/`)
+The harness bundles and automatically deploys 11 canonical AI agent skills into `.agents/skills/`:
+
+| Slash Command / Skill | Mode / Category | Purpose & Guardrails |
+| :--- | :--- | :--- |
+| **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. **🚨 STRICTLY NO CODE EDITS!** |
+| **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. **🚨 NO CODE EDITS!** |
+| **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict implementation per approved spec, automated verification, and transitions to completion. |
+| **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done`, moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
+| **`/kb-bug`** | Defect Tracking | Enforces the **Regression-First Principle** (reproducing failing test required before fix) and root cause analysis. |
+| **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
+| **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
+| **`/kb-lint`** | Health Audit | Scans internal wikilinks, YAML frontmatter, detects link rot, and ensures knowledge base consistency. |
+| **`/kb-onboard`** | Developer Guide | Displays the onboarding guide, 3-mode rules, and quick cheat sheet for new team members and agents. |
+| **`/kb-init`** | Initialization | Deploys the standard Docs-as-Code folder tree, template suite, and colored Obsidian graph into a new repo. |
+| **`docs-as-code`** | Master Standard | Complete reference and standard specification for autonomous agent operations. |
+
+### 3. Autonomous Knowledge Base Linter (`scripts/kb_lint.py`)
 * **Zero external dependencies** (standard Python 3 stdlib only).
 * Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter, and detects link rot instantly.
 * Run anytime:
@@ -108,13 +125,32 @@ docs/
   python3 scripts/kb_lint.py --path docs
   ```
 
-### 3. Agent Configuration & Rule Files
+### 4. Agent Configuration & Rule Files
 Depending on your preference, the installer configures:
 * **`AGENTS.md`** — Universal root standard for modern agents.
+* **`GEMINI.md`** — Google Antigravity & Gemini CLI integration.
+* **`.windsurfrules`** — Windsurf Cascade IDE rules.
 * **`.clinerules`** — VS Code Cline & Roo Code integration.
 * **`CLAUDE.md`** — Claude Code CLI in terminal.
 * **`.cursorrules`** — Cursor IDE rules.
 * **`.github/copilot-instructions.md`** — GitHub Copilot chat & completions.
+
+---
+
+## 🌐 Documentation Language Support (`--doc-lang`)
+
+The harness supports bilingual development environments out of the box:
+* **`--doc-lang ru` (Default):** Documentation, planning (`/kb-plan`), specs (`/kb-task`), and Devlog entries are maintained in Russian. Source code, types, and git commits remain strictly in English.
+* **`--doc-lang en`:** All documentation, planning, and agent communications are in English.
+* Custom languages can be selected via the interactive wizard.
+
+---
+
+## 🧠 Open Models & Enterprise Privacy (Qwen 2.5 Coder & DeepSeek)
+
+Through platform research ([`RESEARCH-001`](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/docs/04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix.md)), this harness is proven to be exceptionally effective with open-weights models:
+* **Qwen 2.5 Coder (32B / 14B / 7B):** Run completely offline via Ollama, LM Studio, or vLLM. The strict 3-mode boundaries and structured templates eliminate context hallucinations and keep open models focused on clean, modular code.
+* **DeepSeek R1 / V3:** Ideal for Mode 1 conceptual planning, mathematical verification, and architectural trade-off analysis.
 
 ---
 
@@ -151,22 +187,36 @@ The installer tailors templates, build commands, and agent prompts to your stack
 ## 💻 CLI Options & Non-Interactive Usage
 
 ```bash
-# Non-interactive installation for iOS/macOS Swift project with all agent rules:
-python3 install.py --non-interactive --name "MySwiftApp" --stack swift --agent all --git local
+# Non-interactive installation for iOS/macOS Swift project with all agent rules and Russian docs:
+python3 install.py --non-interactive --name "MySwiftApp" --stack swift --agent all --doc-lang ru --git local
 
-# Install into a separate directory:
-python3 install.py -y --target-dir ../existing-project --stack ts --agent cline
+# Install into a separate directory with English documentation:
+python3 install.py -y --target-dir ../web-project --stack ts --agent gemini --doc-lang en
 
 # CLI Options summary:
 python3 install.py --help
   --name, -n        Project name (default: directory name)
   --stack, -s       {swift, ts, python, dotnet, generic}
-  --agent, -a       {all, cline, claude, cursor, copilot, generic}
+  --agent, -a       {all, cline, claude, cursor, copilot, gemini, windsurf, generic}
+  --doc-lang, -l    {ru, en, custom} (default: ru)
   --git, -g         {local, github, none}
   --target-dir, -d  Destination directory (default: .)
   --non-interactive Run without interactive prompts (-y, --yes)
   --force, -f       Overwrite configurations if present
 ```
+
+---
+
+## 🚦 Zero-to-Hero Quickstart (What to do after installation)
+
+Once installed, your workflow is seamless:
+1. **Open Obsidian:** Click *Open folder as vault* and select the `docs/` folder. Open the **Graph view** to see the 7-color architectural map.
+2. **Start with your AI Agent:** In VS Code, Cursor, Antigravity, or Windsurf, prompt your agent:
+   > *"Please read `AGENTS.md` and `docs/Onboarding.md`. Let's use `/kb-plan` (Mode 1) to discuss our first feature."*
+3. **Verify Documentation Health:** At any time, run:
+   ```bash
+   python3 scripts/kb_lint.py --path docs
+   ```
 
 ---
 

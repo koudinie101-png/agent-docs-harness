@@ -1,7 +1,7 @@
 ---
 id: TASK-008
 title: "Сквозное E2E тестирование в tests/test_installer.py и документация README.md"
-status: planned
+status: done
 type: task
 phase: 2
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-008 — Сквозное E2E тестирование в test_installer.py и документация README.md
 
 > **ID:** TASK-008  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #component/tests #component/documentation  
 > **Родительский план:** [[../../Plans/PLAN-002-full-skills-and-agent-rules-integration|PLAN-002]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  
@@ -74,15 +74,15 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и тесты:
-- [ ] Запуск полного набора автотестов: `python -m unittest discover -s tests` (все тесты зеленые, 100% pass).
-- [ ] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs` (0 битых ссылок).
-- [ ] Проверка целостности ссылок в `README.md`.
+- [x] Запуск полного набора автотестов: `python -m unittest discover -s tests` (все тесты зеленые, 100% pass).
+- [x] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs` (0 битых ссылок).
+- [x] Проверка целостности ссылок в `README.md`.
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Все новые тесты добавлены в `tests/test_installer.py` и успешно выполняются.
-- [ ] `README.md` полностью отражает возможности инсталлятора Фазы 2.
-- [ ] `kb_lint.py` подтверждает 0 ошибок и битых ссылок.
-- [ ] Карточка задачи переведена в `Kanban.md` в Done, отмечен Roadmap, сделана запись в `Devlog.md`.
+- [x] Все новые тесты добавлены в `tests/test_installer.py` и успешно выполняются.
+- [x] `README.md` полностью отражает возможности инсталлятора Фазы 2.
+- [x] `kb_lint.py` подтверждает 0 ошибок и битых ссылок.
+- [x] Карточка задачи переведена в `Kanban.md` в Done, отмечен Roadmap, сделана запись в `Devlog.md`.
