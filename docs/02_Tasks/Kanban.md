@@ -11,13 +11,13 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-002-full-skills-and-agent-rules-integration|План: Интеграция полного набора скиллов, мультиязычности и правил агентов]] #plan #skills #phase2
-  - [ ] TASK-005: Исследование экосистемы AI-агентов (RESEARCH-001) и мультиязычность (--doc-lang) #task
   - [ ] TASK-006: Упаковка всех 11 скиллов .agents/skills/ в сборщик и install.py #task
   - [ ] TASK-007: Эталонные правила агентов по канону remote-notification и генерация GEMINI.md #task
   - [ ] TASK-008: Обновление E2E тестов и документации README #task
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/02_Extensions/TASK-005-ai-agent-ecosystem-research-and-multilang|TASK-005]]: Исследование экосистемы AI-агентов (RESEARCH-001) и мультиязычность (--doc-lang) #task
 
 ## ✅ Готово (Done)
 
