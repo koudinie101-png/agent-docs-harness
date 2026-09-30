@@ -57,7 +57,10 @@ flowchart TD
 * `Bugs/` — журнал дефектов и баг-репортов.
 
 ### 3. Архитектурные решения (`03_Decisions_ADR/`)
-* Реестр принятых архитектурных решений (`ADR-XXXX`).
+* [[03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies на стандартной библиотеке Python 3]]
+* [[03_Decisions_ADR/ADR-0002-self-contained-installer-bundling|ADR-0002: Монолитная сборка инсталлятора через Self-Contained Bundle]]
+* [[03_Decisions_ADR/ADR-0003-multi-agent-adapter-strategy|ADR-0003: Стратегия конфигурации AI-агентов (AGENTS.md + Зеркала)]]
+* [[03_Decisions_ADR/ADR-0004-multi-stack-presets-and-apple-swift-priority|ADR-0004: Мульти-стековая параметризация и приоритет Apple Swift]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * Исследования стандартов конфигураций агентов, особенностей CLI-терминалов, UTF-8 на Windows, pipe через curl.
