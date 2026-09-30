@@ -32,7 +32,7 @@ tags:
 `agent-docs-harness` — это автономный кроссплатформенный установщик (Zero Dependencies, Python 3), который разворачивает в любом проекте профессиональную инфраструктуру **Docs-as-Code** и строгий **3-режимный процесс взаимодействия с агентами**:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3
+curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
 ```
 
 ---

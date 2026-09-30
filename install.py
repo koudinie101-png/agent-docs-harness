@@ -7,7 +7,7 @@ Obsidian graph integration, knowledge base linter, and 3-mode AI agent guardrail
 to any project in a single command.
 
 Usage:
-    curl -sSL https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3
+    curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
     python3 install.py [options]
 
 Zero external dependencies (requires Python 3.8+ stdlib only).

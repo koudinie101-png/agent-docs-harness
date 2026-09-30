@@ -29,7 +29,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 Разработчикам, использующим AI-агентов (Cline, Roo Code, Claude Code, Cursor, Copilot), требуется готовый процесс дисциплины Docs-as-Code.
 Цель: создать утилиту `install.py`, запускаемую в одну строку без внешних зависимостей:
 ```bash
-curl -sSL https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3
+curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
 ```
 
 ## 2. Обсуждение и ключевые решения (Q&A / Discussion)

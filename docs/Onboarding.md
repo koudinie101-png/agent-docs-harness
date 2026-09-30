@@ -24,7 +24,7 @@ tags:
 
 `agent-docs-harness` — это автономный инструмент (Zero Dependencies, Python 3), упаковывающий эталонную методологию **Docs-as-Code** и строгий **3-режимный процесс взаимодействия с AI-агентами** для развертывания в любых пользовательских проектах за одну команду:
 ```bash
-curl -sSL https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3
+curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
 ```
 
 Сам проект полностью следует этой же методологии (**Dogfooding**).

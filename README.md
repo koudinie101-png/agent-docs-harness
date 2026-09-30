@@ -47,17 +47,17 @@ Deploy the complete harness into your current project in **one command**:
 
 ### Linux & macOS
 ```bash
-curl -sSL https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3
+curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
 ```
 
 ### Windows (PowerShell)
 ```powershell
-irm https://raw.githubusercontent.com/<username>/agent-docs-harness/main/install.py | python3 -
+irm https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3 -
 ```
 
 ### Local / Cloned Usage
 ```bash
-git clone https://github.com/<username>/agent-docs-harness.git
+git clone https://github.com/koudinie101-png/agent-docs-harness.git
 python3 agent-docs-harness/install.py
 ```
 
