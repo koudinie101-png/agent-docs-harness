@@ -10,6 +10,10 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-002-full-skills-and-agent-rules-integration|План: Интеграция полного набора скиллов и правил агентов]] #plan #skills
+  - [ ] TASK-005: Упаковка всех 11 скиллов .agents/skills/ в сборщик и install.py #task
+  - [ ] TASK-006: Эталонные правила агентов и генерация GEMINI.md (русский язык, Senior Partner, отказные ADR) #task
+  - [ ] TASK-007: Обновление E2E тестов и документации README #task
 
 ## ⏳ В работе (In Progress)
 
