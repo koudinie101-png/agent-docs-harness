@@ -1,7 +1,7 @@
 ---
 id: TASK-001
 title: Ядро инсталлятора install.py и упаковка ресурсов
-status: in-progress
+status: done
 type: task
 phase: 1
 component:
@@ -19,7 +19,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-001 — Ядро инсталлятора install.py и упаковка ресурсов
 
 > **ID:** TASK-001  
-> **Статус:** В работе  
+> **Статус:** Выполнено  
 > **Теги:** #task/spec #component/installer  
 > **Родительский план:** [[../../Plans/PLAN-001-crossplatform-installer-architecture|PLAN-001]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  

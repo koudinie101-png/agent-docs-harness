@@ -1,7 +1,7 @@
 ---
 id: TASK-004
 title: E2E верификация песочницы и документация README
-status: planned
+status: done
 type: task
 phase: 1
 component:
@@ -20,7 +20,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-004 — E2E верификация песочницы и документация README
 
 > **ID:** TASK-004  
-> **Статус:** Запланировано  
+> **Статус:** Выполнено  
 > **Теги:** #task/spec #component/testing  
 > **Родительский план:** [[../../Plans/PLAN-001-crossplatform-installer-architecture|PLAN-001]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  

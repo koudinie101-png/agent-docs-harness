@@ -1,7 +1,7 @@
 ---
 id: TASK-003
 title: Интерактивный терминальный мастер и CLI флаги
-status: planned
+status: done
 type: task
 phase: 1
 component:
@@ -20,7 +20,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-003 — Интерактивный терминальный мастер и CLI флаги
 
 > **ID:** TASK-003  
-> **Статус:** Запланировано  
+> **Статус:** Выполнено  
 > **Теги:** #task/spec #component/cli  
 > **Родительский план:** [[../../Plans/PLAN-001-crossplatform-installer-architecture|PLAN-001]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Onboarding.md",
+                "file": "02_Tasks/Kanban.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Onboarding"
+              "title": "Kanban"
             }
           }
         ]
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Onboarding.md",
+                "file": "02_Tasks/Kanban.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Onboarding.md",
+                "file": "02_Tasks/Kanban.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Onboarding.md",
+                "file": "02_Tasks/Kanban.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -189,5 +189,12 @@
     }
   },
   "active": "1517771de08e2e73",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "Onboarding.md",
+    "02_Tasks/Roadmap.md",
+    "02_Tasks/Kanban.md",
+    "02_Tasks/Specs/01_MVP/TASK-001-installer-core-and-bundling.md",
+    "00_Index.md",
+    "Devlog.md"
+  ]
 }

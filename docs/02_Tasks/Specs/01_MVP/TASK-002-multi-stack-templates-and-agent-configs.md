@@ -1,7 +1,7 @@
 ---
 id: TASK-002
 title: Мульти-стековые шаблоны и адаптеры агентов
-status: planned
+status: done
 type: task
 phase: 1
 component:
@@ -20,7 +20,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-002 — Мульти-стековые шаблоны и адаптеры агентов
 
 > **ID:** TASK-002  
-> **Статус:** Запланировано  
+> **Статус:** Выполнено  
 > **Теги:** #task/spec #component/templates  
 > **Родительский план:** [[../../Plans/PLAN-001-crossplatform-installer-architecture|PLAN-001]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  
