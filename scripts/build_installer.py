@@ -28,6 +28,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = REPO_ROOT / "templates"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 INSTALL_PY = REPO_ROOT / "install.py"
+SKILLS_DIR = REPO_ROOT / ".agents" / "skills"
 
 
 def bundle_assets() -> dict:
@@ -54,6 +55,16 @@ def bundle_assets() -> dict:
     if kb_lint.is_file():
         assets["scripts/kb_lint.py"] = kb_lint.read_text(encoding="utf-8")
         print(f"  • Bundled: scripts/kb_lint.py ({len(assets['scripts/kb_lint.py'])} chars)")
+
+    # 4. Collect AI agent skills from .agents/skills/
+    if SKILLS_DIR.is_dir():
+        skill_dirs = sorted([d for d in SKILLS_DIR.iterdir() if d.is_dir()])
+        for sdir in skill_dirs:
+            skill_md = sdir / "SKILL.md"
+            if skill_md.is_file():
+                rel_key = f".agents/skills/{sdir.name}/SKILL.md"
+                assets[rel_key] = skill_md.read_text(encoding="utf-8")
+                print(f"  • Bundled skill: {sdir.name}/SKILL.md ({len(assets[rel_key])} chars)")
 
     return assets
 
@@ -83,8 +94,10 @@ def build():
         before = content.split(marker_start)[0]
         after = content.split(marker_end)[1]
         new_content = f"{before}{marker_start}\nEMBEDDED_ASSETS_B64 = \"{bundle_b64}\"\n{marker_end}{after}"
-        INSTALL_PY.write_text(new_content, encoding="utf-8")
-        print(f"✅ Successfully updated embedded payload in {INSTALL_PY.name}!")
+        with open(INSTALL_PY, "w", encoding="utf-8", newline="\n") as f:
+            f.write(new_content)
+        size_kb = INSTALL_PY.stat().st_size / 1024
+        print(f"✅ Successfully updated embedded payload in {INSTALL_PY.name}! (Size: {size_kb:.1f} KB / {INSTALL_PY.stat().st_size} bytes)")
     else:
         print("⚠️ Markers not found in install.py. Please insert markers or re-run generator.")
 

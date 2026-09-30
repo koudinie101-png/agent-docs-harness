@@ -1,7 +1,7 @@
 ---
 id: TASK-006
 title: "Упаковка 11 скиллов .agents/skills/ в сборщик build_installer.py и install.py"
-status: planned
+status: done
 type: task
 phase: 2
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-006 — Упаковка 11 скиллов .agents/skills/ в сборщик build_installer.py и install.py
 
 > **ID:** TASK-006  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #component/build #component/installer #component/skills  
 > **Родительский план:** [[../../Plans/PLAN-002-full-skills-and-agent-rules-integration|PLAN-002]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  
@@ -90,21 +90,21 @@ print(f"✅ Deployed 11 AI agent skills (.agents/skills/).")
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и тесты:
-- [ ] Запуск сборщика: `python scripts/build_installer.py` (код завершения 0, подтверждение включения 11 скиллов в логе).
-- [ ] Проверка синтаксиса `install.py`: `python -m py_compile install.py`.
-- [ ] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs`.
+- [x] Запуск сборщика: `python scripts/build_installer.py` (код завершения 0, подтверждение включения 11 скиллов в логе).
+- [x] Проверка синтаксиса `install.py`: `python -m py_compile install.py`.
+- [x] Проверка базы знаний линтером: `python scripts/kb_lint.py --path docs`.
 
 ### Интеграционная проверка развертывания:
-- [ ] Тестовая установка в изолированный каталог:
+- [x] Тестовая установка в изолированный каталог:
   `python install.py -y --target-dir test_sandbox_skills --stack generic --agent generic --git none`
-- [ ] Проверка наличия всех 11 каталогов скиллов в `test_sandbox_skills/.agents/skills/` с непустыми `SKILL.md`.
-- [ ] Очистка временного каталога: `Remove-Item test_sandbox_skills -Recurse -Force`.
+- [x] Проверка наличия всех 11 каталогов скиллов в `test_sandbox_skills/.agents/skills/` с непустыми `SKILL.md`.
+- [x] Очистка временного каталога: `Remove-Item test_sandbox_skills -Recurse -Force`.
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] `scripts/build_installer.py` упаковывает ровно 11 файлов `SKILL.md`.
-- [ ] Размер `install.py` не превышает 80 КБ.
-- [ ] Инсталлятор корректно создает структуру `.agents/skills/<skill_name>/SKILL.md` в целевой директории.
-- [ ] Все пункты Плана верификации пройдены успешно.
+- [x] `scripts/build_installer.py` упаковывает ровно 11 файлов `SKILL.md`.
+- [x] Размер `install.py` не превышает 80 КБ.
+- [x] Инсталлятор корректно создает структуру `.agents/skills/<skill_name>/SKILL.md` в целевой директории.
+- [x] Все пункты Плана верификации пройдены успешно.
