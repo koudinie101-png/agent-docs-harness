@@ -33,5 +33,5 @@ kanban-plugin: basic
 
 - [ ] Команда синхронизации и обновления базы знаний (`install.py --update`) для существующих проектов #idea
 - [ ] Готовый workflow GitHub Actions (`.github/workflows/kb-lint.yml`) для автоматической проверки целостности базы знаний в CI #idea
-- [ ] Поддержка дополнительных агентов: Windsurf (`.windsurfrules`), Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`) #idea
-- [ ] Простой и понятный гайд для новичков в агентном программировании: как запустить и использовать `install.py` (Zero-to-Hero Onboarding) #idea #docs
+- [ ] Конфигурации для нишевых агентов: Continue.dev (`.continue/config.json`) и Aider (`.aider.conf.yml`) *(Windsurf и Antigravity уже взяты в TASK-007)* #idea
+- [ ] Простой и понятный гайд для новичков в агентном программировании: пошаговое руководство, как запустить и использовать `install.py` (Zero-to-Hero Onboarding) #idea #docs #onboarding
