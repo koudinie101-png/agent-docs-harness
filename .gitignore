@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Testing & Sandbox
+.pytest_cache/
+test_sandbox/
+tmp/
+temp/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor caches
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# Obsidian Workspace (keep graph config, ignore local UI state)
+.obsidian/*
+!.obsidian/graph.json
