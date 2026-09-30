@@ -11,9 +11,9 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-002-full-skills-and-agent-rules-integration|План: Интеграция полного набора скиллов, мультиязычности и правил агентов]] #plan #skills #phase2
-  - [ ] TASK-006: Упаковка всех 11 скиллов .agents/skills/ в сборщик и install.py #task
-  - [ ] TASK-007: Эталонные правила агентов по канону remote-notification и генерация GEMINI.md #task
-  - [ ] TASK-008: Обновление E2E тестов и документации README #task
+  - [ ] [[Specs/02_Extensions/TASK-006-skills-packaging-and-deployment|TASK-006]]: Упаковка всех 11 скиллов .agents/skills/ в сборщик и install.py #task
+  - [ ] [[Specs/02_Extensions/TASK-007-gold-standard-agent-rules-and-gemini-md|TASK-007]]: Эталонные правила агентов по канону remote-notification и генерация GEMINI.md #task
+  - [ ] [[Specs/02_Extensions/TASK-008-e2e-testing-and-readme-docs|TASK-008]]: Обновление E2E тестов и документации README #task
 
 ## ⏳ В работе (In Progress)
 
@@ -34,3 +34,4 @@ kanban-plugin: basic
 - [ ] Команда синхронизации и обновления базы знаний (`install.py --update`) для существующих проектов #idea
 - [ ] Готовый workflow GitHub Actions (`.github/workflows/kb-lint.yml`) для автоматической проверки целостности базы знаний в CI #idea
 - [ ] Поддержка дополнительных агентов: Windsurf (`.windsurfrules`), Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`) #idea
+- [ ] Простой и понятный гайд для новичков в агентном программировании: как запустить и использовать `install.py` (Zero-to-Hero Onboarding) #idea #docs
