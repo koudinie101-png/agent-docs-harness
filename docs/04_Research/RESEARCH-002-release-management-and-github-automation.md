@@ -14,6 +14,7 @@ tags:
 related_tasks: []
 related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
+  - "[[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Архитектура релиз-менеджмента]]"
 ---
 
 # 🔬 Исследование: Архитектура подготовки релиза (Release Management) и автоматизация GitHub / Local сборки
@@ -21,7 +22,7 @@ related_adrs:
 > **Теги:** #research #release-management #github-releases #ci-cd #docs-as-code #skills  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies на Python stdlib]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies на Python stdlib]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Архитектура релиз-менеджмента]]  
 
 ---
 

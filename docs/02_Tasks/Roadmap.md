@@ -54,6 +54,7 @@ tags:
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 
+* 💡 **Автоматизация релиз-менеджмента и скилл `/kb-release`:** специализированный скилл `/kb-release`, шаблон `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/`, утилита сборки/хеширования SHA-256 (Dual-Mode: GitHub / Local-Only), контракт сборщика `dist/` и шаблон CI `.github/workflows/release.yml` — [[../04_Research/RESEARCH-002-release-management-and-github-automation|RESEARCH-002]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** подробный пошаговый туториал с примерами диалогов и сценариев использования для новичков.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
