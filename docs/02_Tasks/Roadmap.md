@@ -62,9 +62,10 @@ tags:
 
 ---
 
-## Фаза 5: Оптимизация токенов и High-SNR архитектура контекста (Token Efficiency & Context Compression)
+## Фаза 5: Оптимизация токенов и High-SNR архитектура контекста (Token Efficiency & Context Compression) — ✅ Завершена
 **Цель:** Сократить контекстную нагрузку на 55–65% за сессию: перевести 12 скиллов и 13 шаблонов на High-SNR императивные примитивы, сжать Always-On реестр описаний скиллов (-53%), внедрить Anti-Echo протокол, рефакторить монолит `docs-as-code` в легковесный роутер и обеспечить лаконичный Silent-on-Success CLI.  
-**Первоисточник плана:** [[Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]
+**Первоисточник плана:** [[Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.5.0|RELEASE-v0.5.0]]
 
 - [x] High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, устранение дублирования, легкий роутер) — [[Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring|TASK-017]].
 - [x] Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) — [[Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring|TASK-018]].
