@@ -18,6 +18,25 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-021: Эволюция скилла kb-research и маршрутизация гипотез в Roadmap
+- **Что сделано:**
+  - Обновлен исполняемый скилл `.agents/skills/kb-research/SKILL.md` согласно спецификации [[02_Tasks/Specs/06_Discovery/TASK-021-kb-research-evolution-and-roadmap-routing|TASK-021]]:
+    - Скилл преобразован в канонический инструмент **Режима 0 (Discovery & Feasibility)** модели Double Diamond (согласно [[03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]] и [[04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]]).
+    - Расширен фокус: от узких платформенных дефектов к полноценной валидации продуктовых и архитектурных гипотез с критическим партнерством агента (Senior Partner: обязательная фальсификация, риски Zero-Deps, токеномика).
+    - Внедрена двухпутевая автоматическая воронка интеграции с [[02_Tasks/Roadmap|Roadmap.md]]:
+      - Одобренные инициативы $\to$ автоматическая регистрация в `## 🔮 Перспективные направления (Future Horizons / Icebox)` с оценкой ценности (Value Impact).
+      - Отклоненные инициативы $\to$ фиксация отказного ADR (`status: rejected`) через `/kb-adr` и регистрация в `## 🚫 Отклоненные архитектурные идеи (Rejected Alternatives)`.
+    - Сохранена High-SNR токеномика: микро-описание frontmatter $\le$ 15 слов, компактные императивные формулировки.
+  - Закрыта задача `TASK-021` в спецификации (`status: done`), Канбане (`## ✅ Готово`) и Дорожной карте (`[x]`).
+  - В `Kanban.md` задача `TASK-022` переведена в колонку `## ⏳ В работе (In Progress)`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (71 files scanned, 433 wikilinks verified).
+  - `python -m unittest discover -s tests` -> 30/30 тестов успешно пройдены (Exit code 0).
+- **Следующий шаг:**
+  - Реализация `TASK-022`: префлайт-чеки в `/kb-plan` и актуализация онбординг-скилла `/kb-onboard`.
+
+---
+
 ### [2026-10-01] — Выпуск официального релиза v0.5.0: High-SNR Token Architecture (Фаза 5)
 - **Что сделано:**
   - Осуществлен официальный релиз **v0.5.0** по завершении Фазы 5 (План [[02_Tasks/Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]).

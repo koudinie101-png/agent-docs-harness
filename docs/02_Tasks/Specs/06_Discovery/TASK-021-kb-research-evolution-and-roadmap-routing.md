@@ -1,7 +1,7 @@
 ---
 id: TASK-021
 title: "Эволюция скилла kb-research: валидация продуктово-архитектурных гипотез и двухпутевая воронка регистрации в Roadmap"
-status: in-progress
+status: done
 type: task
 phase: 6
 component:
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-021 — Эволюция скилла kb-research
 
 > **ID:** TASK-021  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase6 #component/skills #component/discovery #component/kb-research #component/roadmap  
 > **Родительский план:** [[../../Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../../../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  

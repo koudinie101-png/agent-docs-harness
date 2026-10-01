@@ -8,16 +8,20 @@ description: "Mode 0: Validate ideas & hypotheses (RESEARCH-XXX), stress-test ri
 Use when validating new ideas, testing technical hypotheses, exploring architectural trade-offs, or investigating platform pitfalls.
 
 ## 🚨 Constraints
-* **Falsification & Stress Testing:** Stress-test against platform limits: OS lifecycle, background killers, leaks, latency, security.
-* **Preserve Dead Ends:** Explicitly record failed prototypes and unviable candidate options.
+* **Critical Partner & Falsification:** Stress-test proposals against platform limits: OS lifecycle, Zero-Deps (ADR-0001), token economy (ADR-0009), performance, and security. Actively try to falsify assumptions.
+* **Preserve Dead Ends:** Explicitly document unviable alternatives and rejected prototypes to prevent recurring mistakes.
 
 ## Procedure
-1. **Calculate ID:** Scan `docs/04_Research/` for the next `RESEARCH-XXX`.
-2. **Stress-Test & Measure:** Benchmark candidates, measure resources, identify failure modes.
-3. **Draft Research Note:** Create `docs/04_Research/RESEARCH-XXX-<slug>.md` using `TEMPLATE_RESEARCH.md` (Problem, Hypotheses, Benchmarks, Trade-off Matrix, Discarded Options).
-4. **Outcome Routing & Roadmap Registration:**
-   - *Validated:* Create `ADR-XXXX` (if needed) and add to `## 🔮 Перспективные направления (Future Horizons / Icebox)` in `docs/02_Tasks/Roadmap.md` with links and value impact.
-   - *Rejected:* Trigger `/kb-adr` (`status: rejected`) and add to `## 🚫 Отклоненные архитектурные идеи` in `docs/02_Tasks/Roadmap.md`.
+1. **Calculate ID:** Scan `docs/04_Research/` for the next available `RESEARCH-XXX`.
+2. **Stress-Test & Measure:** Prototype minimally, measure limits, identify trade-offs, evaluate Value vs Effort.
+3. **Draft Research Note:** Create `docs/04_Research/RESEARCH-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_RESEARCH.md` (Context, Hypotheses, Trade-off Matrix, Discarded Options, Conclusions).
+4. **Automated Outcome Routing:**
+   - **Validated & Approved:**
+     - If architectural impact: invoke `/kb-adr` to record accepted `ADR-XXXX`.
+     - Register validated initiative in `## 🔮 Перспективные направления (Future Horizons / Icebox)` in `docs/02_Tasks/Roadmap.md` with wikilinks and Value Impact rating.
+   - **Unviable / Overengineered (Rejected):**
+     - Invoke `/kb-adr` to record rejected ADR (`status: rejected`).
+     - Register entry in `## 🚫 Отклоненные архитектурные идеи (Rejected Alternatives)` in `docs/02_Tasks/Roadmap.md` with link to ADR.
 5. **Index & Git Sync:**
-   - Reference in `docs/00_Index.md` (section 4).
-   - Stage and commit: `git add docs/04_Research/ docs/02_Tasks/Roadmap.md docs/00_Index.md && git commit -m "docs(research): add RESEARCH-XXX <slug>"`. Push if remote exists.
+   - Link research note in `docs/00_Index.md` (section 4: Исследования).
+   - Git commit: `git add docs/04_Research/ docs/02_Tasks/Roadmap.md docs/03_Decisions_ADR/ docs/00_Index.md && git commit -m "docs(research): add RESEARCH-XXX <slug>"`. Push if remote origin exists.
