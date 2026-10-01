@@ -69,6 +69,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Архитектура оптимизации токенов и контекстной эффективности]]
 * [[03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes]]
 * [[03_Decisions_ADR/ADR-0011-intent-routing-and-icebox-prioritization-in-kb-plan|ADR-0011: Маршрутизация намерений и приоритизация по ценности в /kb-plan]]
+* [[03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012: Интеграция этапа исследования (Режим 0: Discovery) в жизненный цикл разработки]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
