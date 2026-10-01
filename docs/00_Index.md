@@ -75,6 +75,7 @@ flowchart TD
 * [[04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003: Организация каналов обратной связи и воронка триажа (GitHub vs Local-Only)]]
 * [[04_Research/RESEARCH-004-token-efficiency-and-context-compression|RESEARCH-004: Оптимизация токенов и контекстная эффективность (High-SNR Token Architecture)]]
 * [[04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005: Лучшие практики оформления релизов на GitHub и автоматизация Release Notes]]
+* [[04_Research/RESEARCH-006-kb-plan-icebox-prioritization-and-intent-routing|RESEARCH-006: Оптимизация точки входа планирования (/kb-plan) и маршрутизация идей из Icebox]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
