@@ -73,13 +73,14 @@ docs/
 ├── .obsidian/
 │   └── graph.json            # 7-color category palette for Obsidian Graph
 ├── 00_Index.md               # Map of Content (MOC) entry point
-├── 00_Templates/             # 12 canonical templates with YAML frontmatter
+├── 00_Templates/             # 13 canonical templates with YAML frontmatter
 │   ├── TEMPLATE_TASK.md      # Engineering task spec with file contracts
 │   ├── TEMPLATE_PLAN.md      # RFC & conceptual feature plan (Mode 1)
 │   ├── TEMPLATE_BUG.md       # Defect report with RCA & Regression-First test
 │   ├── TEMPLATE_ADR.md       # Architecture Decision Record (+ rejected alternatives)
 │   ├── TEMPLATE_RESEARCH.md  # OS quirks, battery/memory limits, trade-off matrix
 │   ├── TEMPLATE_TEST.md      # E2E UX acceptance test checklist
+│   ├── TEMPLATE_RELEASE.md   # Phased release note with SHA-256 artifact table
 │   ├── TEMPLATE_ARCHITECTURE.md
 │   ├── TEMPLATE_ONBOARDING.md
 │   ├── TEMPLATE_KANBAN.md
@@ -94,14 +95,15 @@ docs/
 │   ├── Roadmap.md            # Strategic milestones and phased goals
 │   ├── Plans/                # RFCs (Mode 1)
 │   ├── Specs/01_MVP/         # Detailed task specifications (Mode 2)
-│   └── Bugs/                 # Bug tracker with RCA
+│   ├── Bugs/                 # Bug tracker with RCA
+│   └── Releases/             # Phased release notes & checksum tables
 ├── 03_Decisions_ADR/         # Accepted & Rejected Architectural Decisions
 ├── 04_Research/              # Platform quirks and investigation notes
 └── 05_Testing/               # E2E acceptance test scenarios
 ```
 
-### 2. 11 Executable AI Agent Skills (`.agents/skills/`)
-The harness bundles and automatically deploys 11 canonical AI agent skills into `.agents/skills/`:
+### 2. 12 Executable AI Agent Skills (`.agents/skills/`)
+The harness bundles and automatically deploys 12 canonical AI agent skills into `.agents/skills/`:
 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
@@ -109,6 +111,7 @@ The harness bundles and automatically deploys 11 canonical AI agent skills into 
 | **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. **🚨 NO CODE EDITS!** |
 | **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict implementation per approved spec, automated verification, and transitions to completion. |
 | **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done`, moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
+| **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
 | **`/kb-bug`** | Defect Tracking | Enforces the **Regression-First Principle** (reproducing failing test required before fix) and root cause analysis. |
 | **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
 | **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
@@ -117,12 +120,15 @@ The harness bundles and automatically deploys 11 canonical AI agent skills into 
 | **`/kb-init`** | Initialization | Deploys the standard Docs-as-Code folder tree, template suite, and colored Obsidian graph into a new repo. |
 | **`docs-as-code`** | Master Standard | Complete reference and standard specification for autonomous agent operations. |
 
-### 3. Autonomous Knowledge Base Linter (`scripts/kb_lint.py`)
+### 3. Autonomous Knowledge Base Linter & Release Utilities (`scripts/`)
 * **Zero external dependencies** (standard Python 3 stdlib only).
-* Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter, and detects link rot instantly.
-* Run anytime:
+* **Linter (`scripts/kb_lint.py`):** Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter, and detects link rot instantly:
   ```bash
   python3 scripts/kb_lint.py --path docs
+  ```
+* **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
+  ```bash
+  python3 scripts/kb_release.py --version v1.0.0 --phase 1
   ```
 
 ### 4. Agent Configuration & Rule Files
@@ -210,8 +216,16 @@ python3 install.py --help
 ### 🔄 Safe Lifecycle Updates (`install.py --update`)
 Upgrades templates, `kb_lint.py`, `.agents/skills/*`, and Obsidian graph settings to latest releases while guaranteeing **100% preservation** of user data (`02_Tasks/*`, `03_Decisions_ADR/*`, `04_Research/*`, `05_Testing/*`, `SPEC.md`, `README.md`). User-customized agent rules are automatically backed up as `*.bak`.
 
-### 🛡️ Continuous Integration (GitHub Actions)
-Passing `--ci github` generates `.github/workflows/kb-lint.yml`, running automated knowledge base audits on every Pull Request and Push to `main`/`master` to prevent broken wikilinks or malformed frontmatter from reaching production.
+### 🛡️ Continuous Integration & Release Automation (GitHub Actions)
+Passing `--ci github` generates:
+* `.github/workflows/kb-lint.yml`: automated knowledge base link integrity audit on every Pull Request and Push to `main`/`master`.
+* `.github/workflows/release.yml`: automated build, verification, and publication of GitHub Releases with `dist/*` assets upon pushing `v*` tags.
+
+### 🚀 Release Management & Dual-Mode Publishing (`/kb-release`)
+The harness provides a built-in release automation lifecycle:
+* **Dual-Mode Publishing:** Supports both online releases (GitHub Releases via `gh` CLI) and offline/local packages (cataloging build artifacts with SHA-256 in `RELEASE-vX.Y.Z.md`).
+* **Build Hook Contract:** Automatically invokes your project's build hook (`scripts/build_release.sh`, `scripts/build_release.py`, `package.json`, etc.) outputting artifacts to `dist/`.
+* **Zero-Dependencies Checksums:** Calculates streaming SHA-256 hashes and formats Markdown tables for customer verification.
 
 ### 🔍 Smart Stack Autodetection (Brownfield Adoption)
 When run in existing repositories (`--stack auto`), the harness heuristically inspects root marker files (`Package.swift`, `package.json`, `pyproject.toml`, `*.sln`) to select the appropriate toolchain preset and non-destructively appends Docs-as-Code sections to existing `README.md` and `.gitignore`.

@@ -32,10 +32,13 @@ import install
 
 class TestAgentDocsHarness(unittest.TestCase):
     def test_01_assets_unpacking(self):
-        """Verify embedded assets unpack all 12 templates, graph.json, and kb_lint.py."""
+        """Verify embedded assets unpack all 13 templates, graph.json, scripts, skills, and workflows."""
         assets = install.unpack_assets(REPO_ROOT)
         self.assertIn(".obsidian/graph.json", assets)
         self.assertIn("scripts/kb_lint.py", assets)
+        self.assertIn("scripts/kb_release.py", assets)
+        self.assertIn(".agents/skills/kb-release/SKILL.md", assets)
+        self.assertIn(".github/workflows/release.yml", assets)
 
         expected_templates = [
             "TEMPLATE_ADR.md",
@@ -46,6 +49,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             "TEMPLATE_KANBAN.md",
             "TEMPLATE_ONBOARDING.md",
             "TEMPLATE_PLAN.md",
+            "TEMPLATE_RELEASE.md",
             "TEMPLATE_RESEARCH.md",
             "TEMPLATE_ROADMAP.md",
             "TEMPLATE_TASK.md",
@@ -663,6 +667,218 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(res_update.returncode, 0, f"install.py --update failed on CI app:\n{res_update.stdout}")
             self.assertIn("actions/checkout", ci_cli_file.read_text(encoding="utf-8"))
+
+    def test_13_release_components_deployed_on_fresh_install(self):
+        """E2E test: Verify release infrastructure deployment (TEMPLATE_RELEASE.md, Releases/, kb_release.py, kb-release skill, release.yml)."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "ReleaseApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="ReleaseApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                ci_choice="github",
+            )
+
+            # 1. Verify docs/02_Tasks/Releases/ directory exists
+            releases_dir = target / "docs" / "02_Tasks" / "Releases"
+            self.assertTrue(releases_dir.is_dir(), "docs/02_Tasks/Releases directory was not created!")
+            self.assertTrue((releases_dir / ".gitkeep").is_file(), ".gitkeep was not created in Releases/")
+
+            # 2. Verify TEMPLATE_RELEASE.md template deployed
+            tpl_release = target / "docs" / "00_Templates" / "TEMPLATE_RELEASE.md"
+            self.assertTrue(tpl_release.is_file(), "TEMPLATE_RELEASE.md was not deployed to 00_Templates!")
+            content_tpl = tpl_release.read_text(encoding="utf-8")
+            self.assertIn("RELEASE-v[X.Y.Z]", content_tpl)
+            self.assertIn("github_release_url", content_tpl)
+            self.assertIn("sha256", content_tpl)
+
+            # 3. Verify scripts/kb_release.py deployed
+            kb_release = target / "scripts" / "kb_release.py"
+            self.assertTrue(kb_release.is_file(), "scripts/kb_release.py was not deployed!")
+
+            # 4. Verify kb-release skill deployed
+            skill_md = target / ".agents" / "skills" / "kb-release" / "SKILL.md"
+            self.assertTrue(skill_md.is_file(), ".agents/skills/kb-release/SKILL.md was not deployed!")
+            content_skill = skill_md.read_text(encoding="utf-8")
+            self.assertIn("/kb-release", content_skill)
+            self.assertIn("Pre-flight Checks", content_skill)
+
+            # 5. Verify GitHub Actions release.yml deployed
+            workflow_rel = target / ".github" / "workflows" / "release.yml"
+            self.assertTrue(workflow_rel.is_file(), ".github/workflows/release.yml was not deployed with --ci github!")
+            content_wf = workflow_rel.read_text(encoding="utf-8")
+            self.assertIn("Release Automation", content_wf)
+            self.assertIn("kb_release.py", content_wf)
+
+            # 6. Verify GEMINI.md references /kb-release
+            gemini_md = target / "GEMINI.md"
+            self.assertTrue(gemini_md.is_file())
+            self.assertIn("/kb-release", gemini_md.read_text(encoding="utf-8"))
+
+            # 7. Audit with kb_lint.py
+            lint_script = target / "scripts" / "kb_lint.py"
+            res = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"kb_lint failed on release components:\n{res.stdout}\n{res.stderr}")
+
+    def test_14_kb_release_utility_execution_in_sandbox(self):
+        """E2E test: Execute scripts/kb_release.py in deployed sandbox and verify generated release note and SHA-256."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "SandboxApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="SandboxApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                ci_choice="none",
+            )
+
+            # 1. Create a dummy artifact in dist/
+            dist_dir = target / "dist"
+            dist_dir.mkdir(parents=True, exist_ok=True)
+            dummy_pkg = dist_dir / "sandboxapp-1.0.0.tar.gz"
+            dummy_pkg.write_bytes(b"TEST_BINARY_PAYLOAD_FOR_HASHING_12345")
+
+            # 2. Create a mock completed task in docs/02_Tasks/Specs/01_MVP/
+            spec_dir = target / "docs" / "02_Tasks" / "Specs" / "01_MVP"
+            spec_dir.mkdir(parents=True, exist_ok=True)
+            mock_task = spec_dir / "TASK-001-init.md"
+            mock_task.write_text(
+                "---\n"
+                "id: TASK-001\n"
+                "title: \"Project Initialization\"\n"
+                "status: done\n"
+                "type: task\n"
+                "phase: 1\n"
+                "---\n\n"
+                "# TASK-001: Project Initialization\n",
+                encoding="utf-8"
+            )
+
+            # 3. Execute deployed scripts/kb_release.py via subprocess
+            release_script = target / "scripts" / "kb_release.py"
+            res = subprocess.run(
+                [
+                    sys.executable,
+                    str(release_script),
+                    "--version", "v1.0.0",
+                    "--phase", "1",
+                    "--dist-dir", str(dist_dir),
+                    "--docs-dir", str(target / "docs"),
+                ],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"kb_release.py execution failed:\n{res.stdout}\n{res.stderr}")
+            self.assertIn("Generated release document", res.stdout)
+
+            # 4. Verify release file generated in docs/02_Tasks/Releases/
+            release_file = target / "docs" / "02_Tasks" / "Releases" / "RELEASE-v1.0.0.md"
+            self.assertTrue(release_file.is_file(), "RELEASE-v1.0.0.md was not generated!")
+            release_text = release_file.read_text(encoding="utf-8")
+            self.assertIn("id: RELEASE-v1.0.0", release_text)
+            self.assertIn("version: \"1.0.0\"", release_text)
+            self.assertIn("sandboxapp-1.0.0.tar.gz", release_text)
+            self.assertIn("TASK-001", release_text)
+
+            # Calculate expected SHA-256
+            import hashlib
+            expected_hash = hashlib.sha256(b"TEST_BINARY_PAYLOAD_FOR_HASHING_12345").hexdigest()
+            self.assertIn(expected_hash, release_text, "Calculated SHA-256 hash not found in release note table!")
+
+            # 5. Verify knowledge base integrity with kb_lint
+            lint_script = target / "scripts" / "kb_lint.py"
+            lint_res = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(lint_res.returncode, 0, f"kb_lint failed on generated release doc:\n{lint_res.stdout}\n{lint_res.stderr}")
+
+    def test_15_update_preserves_existing_releases(self):
+        """E2E test: Verify that install.py --update refreshes templates/skills while preserving user releases in docs/02_Tasks/Releases/."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "UpdateReleaseApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="UpdateReleaseApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+            )
+
+            # 1. Create custom user release document
+            user_rel = target / "docs" / "02_Tasks" / "Releases" / "RELEASE-v0.1.0.md"
+            user_rel_content = (
+                "---\n"
+                "id: RELEASE-v0.1.0\n"
+                "title: \"Custom User Release v0.1.0\"\n"
+                "version: \"0.1.0\"\n"
+                "phase: 1\n"
+                "status: completed\n"
+                "---\n\n"
+                "# Custom User Release Document\n\n"
+                "DO_NOT_OVERWRITE_THIS_USER_RELEASE_NOTE_12345\n"
+            )
+            user_rel.write_text(user_rel_content, encoding="utf-8")
+
+            # 2. Simulate outdated TEMPLATE_RELEASE.md and outdated scripts/kb_release.py
+            tpl_rel = target / "docs" / "00_Templates" / "TEMPLATE_RELEASE.md"
+            tpl_rel.write_text("# OUTDATED_TEMPLATE_RELEASE", encoding="utf-8")
+
+            script_rel = target / "scripts" / "kb_release.py"
+            script_rel.write_text("# OUTDATED_KB_RELEASE_SCRIPT", encoding="utf-8")
+
+            # 3. Run install.py --update via CLI
+            res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"install.py --update failed:\n{res.stdout}\n{res.stderr}")
+
+            # 4. Verify user release note was preserved untouched!
+            self.assertTrue(user_rel.is_file())
+            self.assertEqual(user_rel.read_text(encoding="utf-8"), user_rel_content)
+            self.assertIn("DO_NOT_OVERWRITE_THIS_USER_RELEASE_NOTE_12345", user_rel.read_text(encoding="utf-8"))
+
+            # 5. Verify TEMPLATE_RELEASE.md and scripts/kb_release.py were updated
+            self.assertNotEqual(tpl_rel.read_text(encoding="utf-8"), "# OUTDATED_TEMPLATE_RELEASE")
+            self.assertIn("RELEASE-v[X.Y.Z]", tpl_rel.read_text(encoding="utf-8"))
+            self.assertNotEqual(script_rel.read_text(encoding="utf-8"), "# OUTDATED_KB_RELEASE_SCRIPT")
+            self.assertIn("inspect_release_artifacts", script_rel.read_text(encoding="utf-8"))
+
+            # 6. Verify kb_lint check passes
+            lint_script = target / "scripts" / "kb_lint.py"
+            lint_res = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(lint_res.returncode, 0, f"kb_lint failed after update:\n{lint_res.stdout}\n{lint_res.stderr}")
 
 
 if __name__ == "__main__":
