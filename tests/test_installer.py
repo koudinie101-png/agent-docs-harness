@@ -509,6 +509,100 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res.returncode, 0, f"kb_lint failed on brownfield installation:\n{res.stdout}")
             self.assertIn("No broken wikilinks found", res.stdout)
 
+    def test_11_safe_update_mechanism(self):
+        """E2E test: Verify safe update mechanism (--update) preserves user work and backs up modified rules."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            base = Path(tmp_dir)
+
+            # 1. Non-project directory fails validation
+            empty_dir = base / "empty_dir"
+            empty_dir.mkdir()
+            self.assertEqual(install.update_harness(empty_dir), 1)
+
+            # 2. Initialize a valid project
+            target = base / "UpdateApp"
+            target.mkdir()
+            install.install_harness(
+                target_dir=target,
+                project_name="UpdateApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="ru",
+                force=True,
+            )
+
+            # 3. Simulate user data in tasks, Kanban, Roadmap, ADR, SPEC
+            user_task = target / "docs" / "02_Tasks" / "Specs" / "01_MVP" / "TASK-099-user-feature.md"
+            user_task.parent.mkdir(parents=True, exist_ok=True)
+            user_task_content = "---\nid: TASK-099\ntitle: Custom User Task\nstatus: in-progress\n---\n# Custom User Feature"
+            user_task.write_text(user_task_content, encoding="utf-8")
+
+            kanban_path = target / "docs" / "02_Tasks" / "Kanban.md"
+            kanban_orig = kanban_path.read_text(encoding="utf-8")
+            kanban_custom = kanban_orig.replace("## ⏳ В работе (In Progress)", "## ⏳ В работе (In Progress)\n\n- [ ] [[Specs/01_MVP/TASK-099-user-feature|TASK-099]]: Custom User Task")
+            kanban_path.write_text(kanban_custom, encoding="utf-8")
+
+            adr_path = target / "docs" / "03_Decisions_ADR" / "ADR-0001-custom-db.md"
+            adr_content = "---\nid: ADR-0001\ntitle: Custom DB Choice\nstatus: accepted\n---\n# ADR-0001: Custom DB Choice"
+            adr_path.write_text(adr_content, encoding="utf-8")
+
+            # 4. Simulate outdated template and linter
+            tpl_task_path = target / "docs" / "00_Templates" / "TEMPLATE_TASK.md"
+            tpl_task_path.write_text("OUTDATED_TEMPLATE_CONTENT", encoding="utf-8")
+
+            lint_path = target / "scripts" / "kb_lint.py"
+            lint_path.write_text("# OUTDATED_LINTER_CONTENT", encoding="utf-8")
+
+            # 5. Simulate modified AGENTS.md by user
+            agents_path = target / "AGENTS.md"
+            agents_orig = agents_path.read_text(encoding="utf-8")
+            agents_modified = agents_orig + "\n## Custom Team Rule: Always wear hats\n"
+            agents_path.write_text(agents_modified, encoding="utf-8")
+
+            # 6. Execute update_harness (also testing CLI --update flag via subprocess)
+            res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"install.py --update CLI failed:\n{res.stdout}\n{res.stderr}")
+            self.assertIn("Harness components successfully updated", res.stdout)
+
+            # 7. Verify templates and linter were refreshed
+            self.assertNotEqual(tpl_task_path.read_text(encoding="utf-8"), "OUTDATED_TEMPLATE_CONTENT")
+            self.assertIn("TASK-XXX", tpl_task_path.read_text(encoding="utf-8"))
+            self.assertNotEqual(lint_path.read_text(encoding="utf-8"), "# OUTDATED_LINTER_CONTENT")
+            self.assertIn("run_linter", lint_path.read_text(encoding="utf-8"))
+
+            # 8. Verify user tasks, Kanban, and ADR were preserved untouched
+            self.assertEqual(user_task.read_text(encoding="utf-8"), user_task_content)
+            self.assertIn("TASK-099", kanban_path.read_text(encoding="utf-8"))
+            self.assertEqual(adr_path.read_text(encoding="utf-8"), adr_content)
+
+            # 9. Verify AGENTS.md was updated and AGENTS.md.bak was created with user customization
+            bak_path = target / "AGENTS.md.bak"
+            self.assertTrue(bak_path.is_file(), "AGENTS.md.bak was not created on update of modified rules!")
+            self.assertIn("Custom Team Rule: Always wear hats", bak_path.read_text(encoding="utf-8"))
+
+            # 10. Verify Devlog.md received update record
+            devlog_content = (target / "docs" / "Devlog.md").read_text(encoding="utf-8")
+            self.assertIn("install.py --update", devlog_content)
+            self.assertIn("Обновление компонентов Docs-as-Code Harness", devlog_content)
+
+            # 11. Verify kb_lint audit passes
+            kb_lint_res = subprocess.run(
+                [sys.executable, str(lint_path), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed after update:\n{kb_lint_res.stdout}")
+            self.assertIn("No broken wikilinks found", kb_lint_res.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,6 +18,26 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-011: Safe Infrastructure Update Mechanism (`install.py --update`)
+- **Что сделано:**
+  - Реализован флаг `--update` (`-u`) в CLI `install.py` для обновления инфраструктуры базы знаний в уже существующих проектах.
+  - Разделены зоны ответственности при обновлении:
+    - Обновляемые компоненты: шаблоны (`docs/00_Templates/*`), линтер (`scripts/kb_lint.py`), скиллы (`.agents/skills/*`), цветовая схема графа Obsidian (`.obsidian/graph.json`).
+    - Неприкосновенные пользовательские данные: `docs/02_Tasks/*` (Kanban, Roadmap, планы, ТЗ, отчеты о багах), `docs/03_Decisions_ADR/*`, `docs/04_Research/*`, `docs/05_Testing/*`, `SPEC.md`, `README.md`, `.gitignore`, `00_Index.md`.
+  - Реализован механизм защиты кастомных правил агентов: если пользователь модифицировал `AGENTS.md` (или другие конфигурации агентов), автоматически создается резервная копия `*.bak` перед обновлением.
+  - Реализована автоматическая фиксация обновления в `docs/Devlog.md` и последующий запуск контрольного аудита линтером `scripts/kb_lint.py`.
+  - Произведен рефакторинг общих модулей в `install.py` (`deploy_infrastructure`, `run_linter_audit`, `get_agent_rule_specs`, сжатие `_3MODES`), позволивший удержать итоговый размер однофайлового дистрибутива в пределах бюджета: 81.8 КБ / 83,770 байт (лимит < 82 КБ).
+  - В `tests/test_installer.py` добавлен сквозной E2E тест `test_11_safe_update_mechanism`, проверяющий валидацию директории, обновление шаблонов/линтера, неприкосновенность пользовательских задач, создание `AGENTS.md.bak`, добавление записи в `Devlog.md` и успешный прогон `kb_lint.py`.
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> Код 0.
+  - `python scripts/build_installer.py` -> Код 0 (размер 81.8 КБ).
+  - `python -m unittest discover -s tests` -> 11/11 тестов успешно пройдены (100% pass).
+  - `python scripts/kb_lint.py --path docs` -> 44 файла, 174 ссылки, 0 broken links, 100% валидный YAML frontmatter.
+- **Следующий шаг:**
+  - Реализация `TASK-012`: Шаблон GitHub Actions CI (`.github/workflows/kb-lint.yml`) и E2E тесты.
+
+---
+
 ### [2026-10-01] — Завершение TASK-010: Brownfield Adoption & Smart Stack Autodetection
 - **Что сделано:**
   - Реализован эвристический детектор стека технологий `detect_project_stack` в `install.py`, определяющий Swift (`Package.swift`), Web/TypeScript (`package.json`), Python (`pyproject.toml`, `requirements.txt`, `Pipfile`, `setup.py`), .NET (`*.sln`, `*.csproj`) и fallback на Generic.

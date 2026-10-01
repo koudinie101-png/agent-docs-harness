@@ -10,7 +10,6 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Specs/03_Adoption/TASK-011-safe-update-mechanism|TASK-011]]: Механизм бережного обновления инфраструктуры (`install.py --update`) #task #phase3
 - [ ] [[Specs/03_Adoption/TASK-012-github-actions-ci-and-e2e|TASK-012]]: Шаблон GitHub Actions CI (`.github/workflows/kb-lint.yml`) и E2E тесты #task #phase3
 
 ## ⏳ В работе (In Progress)
@@ -19,6 +18,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/03_Adoption/TASK-011-safe-update-mechanism|TASK-011]]: Механизм бережного обновления инфраструктуры (`install.py --update`) (2026-10-01) #task #phase3
 - [x] [[Specs/03_Adoption/TASK-010-brownfield-adoption-and-stack-autodetect|TASK-010]]: Бесшовное внедрение в существующие проекты (Brownfield Adoption) и автодетект стека (2026-10-01) #task #phase3
 - [x] [[Specs/03_Adoption/TASK-009-clean-slate-scaffolding|TASK-009]]: Чистый старт и устранение фантомных задач при новой установке (Clean Slate Scaffolding) (2026-10-01) #task #phase3
 

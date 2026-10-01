@@ -248,119 +248,79 @@ def _rules(doc_lang: str) -> str:
 
 
 
+_3MODES = (
+    "## 🔄 3-Mode Discipline & Workflow\n\n"
+    "**Mode 1 -- Planning (`/kb-plan`):** STRICTLY NO CODE CHANGES. User approval before writing plan docs.\n"
+    "**Mode 2 -- Task Spec (`/kb-task`):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.\n"
+    "**Mode 3 -- Implementation (`/kb-implement`):\n"
+    "```bash\n{test_cmd}\npython3 scripts/kb_lint.py --path docs\n```\n"
+    "Auto-complete: spec->done · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push.\n\n"
+    "Senior Partner: flag risks, propose alternatives. Rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).\n"
+)
+
+
 def generate_gemini_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# GEMINI.md -- Google Antigravity & Gemini CLI Rules for {project_name}
 
 > **Stack:** {stack['name']} | **Full Guidelines:** `AGENTS.md` | **Onboarding:** `docs/Onboarding.md`
 
-{rules}
-## 🔄 3-Mode Workflow
-
-**Mode 1 -- Planning (`/kb-plan`) STRICTLY NO CODE CHANGES.** User approval before any plan doc.
-**Mode 2 -- Task Spec (`/kb-task`) STRICTLY NO CODE CHANGES.** `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.
-**Mode 3 -- Implementation (`/kb-implement`):**
-```bash
-{stack['test_cmd']}
-python3 scripts/kb_lint.py --path docs
-```
-Auto-complete: spec->done · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push.
-
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}
 Skills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-adr` `/kb-research` `/kb-lint`
 """
 
 
 def generate_windsurfrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# .windsurfrules -- Windsurf Cascade AI Rules for {project_name}
 
 Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}`
 
-{rules}
-## 3-Mode Discipline
-
-**Mode 1 (Planning):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Plans/PLAN-XXX.md` after user approval.
-**Mode 2 (Spec):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Specs/<Phase>/TASK-XXX.md` with `[NEW]`/`[MODIFY]`/`[DELETE]`.
-**Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> DoD checklist.
-
-Senior Partner: flag risks. Rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).
-"""
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}"""
 
 
 def generate_clinerules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# Cline / Roo Code AI Rules for {project_name}
 
 Stack: **{stack['name']}** | Read `AGENTS.md` and `docs/Onboarding.md` first.
 
-{rules}
-## Mode Rules
-
-1. **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. Output: `docs/02_Tasks/Plans/PLAN-XXX.md` after user approval.
-2. **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. Output: `docs/02_Tasks/Specs/<Phase>/TASK-XXX.md` with file contracts.
-3. **Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> full DoD checklist.
-
-Senior Partner: flag flaws, propose alternatives, document rejected ADRs.
-"""
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}"""
 
 
 def generate_claude_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# CLAUDE.md -- Claude Code Guidelines for {project_name}
 
 Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}` | Lint: `python3 scripts/kb_lint.py --path docs`
 Read: `AGENTS.md` · `docs/Onboarding.md` · `docs/02_Tasks/Kanban.md` · `docs/02_Tasks/Roadmap.md`
 
-{rules}
-## 3-Mode Discipline
-
-- **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. User approval required before writing plan docs.
-- **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD + verification plan.
-- **Mode 3 (Implementation):** Code per spec -> verify -> DoD (spec+date, Kanban, Roadmap `[x]`, Devlog, kb_lint, git push).
-
-Senior Partner: flag risks and anti-patterns. Document rejected approaches in `docs/03_Decisions_ADR/`.
-"""
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}"""
 
 
 def generate_cursorrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# Cursor Rules for {project_name}
 
 You are a **Senior Engineering Partner**. Stack: **{stack['name']}**
 Read `AGENTS.md` and `docs/Onboarding.md` before any architectural decisions.
 
-{rules}
-## 3 Strict Modes
-
-- **Mode 1 (`/kb-plan`):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Plans/` (after user approval).
-- **Mode 2 (`/kb-task`):** STRICTLY NO CODE CHANGES -> `docs/02_Tasks/Specs/` with `[NEW]`/`[MODIFY]`/`[DELETE]`.
-- **Mode 3 (`/kb-implement`):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> `/kb-complete` (spec, Kanban+date, Roadmap `[x]`, Devlog, git push).
-
-Flag risks, propose alternatives, rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).
-"""
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}"""
 
 
 def generate_copilot_instructions(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    rules = _rules(doc_lang)
     return f"""# GitHub Copilot Instructions for {project_name}
 
 Stack: **{stack['name']}** | Read `AGENTS.md` for full guidelines.
 
-{rules}
-## 3-Mode Discipline
-
-- **Mode 1 (Planning):** STRICTLY NO CODE CHANGES. Research/discussion only. Output: `docs/02_Tasks/Plans/PLAN-XXX.md`.
-- **Mode 2 (Spec):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.
-- **Mode 3 (Implementation):** Code per spec -> `{stack['test_cmd']}` -> `python3 scripts/kb_lint.py --path docs` -> DoD checklist.
-
-Permalinks: never move specs/bugs to archive. Regression-First: failing test first. Rejected ADRs: `docs/03_Decisions_ADR/`.
-"""
+{_rules(doc_lang)}
+{_3MODES.format(test_cmd=stack['test_cmd'])}"""
 
 
 def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
@@ -578,104 +538,26 @@ tags:
     index_path = docs_dir / "00_Index.md"
     if not index_path.exists() or force:
         tpl = (assets or {}).get("00_Templates/TEMPLATE_INDEX.md", "")
-        if tpl:
-            index_content = tpl.replace("[Название Проекта]", project_name).replace("2026-09-19", today_str)
-        else:
-            index_content = f"""---
-id: 00_INDEX
-title: "База знаний: {project_name}"
-status: active
-type: hub
-created: {today_str}
-updated: {today_str}
-tags:
-  - project
-  - pkm
-  - index
----
-
-# 🧠 База знаний: {project_name}
-
-> **Стек:** {stack['name']}  
-> **Главная спецификация:** [[../SPEC|SPEC.md (Master Specification)]]  
-> **Руководство по онбордингу:** [[Onboarding|Руководство разработчика]]  
-
-## 🗺️ Карта заметок
-* [[Onboarding|Руководство по онбордингу]]
-* [[02_Tasks/Kanban|Канбан-доска]]
-* [[02_Tasks/Roadmap|Дорожная карта]]
-* [[Devlog|Журнал разработки]]
-* [[00_Templates/TEMPLATE_TASK|Каталог шаблонов]]
-"""
+        index_content = tpl.replace("[Название Проекта]", project_name).replace("2026-09-19", today_str) if tpl else f"# {project_name}\n"
         index_path.write_text(index_content, encoding="utf-8")
 
     # 3. docs/Onboarding.md
     onboarding_path = docs_dir / "Onboarding.md"
     if not onboarding_path.exists() or force:
         tpl = (assets or {}).get("00_Templates/TEMPLATE_ONBOARDING.md", "")
-        if tpl:
-            onboarding_content = (
-                tpl
-                .replace("[Название Проекта]", project_name)
-                .replace("2026-09-19", today_str)
-                .replace("dotnet build", stack["build_cmd"])
-                .replace("dotnet test", stack["test_cmd"])
-            )
-        else:
-            onboarding_content = f"""---
-id: ONBOARDING
-title: Руководство по онбордингу и взаимодействию
-status: active
-type: hub
-created: {today_str}
-updated: {today_str}
-tags:
-  - onboarding
-  - guide
-  - docs-as-code
-  - workflow
----
-
-# 🚀 Руководство по онбордингу: {project_name}
-
-> **Связанные документы:** [[00_Index|00_Index]], [[02_Tasks/Kanban|Канбан-доска]], [[02_Tasks/Roadmap|Дорожная карта]], [[Devlog|Журнал разработки]].
-
-## Режимы взаимодействия:
-1. 🟡 **Режим 1: Планирование** (`/kb-plan`) -- запрет на изменение кода.
-2. 🟠 **Режим 2: Спецификация** (`/kb-task`) -- запрет на изменение кода.
-3. 🟢 **Режим 3: Реализация** (`/kb-implement`) -- код, тесты, сдача задачи.
-"""
+        onboarding_content = (
+            tpl.replace("[Название Проекта]", project_name)
+            .replace("2026-09-19", today_str)
+            .replace("dotnet build", stack["build_cmd"])
+            .replace("dotnet test", stack["test_cmd"])
+        ) if tpl else f"# Onboarding: {project_name}\n"
         onboarding_path.write_text(onboarding_content, encoding="utf-8")
 
     # 4. docs/Devlog.md
     devlog_path = docs_dir / "Devlog.md"
     if not devlog_path.exists() or force:
         tpl = (assets or {}).get("00_Templates/TEMPLATE_DEVLOG.md", "")
-        if tpl:
-            devlog_content = tpl.replace("2026-09-19", today_str)
-        else:
-            devlog_content = f"""---
-id: DEVLOG
-title: Журнал разработки (Devlog)
-status: active
-type: devlog
-created: {today_str}
-updated: {today_str}
-tags:
-  - devlog
-  - journal
----
-
-# 📝 Журнал разработки (Devlog): {project_name}
-
-> **Родительская заметка:** [[00_Index|00_Index]]  
-
-### [{today_str}] -- Инициализация базы знаний Docs-as-Code
-- **Что сделано:**
-  - Развернута инфраструктура базы знаний `docs/` по стандарту Docs-as-Code.
-  - Настроена цветовая схема Obsidian Graph (`.obsidian/graph.json`).
-  - Развернут автономный линтер базы знаний `scripts/kb_lint.py`.
-"""
+        devlog_content = tpl.replace("2026-09-19", today_str) if tpl else f"# Devlog: {project_name}\n"
         devlog_path.write_text(devlog_content, encoding="utf-8")
 
     # 5. docs/02_Tasks/Kanban.md
@@ -812,7 +694,68 @@ def setup_git(target_dir: Path, git_choice: str):
         print("      git push -u origin main\n")
 
 
-# --- INSTALLATION ORCHESTRATOR ---
+# --- INSTALLATION ORCHESTRATOR & INFRASTRUCTURE HELPERS ---
+
+def get_agent_rule_specs(target_dir: Path, project_name: str, stack_key: str, doc_lang: str):
+    return [
+        ("all", target_dir / "AGENTS.md", generate_agents_md(project_name, stack_key, doc_lang), "root AGENTS.md (Universal Agent Standard)"),
+        ("gemini", target_dir / "GEMINI.md", generate_gemini_md(project_name, stack_key, doc_lang), "GEMINI.md (Google Antigravity & Gemini CLI)"),
+        ("cline", target_dir / ".clinerules", generate_clinerules(project_name, stack_key, doc_lang), ".clinerules (VS Code Cline & Roo Code)"),
+        ("claude", target_dir / "CLAUDE.md", generate_claude_md(project_name, stack_key, doc_lang), "CLAUDE.md (Claude Code CLI)"),
+        ("cursor", target_dir / ".cursorrules", generate_cursorrules(project_name, stack_key, doc_lang), ".cursorrules (Cursor IDE)"),
+        ("copilot", target_dir / ".github" / "copilot-instructions.md", generate_copilot_instructions(project_name, stack_key, doc_lang), ".github/copilot-instructions.md (GitHub Copilot)"),
+        ("windsurf", target_dir / ".windsurfrules", generate_windsurfrules(project_name, stack_key, doc_lang), ".windsurfrules (Windsurf Cascade)"),
+    ]
+
+
+def deploy_infrastructure(target_dir: Path, assets: dict, stack_key: str, today_str: str) -> tuple:
+    docs_dir = target_dir / "docs"
+    tpl_dir = docs_dir / "00_Templates"
+    tpl_dir.mkdir(parents=True, exist_ok=True)
+    tpl_count = skills_count = 0
+
+    for rel_path, content in assets.items():
+        if rel_path.startswith("00_Templates/"):
+            tpl_name = Path(rel_path).name
+            customized = customize_templates_for_stack(tpl_name, content, stack_key, today_str)
+            (tpl_dir / tpl_name).write_text(customized, encoding="utf-8")
+            tpl_count += 1
+        elif rel_path.startswith(".agents/skills/"):
+            target_file = target_dir / rel_path
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+            target_file.write_text(content, encoding="utf-8")
+            skills_count += 1
+        elif rel_path == ".obsidian/graph.json":
+            target_file = docs_dir / ".obsidian" / "graph.json"
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+            target_file.write_text(content, encoding="utf-8")
+        elif rel_path == "scripts/kb_lint.py":
+            target_file = target_dir / "scripts" / "kb_lint.py"
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+            target_file.write_text(content, encoding="utf-8")
+            try:
+                target_file.chmod(0o755)
+            except Exception:
+                pass
+    return tpl_count, skills_count
+
+
+def run_linter_audit(target_dir: Path, docs_dir: Path):
+    kb_lint_path = target_dir / "scripts" / "kb_lint.py"
+    if kb_lint_path.is_file():
+        print("\n🔍 Running knowledge base audit with kb_lint.py...")
+        res = subprocess.run(
+            [sys.executable, str(kb_lint_path), "--path", str(docs_dir)],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if res.returncode == 0:
+            print("✅ Linter check passed: 0 broken links, valid YAML frontmatter!")
+        else:
+            print(f"⚠️ Linter reported warnings:\n{res.stdout}\n{res.stderr}")
+
 
 def install_harness(
     target_dir: Path,
@@ -860,89 +803,29 @@ def install_harness(
 
     # 3. Write unpacked templates and scripts
     today_str = date.today().isoformat()
-    skills_count = 0
-    for rel_path, content in assets.items():
-        if rel_path.startswith("00_Templates/"):
-            tpl_name = Path(rel_path).name
-            customized = customize_templates_for_stack(tpl_name, content, stack_key, today_str)
-            target_file = docs_dir / "00_Templates" / tpl_name
-            target_file.write_text(customized, encoding="utf-8")
-        elif rel_path.startswith(".agents/skills/"):
-            target_file = target_dir / rel_path
-            target_file.parent.mkdir(parents=True, exist_ok=True)
-            target_file.write_text(content, encoding="utf-8")
-            skills_count += 1
-        elif rel_path == ".obsidian/graph.json":
-            target_file = docs_dir / ".obsidian" / "graph.json"
-            target_file.write_text(content, encoding="utf-8")
-        elif rel_path == "scripts/kb_lint.py":
-            target_file = target_dir / "scripts" / "kb_lint.py"
-            target_file.write_text(content, encoding="utf-8")
-            try:
-                target_file.chmod(0o755)
-            except Exception:
-                pass
-
-    print(f"✅ Deployed 12 templates and Obsidian graph configuration.")
-    print(f"✅ Deployed scripts/kb_lint.py linter.")
+    tpl_count, skills_count = deploy_infrastructure(target_dir, assets, stack_key, today_str)
+    print(f"✅ Deployed {tpl_count} templates and Obsidian graph configuration.")
+    print("✅ Deployed scripts/kb_lint.py linter.")
     if skills_count > 0:
         print(f"✅ Deployed {skills_count} AI agent skills (.agents/skills/).")
 
     # 4. Generate starter knowledge base documents
     create_starter_docs(target_dir, project_name, stack_key, assets=assets, force=force)
-    print(f"✅ Created starter knowledge base docs (SPEC.md, 00_Index.md, Onboarding.md, Kanban.md, Roadmap.md, Devlog.md).")
+    print("✅ Created starter knowledge base docs (SPEC.md, 00_Index.md, Onboarding.md, Kanban.md, Roadmap.md, Devlog.md).")
 
     # 4.1. Handle README.md and .gitignore (non-destructive)
     handle_readme(target_dir, project_name, doc_lang)
     handle_gitignore(target_dir)
 
     # 5. Generate Agent rule files
-    agents_md = generate_agents_md(project_name, stack_key, doc_lang)
-    (target_dir / "AGENTS.md").write_text(agents_md, encoding="utf-8")
-    print("✅ Created root AGENTS.md (Universal Agent Standard).")
-
-    if agent_choice in ["all", "gemini"]:
-        (target_dir / "GEMINI.md").write_text(generate_gemini_md(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created GEMINI.md (Google Antigravity & Gemini CLI).")
-
-    if agent_choice in ["all", "cline"]:
-        (target_dir / ".clinerules").write_text(generate_clinerules(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created .clinerules (VS Code Cline & Roo Code).")
-
-    if agent_choice in ["all", "claude"]:
-        (target_dir / "CLAUDE.md").write_text(generate_claude_md(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created CLAUDE.md (Claude Code CLI).")
-
-    if agent_choice in ["all", "cursor"]:
-        (target_dir / ".cursorrules").write_text(generate_cursorrules(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created .cursorrules (Cursor IDE).")
-
-    if agent_choice in ["all", "copilot"]:
-        copilot_dir = target_dir / ".github"
-        copilot_dir.mkdir(parents=True, exist_ok=True)
-        (copilot_dir / "copilot-instructions.md").write_text(generate_copilot_instructions(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created .github/copilot-instructions.md (GitHub Copilot).")
-
-    if agent_choice in ["all", "windsurf"]:
-        (target_dir / ".windsurfrules").write_text(generate_windsurfrules(project_name, stack_key, doc_lang), encoding="utf-8")
-        print("✅ Created .windsurfrules (Windsurf Cascade).")
-
+    for agent_key, rule_path, content, desc in get_agent_rule_specs(target_dir, project_name, stack_key, doc_lang):
+        if agent_choice == "all" or agent_choice == agent_key or agent_key == "all":
+            rule_path.parent.mkdir(parents=True, exist_ok=True)
+            rule_path.write_text(content, encoding="utf-8")
+            print(f"✅ Created {desc}.")
 
     # 6. Verify knowledge base integrity with kb_lint.py
-    kb_lint_path = target_dir / "scripts" / "kb_lint.py"
-    if kb_lint_path.is_file():
-        print("\n🔍 Running initial knowledge base audit with kb_lint.py...")
-        res = subprocess.run(
-            [sys.executable, str(kb_lint_path), "--path", str(docs_dir)],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-        )
-        if res.returncode == 0:
-            print("✅ Linter check passed: 0 broken links, valid YAML frontmatter!")
-        else:
-            print(f"⚠️ Linter reported warnings:\n{res.stdout}\n{res.stderr}")
+    run_linter_audit(target_dir, docs_dir)
 
     # 7. Git setup
     setup_git(target_dir, git_choice)
@@ -959,6 +842,124 @@ def install_harness(
     print("     \"Please read AGENTS.md and let's start Mode 1 (Planning) for our first task.\"")
     print("  4. Verify your documentation anytime:")
     print("     python3 scripts/kb_lint.py --path docs\n")
+
+
+# --- SAFE HARNESS UPDATE ---
+
+def record_devlog_update(docs_dir: Path, today_str: str, doc_lang: str = "ru"):
+    devlog_path = docs_dir / "Devlog.md"
+    if not devlog_path.is_file():
+        return
+    content = devlog_path.read_text(encoding="utf-8")
+    if doc_lang == "en":
+        entry = (
+            f"### [{today_str}] — Docs-as-Code Harness Components Update (`install.py --update`)\n"
+            "- **What was updated:**\n"
+            "  - Note templates in `docs/00_Templates/` refreshed to latest version.\n"
+            "  - Standalone linter `scripts/kb_lint.py` updated.\n"
+            "  - AI agent skills in `.agents/skills/` synchronized.\n"
+            "  - Obsidian graph configuration `docs/.obsidian/graph.json` refreshed.\n"
+            "- **Integrity verification:**\n"
+            "  - Link integrity audit performed with `kb_lint.py`.\n\n---\n\n"
+        )
+    else:
+        entry = (
+            f"### [{today_str}] — Обновление компонентов Docs-as-Code Harness (`install.py --update`)\n"
+            "- **Что обновлено:**\n"
+            "  - Шаблоны заметок в `docs/00_Templates/` обновлены до актуальной версии.\n"
+            "  - Автономный линтер `scripts/kb_lint.py` обновлен.\n"
+            "  - Скиллы AI-агентов в `.agents/skills/` актуализированы.\n"
+            "  - Конфигурация графа `docs/.obsidian/graph.json` актуализирована.\n"
+            "- **Проверка:**\n"
+            "  - Проведен контрольный аудит целостности ссылок через `kb_lint.py`.\n\n---\n\n"
+        )
+    if "### [" in content:
+        idx = content.find("### [")
+        new_content = content[:idx] + entry + content[idx:]
+    else:
+        new_content = content.rstrip() + "\n\n---\n\n" + entry
+    devlog_path.write_text(new_content, encoding="utf-8")
+    print("📝 Appended update record to docs/Devlog.md.")
+
+
+def update_agent_rules_safe(target_dir: Path, project_name: str, stack_key: str, doc_lang: str):
+    for _, rule_path, new_content, _ in get_agent_rule_specs(target_dir, project_name, stack_key, doc_lang):
+        if rule_path.is_file():
+            existing = rule_path.read_text(encoding="utf-8")
+            if existing.strip() != new_content.strip():
+                bak = rule_path.with_name(rule_path.name + ".bak")
+                bak.write_text(existing, encoding="utf-8")
+                rule_path.write_text(new_content, encoding="utf-8")
+                print(f"⚠️ Backed up modified {rule_path.name} to {bak.name} and updated to latest version.")
+            else:
+                print(f"ℹ️ {rule_path.name} is already up to date.")
+
+
+def update_harness(
+    target_dir: Path,
+    assets: dict = None,
+    stack_key: str = None,
+    doc_lang: str = None,
+    project_name: str = None,
+) -> int:
+    docs_dir = target_dir / "docs"
+    if not (docs_dir / "00_Index.md").is_file():
+        print(f"❌ Error: 'docs/00_Index.md' not found in {target_dir.resolve()}.")
+        print("   This directory does not appear to be an initialized Agent Docs-as-Code project.")
+        return 1
+
+    print(f"\n🔄 Updating Agent Docs-as-Code Harness components in: {target_dir.resolve()}")
+
+    if assets is None:
+        assets = unpack_assets()
+
+    today_str = date.today().isoformat()
+
+    # Detect project attributes if not specified
+    if not project_name:
+        spec_path = target_dir / "SPEC.md"
+        if spec_path.is_file():
+            spec_txt = spec_path.read_text(encoding="utf-8")
+            m = re.search(r'title:\s*["\']?(?:Мастер-спецификация:\s*)?([^"\'\n]+)', spec_txt)
+            if m:
+                project_name = m.group(1).strip()
+        if not project_name:
+            project_name = target_dir.name or "Project"
+
+    if not stack_key or stack_key == "auto":
+        stack_key = detect_project_stack(target_dir)
+
+    if not doc_lang:
+        agents_path = target_dir / "AGENTS.md"
+        if agents_path.is_file() and ("Russian" in agents_path.read_text(encoding="utf-8") or "Русский" in agents_path.read_text(encoding="utf-8")):
+            doc_lang = "ru"
+        else:
+            doc_lang = "en"
+
+    print(f"   • Project: {project_name}")
+    print(f"   • Stack: {STACK_PRESETS.get(stack_key, STACK_PRESETS['generic'])['name']}")
+    print(f"   • Language: {doc_lang}\n")
+
+    # Refresh templates, skills, linter, graph
+    tpl_count, skills_count = deploy_infrastructure(target_dir, assets, stack_key, today_str)
+    print(f"✅ Refreshed {tpl_count} templates and Obsidian graph configuration.")
+    print("✅ Refreshed scripts/kb_lint.py linter.")
+    if skills_count > 0:
+        print(f"✅ Refreshed {skills_count} skills in .agents/skills/.")
+
+    # Safe update of agent rules with .bak
+    update_agent_rules_safe(target_dir, project_name, stack_key, doc_lang)
+
+    # Record update in docs/Devlog.md
+    record_devlog_update(docs_dir, today_str, doc_lang)
+
+    # Run kb_lint audit
+    run_linter_audit(target_dir, docs_dir)
+
+    print("\n" + "=" * 70)
+    print("🎉 Docs-as-Code Harness components successfully updated to latest version!")
+    print("=" * 70 + "\n")
+    return 0
 
 
 # --- INTERACTIVE CLI WIZARD ---
@@ -1114,9 +1115,24 @@ Examples:
         action="store_true",
         help="Overwrite existing configuration files if present",
     )
+    parser.add_argument(
+        "--update", "-u",
+        action="store_true",
+        help="Update harness infrastructure (templates, linter, skills, graph) safely in existing project",
+    )
 
     args = parser.parse_args()
     target_dir = Path(args.target_dir).resolve()
+
+    # Handle --update mode directly
+    if args.update:
+        exit_code = update_harness(
+            target_dir=target_dir,
+            stack_key=args.stack,
+            doc_lang=args.doc_lang,
+            project_name=args.name,
+        )
+        sys.exit(exit_code)
 
     # Determine whether to run interactively
     is_interactive = not args.non_interactive and (sys.stdin.isatty() or os.name == "nt" or os.path.exists("/dev/tty"))
