@@ -10,6 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-005-high-snr-token-optimization|План: Фаза 5 — Оптимизация токенов и High-SNR архитектура контекста]] #plan #phase5 #token-optimization
+  - [ ] TASK-017: High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, легкий роутер) #task #phase5
+  - [ ] TASK-018: Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) #task #phase5
+  - [ ] TASK-019: Внедрение правил High-SNR, Anti-Echo и Silent-CLI в `AGENTS.md`, `scripts/kb_lint.py` и `scripts/kb_release.py` #task #phase5
+  - [ ] TASK-020: Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`) и E2E тесты #task #phase5
+
 
 ## ⏳ В работе (In Progress)
 

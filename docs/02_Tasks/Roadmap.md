@@ -62,10 +62,20 @@ tags:
 
 ---
 
+## Фаза 5: Оптимизация токенов и High-SNR архитектура контекста (Token Efficiency & Context Compression)
+**Цель:** Сократить контекстную нагрузку на 55–65% за сессию: перевести 12 скиллов и 13 шаблонов на High-SNR императивные примитивы, сжать Always-On реестр описаний скиллов (-53%), внедрить Anti-Echo протокол, рефакторить монолит `docs-as-code` в легковесный роутер и обеспечить лаконичный Silent-on-Success CLI.  
+**Первоисточник плана:** [[Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]
+
+- [ ] High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, устранение дублирования, легкий роутер) — `TASK-017`.
+- [ ] Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) — `TASK-018`.
+- [ ] Внедрение правил High-SNR, Anti-Echo и Silent-CLI в `AGENTS.md`, `scripts/kb_lint.py` и `scripts/kb_release.py` — `TASK-019`.
+- [ ] Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`), E2E тесты и замеры сжатия — `TASK-020`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 
-* 💡 **Оптимизация токенов и High-SNR рефакторинг скиллов/шаблонов:** сжатие Always-On описаний скиллов в реестре, протокол Anti-Echo для вывода агента, устранение воды и дублирования из 12 файлов SKILL.md, рефакторинг монолита `docs-as-code` в легковесный роутер, очистка 13 шаблонов `docs/00_Templates/` до компактных каркасов (-55–65% токенов за сессию) — [[../04_Research/RESEARCH-004-token-efficiency-and-context-compression|RESEARCH-004]], [[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]].
 * 💡 **Архитектура каналов обратной связи и воронка триажа (Feedback Loops & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер триажа `docs/02_Tasks/Inbox/`, шаблоны GitHub Issue Forms (`.github/ISSUE_TEMPLATE/`) и Discussions (Ideas), безопасный локальный бандл `install.py --report` для друзей и оффлайн-режима, скилл `/kb-triage` — [[../04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** подробный пошаговый туториал с примерами диалогов и сценариев использования для новичков.
