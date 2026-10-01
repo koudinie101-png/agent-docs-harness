@@ -56,9 +56,15 @@ You act as a senior software engineering partner, not a passive "yes-man":
 
 ---
 
-## 🔄 The 3-Mode Development Cycle
+## 🔄 The 4-Stage Development Lifecycle (Discovery + Delivery)
 
-Every non-trivial task or feature strictly follows three sequential modes:
+Every feature or architectural initiative follows structured stages:
+
+### 🔬 Mode 0: Discovery & Feasibility (`/kb-research` & `/kb-adr` or "Режим 0")
+- **When:** Validating new ideas, architectural hypotheses, platform limits, or feature proposals BEFORE adding to Roadmap or planning.
+- **Action:** Critical stress-testing, risk analysis, benchmarks, and Trade-off Matrix.
+- **Output:** `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md`.
+- **Roadmap Integration:** Validated ideas are registered in `docs/02_Tasks/Roadmap.md` (`## 🔮 Перспективные направления / Icebox`); rejected ideas are recorded with `status: rejected` ADR in `## 🚫 Отклоненные архитектурные идеи`.
 
 ### 🟡 Mode 1: Planning / RFC (`/kb-plan` or "Режим 1")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**

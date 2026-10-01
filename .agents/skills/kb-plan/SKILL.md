@@ -13,18 +13,16 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
 
 ## Procedure
 1. **Source Discovery & Intent Routing:**
-   - **Explicit Idea:** If user specified a topic (`/kb-plan <idea>`), proceed immediately with that topic.
-   - **No Argument (`/kb-plan`):** Inspect `## 🔮 Перспективные направления (Future Horizons / Icebox)` in `docs/02_Tasks/Roadmap.md`.
-     - *If ideas exist:* Analyze product value impact, rank candidates in prioritized order with a concise 1-line rationale for each, provide a top recommendation, and ask user to confirm, select an alternative, or propose a new idea.
-     - *If empty:* Ask user what feature/architecture they plan to design.
-2. **Clarify & Challenge:** Identify requirements, edge cases, and trade-offs. Constructively critique flawed approaches.
+   - **Explicit Idea:** If specified (`/kb-plan <idea>`), proceed immediately with that topic.
+   - **No Argument (`/kb-plan`):** Inspect Icebox in `docs/02_Tasks/Roadmap.md`. Rank candidates by value impact with 1-line rationale and top recommendation. If empty, ask user.
+2. **Clarify & Challenge:** Identify requirements, edge cases, trade-offs. Critique flawed approaches.
 3. **Draft Plan:** Break down into potential tasks, affected modules, and risks.
-4. **User Approval (Mandatory):** Present an executive summary in chat. Obtain explicit confirmation before writing files.
+4. **User Approval (Mandatory):** Executive summary in chat; obtain explicit confirmation before writing files.
 5. **Record Plan:**
-   - Scan `docs/02_Tasks/Plans/` for the next available `PLAN-XXX` ID.
-   - Create `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_PLAN.md`.
-   - Add task card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
-   - If promoted from Icebox: remove item from Icebox, assign sequential Phase number in `docs/02_Tasks/Roadmap.md`, and link relevant ADR/Research notes.
+   - Scan `docs/02_Tasks/Plans/` for next `PLAN-XXX`.
+   - Create `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` using `TEMPLATE_PLAN.md`.
+   - Add card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
+   - If from Icebox: promote to sequential Phase in `Roadmap.md` and link relevant ADR/Research notes.
 6. **Git Sync (Conditional):**
    - Stage: `git add docs/02_Tasks/Plans/ docs/02_Tasks/Kanban.md docs/02_Tasks/Roadmap.md`
    - Commit: `git commit -m "docs(plan): record PLAN-XXX <slug> and update backlog"`

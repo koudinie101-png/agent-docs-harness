@@ -8,18 +8,15 @@ description: "Record Architecture Decision Record ADR-XXXX, capturing context, t
 Use when the user runs `/kb-adr <name>`, decides on an architectural trade-off, or formally rejects an unviable architectural direction.
 
 ## 🚨 Constraints
-* **Mandatory Rejected Alternatives:** Every ADR must explicitly document discarded candidate options and the deal-breaker flaws that disqualified them.
-* **Dedicated Rejected ADRs:** When a concept or proposal is investigated and discarded as unviable, create a dedicated ADR titled `Отказ от <название>` with `status: rejected` to permanently protect against recurring mistakes.
+* **Mandatory Rejected Alternatives:** Document discarded options and disqualified flaws.
+* **Dedicated Rejected ADRs:** For unviable proposals, log `Отказ от <название>` with `status: rejected`.
 
 ## Procedure
-1. **Calculate ID:**
-   - Scan `docs/03_Decisions_ADR/` for the next available 4-digit ID `ADR-XXXX`.
-2. **Draft the ADR:**
-   - Create `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md` using `docs/00_Templates/TEMPLATE_ADR.md`.
-   - Fill in: Context & Problem, Decision (`status: accepted` or `status: rejected`), Considered & Rejected Alternatives (technical flaws/risks), and Consequences.
-3. **Update Index:**
-   - Add entry in `docs/00_Index.md` under section 3 (Архитектурные решения).
+1. **Calculate ID:** Scan `docs/03_Decisions_ADR/` for the next `ADR-XXXX`.
+2. **Draft the ADR:** Create `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md` using `TEMPLATE_ADR.md` (Context, Decision, Rejected Options, Consequences).
+3. **Roadmap & Index Sync:**
+   - *Accepted:* register in `docs/02_Tasks/Roadmap.md` (Icebox or active phase).
+   - *Rejected:* add to `## 🚫 Отклоненные архитектурные идеи` in `docs/02_Tasks/Roadmap.md`.
+   - Add reference in `docs/00_Index.md` (section 3).
 4. **Git Sync (Conditional):**
-   - Stage: `git add docs/03_Decisions_ADR/ docs/00_Index.md`
-   - Commit: `git commit -m "docs(adr): record ADR-XXXX <slug>"`
-   - Push if remote origin exists.
+   - Stage and commit: `git add docs/03_Decisions_ADR/ docs/02_Tasks/Roadmap.md docs/00_Index.md && git commit -m "docs(adr): record ADR-XXXX <slug>"`. Push if remote exists.
