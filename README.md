@@ -227,6 +227,14 @@ The harness provides a built-in release automation lifecycle:
 * **Build Hook Contract:** Automatically invokes your project's build hook (`scripts/build_release.sh`, `scripts/build_release.py`, `package.json`, etc.) outputting artifacts to `dist/`.
 * **Zero-Dependencies Checksums:** Calculates streaming SHA-256 hashes and formats Markdown tables for customer verification.
 
+### ⚡ High-SNR Token Architecture & Context Compression (55–65% Savings)
+To prevent LLM context exhaustion across long pair-programming sessions, the harness implements the **High-SNR Token Architecture** ([ADR-0009](docs/03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency.md), [RESEARCH-004](docs/04_Research/RESEARCH-004-token-efficiency-and-context-compression.md)):
+* **Micro-Descriptions (-53% System Overhead):** All 12 AI skills use compact 10–13 word YAML descriptions, dramatically shrinking the always-on system prompt penalty.
+* **Progressive Disclosure Router:** `docs-as-code` acts as an ultra-lightweight index (~2.2 KB), loading deep instructions on demand.
+* **Skeleton Templates (-49% Template Overhead):** 13 canonical templates refactored into compact skeletal scaffolds with single-line `<!-- prompt -->` directives.
+* **Anti-Echo Protocol:** Prohibits dumping modified file contents into chat; mandates concise 3–5 bullet summaries with direct file permalinks.
+* **Silent-on-Success CLI:** `scripts/kb_lint.py` and `scripts/kb_release.py` output a single status line on success (`OK: ...`), saving up to 80% tokens in terminal output history.
+
 ### 🔍 Smart Stack Autodetection (Brownfield Adoption)
 When run in existing repositories (`--stack auto`), the harness heuristically inspects root marker files (`Package.swift`, `package.json`, `pyproject.toml`, `*.sln`) to select the appropriate toolchain preset and non-destructively appends Docs-as-Code sections to existing `README.md` and `.gitignore`.
 

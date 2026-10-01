@@ -34,7 +34,7 @@ SKILLS_DIR = REPO_ROOT / ".agents" / "skills"
 def bundle_assets() -> dict:
     assets = {}
 
-    # 1. Collect all 12 templates
+    # 1. Collect all 13 templates
     template_files = sorted(list(TEMPLATES_DIR.glob("*.md")))
     if not template_files:
         raise RuntimeError(f"No templates found in {TEMPLATES_DIR}")

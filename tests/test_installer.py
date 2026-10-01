@@ -102,7 +102,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(res.returncode, 0, f"kb_lint failed on Swift installation:\n{res.stdout}\n{res.stderr}")
-            self.assertIn("No broken wikilinks found", res.stdout)
+            self.assertIn("0 broken", res.stdout)
 
     def test_03_typescript_stack_installation(self):
         """E2E test: Install TypeScript stack and verify kb_lint passes."""
@@ -410,7 +410,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(res.returncode, 0, f"kb_lint failed on clean slate installation:\n{res.stdout}")
-            self.assertIn("No broken wikilinks found", res.stdout)
+            self.assertIn("0 broken", res.stdout)
 
     def test_10_brownfield_adoption_and_stack_autodetect(self):
         """E2E test: Verify stack autodetect and non-destructive brownfield adoption."""
@@ -511,7 +511,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(res.returncode, 0, f"kb_lint failed on brownfield installation:\n{res.stdout}")
-            self.assertIn("No broken wikilinks found", res.stdout)
+            self.assertIn("0 broken", res.stdout)
 
     def test_11_safe_update_mechanism(self):
         """E2E test: Verify safe update mechanism (--update) preserves user work and backs up modified rules."""
@@ -605,7 +605,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed after update:\n{kb_lint_res.stdout}")
-            self.assertIn("No broken wikilinks found", kb_lint_res.stdout)
+            self.assertIn("0 broken", kb_lint_res.stdout)
 
     def test_12_ci_workflow_generation_and_e2e(self):
         """E2E test: Verify GitHub Actions CI workflow generation (--ci github) and absence by default."""
@@ -785,7 +785,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(res.returncode, 0, f"kb_release.py execution failed:\n{res.stdout}\n{res.stderr}")
-            self.assertIn("Generated release document", res.stdout)
+            self.assertIn("Release v1.0.0 generated at", res.stdout)
 
             # 4. Verify release file generated in docs/02_Tasks/Releases/
             release_file = target / "docs" / "02_Tasks" / "Releases" / "RELEASE-v1.0.0.md"
@@ -879,6 +879,74 @@ class TestAgentDocsHarness(unittest.TestCase):
                 errors="replace",
             )
             self.assertEqual(lint_res.returncode, 0, f"kb_lint failed after update:\n{lint_res.stdout}\n{lint_res.stderr}")
+
+    def test_16_high_snr_static_corpus_benchmarks(self):
+        """E2E benchmark test: Verify deployed skills and templates stay strictly within High-SNR token budget (ADR-0009)."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "BenchmarkApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="BenchmarkApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            skills_dir = target / ".agents" / "skills"
+            templates_dir = target / "docs" / "00_Templates"
+
+            total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
+            total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
+
+            # Benchmark assertions (ADR-0009 constraints)
+            self.assertLessEqual(total_skills_size, 20000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 20000)")
+            self.assertLessEqual(total_templates_size, 21000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21000)")
+
+            # Micro-benchmarks for critical files
+            onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
+            self.assertLessEqual(onboarding_size, 4000, f"TEMPLATE_ONBOARDING.md exceeded budget: {onboarding_size} bytes (budget <= 4000)")
+
+            router_size = (skills_dir / "docs-as-code" / "SKILL.md").stat().st_size
+            self.assertLessEqual(router_size, 3000, f"docs-as-code router exceeded budget: {router_size} bytes (budget <= 3000)")
+
+            # Installer size check
+            installer_size = (REPO_ROOT / "install.py").stat().st_size
+            self.assertLessEqual(installer_size, 100000, f"install.py exceeded budget: {installer_size} bytes (budget <= 100 KB)")
+
+    def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
+        """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "BloatedLegacyApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="BloatedLegacyApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Simulate bloated old template (> 10 KB) and bloated router skill (> 10 KB)
+            bloated_tpl = target / "docs" / "00_Templates" / "TEMPLATE_ONBOARDING.md"
+            bloated_tpl.write_text("# Bloated Onboarding Essay\n" + ("Lots of tokens here...\n" * 500), encoding="utf-8")
+            self.assertGreater(bloated_tpl.stat().st_size, 10000)
+
+            bloated_router = target / ".agents" / "skills" / "docs-as-code" / "SKILL.md"
+            bloated_router.write_text("# Bloated Router\n" + ("Lots of documentation text...\n" * 500), encoding="utf-8")
+            self.assertGreater(bloated_router.stat().st_size, 10000)
+
+            # Run update
+            res = install.update_harness(target, backup=False)
+            self.assertEqual(res, 0)
+
+            # Verify both files shrunk to compact High-SNR sizes
+            self.assertLessEqual(bloated_tpl.stat().st_size, 4000)
+            self.assertLessEqual(bloated_router.stat().st_size, 3000)
 
 
 if __name__ == "__main__":

@@ -107,7 +107,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         for link in links:
             link = link.strip()
             # Ignore placeholder links in documentation
-            if not link or "XXX" in link or "Название" in link or "Имя" in link or link.lower() in ["wikilinks", "...", "target"]:
+            if not link or "XXX" in link or "Название" in link or "Имя" in link or link.lower() in ["wikilinks", "...", "target", "заметка", "документ", "файл", "slug"]:
                 continue
             checked_links_count += 1
 

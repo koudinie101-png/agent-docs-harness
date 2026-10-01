@@ -18,6 +18,33 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-020: Синхронизация сборщика, install.py (--update) и E2E тесты (Завершение Фазы 5)
+- **Что сделано:**
+  - Полностью завершена **Фаза 5: Оптимизация токенов и High-SNR архитектура контекста**:
+    - Перепакован автономный монолитный инсталлятор `install.py` через `scripts/build_installer.py`:
+      - В бандл включены все 13 компактных шаблонов `templates/`, 12 High-SNR скиллов `.agents/skills/`, утилиты `scripts/kb_lint.py` и `scripts/kb_release.py`.
+      - Размер итогового дистрибутива `install.py` сократился с 98.6 КБ до **81.2 КБ** (-17.6%).
+    - Функция `customize_templates_for_stack` адаптирована для бесшовной параметризации новых компактных Skeleton Templates под все поддерживаемые стеки (Swift, TS, Python, .NET, Generic).
+    - В `install.py` расширен механизм бережного обновления (`update_harness`) с поддержкой флага `backup=True/False`.
+    - В `tests/test_installer.py` добавлены E2E тесты бенчмаркинга (`test_16_high_snr_static_corpus_benchmarks`) и верификации миграции устаревших проектов (`test_17_update_migrates_to_skeleton_templates_and_high_snr_skills`):
+      - Общий размер 12 скиллов: $\le$ 20 000 байт (фактически ~18.9 КБ vs лимит 20 КБ).
+      - Общий размер 13 шаблонов: $\le$ 21 000 байт (фактически ~20.0 КБ vs лимит 21 КБ).
+      - Размер `TEMPLATE_ONBOARDING.md`: $\le$ 4 000 байт (фактически 3.8 КБ).
+      - Размер роутера `docs-as-code/SKILL.md`: $\le$ 3 000 байт (фактически 2.2 КБ).
+      - Размер дистрибутива `install.py`: $\le$ 100 000 байт (фактически 81.2 КБ).
+    - Актуализирована документация: в `README.md`, `docs/Onboarding.md` и `docs/00_Index.md` отражен стандарт High-SNR Token Architecture.
+    - В `scripts/kb_lint.py` расширен список игнорируемых русскоязычных плейсхолдеров (`заметка`, `документ`, `файл`, `slug`).
+  - Закрыта задача `TASK-020` и завершен план `PLAN-005` в `Kanban.md`, `Roadmap.md` и спецификации.
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> 13 шаблонов, 12 скиллов, 2 скрипта, 81.2 КБ payload (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> `OK: 59 files scanned, 315 wikilinks verified (0 broken).` (Exit code 0).
+  - `python -m unittest discover -s tests` -> 30/30 тестов успешно пройдены (100% pass, Exit code 0).
+  - Тестовая установка в изолированную директорию подтвердила работоспособность и чистоту создаваемого проекта.
+- **Итог Фазы 5:**
+  - Достигнуто радикальное сжатие контекстной нагрузки на 55–65% за сессию при 100% сохранении инженерных гарантий, 3-режимного цикла и интерактивного графа Obsidian.
+
+---
+
 ### [2026-10-01] — Завершение TASK-019: Внедрение правил High-SNR, Anti-Echo и Silent-CLI (Фаза 5)
 - **Что сделано:**
   - Реализованы Правила 3 (Anti-Echo Response Protocol), 4 (DRY Rules Hierarchy) и 6 (Silent-on-Success CLI) из [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]:

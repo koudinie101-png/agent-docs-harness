@@ -13,15 +13,14 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Plans/PLAN-005-high-snr-token-optimization|План: Фаза 5 — Оптимизация токенов и High-SNR архитектура контекста]] #plan #phase5 #token-optimization
-  - [x] [[Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring|TASK-017]]: High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, легкий роутер) (2026-10-01) #task #phase5
-  - [x] [[Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring|TASK-018]]: Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) (2026-10-01) #task #phase5
-  - [x] [[Specs/05_TokenOptimization/TASK-019-anti-echo-and-silent-cli|TASK-019]]: Внедрение правил High-SNR, Anti-Echo и Silent-CLI в `AGENTS.md`, `scripts/kb_lint.py` и `scripts/kb_release.py` (2026-10-01) #task #phase5
-  - [ ] [[Specs/05_TokenOptimization/TASK-020-bundler-update-and-e2e-benchmarks|TASK-020]]: Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`) и E2E тесты #task #phase5
-
 
 ## ✅ Готово (Done)
 
+- [x] [[Plans/PLAN-005-high-snr-token-optimization|План: Фаза 5 — Оптимизация токенов и High-SNR архитектура контекста]] (2026-10-01) #plan #phase5 #token-optimization
+  - [x] [[Specs/05_TokenOptimization/TASK-020-bundler-update-and-e2e-benchmarks|TASK-020]]: Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`) и E2E тесты (2026-10-01) #task #phase5
+  - [x] [[Specs/05_TokenOptimization/TASK-019-anti-echo-and-silent-cli|TASK-019]]: Внедрение правил High-SNR, Anti-Echo и Silent-CLI в `AGENTS.md`, `scripts/kb_lint.py` и `scripts/kb_release.py` (2026-10-01) #task #phase5
+  - [x] [[Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring|TASK-018]]: Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) (2026-10-01) #task #phase5
+  - [x] [[Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring|TASK-017]]: High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, легкий роутер) (2026-10-01) #task #phase5
 - [x] [[Plans/PLAN-004-release-management-and-lifecycle-automation|План: Фаза 4 — Релиз-менеджмент и автоматизация жизненного цикла]] (2026-10-01) #plan #phase4 #release
   - [x] [[Specs/04_Releases/TASK-016-e2e-release-pipeline-verification-and-docs|TASK-016]]: Комплексное E2E тестирование релизного пайплайна (Local-Only и GitHub) и обновление документации (2026-10-01) #task #phase4
   - [x] [[Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging|TASK-015]]: Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` (включая `--update`) (2026-10-01) #task #phase4

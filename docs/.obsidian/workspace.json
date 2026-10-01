@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02_Tasks/Roadmap.md",
+                "file": "Onboarding.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Roadmap"
+              "title": "Onboarding"
             }
           }
         ]
@@ -190,6 +190,7 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "02_Tasks/Roadmap.md",
     "02_Tasks/Specs/05_TokenOptimization/TASK-019-anti-echo-and-silent-cli.md",
     "02_Tasks/Specs/05_TokenOptimization/TASK-020-bundler-update-and-e2e-benchmarks.md",
     "00_Templates/TEMPLATE_TEST.md",
@@ -209,7 +210,6 @@
     "02_Tasks/Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring.md",
     "02_Tasks/Kanban.md",
     "02_Tasks/Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring.md",
-    "02_Tasks/Roadmap.md",
     "02_Tasks/Specs/05_TokenOptimization",
     "02_Tasks/Plans/PLAN-005-high-snr-token-optimization.md",
     "04_Research/RESEARCH-004-token-efficiency-and-context-compression.md",
