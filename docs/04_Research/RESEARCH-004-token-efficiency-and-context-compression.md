@@ -15,6 +15,7 @@ related_tasks: []
 related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
   - "[[../03_Decisions_ADR/ADR-0003-multi-agent-adapter-strategy|ADR-0003: Мультиагентные адаптеры]]"
+  - "[[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Оптимизация токенов и High-SNR]]"
 ---
 
 # 🔬 Исследование: Оптимизация токенов и контекстная эффективность (High-SNR Token Architecture)
@@ -22,7 +23,7 @@ related_adrs:
 > **Теги:** #research #token-optimization #prompt-engineering #context-efficiency #skills #high-snr  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0003-multi-agent-adapter-strategy|ADR-0003: Стратегия конфигурации AI-агентов]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0003-multi-agent-adapter-strategy|ADR-0003: Стратегия конфигурации AI-агентов]], [[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Оптимизация токенов и High-SNR]]  
 
 ---
 
