@@ -16,7 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
-Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
+### [2026-10-01] — Выпуск официального релиза v0.7.0: GitHub Releases & Distribution Notes Standard (Фаза 7)
+- **Что сделано:**
+  - Осуществлен официальный релиз **v0.7.0** по завершении Фазы 7 (План [[02_Tasks/Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]).
+  - Сформирован релизный документ [[02_Tasks/Releases/RELEASE-v0.7.0|RELEASE-v0.7.0]] и публичные заметки `dist/RELEASE_NOTES.md` с чистым GitHub Markdown и автоконвертером викиссылок.
+  - Собраны релизные артефакты через хук `scripts/build_release.py`:
+    - `dist/install.py` (83.3 KB / 85 310 байт) — SHA-256: `1e386242736e166e836fe5116ccbdad64dfcab48e97781f302b40e8764d68d4b`.
+  - Обновлены [[02_Tasks/Roadmap|Roadmap.md]] (ссылка на официальный релиз `RELEASE-v0.7.0`) и корневой `CHANGELOG.md` (секция `[0.7.0]`).
+  - Зафиксирован аннотированный Git-тег `v0.7.0`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links.
+  - `python -m unittest discover -s tests` -> 35/35 тестов успешно пройдено (Exit code 0).
+  - Контрольная сумма SHA-256 `dist/install.py` подтверждена (`1e386242736e166e836fe5116ccbdad64dfcab48e97781f302b40e8764d68d4b`).
+
+---
 
 ### [2026-10-01] — Завершение TASK-028 и Фазы 7: Сборка инсталлятора и сквозная E2E верификация
 - **Что сделано:**

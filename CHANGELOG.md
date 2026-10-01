@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-10-01
+
+### Added
+- GitHub Releases & Distribution Notes Standard based on ADR-0010 and RESEARCH-005.
+- Dual-export mechanism in `scripts/kb_release.py`: generates internal `RELEASE-vX.Y.Z.md` and public `dist/RELEASE_NOTES.md`.
+- Zero-Dependencies wikilinks converter transforming `[[Target|Title]]` into standard GitHub Markdown URLs based on remote origin.
+- GitHub Actions release automation with `body_path: dist/RELEASE_NOTES.md` in `.github/workflows/release.yml`.
+- Synchronized fallback release workflow template in standalone `install.py`.
+- Automated notes delivery via `--notes-file dist/RELEASE_NOTES.md` in `.agents/skills/kb-release/SKILL.md`.
+- Canonical `TEMPLATE_RELEASE.md` updated with public release notes export guidelines.
+- Extended regression test suite in `tests/test_installer.py` verifying release notes and CI workflow bundling.
+
+### Changed
+- Re-bundled standalone installer `install.py` with updated release script, templates, and CI workflows (83.3 KB, 41.9% compression).
+
 ## [0.6.0] - 2026-10-01
 
 ### Added
@@ -37,5 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-bundled and compressed standalone installer `install.py` down to 81.2 KB (-17.6%).
 - Enhanced `install.py --update` with non-destructive updates and stack customization for skeleton templates.
 
+[0.7.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.7.0
 [0.6.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.6.0
 [0.5.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.5.0
