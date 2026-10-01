@@ -20,7 +20,27 @@ All project knowledge, task tracking, and architectural decisions are maintained
 ### Core Rules & Principles
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
 2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass.
-3. **Graph Color Scheme:** Visual categories are preserved via `.obsidian/graph.json`.
+3. **Graph Visual Color Scheme & Tagging:** Preserved in `.obsidian/graph.json`:
+   | Color / Category | Obsidian Path / Query | Tags | Description |
+   | :--- | :--- | :--- | :--- |
+   | ⚪ White / Light | `file:00_Index`, `file:Devlog`, `file:SPEC` | — | Entry points & root navigation hubs |
+   | 🟣 Purple | `path:01_Architecture` | `#arch` | System architecture, contracts & modules |
+   | 🔵 Blue / Cyan | `path:03_Decisions_ADR` | `#adr` | Architecture Decision Records |
+   | 🟡 Yellow / Amber | `path:04_Research` | `#research` | Platform research, benchmarks & quirks |
+   | 🟠 Orange | `path:02_Tasks` | `#task` | Backlog, Roadmap, Plans & Task Specs |
+   | 🔴 Red | `path:02_Tasks/Bugs` | `#bug` | Defects, bugs, RCA & regression tests |
+   | 🟢 Green | `path:05_Testing` | `#testing` | Acceptance testing & E2E UX checklists |
+
+---
+
+## 🔇 Anti-Echo Response Protocol
+
+When modifying or creating files on disk:
+1. **STRICTLY PROHIBITED:** Dumping complete file contents or repetitive code blocks into chat responses.
+2. **REQUIRED RESPONSE FORMAT:**
+   - Clickable file link: `[FileName](file:///absolute/path/to/file)`.
+   - Concise 3–5 bullet summary of what changed and key architectural decisions.
+   - Next actionable step or prompt for confirmation.
 
 ---
 

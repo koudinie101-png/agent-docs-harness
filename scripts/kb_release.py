@@ -472,6 +472,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="Print release markdown to stdout without writing")
     parser.add_argument("--detect-only", action="store_true", help="Only detect environment and print JSON")
     parser.add_argument("--ci-mode", action="store_true", help="Run in CI mode for GitHub Actions")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -511,9 +512,13 @@ def main() -> int:
     out_path = Path(args.output) if args.output else docs_path / "02_Tasks" / "Releases" / f"RELEASE-{tag}.md"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(release_content, encoding="utf-8")
-    print(f"✅ Generated release document: {out_path.as_posix()}")
-    print(f"📦 Artifacts cataloged: {len(artifacts)}")
-    print(f"🌐 Environment mode: {env_info['mode']}")
+
+    if args.verbose:
+        print(f"✅ Generated release document: {out_path.as_posix()}")
+        print(f"📦 Artifacts cataloged: {len(artifacts)}")
+        print(f"🌐 Environment mode: {env_info['mode']}")
+    else:
+        print(f"OK: Release {tag} generated at {out_path.as_posix()} ({len(artifacts)} artifacts, mode: {env_info['mode']}).")
 
     return 0
 

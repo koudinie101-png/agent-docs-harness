@@ -49,11 +49,12 @@ def check_file_frontmatter(file_path: Path):
     return False, "Missing or malformed YAML frontmatter (starts without ---)"
 
 
-def run_linter(docs_dir: Path):
-    print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
+def run_linter(docs_dir: Path, verbose: bool = False) -> int:
+    if verbose:
+        print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
     if not docs_dir.exists():
-        print(f"❌ Directory does not exist: {docs_dir}")
-        sys.exit(1)
+        print(f"❌ Directory does not exist: {docs_dir}", file=sys.stderr)
+        return 1
 
     all_md_files = list(docs_dir.rglob("*.md"))
     repo_root = docs_dir.parent
@@ -82,7 +83,8 @@ def run_linter(docs_dir: Path):
         try:
             content = f.read_text(encoding="utf-8")
         except Exception as e:
-            print(f"⚠️ Error reading {f}: {e}")
+            if verbose:
+                print(f"⚠️ Error reading {f}: {e}")
             continue
 
         if f.is_relative_to(docs_dir):
@@ -146,39 +148,54 @@ def run_linter(docs_dir: Path):
             if not found:
                 broken_links.append((rel, link))
 
-    print(f"📊 Total Markdown Files Scanned: {len(all_md_files)}")
-    print(f"🔗 Total Wikilinks Validated: {checked_links_count}\n")
+    has_errors = bool(broken_links or frontmatter_warnings)
 
-    has_errors = False
+    if verbose:
+        print(f"📊 Total Markdown Files Scanned: {len(all_md_files)}")
+        print(f"🔗 Total Wikilinks Validated: {checked_links_count}\n")
 
-    if broken_links:
-        has_errors = True
-        print(f"❌ Broken Wikilinks Detected ({len(broken_links)}):")
-        for src, target in broken_links:
-            print(f"   • In '{src}' -> target not found: [[{target}]]")
-        print()
+        if broken_links:
+            print(f"❌ Broken Wikilinks Detected ({len(broken_links)}):")
+            for src, target in broken_links:
+                print(f"   • In '{src}' -> target not found: [[{target}]]")
+            print()
+        else:
+            print("✅ No broken wikilinks found!\n")
+
+        if frontmatter_warnings:
+            print(f"⚠️ Frontmatter / Property Warnings ({len(frontmatter_warnings)}):")
+            for src, msg in frontmatter_warnings:
+                print(f"   • {src}: {msg}")
+            print()
+        else:
+            print("✅ All inspected task/spec/plan files have valid YAML frontmatter!\n")
+
+        if has_errors:
+            print("❌ Linter failed: please resolve broken links.")
+            return 1
+        else:
+            print("🎉 Knowledge base is healthy and consistent!")
+            return 0
     else:
-        print("✅ No broken wikilinks found!\n")
-
-    if frontmatter_warnings:
-        print(f"⚠️ Frontmatter / Property Warnings ({len(frontmatter_warnings)}):")
-        for src, msg in frontmatter_warnings:
-            print(f"   • {src}: {msg}")
-        print()
-    else:
-        print("✅ All inspected task/spec/plan files have valid YAML frontmatter!\n")
-
-    if has_errors:
-        print("❌ Linter failed: please resolve broken links.")
-        sys.exit(1)
-    else:
-        print("🎉 Knowledge base is healthy and consistent!")
-        sys.exit(0)
+        # Silent-on-Success mode
+        if not has_errors:
+            print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
+            return 0
+        else:
+            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings.")
+            if broken_links:
+                for src, target in broken_links:
+                    print(f"   • In '{src}' -> target not found: [[{target}]]")
+            if frontmatter_warnings:
+                for src, msg in frontmatter_warnings:
+                    print(f"   • {src}: {msg}")
+            return 1
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Docs-as-Code Knowledge Base Linter")
     parser.add_argument("--path", "-p", type=str, default=".", help="Path to docs directory or project root")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose audit output")
     args = parser.parse_args()
 
     start = Path(args.path).resolve()
@@ -189,4 +206,5 @@ if __name__ == "__main__":
     else:
         vault = find_vault_root(start)
 
-    run_linter(vault)
+    exit_code = run_linter(vault, verbose=args.verbose)
+    sys.exit(exit_code)

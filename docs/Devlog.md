@@ -18,6 +18,25 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-019: Внедрение правил High-SNR, Anti-Echo и Silent-CLI (Фаза 5)
+- **Что сделано:**
+  - Реализованы Правила 3 (Anti-Echo Response Protocol), 4 (DRY Rules Hierarchy) и 6 (Silent-on-Success CLI) из [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]:
+    - В `AGENTS.md` и генератор правил `install.py` внедрен строгий протокол **Anti-Echo Response Protocol**: полный запрет на повторную распечатку содержимого файлов в чате; обязательный компактный формат (кликабельный permalink `[FileName](file:///...)` + резюме из 3–5 пунктов + следующий шаг).
+    - В `AGENTS.md` и `install.py` внедрена полная явная таблица 7-цветовой схемы Obsidian Graph (`.obsidian/graph.json`) и тегов (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`).
+    - В утилите `scripts/kb_lint.py` реализован режим Silent-on-Success: при успешной проверке выводится ровно одна строка (`OK: N files scanned, M wikilinks verified (0 broken).`), добавлен флаг `--verbose` (`-v`) для вывода полного аудита; ошибки выводятся развернуто.
+    - В утилите `scripts/kb_release.py` реализован лаконичный однострочный вывод успешной генерации релиза и добавлен флаг `--verbose` (`-v`).
+    - Создан набор модульных тестов `tests/test_kb_lint.py` (5 тестов: Silent-on-Success, Verbose, обнаружение битых wikilinks, ошибки YAML frontmatter, CLI флаги).
+  - Закрыта задача `TASK-019` в `Kanban.md`, `Roadmap.md` и спецификации.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> `OK: 59 files scanned, 313 wikilinks verified (0 broken).` (1 строка, Exit code 0).
+  - `python scripts/kb_lint.py --path docs --verbose` -> полный лог аудита, Exit code 0.
+  - `python -m unittest tests/test_kb_lint.py` -> 5/5 тестов зеленые.
+  - `python -m unittest discover -s tests` -> 28/28 тестов зеленые.
+- **Следующий шаг:**
+  - Реализация `TASK-020`: Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`), E2E тесты и замеры сжатия.
+
+---
+
 ### [2026-10-01] — Завершение TASK-018: Рефакторинг 13 шаблонов docs/00_Templates/ в компактные каркасы (Фаза 5)
 - **Что сделано:**
   - Реализовано Правило 5 (Skeleton Templates) архитектурного стандарта [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]:
