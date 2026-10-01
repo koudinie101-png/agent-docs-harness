@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Onboarding.md",
+                "file": "02_Tasks/Roadmap.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Onboarding"
+              "title": "Roadmap"
             }
           }
         ]
@@ -190,7 +190,23 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "02_Tasks/Kanban.md",
+    "Onboarding.md",
+    "02_Tasks/Specs/06_Discovery/TASK-022-kb-plan-preflight-nudges-and-onboard.md",
+    "Devlog.md",
     "02_Tasks/Roadmap.md",
+    "02_Tasks/Specs/06_Discovery/TASK-024-installer-sync-and-e2e-verification.md",
+    "02_Tasks/Specs/06_Discovery/TASK-023-roadmap-onboarding-templates-update.md",
+    "02_Tasks/Specs/06_Discovery/TASK-021-kb-research-evolution-and-roadmap-routing.md",
+    "02_Tasks/Specs/06_Discovery",
+    "02_Tasks/Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle.md",
+    "04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration.md",
+    "03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration.md",
+    "04_Research/RESEARCH-006-kb-plan-icebox-prioritization-and-intent-routing.md",
+    "03_Decisions_ADR/ADR-0011-intent-routing-and-icebox-prioritization-in-kb-plan.md",
+    "03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard.md",
+    "04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices.md",
+    "02_Tasks/Releases/RELEASE-v0.5.0.md",
     "02_Tasks/Specs/05_TokenOptimization/TASK-019-anti-echo-and-silent-cli.md",
     "02_Tasks/Specs/05_TokenOptimization/TASK-020-bundler-update-and-e2e-benchmarks.md",
     "00_Templates/TEMPLATE_TEST.md",
@@ -201,23 +217,8 @@
     "00_Templates/TEMPLATE_PLAN.md",
     "00_Templates/TEMPLATE_ONBOARDING.md",
     "00_Templates/TEMPLATE_KANBAN.md",
-    "00_Templates/TEMPLATE_INDEX.md",
-    "00_Templates/TEMPLATE_DEVLOG.md",
-    "00_Templates/TEMPLATE_BUG.md",
-    "00_Templates/TEMPLATE_ARCHITECTURE.md",
-    "00_Templates/TEMPLATE_ADR.md",
-    "Onboarding.md",
-    "02_Tasks/Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring.md",
-    "02_Tasks/Kanban.md",
-    "02_Tasks/Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring.md",
     "02_Tasks/Specs/05_TokenOptimization",
-    "02_Tasks/Plans/PLAN-005-high-snr-token-optimization.md",
-    "04_Research/RESEARCH-004-token-efficiency-and-context-compression.md",
-    "03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency.md",
-    "02_Tasks/Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging.md",
-    "02_Tasks/Specs/04_Releases/TASK-014-kb-release-skill-and-complete-nudge.md",
     "02_Tasks/Releases",
-    "03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics.md",
     "02_Tasks/Specs/04_Releases",
     "02_Tasks/Specs/03_Adoption"
   ]

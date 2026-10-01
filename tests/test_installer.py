@@ -948,6 +948,57 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertLessEqual(bloated_tpl.stat().st_size, 4000)
             self.assertLessEqual(bloated_router.stat().st_size, 3000)
 
+    def test_18_discovery_mode_and_phase6_assets(self):
+        """Verify Mode 0 (Discovery) rules in unpacked skills, roadmap template, and onboarding."""
+        assets = install.unpack_assets(REPO_ROOT)
+
+        # Check kb-research skill contains Mode 0 and outcome routing
+        kb_research_skill = assets.get(".agents/skills/kb-research/SKILL.md", "")
+        self.assertIn("Mode 0: Discovery & Feasibility Research", kb_research_skill)
+        self.assertIn("Automated Outcome Routing", kb_research_skill)
+        self.assertIn("Critical Partner & Falsification", kb_research_skill)
+
+        # Check kb-plan skill contains pre-flight nudge
+        kb_plan_skill = assets.get(".agents/skills/kb-plan/SKILL.md", "")
+        self.assertIn("Pre-flight Nudge", kb_plan_skill)
+
+        # Check kb-onboard skill contains Mode 0
+        kb_onboard_skill = assets.get(".agents/skills/kb-onboard/SKILL.md", "")
+        self.assertIn("Mode 0", kb_onboard_skill)
+
+        # Check TEMPLATE_ROADMAP contains rejected alternatives section and icebox tip
+        roadmap_tpl = assets.get("00_Templates/TEMPLATE_ROADMAP.md", "")
+        self.assertIn("Отклоненные архитектурные идеи", roadmap_tpl)
+        self.assertIn("kb-research", roadmap_tpl)
+
+        # Check TEMPLATE_ONBOARDING contains Mode 0
+        onboarding_tpl = assets.get("00_Templates/TEMPLATE_ONBOARDING.md", "")
+        self.assertIn("Режим 0: Исследование", onboarding_tpl)
+
+        # Verify fresh installation in temp directory deploys all updated Mode 0 assets
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "DiscoveryTestApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="DiscoveryTestApp",
+                stack_key="generic",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Check installed files
+            inst_research = (target / ".agents" / "skills" / "kb-research" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Mode 0: Discovery & Feasibility Research", inst_research)
+
+            inst_onboard = (target / "docs" / "Onboarding.md").read_text(encoding="utf-8")
+            self.assertIn("Режим 0", inst_onboard)
+
+            inst_roadmap_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_ROADMAP.md").read_text(encoding="utf-8")
+            self.assertIn("Отклоненные архитектурные идеи", inst_roadmap_tpl)
+
 
 if __name__ == "__main__":
     unittest.main()

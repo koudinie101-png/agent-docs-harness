@@ -1,7 +1,7 @@
 ---
 id: PLAN-006
 title: "Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research"
-status: accepted
+status: completed
 type: plan
 phase: 6
 created: 2026-10-01
@@ -21,7 +21,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 # 📋 План: PLAN-006 — Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research
 
 > **ID:** PLAN-006  
-> **Статус:** Согласовано (Режим 1)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #plan #phase6 #discovery #kb-research #lifecycle #double-diamond #roadmap  
 > **Родительская спецификация:** [[../../SPEC|SPEC.md]]  
 > **Канбан:** [[../Kanban|Канбан-доска]]  
@@ -81,10 +81,10 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Высокоуровневая декомпозиция (Task Breakdown)
 
-- [ ] **TASK-021:** Эволюция скилла `.agents/skills/kb-research/SKILL.md` (валидация продуктово-архитектурных гипотез, автоматическая двухпутевая регистрация в `Roadmap.md`: Icebox vs Отклоненные ADR).
-- [ ] **TASK-022:** Префлайт-чеки в `.agents/skills/kb-plan/SKILL.md` (Nudge для невалидированных идей) и обновление `.agents/skills/kb-onboard/SKILL.md` (4-этапный цикл).
-- [ ] **TASK-023:** Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` (в `docs/00_Templates/` и `templates/`) и руководства `docs/Onboarding.md` (Double Diamond: Режимы 0–3).
-- [ ] **TASK-024:** Синхронизация инсталлятора `scripts/build_installer.py` / `install.py`, актуализация `tests/test_installer.py` и аудит через `scripts/kb_lint.py`.
+- [x] **TASK-021:** Эволюция скилла `.agents/skills/kb-research/SKILL.md` (валидация продуктово-архитектурных гипотез, автоматическая двухпутевая регистрация в `Roadmap.md`: Icebox vs Отклоненные ADR).
+- [x] **TASK-022:** Префлайт-чеки в `.agents/skills/kb-plan/SKILL.md` (Nudge для невалидированных идей) и обновление `.agents/skills/kb-onboard/SKILL.md` (4-этапный цикл).
+- [x] **TASK-023:** Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` (в `docs/00_Templates/` и `templates/`) и руководства `docs/Onboarding.md` (Double Diamond: Режимы 0–3).
+- [x] **TASK-024:** Синхронизация инсталлятора `scripts/build_installer.py` / `install.py`, актуализация `tests/test_installer.py` и аудит через `scripts/kb_lint.py`.
 
 ---
 

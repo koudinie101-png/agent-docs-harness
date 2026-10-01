@@ -38,38 +38,27 @@ tags:
 ---
 
 ## 3. Справочник команд
-
-| Команда | Назначение |
-| :--- | :--- |
-| `/kb-init` / `/kb-onboard` | Инициализация структуры / Онбординг |
-| `/kb-research` / `/kb-adr` | Режим 0 (Discovery): валидация гипотез / Решение ADR |
-| `/kb-plan` / `/kb-task` | Режим 1 (План) / Режим 2 (ТЗ) |
-| `/kb-implement` / `/kb-complete` | Режим 3 (Код) / Финализация задачи |
-| `/kb-release` | Релиз: сборка, SHA-256, тег |
-| `/kb-bug` | Дефект (Regression-First TDD, RCA) |
-| `/kb-lint` | Аудит ссылок и frontmatter |
+* `/kb-init` / `/kb-onboard` — Инициализация структуры / Онбординг.
+* `/kb-release` — Выпуск релиза (сборка dist/, SHA-256, тег).
+* `/kb-bug` — Фиксация дефекта (Regression-First TDD, RCA).
+* `/kb-lint` — Проверка целостности ссылок и frontmatter.
 
 ---
 
 ## 4. Архитектура каталогов `docs/`
-* `00_Templates/` — 13 каркасных шаблонов.
-* `01_Architecture/` — Архитектура и системные контракты.
-* `02_Tasks/` — Kanban, Roadmap, Plans/, Specs/, Bugs/, Releases/.
-* `03_Decisions_ADR/` — Архитектурные решения ADR-XXXX.
-* `04_Research/` — Исследования и бенчмарки RESEARCH-XXX.
-* `05_Testing/` — Сценарии приемочного тестирования E2E UX.
-* `Devlog.md` и `00_Index.md` — Журнал сессий и карта заметок (MOC).
+* `00_Templates/` (шаблоны), `01_Architecture/` (архитектура), `02_Tasks/` (задачи, планы, релизы).
+* `03_Decisions_ADR/` (ADR), `04_Research/` (исследования), `05_Testing/` (тестирование UX).
+* `Devlog.md` (журнал сессий) и `00_Index.md` (карта заметок).
 
 ---
 
 ## 5. Ветвление и синхронизация
-* **Trunk-Based Docs:** `docs/` в `main`. Старт: `git pull --rebase`.
-* **Feature Branches:** Крупные фичи в `feat/TASK-XXX`, слияние через `kb-complete`.
+* **Trunk-Based:** `main`. **Feature Branches:** `feat/TASK-XXX` (слияние через `kb-complete`).
 * **Dual-Mode Sync:** Remote origin — push; Local-Only — локальный коммит.
 
 ---
 
 ## 6. Внедрение в существующий проект (Brownfield Adoption)
-* **Шаг 1 (Инвентаризация):** Изучи кодовую базу репозитория и зафиксируй архитектурный стек в `SPEC.md`.
-* **Шаг 2 (План и беклог):** Создай план первой фазы внедрения (`/kb-plan`) и внеси карточки в Канбан.
+* **Шаг 1 (Инвентаризация):** Изучи кодовую базу репозитория и зафиксируй стек в `SPEC.md`.
+* **Шаг 2 (План и бэклог):** Создай план внедрения (`/kb-plan`) и внеси карточки в Канбан.
 * **Шаг 3 (Дисциплина 4 режимов):** Веди задачи строго по циклу `/kb-research` -> `/kb-plan` -> `/kb-task` -> `/kb-implement`.

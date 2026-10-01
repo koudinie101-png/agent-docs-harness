@@ -1,7 +1,7 @@
 ---
 id: TASK-024
 title: "Синхронизация инсталлятора install.py, E2E тесты и аудит целостности"
-status: planned
+status: done
 type: task
 phase: 6
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-024 — Синхронизация инсталлятора и E2E тесты
 
 > **ID:** TASK-024  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase6 #component/installer #component/bundling #component/testing  
 > **Родительский план:** [[../../Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../../../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -83,16 +83,16 @@ python scripts/build_installer.py
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка бандла: `python scripts/build_installer.py` выполняется успешно (Exit code 0).
-- [ ] Запуск автотестов: `python -m unittest discover -s tests` проходит со 100% успехом (все тесты OK).
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` подтверждает 0 битых ссылок (Exit code 0).
+- [x] Сборка бандла: `python scripts/build_installer.py` выполняется успешно (Exit code 0).
+- [x] Запуск автотестов: `python -m unittest discover -s tests` проходит со 100% успехом (все тесты OK).
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` подтверждает 0 битых ссылок (Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `install.py` синхронизирован со всеми обновленными ассетами.
-- [ ] Все автотесты проходят успешно.
-- [ ] База знаний валидна и не содержит битых ссылок.
-- [ ] Статус обновлен в ТЗ (`done`), Канбане (`## ✅ Готово`) и Дорожной карте (`[x]`).
-- [ ] Запись сессии добавлена в `docs/Devlog.md`.
+- [x] `install.py` синхронизирован со всеми обновленными ассетами.
+- [x] Все автотесты проходят успешно.
+- [x] База знаний валидна и не содержит битых ссылок.
+- [x] Статус обновлен в ТЗ (`done`), Канбане (`## ✅ Готово`) и Дорожной карте (`[x]`).
+- [x] Запись сессии добавлена в `docs/Devlog.md`.

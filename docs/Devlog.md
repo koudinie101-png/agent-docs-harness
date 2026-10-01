@@ -18,6 +18,24 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-024 и Фазы 6: Синхронизация инсталлятора, E2E тесты и аудит целостности
+- **Что сделано:**
+  - Запущена пересборка автономного инсталлятора `scripts/build_installer.py`:
+    - Все обновленные шаблоны (`TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md`) и скиллы (`kb-research`, `kb-plan`, `kb-onboard`) сжаты и упакованы в `install.py` (размер дистрибутива 81.5 KB, полезная нагрузка ассетов 71.4 KB).
+  - Актуализирован тестовый набор `tests/test_installer.py`:
+    - Добавлен сквозной регрессионный тест `test_18_discovery_mode_and_phase6_assets` для верификации упаковки артефактов Режима 0 (Discovery & Feasibility), двухпутевой воронки в `kb-research`, префлайт-чеков в `kb-plan` и секций отклоненных альтернатив.
+    - Адаптированы бенчмарки токеномики High-SNR (`test_16_high_snr_static_corpus_benchmarks`) под обновленные шаблоны с сохранением строгого лимита `total_templates_size <= 21000`.
+  - Закрыта задача `TASK-024` в спецификации (`status: done`), Канбане (`## ✅ Готово`) и Дорожной карте (`[x]`).
+  - Успешно завершена **Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research** (`PLAN-006` переведен в `status: completed`).
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> Payload 73 148 bytes, `install.py` 83 490 bytes (Exit code 0).
+  - `python -m unittest discover -s tests` -> 31/31 тест успешно пройден (100% pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (71 files scanned, 438 wikilinks verified).
+- **Следующий шаг:**
+  - Релиз версии `v0.6.0` через команду `/kb-release v0.6.0` (Dual-Mode: Local-Only / GitHub tag & Release Notes).
+
+---
+
 ### [2026-10-01] — Завершение TASK-023: Обновление шаблонов TEMPLATE_ROADMAP, TEMPLATE_ONBOARDING и руководства Onboarding.md
 - **Что сделано:**
   - Синхронизированы канонические шаблоны в `docs/00_Templates/` и корневом `templates/`:

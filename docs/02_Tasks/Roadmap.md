@@ -74,7 +74,7 @@ tags:
 
 ---
 
-## Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research
+## Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research — ✅ Завершена
 **Цель:** Замкнуть сквозной жизненный цикл разработки (модель Double Diamond: Discovery + Delivery), эволюционировать скилл `/kb-research` в инструмент стресс-тестирования продуктово-архитектурных гипотез с автоматической воронкой регистрации в `Roadmap.md` (Icebox vs отказные ADR), внедрить префлайт-чеки в `/kb-plan` и актуализировать онбординг.  
 **Первоисточник плана:** [[Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]  
 **Нормативная база:** [[../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]]
@@ -82,7 +82,7 @@ tags:
 - [x] Эволюция скилла `.agents/skills/kb-research/SKILL.md` (двухпутевая воронка: Icebox vs Отклоненные ADR) — [[Specs/06_Discovery/TASK-021-kb-research-evolution-and-roadmap-routing|TASK-021]].
 - [x] Префлайт-чеки в `/kb-plan` (Nudge для невалидированных идей) и обновление `/kb-onboard` (4-этапный цикл) — [[Specs/06_Discovery/TASK-022-kb-plan-preflight-nudges-and-onboard|TASK-022]].
 - [x] Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` и руководства `Onboarding.md` — [[Specs/06_Discovery/TASK-023-roadmap-onboarding-templates-update|TASK-023]].
-- [ ] Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и аудит целостности — [[Specs/06_Discovery/TASK-024-installer-sync-and-e2e-verification|TASK-024]].
+- [x] Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и аудит целостности — [[Specs/06_Discovery/TASK-024-installer-sync-and-e2e-verification|TASK-024]].
 
 ---
 
