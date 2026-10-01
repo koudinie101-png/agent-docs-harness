@@ -51,10 +51,20 @@ tags:
 
 ---
 
+## Фаза 4: Релиз-менеджмент и автоматизация жизненного цикла (Release Management & Lifecycle Automation)
+**Цель:** Создать безопасную инфраструктуру выпуска релизов Docs-as-Code: специализированный скилл `/kb-release`, шаблон `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/`, Zero-Deps утилиту `scripts/kb_release.py` (Dual-Mode: GitHub / Local-Only, SHA-256), контракт сборщика `dist/` и шаблон GitHub Actions CI (`.github/workflows/release.yml`).  
+**Первоисточник плана:** [[Plans/PLAN-004-release-management-and-lifecycle-automation|PLAN-004]]
+
+- [ ] Шаблон релиза `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/` и утилита `scripts/kb_release.py` (Zero-Deps: SHA-256, сборка, чейнджлог) — `TASK-013`.
+- [ ] Исполняемый скилл `.agents/skills/kb-release/SKILL.md` (Dual-Mode workflow, префлайт-чеки, напоминания в `kb-complete`) — `TASK-014`.
+- [ ] Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` — `TASK-015`.
+- [ ] Комплексное E2E тестирование релизного пайплайна и обновление документации — `TASK-016`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 
-* 💡 **Автоматизация релиз-менеджмента и скилл `/kb-release`:** специализированный скилл `/kb-release`, шаблон `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/`, утилита сборки/хеширования SHA-256 (Dual-Mode: GitHub / Local-Only), контракт сборщика `dist/` и шаблон CI `.github/workflows/release.yml` — [[../04_Research/RESEARCH-002-release-management-and-github-automation|RESEARCH-002]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** подробный пошаговый туториал с примерами диалогов и сценариев использования для новичков.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
