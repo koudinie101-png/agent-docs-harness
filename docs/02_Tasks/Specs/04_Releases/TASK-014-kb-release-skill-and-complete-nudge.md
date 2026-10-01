@@ -1,7 +1,7 @@
 ---
 id: TASK-014
 title: "Исполняемый скилл kb-release и интеграция подсказок в kb-complete"
-status: planned
+status: done
 type: task
 phase: 4
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-014 — Исполняемый скилл kb-release и подсказки о релизе в kb-complete
 
 > **ID:** TASK-014  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase4 #component/skills #component/release #component/workflow  
 > **Родительский план:** [[../../Plans/PLAN-004-release-management-and-lifecycle-automation|PLAN-004]]  
 > **Связанные ADR и исследования:** [[../../../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]], [[../../../04_Research/RESEARCH-002-release-management-and-github-automation|RESEARCH-002]]  
@@ -142,11 +142,11 @@ description: >-
 ## 4. План верификации (Verification Plan)
 
 ### Валидация формата скиллов:
-- [ ] Проверить корректность структуры и YAML frontmatter в `.agents/skills/kb-release/SKILL.md`.
-- [ ] Проверить наличие ссылки на `/kb-release` в `.agents/skills/docs-as-code/SKILL.md`.
+- [x] Проверить корректность структуры и YAML frontmatter в `.agents/skills/kb-release/SKILL.md`.
+- [x] Проверить наличие ссылки на `/kb-release` в `.agents/skills/docs-as-code/SKILL.md`.
 
 ### Целостность базы знаний:
-- [ ] Запуск линтера Docs-as-Code:
+- [x] Запуск линтера Docs-as-Code:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -156,7 +156,7 @@ description: >-
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Создан файл `.agents/skills/kb-release/SKILL.md` с полной документацией шагов.
-- [ ] В `.agents/skills/kb-complete/SKILL.md` добавлен шаг фазового напоминания (Nudge).
-- [ ] В `.agents/skills/docs-as-code/SKILL.md` актуализирована сводная таблица скиллов.
-- [ ] `kb_lint.py` подтверждает отсутствие сломанных ссылок в базе знаний.
+- [x] Создан файл `.agents/skills/kb-release/SKILL.md` с полной документацией шагов.
+- [x] В `.agents/skills/kb-complete/SKILL.md` добавлен шаг фазового напоминания (Nudge).
+- [x] В `.agents/skills/docs-as-code/SKILL.md` актуализирована сводная таблица скиллов.
+- [x] `kb_lint.py` подтверждает отсутствие сломанных ссылок в базе знаний.

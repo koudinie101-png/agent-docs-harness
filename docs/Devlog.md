@@ -18,6 +18,27 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-014: Исполняемый скилл kb-release и фазовые подсказки в kb-complete
+- **Что сделано:**
+  - Создан 12-й канонический исполняемый скилл `.agents/skills/kb-release/SKILL.md` со строгим 7-шаговым регламентом выпуска релизов фаз:
+    1. Pre-flight Checks (проверка чистоты рабочей копии Git, прохождения `kb_lint.py`, тестов и закрытия задач фазы в `Roadmap.md`).
+    2. Dual-Mode Detection (`github` через `gh` CLI или `local-only`).
+    3. Build Hook Discovery (`scripts/build_release.py`, `package.json`, `pyproject.toml`, `Package.swift`, `*.sln`, `Cargo.toml`).
+    4. Artifacts Inspection & SHA-256 (вызов `scripts/kb_release.py` и генерация `RELEASE-vX.Y.Z.md`).
+    5. Knowledge Base Sync (`Roadmap.md`, `CHANGELOG.md`, `Devlog.md`).
+    6. Publication (Git tag, `gh release create` или отчет о локальных файлах).
+    7. Validation (`kb_lint.py`).
+  - В скилл `.agents/skills/kb-complete/SKILL.md` добавлен шаг 7 «Phase Completion Nudge»: если при закрытии задачи все тикеты текущей фазы выполнены, выводится рекомендация провести E2E тестирование и вызвать `/kb-release`.
+  - В мастер-скилл `.agents/skills/docs-as-code/SKILL.md` добавлена строка `/kb-release` и обновлена карта разделов.
+  - Закрыта задача `TASK-014` в `Kanban.md`, `Roadmap.md` и спецификации.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 52 файла, 239 ссылок, 0 broken links, 100% валидный YAML frontmatter.
+  - `python -m unittest discover -s tests` -> 20/20 тестов успешно пройдены (100% pass).
+- **Следующий шаг:**
+  - Реализация `TASK-015`: Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` (включая `--update`).
+
+---
+
 ### [2026-10-01] — Завершение TASK-013: Шаблон релиза, каталог Releases/ и утилита scripts/kb_release.py
 - **Что сделано:**
   - Создан канонический 13-й шаблон `docs/00_Templates/TEMPLATE_RELEASE.md` для фиксации релизов фаз с метаданными, чейнджлогом, таблицей артефактов и контрольными суммами SHA-256.
