@@ -1,7 +1,7 @@
 ---
 id: PLAN-007
 title: "Фаза 7: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes"
-status: accepted
+status: completed
 type: plan
 phase: 7
 created: 2026-10-01
@@ -21,7 +21,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 # 📋 План: PLAN-007 — Фаза 7: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes
 
 > **ID:** PLAN-007  
-> **Статус:** Согласовано (Режим 1)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #plan #phase7 #release #release-notes #github-releases #distribution #supply-chain-security  
 > **Родительская спецификация:** [[../../SPEC|SPEC.md]]  
 > **Канбан:** [[../Kanban|Канбан-доска]]  
@@ -76,10 +76,10 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Высокоуровневая декомпозиция (Task Breakdown)
 
-- [ ] **TASK-025:** Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py`, модульные тесты в `tests/test_kb_release.py`.
-- [ ] **TASK-026:** Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и синхронизация встроенного шаблона в `install.py`.
-- [ ] **TASK-027:** Актуализация скилла `.agents/skills/kb-release/SKILL.md` (флаг `--notes-file dist/RELEASE_NOTES.md` и Dual-Export шаги).
-- [ ] **TASK-028:** Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты (`test_installer.py`, `test_kb_release.py`) и аудит `kb_lint.py`.
+- [x] **TASK-025:** Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py`, модульные тесты в `tests/test_kb_release.py`.
+- [x] **TASK-026:** Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и синхронизация встроенного шаблона в `install.py`.
+- [x] **TASK-027:** Актуализация скилла `.agents/skills/kb-release/SKILL.md` (флаг `--notes-file dist/RELEASE_NOTES.md` и Dual-Export шаги).
+- [x] **TASK-028:** Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты (`test_installer.py`, `test_kb_release.py`) и аудит `kb_lint.py`.
 
 ---
 
@@ -90,4 +90,4 @@ kanban: "[[../Kanban|Канбан-доска]]"
 - [x] Создан файл плана `docs/02_Tasks/Plans/PLAN-007-github-release-notes-and-distribution-standard.md`.
 - [x] Инициатива промоутирована из Icebox в Фазу 7 в `docs/02_Tasks/Roadmap.md`.
 - [x] Задачи `TASK-025` — `TASK-028` добавлены в `docs/02_Tasks/Kanban.md` в колонку `📥 Бэклог`.
-- [ ] Пройдена проверка целостности базы знаний через `python scripts/kb_lint.py --path docs`.
+- [x] Пройдена проверка целостности базы знаний через `python scripts/kb_lint.py --path docs`.

@@ -18,6 +18,20 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-028 и Фазы 7: Сборка инсталлятора и сквозная E2E верификация
+- **Что сделано:**
+  - Пересобран автономный инсталлятор `install.py` через `scripts/build_installer.py`, упаковав обновленные `scripts/kb_release.py` (двухформатный экспорт заметок и автоконвертер викиссылок), воркфлоу `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`), скилл `.agents/skills/kb-release/SKILL.md` и шаблон `TEMPLATE_RELEASE.md`.
+  - Дополнен тестовый набор `tests/test_installer.py` проверками наличия `body_path: dist/RELEASE_NOTES.md` в воркфлоу, флага `--notes-file dist/RELEASE_NOTES.md` в скилле `kb-release`, генерации `dist/RELEASE_NOTES.md` и корректного обновления через `install.py --update`.
+  - Все задачи Фазы 7 ([[02_Tasks/Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]) — TASK-025, TASK-026, TASK-027, TASK-028 — переведены в `status: done` в ТЗ, Дорожная карта и Канбан актуализированы (Фаза 7 перемещена в `Done`).
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> инсталлятор успешно пересобран (размер: 83.3 KB, сжатие: 41.9%).
+  - `python -m unittest discover -s tests` -> 35/35 тестов успешно пройдено (100% Pass).
+  - `python scripts/kb_lint.py --path docs` -> 77 файлов проверено, 516 викиссылок валидны (0 битых).
+- **Следующий шаг:**
+  - Приемочное тестирование Фазы 7 и выпуск публичного релиза `v0.7.0` через скилл `/kb-release`.
+
+---
+
 ### [2026-10-01] — Завершение TASK-027: Актуализация скилла kb-release и шаблона TEMPLATE_RELEASE.md
 - **Что сделано:**
   - В скилле `.agents/skills/kb-release/SKILL.md` актуализированы шаги 4 и 6:

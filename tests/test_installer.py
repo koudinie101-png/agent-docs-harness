@@ -706,6 +706,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             content_skill = skill_md.read_text(encoding="utf-8")
             self.assertIn("/kb-release", content_skill)
             self.assertIn("Pre-flight Checks", content_skill)
+            self.assertIn("--notes-file dist/RELEASE_NOTES.md", content_skill)
 
             # 5. Verify GitHub Actions release.yml deployed
             workflow_rel = target / ".github" / "workflows" / "release.yml"
@@ -713,6 +714,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             content_wf = workflow_rel.read_text(encoding="utf-8")
             self.assertIn("Release Automation", content_wf)
             self.assertIn("kb_release.py", content_wf)
+            self.assertIn("body_path: dist/RELEASE_NOTES.md", content_wf)
 
             # 6. Verify GEMINI.md references /kb-release
             gemini_md = target / "GEMINI.md"
@@ -801,6 +803,14 @@ class TestAgentDocsHarness(unittest.TestCase):
             expected_hash = hashlib.sha256(b"TEST_BINARY_PAYLOAD_FOR_HASHING_12345").hexdigest()
             self.assertIn(expected_hash, release_text, "Calculated SHA-256 hash not found in release note table!")
 
+            # 4.1. Verify public release notes generated in dist/
+            notes_file = dist_dir / "RELEASE_NOTES.md"
+            self.assertTrue(notes_file.is_file(), "dist/RELEASE_NOTES.md was not generated!")
+            notes_text = notes_file.read_text(encoding="utf-8")
+            self.assertIn("# 🚀 Release v1.0.0", notes_text)
+            self.assertIn(expected_hash, notes_text)
+            self.assertFalse(notes_text.strip().startswith("---"))
+
             # 5. Verify knowledge base integrity with kb_lint
             lint_script = target / "scripts" / "kb_lint.py"
             lint_res = subprocess.run(
@@ -868,6 +878,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("RELEASE-v[X.Y.Z]", tpl_rel.read_text(encoding="utf-8"))
             self.assertNotEqual(script_rel.read_text(encoding="utf-8"), "# OUTDATED_KB_RELEASE_SCRIPT")
             self.assertIn("inspect_release_artifacts", script_rel.read_text(encoding="utf-8"))
+            self.assertIn("convert_wikilinks_to_github_markdown", script_rel.read_text(encoding="utf-8"))
+            self.assertIn("generate_public_release_notes", script_rel.read_text(encoding="utf-8"))
 
             # 6. Verify kb_lint check passes
             lint_script = target / "scripts" / "kb_lint.py"

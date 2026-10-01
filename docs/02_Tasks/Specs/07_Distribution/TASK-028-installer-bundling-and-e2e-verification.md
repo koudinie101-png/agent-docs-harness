@@ -1,7 +1,7 @@
 ---
 id: TASK-028
 title: "Сборка инсталлятора, регрессионные E2E тесты и аудит целостности дистрибутива"
-status: planned
+status: done
 type: task
 phase: 7
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-028 — Сборка инсталлятора и сквозная E2E верификация
 
 > **ID:** TASK-028  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase7 #component/installer #component/testing #release  
 > **Родительский план:** [[../../Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../../../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]  
@@ -58,16 +58,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Полный прогон тестов: `python -m unittest discover -s tests` (100% Pass).
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0).
+- [x] Полный прогон тестов: `python -m unittest discover -s tests` (100% Pass).
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Инсталлятор `install.py` пересобран и содержит все актуальные компоненты.
-- [ ] Все тесты проходят без ошибок.
-- [ ] Все задачи Фазы 7 завершены и согласованы.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Итоговая запись внесена в `docs/Devlog.md`.
+- [x] Инсталлятор `install.py` пересобран и содержит все актуальные компоненты.
+- [x] Все тесты проходят без ошибок.
+- [x] Все задачи Фазы 7 завершены и согласованы.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Итоговая запись внесена в `docs/Devlog.md`.
