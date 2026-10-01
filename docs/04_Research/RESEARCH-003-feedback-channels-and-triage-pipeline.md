@@ -16,6 +16,7 @@ related_tasks: []
 related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
   - "[[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Release Management]]"
+  - "[[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008: Архитектура обратной связи и триажа]]"
 ---
 
 # 🔬 Исследование: Организация каналов обратной связи и воронка триажа (GitHub vs Local-Only)
@@ -23,7 +24,7 @@ related_adrs:
 > **Теги:** #research #feedback-loops #triage #github-issues #local-only #bug-tracking #roadmap  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Release Management]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Release Management]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008: Архитектура обратной связи и триажа]]  
 
 ---
 
