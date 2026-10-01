@@ -190,6 +190,11 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "02_Tasks/Specs/03_Adoption/TASK-012-github-actions-ci-and-e2e.md",
+    "02_Tasks/Specs/03_Adoption/TASK-011-safe-update-mechanism.md",
+    "02_Tasks/Specs/03_Adoption/TASK-010-brownfield-adoption-and-stack-autodetect.md",
+    "02_Tasks/Specs/03_Adoption/TASK-009-clean-slate-scaffolding.md",
+    "02_Tasks/Specs/03_Adoption",
     "03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator.md",
     "03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer.md",
     "03_Decisions_ADR/ADR-0002-self-contained-installer-bundling.md",
