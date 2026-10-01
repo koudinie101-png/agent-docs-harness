@@ -77,6 +77,7 @@ flowchart TD
 * [[04_Research/RESEARCH-004-token-efficiency-and-context-compression|RESEARCH-004: Оптимизация токенов и контекстная эффективность (High-SNR Token Architecture)]]
 * [[04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005: Лучшие практики оформления релизов на GitHub и автоматизация Release Notes]]
 * [[04_Research/RESEARCH-006-kb-plan-icebox-prioritization-and-intent-routing|RESEARCH-006: Оптимизация точки входа планирования (/kb-plan) и маршрутизация идей из Icebox]]
+* [[04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007: Интеграция этапа исследования (Режим 0: Discovery) и эволюция /kb-research]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
