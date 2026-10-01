@@ -57,7 +57,7 @@ tags:
 
 - [x] Шаблон релиза `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/` и утилита `scripts/kb_release.py` (Zero-Deps: SHA-256, сборка, чейнджлог) — [[Specs/04_Releases/TASK-013-template-release-and-kb-release-utility|TASK-013]].
 - [x] Исполняемый скилл `.agents/skills/kb-release/SKILL.md` (Dual-Mode workflow, префлайт-чеки, напоминания в `kb-complete`) — [[Specs/04_Releases/TASK-014-kb-release-skill-and-complete-nudge|TASK-014]].
-- [ ] Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` — [[Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging|TASK-015]].
+- [x] Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` — [[Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging|TASK-015]].
 - [ ] Комплексное E2E тестирование релизного пайплайна и обновление документации — [[Specs/04_Releases/TASK-016-e2e-release-pipeline-verification-and-docs|TASK-016]].
 
 ---

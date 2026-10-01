@@ -18,6 +18,36 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-015: Шаблон GitHub Actions CI release.yml и упаковка релизных компонентов в инсталлятор
+- **Что сделано:**
+  - Разработан эталонный GitHub Actions workflow `.github/workflows/release.yml` для автоматической сборки и публикации релизов по push аннотированных тегов `v*`:
+    - Проверка целостности базы знаний через `scripts/kb_lint.py --path docs`.
+    - Обнаружение и запуск билд-хука (`scripts/build_release.sh`, `scripts/build_release.py`, `package.json`).
+    - Инспекция артефактов в `dist/` и валидация контрольных сумм через `scripts/kb_release.py --ci-mode`.
+    - Публикация GitHub Release через `softprops/action-gh-release@v2`.
+  - Скопирован `TEMPLATE_RELEASE.md` в корень `templates/`.
+  - Обновлен сборочный скрипт `scripts/build_installer.py`:
+    - Бандлинг всех 13 шаблонов (включая `TEMPLATE_RELEASE.md`).
+    - Бандлинг утилит `scripts/kb_lint.py` и `scripts/kb_release.py`.
+    - Бандлинг 12 скиллов агентов (включая `kb-release`).
+    - Бандлинг CI воркфлоу `.github/workflows/*.yml`.
+  - Обновлен автономный инсталлятор `install.py`:
+    - Создание каталога `docs/02_Tasks/Releases/` с `.gitkeep`.
+    - Развертывание `scripts/kb_release.py` с правами 0o755 в `deploy_infrastructure`.
+    - Развертывание `.github/workflows/release.yml` и `kb-lint.yml` в `deploy_ci_workflow`.
+    - Безопасное обновление через `install.py --update`: переразвертывание шаблонов, утилит и скиллов при строгом сохранении существующих пользовательских релизов в `docs/02_Tasks/Releases/`.
+    - Перекомпилирован монолитный бандл в `install.py`: размер 95.0 КБ (в рамках бюджета < 120 КБ).
+  - Закрыта задача `TASK-015` в `Kanban.md`, `Roadmap.md` и спецификации.
+- **Результаты верификации:**
+  - `python -m py_compile scripts/build_installer.py install.py` -> Код 0.
+  - `python scripts/build_installer.py` -> 13 шаблонов, 12 скиллов, 2 скрипта, 95.0 КБ бандл.
+  - `python scripts/kb_lint.py --path docs` -> 52 файла, 239 ссылок, 0 broken links, 100% валидный YAML frontmatter.
+  - `python -m unittest discover -s tests` -> 20/20 тестов успешно пройдены (100% pass).
+- **Следующий шаг:**
+  - Реализация `TASK-016`: Комплексное E2E тестирование релизного пайплайна (Local-Only и GitHub) и обновление документации (`README.md`, `Onboarding.md`, `00_Index.md`).
+
+---
+
 ### [2026-10-01] — Завершение TASK-014: Исполняемый скилл kb-release и фазовые подсказки в kb-complete
 - **Что сделано:**
   - Создан 12-й канонический исполняемый скилл `.agents/skills/kb-release/SKILL.md` со строгим 7-шаговым регламентом выпуска релизов фаз:

@@ -1,7 +1,7 @@
 ---
 id: TASK-015
 title: "Шаблон GitHub Actions CI release.yml и упаковка релизных компонентов в install.py"
-status: planned
+status: done
 type: task
 phase: 4
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-015 — Шаблон GitHub Actions CI release.yml и упаковка релизных компонентов в инсталлятор
 
 > **ID:** TASK-015  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase4 #component/ci #component/installer #component/packaging  
 > **Родительский план:** [[../../Plans/PLAN-004-release-management-and-lifecycle-automation|PLAN-004]]  
 > **Связанные ADR:** [[../../../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]], [[../../../03_Decisions_ADR/ADR-0002-self-contained-installer-bundling|ADR-0002]]  
@@ -147,26 +147,26 @@ jobs:
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и синтаксис:
-- [ ] Проверка синтаксиса `scripts/build_installer.py` и `install.py`:
+- [x] Проверка синтаксиса `scripts/build_installer.py` и `install.py`:
   ```bash
   python -m py_compile scripts/build_installer.py install.py
   ```
   *(Exit code 0)*
-- [ ] Пересборка монолитного инсталлятора:
+- [x] Пересборка монолитного инсталлятора:
   ```bash
   python scripts/build_installer.py
   ```
-  *(Exit code 0, размер файла в пределах нормы)*
+  *(Exit code 0, размер файла в пределах нормы: 95.0 KB < 120 KB)*
 
 ### Верификация целостности:
-- [ ] Запуск `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Запуск `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Создан файл `.github/workflows/release.yml`.
-- [ ] `build_installer.py` успешно упаковывает все релизные ресурсы.
-- [ ] `install.py` генерирует каталог `docs/02_Tasks/Releases/` и разворачивает 12-й скилл.
-- [ ] В режиме `--update` инфраструктура релиза обновляется без риска удаления существующих релизов.
-- [ ] Сборщик инсталлятора работает без ошибок.
+- [x] Создан файл `.github/workflows/release.yml`.
+- [x] `build_installer.py` успешно упаковывает все релизные ресурсы.
+- [x] `install.py` генерирует каталог `docs/02_Tasks/Releases/` и разворачивает 12-й скилл.
+- [x] В режиме `--update` инфраструктура релиза обновляется без риска удаления существующих релизов.
+- [x] Сборщик инсталлятора работает без ошибок.

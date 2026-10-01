@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02_Tasks/Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging.md",
+                "file": "04_Research/RESEARCH-004-token-efficiency-and-context-compression.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TASK-015-github-actions-release-ci-and-installer-packaging"
+              "title": "RESEARCH-004-token-efficiency-and-context-compression"
             }
           }
         ]
@@ -190,6 +190,8 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "02_Tasks/Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging.md",
+    "04_Research/RESEARCH-004-token-efficiency-and-context-compression.md",
     "02_Tasks/Specs/04_Releases/TASK-014-kb-release-skill-and-complete-nudge.md",
     "00_Templates/TEMPLATE_RELEASE.md",
     "02_Tasks/Roadmap.md",
@@ -197,7 +199,6 @@
     "03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics.md",
     "02_Tasks/Specs/04_Releases/TASK-016-e2e-release-pipeline-verification-and-docs.md",
     "04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline.md",
-    "02_Tasks/Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging.md",
     "02_Tasks/Specs/04_Releases/TASK-013-template-release-and-kb-release-utility.md",
     "02_Tasks/Specs/04_Releases",
     "02_Tasks/Plans/PLAN-004-release-management-and-lifecycle-automation.md",
