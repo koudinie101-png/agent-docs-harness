@@ -92,10 +92,10 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 **Нормативная база:** [[../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]
 
-- [ ] Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py` и модульные тесты — `TASK-025`.
-- [ ] Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и шаблонах инсталлятора — `TASK-026`.
-- [ ] Актуализация скилла `.agents/skills/kb-release/SKILL.md` (параметр `--notes-file` и Dual-Export шаги) — `TASK-027`.
-- [ ] Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты и аудит целостности базы знаний — `TASK-028`.
+- [ ] Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py` и модульные тесты — [[Specs/07_Distribution/TASK-025-dual-export-and-wikilinks-converter|TASK-025]].
+- [ ] Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и шаблонах инсталлятора — [[Specs/07_Distribution/TASK-026-github-actions-release-body-and-installer-template|TASK-026]].
+- [ ] Актуализация скилла `.agents/skills/kb-release/SKILL.md` (параметр `--notes-file` и Dual-Export шаги) — [[Specs/07_Distribution/TASK-027-kb-release-skill-and-notes-file|TASK-027]].
+- [ ] Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты и аудит целостности базы знаний — [[Specs/07_Distribution/TASK-028-installer-bundling-and-e2e-verification|TASK-028]].
 
 ---
 
