@@ -190,6 +190,7 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "02_Tasks/Releases/RELEASE-v0.6.0.md",
     "02_Tasks/Kanban.md",
     "Onboarding.md",
     "02_Tasks/Specs/06_Discovery/TASK-022-kb-plan-preflight-nudges-and-onboard.md",
@@ -216,7 +217,6 @@
     "00_Templates/TEMPLATE_RELEASE.md",
     "00_Templates/TEMPLATE_PLAN.md",
     "00_Templates/TEMPLATE_ONBOARDING.md",
-    "00_Templates/TEMPLATE_KANBAN.md",
     "02_Tasks/Specs/05_TokenOptimization",
     "02_Tasks/Releases",
     "02_Tasks/Specs/04_Releases",
