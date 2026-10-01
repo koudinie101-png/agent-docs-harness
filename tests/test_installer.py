@@ -408,6 +408,107 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res.returncode, 0, f"kb_lint failed on clean slate installation:\n{res.stdout}")
             self.assertIn("No broken wikilinks found", res.stdout)
 
+    def test_10_brownfield_adoption_and_stack_autodetect(self):
+        """E2E test: Verify stack autodetect and non-destructive brownfield adoption."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            base = Path(tmp_dir)
+
+            # 1. Test heuristic stack detection
+            swift_dir = base / "swift_project"
+            swift_dir.mkdir()
+            (swift_dir / "Package.swift").write_text("// swift-tools-version:5.9", encoding="utf-8")
+            self.assertEqual(install.detect_project_stack(swift_dir), "swift")
+
+            ts_dir = base / "web_project"
+            ts_dir.mkdir()
+            (ts_dir / "package.json").write_text('{"name": "web-app"}', encoding="utf-8")
+            self.assertEqual(install.detect_project_stack(ts_dir), "ts")
+
+            py_dir = base / "python_project"
+            py_dir.mkdir()
+            (py_dir / "pyproject.toml").write_text('[project]\nname = "py-app"', encoding="utf-8")
+            self.assertEqual(install.detect_project_stack(py_dir), "python")
+
+            dotnet_dir = base / "dotnet_project"
+            dotnet_dir.mkdir()
+            (dotnet_dir / "App.csproj").write_text("<Project Sdk=\"Microsoft.NET.Sdk\" />", encoding="utf-8")
+            self.assertEqual(install.detect_project_stack(dotnet_dir), "dotnet")
+
+            generic_dir = base / "rust_project"
+            generic_dir.mkdir()
+            (generic_dir / "Cargo.toml").write_text('[package]\nname = "rust-app"', encoding="utf-8")
+            self.assertEqual(install.detect_project_stack(generic_dir), "generic")
+
+            # 2. Test brownfield adoption with existing README.md, .gitignore, and custom SPEC.md
+            target = base / "brownfield_app"
+            target.mkdir()
+            (target / "package.json").write_text('{"name": "legacy-web"}', encoding="utf-8")
+
+            custom_readme = "# My Legacy Web App\n\nExisting custom project documentation."
+            (target / "README.md").write_text(custom_readme, encoding="utf-8")
+
+            custom_gitignore = "node_modules/\n.env\ndist/\n"
+            (target / ".gitignore").write_text(custom_gitignore, encoding="utf-8")
+
+            custom_spec = "---\nid: SPEC\ntitle: Custom Legacy Spec\n---\n# Custom Legacy Spec\nExisting specification."
+            (target / "SPEC.md").write_text(custom_spec, encoding="utf-8")
+
+            # Run installation with auto-detected stack
+            detected_stack = install.detect_project_stack(target)
+            self.assertEqual(detected_stack, "ts")
+
+            install.install_harness(
+                target_dir=target,
+                project_name="LegacyWebApp",
+                stack_key=detected_stack,
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="ru",
+                force=False,
+            )
+
+            # Check README.md: original text preserved, Docs-as-Code appended
+            readme_after = (target / "README.md").read_text(encoding="utf-8")
+            self.assertIn("My Legacy Web App", readme_after)
+            self.assertIn("Existing custom project documentation.", readme_after)
+            self.assertIn("Документация и дисциплина AI-агентов (Docs-as-Code)", readme_after)
+            self.assertIn("AGENTS.md", readme_after)
+
+            # Check .gitignore: original rules preserved, Obsidian rules appended
+            gitignore_after = (target / ".gitignore").read_text(encoding="utf-8")
+            self.assertIn("node_modules/", gitignore_after)
+            self.assertIn(".obsidian/*", gitignore_after)
+            self.assertIn("!.obsidian/graph.json", gitignore_after)
+
+            # Check SPEC.md: custom user spec was NOT overwritten
+            spec_after = (target / "SPEC.md").read_text(encoding="utf-8")
+            self.assertEqual(spec_after, custom_spec)
+
+            # Check Onboarding.md contains Section 7 (Brownfield Adoption)
+            onboarding_after = (target / "docs" / "Onboarding.md").read_text(encoding="utf-8")
+            self.assertIn("Внедрение в существующий проект (Brownfield Adoption)", onboarding_after)
+            self.assertIn("Изучи кодовую базу репозитория", onboarding_after)
+
+            # Test idempotency: re-running installation does not duplicate README or .gitignore blocks
+            install.handle_readme(target, "LegacyWebApp", doc_lang="ru")
+            install.handle_gitignore(target)
+            readme_twice = (target / "README.md").read_text(encoding="utf-8")
+            gitignore_twice = (target / ".gitignore").read_text(encoding="utf-8")
+            self.assertEqual(readme_after, readme_twice)
+            self.assertEqual(gitignore_after, gitignore_twice)
+
+            # Check kb_lint passes
+            kb_lint_script = target / "scripts" / "kb_lint.py"
+            res = subprocess.run(
+                [sys.executable, str(kb_lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"kb_lint failed on brownfield installation:\n{res.stdout}")
+            self.assertIn("No broken wikilinks found", res.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

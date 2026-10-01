@@ -18,6 +18,25 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-010: Brownfield Adoption & Smart Stack Autodetection
+- **Что сделано:**
+  - Реализован эвристический детектор стека технологий `detect_project_stack` в `install.py`, определяющий Swift (`Package.swift`), Web/TypeScript (`package.json`), Python (`pyproject.toml`, `requirements.txt`, `Pipfile`, `setup.py`), .NET (`*.sln`, `*.csproj`) и fallback на Generic.
+  - Реализован неразрушающий механизм внедрения в существующие проекты (Brownfield Adoption):
+    - `handle_readme`: сохраняет исходный пользовательский `README.md` и бережно дописывает блок Docs-as-Code (с поддержкой мультиязычности `ru`/`en`), предотвращая дублирование при повторных запусках.
+    - `handle_gitignore`: сохраняет пользовательские правила игнорирования и дописывает правила для Obsidian (`.obsidian/*`, `!.obsidian/graph.json`).
+    - `create_starter_docs`: защищает существующие `SPEC.md`, `Kanban.md`, `Roadmap.md`, `Devlog.md` и `00_Index.md` от перезаписи, если не указан флаг `--force`.
+  - В интерактивный CLI-мастер добавлена подсветка и предвыбор автоопределенного стека по умолчанию. В CLI поддержан параметр `--stack auto`.
+  - В шаблон онбординга `TEMPLATE_ONBOARDING.md` добавлен раздел 7 («Внедрение в существующий проект») со сценарием экспресс-аудита легаси-кода для AI-агента.
+  - В `tests/test_installer.py` добавлен сквозной E2E тест `test_10_brownfield_adoption_and_stack_autodetect`, верифицирующий детект всех 5 стеков, неразрушающее внедрение и идемпотентность.
+  - Сборщик `scripts/build_installer.py` пересобрал бандл (размер `install.py`: 80.3 КБ / 82,204 байта, строго в рамках бюджета < 82 КБ).
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> Код 0.
+  - `python scripts/build_installer.py` -> Код 0.
+  - `python -m unittest discover -s tests` -> 10/10 тестов успешно пройдены (100% pass).
+  - `python scripts/kb_lint.py --path docs` -> 44 файла, 174 ссылки, 0 broken links, 100% валидный YAML frontmatter.
+- **Следующий шаг:**
+  - Реализация `TASK-011`: Механизм бережного обновления инфраструктуры (`install.py --update`).
+
 ---
 
 ### [2026-10-01] — Завершение TASK-009: Clean Slate Scaffolding & Zero-Broken-Links FTUE
