@@ -16,6 +16,7 @@ related_tasks: []
 related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
   - "[[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: High-SNR Token Architecture]]"
+  - "[[../03_Decisions_ADR/ADR-0011-intent-routing-and-icebox-prioritization-in-kb-plan|ADR-0011: Маршрутизация намерений и приоритизация в /kb-plan]]"
 ---
 
 # 🔬 Исследование: Оптимизация точки входа планирования (/kb-plan) и маршрутизация идей из Icebox
@@ -23,7 +24,7 @@ related_adrs:
 > **Теги:** #research #planning #kb-plan #roadmap #icebox #intent-routing #docs-as-code  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Оптимизация токенов и High-SNR]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Оптимизация токенов и High-SNR]], [[../03_Decisions_ADR/ADR-0011-intent-routing-and-icebox-prioritization-in-kb-plan|ADR-0011: Маршрутизация намерений и приоритизация в /kb-plan]]  
 
 ---
 
