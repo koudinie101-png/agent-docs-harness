@@ -1,7 +1,7 @@
 ---
 id: TASK-027
 title: "Актуализация скилла kb-release и шаблона TEMPLATE_RELEASE.md"
-status: planned
+status: done
 type: task
 phase: 7
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-027 — Актуализация скилла kb-release и шаблона релиза
 
 > **ID:** TASK-027  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase7 #component/skills #component/templates #component/kb-release #release  
 > **Родительский план:** [[../../Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../../../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  
@@ -68,15 +68,15 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] High-SNR проверка: описание в YAML frontmatter `SKILL.md` не превышает 15 слов.
-- [ ] Синхронизация шаблонов: проверка идентичности файлов в `docs/00_Templates/` и `templates/`.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] High-SNR проверка: описание в YAML frontmatter `SKILL.md` не превышает 15 слов.
+- [x] Синхронизация шаблонов: проверка идентичности файлов в `docs/00_Templates/` и `templates/`.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] В `SKILL.md` прописана команда `gh release create ... --notes-file dist/RELEASE_NOTES.md`.
-- [ ] Шаблоны синхронизированы.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `docs/Devlog.md`.
+- [x] В `SKILL.md` прописана команда `gh release create ... --notes-file dist/RELEASE_NOTES.md`.
+- [x] Шаблоны синхронизированы.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `docs/Devlog.md`.

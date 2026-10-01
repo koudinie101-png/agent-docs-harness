@@ -18,6 +18,23 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-027: Актуализация скилла kb-release и шаблона TEMPLATE_RELEASE.md
+- **Что сделано:**
+  - В скилле `.agents/skills/kb-release/SKILL.md` актуализированы шаги 4 и 6:
+    - Шаг 4: зафиксирована генерация внутреннего `RELEASE-vX.Y.Z.md` и публичного `dist/RELEASE_NOTES.md`.
+    - Шаг 6 (GitHub Mode): команда публикации `gh release create` дополнена параметром `--notes-file dist/RELEASE_NOTES.md`.
+    - Сохранена High-SNR токеномика (описание frontmatter $\le$ 15 слов).
+  - В шаблонах `TEMPLATE_RELEASE.md` (в `docs/00_Templates/` и корневой `templates/`) добавлено примечание о генерации публичных заметок в `dist/RELEASE_NOTES.md`.
+  - Задача [[02_Tasks/Specs/07_Distribution/TASK-027-kb-release-skill-and-notes-file|TASK-027]] переведена в `status: done` в ТЗ, Канбане (`(2026-10-01)`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - Подтверждена идентичность файлов шаблонов в `docs/00_Templates/` и `templates/`.
+  - Проверена лаконичность описания `SKILL.md` (13 слов).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links.
+- **Следующий шаг:**
+  - Переход к `TASK-028`: Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты и аудит целостности дистрибутива.
+
+---
+
 ### [2026-10-01] — Завершение TASK-026: Автоматизация передачи заметок в CI release.yml и шаблоне инсталлятора
 - **Что сделано:**
   - В файле `.github/workflows/release.yml` добавлен параметр `body_path: dist/RELEASE_NOTES.md` в шаг `Publish GitHub Release` (`softprops/action-gh-release@v2`). Теперь GitHub Release автоматически получает полное описание, команды быстрой установки и таблицу SHA-256 из артефакта, сгенерированного `kb_release.py --ci-mode`.

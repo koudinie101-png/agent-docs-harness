@@ -94,7 +94,7 @@ tags:
 
 - [x] Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py` и модульные тесты — [[Specs/07_Distribution/TASK-025-dual-export-and-wikilinks-converter|TASK-025]].
 - [x] Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и шаблонах инсталлятора — [[Specs/07_Distribution/TASK-026-github-actions-release-body-and-installer-template|TASK-026]].
-- [ ] Актуализация скилла `.agents/skills/kb-release/SKILL.md` (параметр `--notes-file` и Dual-Export шаги) — [[Specs/07_Distribution/TASK-027-kb-release-skill-and-notes-file|TASK-027]].
+- [x] Актуализация скилла `.agents/skills/kb-release/SKILL.md` (параметр `--notes-file` и Dual-Export шаги) — [[Specs/07_Distribution/TASK-027-kb-release-skill-and-notes-file|TASK-027]].
 - [ ] Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты и аудит целостности базы знаний — [[Specs/07_Distribution/TASK-028-installer-bundling-and-e2e-verification|TASK-028]].
 
 ---
