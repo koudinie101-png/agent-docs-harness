@@ -1,24 +1,25 @@
 ---
 name: kb-lint
-description: >-
-  Validate the integrity of the Docs-as-Code knowledge base, scanning all wikilinks, detecting broken links,
-  and checking YAML frontmatter validity using kb_lint.py.
+description: "Audit knowledge base integrity: scan wikilinks, broken targets, and YAML frontmatter."
 ---
 
 # /kb-lint — Knowledge Base Linter
 
-Use this skill when the user runs `/kb-lint` or wants to check the consistency of the documentation vault.
+Use when the user runs `/kb-lint` or asks to check the integrity of the documentation vault.
+
+## 🚨 Constraints
+* **Zero Dependencies:** Runs on standard library Python 3 via `scripts/kb_lint.py`.
+* **Zero Broken Links:** All `[[wikilinks]]` in active files must resolve to existing markdown files or anchors.
 
 ## Procedure
-
 1. **Run Linter Script:**
    - Execute:
      ```powershell
-     python ~/.gemini/config/skills/docs-as-code/scripts/kb_lint.py --path docs
+     python scripts/kb_lint.py --path docs
      ```
-2. **Interpret Results:**
-   - **Broken Wikilinks:** If any target file does not exist, pinpoint the exact source file and link.
-   - **Frontmatter Warnings:** If any task, plan, bug, or ADR is missing standard YAML frontmatter (`---`).
-3. **Resolve or Advise:**
-   - If broken links exist, propose fixes or create missing placeholder specs.
-   - If 0 errors, confirm healthy state.
+2. **Interpret Output:**
+   - **Broken Wikilinks:** Identifies exact source file and missing target file.
+   - **Frontmatter Errors:** Validates mandatory YAML properties (`id`, `title`, `status`, `type`, `tags`).
+3. **Resolve Findings:**
+   - If broken links are detected, fix typos, create missing placeholder specs, or adjust relative paths.
+   - Exit code 0 confirms a healthy and consistent knowledge base.

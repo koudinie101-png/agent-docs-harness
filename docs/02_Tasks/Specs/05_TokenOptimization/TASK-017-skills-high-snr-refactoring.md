@@ -1,7 +1,7 @@
 ---
 id: TASK-017
 title: "High-SNR рефакторинг реестра и 12 скиллов .agents/skills/ (микро-описания, легкий роутер docs-as-code)"
-status: in-progress
+status: done
 type: task
 phase: 5
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-017 — High-SNR рефакторинг реестра и 12 скиллов .agents/skills/
 
 > **ID:** TASK-017  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase5 #component/skills #component/registry #component/token-optimization  
 > **Родительский план:** [[../../Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]  
 > **Связанные ADR и исследования:** [[../../../04_Research/RESEARCH-004-token-efficiency-and-context-compression|RESEARCH-004]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  
@@ -128,24 +128,24 @@ description: "Display developer onboarding guide, 3-mode workflow cheatsheet, an
 ## 4. План верификации (Verification Plan)
 
 ### Автоматическая проверка:
-- [ ] Запуск скрипта линтинга базы знаний: `python scripts/kb_lint.py --path docs` (код завершения 0).
-- [ ] Проверка суммарного размера каталога `.agents/skills/`:
+- [x] Запуск скрипта линтинга базы знаний: `python scripts/kb_lint.py --path docs` (код завершения 0).
+- [x] Проверка суммарного размера каталога `.agents/skills/`:
   ```powershell
   (Get-ChildItem -Path .agents/skills -Recurse -Filter *.md | Measure-Object -Property Length -Sum).Sum
   ```
-  *Критерий:* суммарный объем $\le$ 20 000 байт (было 42 445 байт).
-- [ ] Проверка размера `docs-as-code/SKILL.md`:
-  *Критерий:* $\le$ 2 500 байт (было 13 775 байт).
+  *Критерий:* суммарный объем $\le$ 20 000 байт (было 42 445 байт, результат: 18 728 байт).
+- [x] Проверка размера `docs-as-code/SKILL.md`:
+  *Критерий:* $\le$ 2 500 байт (было 13 775 байт, результат: 2 274 байта).
 
 ### Инспекция метаданных реестра:
-- [ ] Каждый скилл содержит валидный YAML frontmatter с `name` и лаконичным `description` ($\le$ 15 слов).
+- [x] Каждый скилл содержит валидный YAML frontmatter с `name` и лаконичным `description` ($\le$ 15 слов).
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Все 12 скиллов переведены на микро-описания и High-SNR формат.
-- [ ] Скилл `docs-as-code/SKILL.md` рефакторен в легкий роутер.
-- [ ] Отсутствуют эмоциональные эпитеты, риторика и дублирование правил из `AGENTS.md`.
-- [ ] Суммарный объем скиллов сокращен более чем на 50%.
-- [ ] Проверка `python scripts/kb_lint.py --path docs` проходит без ошибок.
+- [x] Все 12 скиллов переведены на микро-описания и High-SNR формат.
+- [x] Скилл `docs-as-code/SKILL.md` рефакторен в легкий роутер.
+- [x] Отсутствуют эмоциональные эпитеты, риторика и дублирование правил из `AGENTS.md`.
+- [x] Суммарный объем скиллов сокращен более чем на 50% (-55.9%).
+- [x] Проверка `python scripts/kb_lint.py --path docs` проходит без ошибок.

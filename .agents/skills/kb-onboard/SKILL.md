@@ -1,29 +1,24 @@
 ---
 name: kb-onboard
-description: >-
-  Display the developer and agent onboarding guide, 3-mode workflow rules, quick commands,
-  and repository knowledge base structure.
+description: "Display developer onboarding guide, 3-mode workflow cheatsheet, and quick start."
 ---
 
-# /kb-onboard — Developer & Agent Onboarding Guide
+# /kb-onboard — Developer & Agent Onboarding
 
-Use this skill when the user runs `/kb-onboard` or asks how to interact with the project and knowledge base.
+Use when the user runs `/kb-onboard` or asks how to interact with the project and knowledge base.
+
+## 🚨 Constraints
+* **Adherence to Core Rules:** All work strictly adheres to the 3 operating modes defined in `AGENTS.md`.
 
 ## Procedure
-
-1. **Locate Onboarding Guide:**
-   - Check if `docs/Onboarding.md` exists. If so, read and present key sections.
-2. **Summarize Core Principles:**
-   - **Local-First & Docs-as-Code:** All notes live in `docs/`, linked via `[[wikilinks]]`, starting with YAML frontmatter.
-   - **Permalinks:** Specs and bugs are never moved to `Done/` or `Archive/`.
-   - **3 Operating Modes:**
-     - 🟡 **Mode 1: `/kb-plan`** — Discussion, Q&A, impact analysis, NO CODE CHANGES.
-     - 🟠 **Mode 2: `/kb-task`** — Detailed engineering spec, contracts, verification plan, NO CODE CHANGES.
-     - 🟢 **Mode 3: `/kb-implement` & `/kb-complete`** — Strict implementation, tests, synchronous Done update.
-   - **Regression-First:** Bugs must have an automated regression test before closing.
-   - **Version Control & GitHub (Conditional Sync):**
-     - If remote `origin` is configured, artifacts and task completions are automatically committed and pushed to GitHub.
-     - If running in Local-Only mode (no remote origin), local Git commits are created, but `git push` is skipped.
-     - If running without Git, all Git operations are gracefully bypassed.
-3. **Show Quick Command Cheatsheet:**
-   - Provide the table of `/kb-*` commands.
+1. **Present Onboarding Cheatsheet:**
+   - Display reference table of `/kb-*` slash commands and 3-mode development cycle.
+2. **Review Invariants:**
+   - **Mode 1 (`/kb-plan`):** Discussion & RFC. Modifying code is prohibited.
+   - **Mode 2 (`/kb-task`):** Engineering specification. Modifying code is prohibited.
+   - **Mode 3 (`/kb-implement` & `/kb-complete`):** Strict implementation, automated tests, and git sync.
+   - **Permalinks:** Specs and bugs are never moved or deleted upon completion.
+   - **Regression-First:** Bugs require an automated failing test before fix.
+   - **Anti-Echo:** Response summaries with links instead of dumping full file bodies into chat.
+3. **Reference Full Guide:**
+   - Direct developer to `docs/Onboarding.md` and `docs/00_Index.md` for full onboarding guide.
