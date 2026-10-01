@@ -1,7 +1,7 @@
 ---
 id: PLAN-003
 title: "Фаза 3: Зрелость инсталлятора — Brownfield Adoption, Clean Slate Scaffolding, безопасное обновление и CI"
-status: accepted
+status: done
 type: plan
 phase: 3
 created: 2026-10-01
@@ -21,7 +21,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 # 📋 План: PLAN-003 — Фаза 3: Зрелость инсталлятора (Brownfield Adoption, Clean Slate, Обновление и CI)
 
 > **ID:** PLAN-003  
-> **Статус:** Согласовано (Взято в разработку)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #plan #phase3 #brownfield #scaffolding #lifecycle #update #ci  
 > **Родительская спецификация:** [[../../SPEC|SPEC.md]]  
 > **Канбан:** [[../Kanban|Канбан-доска]]  
@@ -93,10 +93,10 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Высокоуровневая декомпозиция (Task Breakdown)
 
-- [ ] **TASK-009:** Clean Slate Scaffolding & Zero-Broken-Links FTUE (Чистый старт без фантомных задач).
-- [ ] **TASK-010:** Brownfield Adoption, Smart Stack Autodetection & Legacy Audit Guidance (Бережное внедрение в существующие проекты).
-- [ ] **TASK-011:** Механизм бережного обновления инфраструктуры (`install.py --update`).
-- [ ] **TASK-012:** Генерация GitHub Actions CI (`.github/workflows/kb-lint.yml`) и комплексное E2E тестирование.
+- [x] **TASK-009:** Clean Slate Scaffolding & Zero-Broken-Links FTUE (Чистый старт без фантомных задач).
+- [x] **TASK-010:** Brownfield Adoption, Smart Stack Autodetection & Legacy Audit Guidance (Бережное внедрение в существующие проекты).
+- [x] **TASK-011:** Механизм бережного обновления инфраструктуры (`install.py --update`).
+- [x] **TASK-012:** Генерация GitHub Actions CI (`.github/workflows/kb-lint.yml`) и комплексное E2E тестирование.
 
 ---
 
@@ -105,6 +105,6 @@ kanban: "[[../Kanban|Канбан-доска]]"
 - [x] Концепция согласована с пользователем.
 - [x] Отклоненные идеи зафиксированы в отказных архитектурных решениях (`ADR-0005`, `ADR-0006`).
 - [x] Составлена декомпозиция задач `TASK-009` — `TASK-012`.
-- [ ] Дорожная карта `docs/02_Tasks/Roadmap.md` обновлена (добавлена Фаза 3, очищен Icebox).
-- [ ] Карточки Фазы 3 добавлены в `docs/02_Tasks/Kanban.md` в колонку `📥 Бэклог`.
-- [ ] Пройдена проверка целостности базы знаний через `python scripts/kb_lint.py --path docs`.
+- [x] Дорожная карта `docs/02_Tasks/Roadmap.md` обновлена (добавлена Фаза 3, очищен Icebox).
+- [x] Карточки Фазы 3 добавлены в `docs/02_Tasks/Kanban.md` в колонку `📥 Бэклог`.
+- [x] Пройдена проверка целостности базы знаний через `python scripts/kb_lint.py --path docs`.

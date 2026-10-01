@@ -54,129 +54,57 @@ STACK_PRESETS = {
     "swift": {
         "name": "iOS / macOS (Swift, SwiftUI, Xcode)",
         "language": "Swift",
-        "build_cmd": "swift build  # or: xcodebuild -scheme <App> build",
-        "test_cmd": "swift test   # or: xcodebuild test",
-        "lint_cmd": "swiftlint    # or: swift-format",
+        "build_cmd": "swift build",
+        "test_cmd": "swift test",
+        "lint_cmd": "swiftlint",
         "file_ext": ".swift",
-        "sample_contract": (
-            "```swift\n"
-            "public protocol ExampleServiceProtocol: Sendable {\n"
-            "    func execute() async throws -> String\n"
-            "}\n"
-            "```"
-        ),
-        "bug_env": (
-            "  - OS: iOS 18.x / macOS 15.x\n"
-            "  - Toolchain: Xcode 16.x / Swift 6.0\n"
-            "  - Device: iPhone 16 Simulator / Physical Device"
-        ),
-        "research_quirks": (
-            "* **Memory & ARC:** Weak/unowned references, retain cycles in closures.\n"
-            "* **Swift Concurrency:** `@MainActor` UI updates, `Sendable` crossing actor boundaries, Task isolation.\n"
-            "* **Background Execution:** `BackgroundTasks` framework (`BGAppRefreshTask`), `URLSession` background transfers.\n"
-            "* **Platform Security:** Keychain Services, App Sandbox, Entitlements."
-        ),
+        "sample_contract": "```swift\npublic protocol ExampleServiceProtocol: Sendable {\n    func execute() async throws -> String\n}\n```",
+        "bug_env": "  - OS: iOS 18.x / macOS 15.x\n  - Toolchain: Xcode 16.x / Swift 6.0",
+        "research_quirks": "* **Concurrency & Memory:** ARC weak/unowned, Task isolation, Sendable, BGAppRefresh.",
     },
     "ts": {
         "name": "Web / Node (TypeScript, JavaScript)",
         "language": "TypeScript",
-        "build_cmd": "npm run build  # or: pnpm build / yarn build",
-        "test_cmd": "npm test       # or: pnpm test / vitest / jest",
-        "lint_cmd": "npm run lint   # or: eslint .",
+        "build_cmd": "npm run build",
+        "test_cmd": "npm test",
+        "lint_cmd": "npm run lint",
         "file_ext": ".ts",
-        "sample_contract": (
-            "```typescript\n"
-            "export interface ExampleService {\n"
-            "  execute(signal?: AbortSignal): Promise<string>;\n"
-            "}\n"
-            "```"
-        ),
-        "bug_env": (
-            "  - OS: macOS / Linux / Windows\n"
-            "  - Runtime: Node.js 20.x / 22.x (or Browser)\n"
-            "  - Framework: TypeScript 5.x / Next.js / React"
-        ),
-        "research_quirks": (
-            "* **Event Loop & Concurrency:** Async/await microtasks, non-blocking I/O.\n"
-            "* **Memory Leaks:** Uncleaned event listeners, closures retaining DOM elements.\n"
-            "* **SSR & Hydration:** Server/client markup mismatches, local storage access on server.\n"
-            "* **Bundling:** Tree-shaking constraints, ESM/CJS interop."
-        ),
+        "sample_contract": "```typescript\nexport interface ExampleService {\n  execute(signal?: AbortSignal): Promise<string>;\n}\n```",
+        "bug_env": "  - OS: macOS / Linux / Windows\n  - Runtime: Node.js 20.x / 22.x",
+        "research_quirks": "* **Event Loop & Memory:** Microtasks, uncleaned event listeners, SSR hydration.",
     },
     "python": {
         "name": "Python (Standard / Pytest / FastAPI)",
         "language": "Python",
         "build_cmd": "python -m py_compile scripts/*.py",
-        "test_cmd": "pytest  # or: python -m unittest discover",
-        "lint_cmd": "ruff check .  # or: flake8 / mypy",
+        "test_cmd": "pytest",
+        "lint_cmd": "ruff check .",
         "file_ext": ".py",
-        "sample_contract": (
-            "```python\n"
-            "class ExampleService:\n"
-            "    def execute(self) -> str:\n"
-            "        return \"OK\"\n"
-            "```"
-        ),
-        "bug_env": (
-            "  - OS: macOS / Linux / Windows\n"
-            "  - Python: 3.10+ / 3.12+\n"
-            "  - Environment: Virtualenv / Poetry / Conda"
-        ),
-        "research_quirks": (
-            "* **Concurrency:** Asyncio event loop blocking, GIL limitations, thread safety.\n"
-            "* **Type Checking:** Strict type hints with Mypy/Pyright.\n"
-            "* **Packaging:** Dependency isolation and zero-dependency discipline.\n"
-            "* **OS Differences:** Windows CRLF/UTF-8 console encoding vs Unix LF."
-        ),
+        "sample_contract": "```python\nclass ExampleService:\n    def execute(self) -> str:\n        return \"OK\"\n```",
+        "bug_env": "  - OS: macOS / Linux / Windows\n  - Python: 3.10+ / 3.12+",
+        "research_quirks": "* **Async & Types:** Asyncio event loop blocking, GIL limitations, type hinting.",
     },
     "dotnet": {
         "name": ".NET / C# (ASP.NET, MAUI, Console)",
         "language": "C#",
         "build_cmd": "dotnet build",
         "test_cmd": "dotnet test",
-        "lint_cmd": "dotnet format --verify-no-changes",
+        "lint_cmd": "dotnet format",
         "file_ext": ".cs",
-        "sample_contract": (
-            "```csharp\n"
-            "public interface IExampleService {\n"
-            "    Task<string> ExecuteAsync(CancellationToken ct = default);\n"
-            "}\n"
-            "```"
-        ),
-        "bug_env": (
-            "  - OS: Windows 11 / macOS / Linux\n"
-            "  - SDK: .NET 8.0 / 9.0\n"
-            "  - Runtime: CoreCLR"
-        ),
-        "research_quirks": (
-            "* **Async & Threading:** `ConfigureAwait(false)`, ThreadPool starvation, sync-over-async.\n"
-            "* **Memory & GC:** IDisposable pattern, LOH allocations, memory leaks with events.\n"
-            "* **Platform Interop:** P/Invoke, WinRT, Native AOT limitations."
-        ),
+        "sample_contract": "```csharp\npublic interface IExampleService {\n    Task<string> ExecuteAsync(CancellationToken ct = default);\n}\n```",
+        "bug_env": "  - OS: Windows 11 / macOS / Linux\n  - SDK: .NET 8.0 / 9.0",
+        "research_quirks": "* **Async & GC:** ConfigureAwait(false), ThreadPool starvation, IDisposable pattern.",
     },
     "generic": {
         "name": "Generic / Other Technology Stack",
         "language": "Source Code",
-        "build_cmd": "make build  # or project build command",
-        "test_cmd": "make test   # or project test command",
-        "lint_cmd": "make lint   # or project lint command",
+        "build_cmd": "make build",
+        "test_cmd": "make test",
+        "lint_cmd": "make lint",
         "file_ext": ".src",
-        "sample_contract": (
-            "```text\n"
-            "// Key interface or component contract\n"
-            "function execute(): Result\n"
-            "```"
-        ),
-        "bug_env": (
-            "  - OS: macOS / Linux / Windows\n"
-            "  - Runtime: Project runtime environment\n"
-            "  - Compiler/SDK: Project build toolchain"
-        ),
-        "research_quirks": (
-            "* **Concurrency & Threading:** Thread safety, race conditions, synchronization.\n"
-            "* **Resource Management:** Memory lifecycle, handles, leaks.\n"
-            "* **OS Constraints:** Platform-specific APIs, permissions, background limits."
-        ),
+        "sample_contract": "```text\nfunction execute(): Result\n```",
+        "bug_env": "  - OS: macOS / Linux / Windows\n  - Runtime: Project runtime",
+        "research_quirks": "* **Concurrency & Resources:** Thread safety, race conditions, memory lifecycle.",
     },
 }
 
@@ -259,68 +187,35 @@ _3MODES = (
 )
 
 
-def generate_gemini_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# GEMINI.md -- Google Antigravity & Gemini CLI Rules for {project_name}
-
-> **Stack:** {stack['name']} | **Full Guidelines:** `AGENTS.md` | **Onboarding:** `docs/Onboarding.md`
-
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}
-Skills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-adr` `/kb-research` `/kb-lint`
-"""
+def _gen_rule(title: str, p: str, s: str, l: str, extra: str = "", tail: str = "") -> str:
+    st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
+    return f"# {title} for {p}\n\nStack: **{st['name']}**{extra}\n\n{_rules(l)}\n{_3MODES.format(test_cmd=st['test_cmd'])}{tail}"
 
 
-def generate_windsurfrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# .windsurfrules -- Windsurf Cascade AI Rules for {project_name}
-
-Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}`
-
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}"""
+def generate_gemini_md(p: str, s: str, l: str = "ru") -> str:
+    return _gen_rule("GEMINI.md -- Google Antigravity & Gemini CLI Rules", p, s, l, " | Full Guidelines: `AGENTS.md`", "\nSkills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-adr` `/kb-research` `/kb-lint`\n")
 
 
-def generate_clinerules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# Cline / Roo Code AI Rules for {project_name}
-
-Stack: **{stack['name']}** | Read `AGENTS.md` and `docs/Onboarding.md` first.
-
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}"""
+def generate_windsurfrules(p: str, s: str, l: str = "ru") -> str:
+    st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
+    return _gen_rule(".windsurfrules -- Windsurf Cascade AI Rules", p, s, l, f" | Build: `{st['build_cmd']}` | Test: `{st['test_cmd']}`")
 
 
-def generate_claude_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# CLAUDE.md -- Claude Code Guidelines for {project_name}
-
-Stack: **{stack['name']}** | Build: `{stack['build_cmd']}` | Test: `{stack['test_cmd']}` | Lint: `python3 scripts/kb_lint.py --path docs`
-Read: `AGENTS.md` · `docs/Onboarding.md` · `docs/02_Tasks/Kanban.md` · `docs/02_Tasks/Roadmap.md`
-
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}"""
+def generate_clinerules(p: str, s: str, l: str = "ru") -> str:
+    return _gen_rule("Cline / Roo Code AI Rules", p, s, l, " | Read `AGENTS.md` and `docs/Onboarding.md` first.")
 
 
-def generate_cursorrules(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# Cursor Rules for {project_name}
-
-You are a **Senior Engineering Partner**. Stack: **{stack['name']}**
-Read `AGENTS.md` and `docs/Onboarding.md` before any architectural decisions.
-
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}"""
+def generate_claude_md(p: str, s: str, l: str = "ru") -> str:
+    st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
+    return _gen_rule("CLAUDE.md -- Claude Code Guidelines", p, s, l, f" | Build: `{st['build_cmd']}` | Test: `{st['test_cmd']}` | Lint: `python3 scripts/kb_lint.py --path docs`")
 
 
-def generate_copilot_instructions(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
-    stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
-    return f"""# GitHub Copilot Instructions for {project_name}
+def generate_cursorrules(p: str, s: str, l: str = "ru") -> str:
+    return _gen_rule("Cursor Rules", p, s, l, "\nYou are a **Senior Engineering Partner**. Read `AGENTS.md`.")
 
-Stack: **{stack['name']}** | Read `AGENTS.md` for full guidelines.
 
-{_rules(doc_lang)}
-{_3MODES.format(test_cmd=stack['test_cmd'])}"""
+def generate_copilot_instructions(p: str, s: str, l: str = "ru") -> str:
+    return _gen_rule("GitHub Copilot Instructions", p, s, l, " | Read `AGENTS.md` for full guidelines.")
 
 
 def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:
@@ -694,6 +589,36 @@ def setup_git(target_dir: Path, git_choice: str):
         print("      git push -u origin main\n")
 
 
+def deploy_ci_workflow(target_dir: Path, ci_provider: str = "none"):
+    if ci_provider == "github":
+        wf_dir = target_dir / ".github" / "workflows"
+        wf_dir.mkdir(parents=True, exist_ok=True)
+        wf_file = wf_dir / "kb-lint.yml"
+        wf_content = (
+            "name: Docs-as-Code Knowledge Base Audit\n\n"
+            "on:\n"
+            "  push:\n"
+            "    branches: [ main, master ]\n"
+            "  pull_request:\n"
+            "    branches: [ main, master ]\n\n"
+            "jobs:\n"
+            "  kb-lint:\n"
+            "    runs-on: ubuntu-latest\n"
+            "    steps:\n"
+            "      - name: Checkout repository\n"
+            "        uses: actions/checkout@v4\n\n"
+            "      - name: Set up Python\n"
+            "        uses: actions/setup-python@v5\n"
+            "        with:\n"
+            "          python-version: '3.11'\n\n"
+            "      - name: Run Knowledge Base Linter\n"
+            "        run: |\n"
+            "          python scripts/kb_lint.py --path docs\n"
+        )
+        wf_file.write_text(wf_content, encoding="utf-8")
+        print("✅ Deployed GitHub Actions CI workflow (.github/workflows/kb-lint.yml).")
+
+
 # --- INSTALLATION ORCHESTRATOR & INFRASTRUCTURE HELPERS ---
 
 def get_agent_rule_specs(target_dir: Path, project_name: str, stack_key: str, doc_lang: str):
@@ -765,13 +690,17 @@ def install_harness(
     git_choice: str,
     doc_lang: str = "ru",
     force: bool = False,
+    ci_choice: str = "none",
 ):
     print(f"\n🚀 Installing Agent Docs-as-Code Harness into: {target_dir.resolve()}")
     print(f"   • Project Name: {project_name}")
     print(f"   • Stack: {STACK_PRESETS.get(stack_key, STACK_PRESETS['generic'])['name']}")
     print(f"   • AI Agent configs: {agent_choice}")
     print(f"   • Documentation language: {doc_lang}")
-    print(f"   • Git mode: {git_choice}\n")
+    print(f"   • Git mode: {git_choice}")
+    if ci_choice != "none":
+        print(f"   • CI mode: {ci_choice}")
+    print()
 
     docs_dir = target_dir / "docs"
     if docs_dir.exists() and not force:
@@ -826,6 +755,9 @@ def install_harness(
 
     # 6. Verify knowledge base integrity with kb_lint.py
     run_linter_audit(target_dir, docs_dir)
+
+    # 6.1. CI setup
+    deploy_ci_workflow(target_dir, ci_choice)
 
     # 7. Git setup
     setup_git(target_dir, git_choice)
@@ -901,6 +833,7 @@ def update_harness(
     stack_key: str = None,
     doc_lang: str = None,
     project_name: str = None,
+    ci_provider: str = None,
 ) -> int:
     docs_dir = target_dir / "docs"
     if not (docs_dir / "00_Index.md").is_file():
@@ -952,6 +885,10 @@ def update_harness(
 
     # Record update in docs/Devlog.md
     record_devlog_update(docs_dir, today_str, doc_lang)
+
+    # Refresh CI workflow if requested or already existing
+    if ci_provider == "github" or (target_dir / ".github" / "workflows" / "kb-lint.yml").is_file():
+        deploy_ci_workflow(target_dir, "github")
 
     # Run kb_lint audit
     run_linter_audit(target_dir, docs_dir)
@@ -1052,7 +989,15 @@ def run_interactive_wizard(args) -> tuple:
     git_map = {"1": "local", "2": "github", "3": "none"}
     git_choice = git_map.get(git_choice_input, "local")
 
-    return project_name, stack_key, agent_choice, git_choice, doc_lang
+    # 6. CI Setup
+    print("\n? Continuous Integration (CI) Workflow:")
+    print("  [1] None (Local-Only / Skip CI) [Default]")
+    print("  [2] GitHub Actions (.github/workflows/kb-lint.yml)")
+    ci_choice_input = prompt_user_input("Select [1-2]", default="1")
+    ci_map = {"1": "none", "2": "github"}
+    ci_choice = ci_map.get(ci_choice_input, "none")
+
+    return project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice
 
 
 # --- MAIN ENTRY POINT ---
@@ -1061,16 +1006,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Agent Docs-as-Code Harness Installer",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Interactive mode:
+        epilog="""Examples:
   python3 install.py
-
-  # Non-interactive mode for Swift/iOS:
-  python3 install.py --non-interactive --name "MyApp" --stack swift --agent all --git local
-
-  # Install into specific target directory with English documentation:
-  python3 install.py -y --target-dir ../other-project --stack ts --doc-lang en
+  python3 install.py -y -n MyApp -s swift -a all -g local
+  python3 install.py -y -d ../project -s ts -l en --ci github
 """,
     )
 
@@ -1098,6 +1037,12 @@ Examples:
         choices=["local", "github", "none"],
         default=None,
         help="Git version control strategy (default: local)",
+    )
+    parser.add_argument(
+        "--ci",
+        choices=["github", "none"],
+        default=None,
+        help="Continuous Integration workflow to deploy (default: none)",
     )
     parser.add_argument(
         "--target-dir", "-d",
@@ -1131,6 +1076,7 @@ Examples:
             stack_key=args.stack,
             doc_lang=args.doc_lang,
             project_name=args.name,
+            ci_provider=args.ci,
         )
         sys.exit(exit_code)
 
@@ -1142,13 +1088,14 @@ Examples:
         is_interactive = False
 
     if is_interactive:
-        project_name, stack_key, agent_choice, git_choice, doc_lang = run_interactive_wizard(args)
+        project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice = run_interactive_wizard(args)
     else:
         project_name = args.name or target_dir.name or "MyProject"
         stack_key = detect_project_stack(target_dir) if (not args.stack or args.stack == "auto") else args.stack
         agent_choice = args.agent or "all"
         git_choice = args.git or "local"
         doc_lang = args.doc_lang or "ru"
+        ci_choice = args.ci or "none"
 
     install_harness(
         target_dir=target_dir,
@@ -1158,6 +1105,7 @@ Examples:
         git_choice=git_choice,
         doc_lang=doc_lang,
         force=args.force,
+        ci_choice=ci_choice,
     )
 
 

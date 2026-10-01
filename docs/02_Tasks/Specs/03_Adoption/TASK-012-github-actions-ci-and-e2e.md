@@ -1,7 +1,7 @@
 ---
 id: TASK-012
 title: "Шаблон GitHub Actions CI (.github/workflows/kb-lint.yml) и комплексное E2E тестирование"
-status: planned
+status: done
 type: task
 phase: 3
 component:
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-012 — Шаблон GitHub Actions CI и комплексное E2E тестирование
 
 > **ID:** TASK-012  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase3 #component/installer #component/ci #component/testing #component/docs  
 > **Родительский план:** [[../../Plans/PLAN-003-brownfield-adoption-and-lifecycle|PLAN-003]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  
@@ -108,25 +108,25 @@ def deploy_ci_workflow(target_dir: Path, ci_provider: str):
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и синтаксис:
-- [ ] Проверка синтаксиса: `python -m py_compile install.py` (Exit code 0).
-- [ ] Сборка через `python scripts/build_installer.py` (Exit code 0, размер < 82 КБ).
+- [x] Проверка синтаксиса: `python -m py_compile install.py` (Exit code 0).
+- [x] Сборка через `python scripts/build_installer.py` (Exit code 0, размер < 82 КБ).
 
 ### Автоматические тесты:
-- [ ] Запуск `python -m unittest discover -s tests` (все тесты проходят, 100% pass).
-- [ ] Тест развертывания проекта с флагом `--ci github`:
+- [x] Запуск `python -m unittest discover -s tests` (все тесты проходят, 100% pass).
+- [x] Тест развертывания проекта с флагом `--ci github`:
   - Файл `.github/workflows/kb-lint.yml` создан.
   - Содержит шаги `actions/checkout` и запуск `scripts/kb_lint.py`.
-- [ ] Тест без флага `--ci` (по умолчанию папка `.github/workflows` не создается).
+- [x] Тест без флага `--ci` (по умолчанию папка `.github/workflows` не создается).
 
 ### Документация:
-- [ ] Проверка базы знаний через `python scripts/kb_lint.py --path docs` (0 broken links, valid frontmatter).
+- [x] Проверка базы знаний через `python scripts/kb_lint.py --path docs` (0 broken links, valid frontmatter).
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Флаг `--ci github` генерирует готовый workflow для автоматической валидации базы знаний в GitHub Actions.
-- [ ] Интерактивный мастер поддерживает выбор генерации CI.
-- [ ] Все новые возможности Фазы 3 покрыты автоматическими тестами в `test_installer.py`.
-- [ ] `README.md` актуализирован.
-- [ ] `docs/02_Tasks/Kanban.md` и `docs/02_Tasks/Roadmap.md` обновлены, все вехи Фазы 3 закрыты.
+- [x] Флаг `--ci github` генерирует готовый workflow для автоматической валидации базы знаний в GitHub Actions.
+- [x] Интерактивный мастер поддерживает выбор генерации CI.
+- [x] Все новые возможности Фазы 3 покрыты автоматическими тестами в `test_installer.py`.
+- [x] `README.md` актуализирован.
+- [x] `docs/02_Tasks/Kanban.md` и `docs/02_Tasks/Roadmap.md` обновлены, все вехи Фазы 3 закрыты.

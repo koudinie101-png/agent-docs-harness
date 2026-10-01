@@ -187,23 +187,34 @@ The installer tailors templates, build commands, and agent prompts to your stack
 ## 💻 CLI Options & Non-Interactive Usage
 
 ```bash
-# Non-interactive installation for iOS/macOS Swift project with all agent rules and Russian docs:
-python3 install.py --non-interactive --name "MySwiftApp" --stack swift --agent all --doc-lang ru --git local
+# Non-interactive installation with autodetection, all agent rules, and GitHub Actions CI:
+python3 install.py --non-interactive --name "MySwiftApp" --stack auto --agent all --ci github --git local
 
-# Install into a separate directory with English documentation:
-python3 install.py -y --target-dir ../web-project --stack ts --agent gemini --doc-lang en
+# Safe update of harness components (templates, linter, skills, graph) in existing project:
+python3 install.py --update
 
 # CLI Options summary:
 python3 install.py --help
   --name, -n        Project name (default: directory name)
-  --stack, -s       {swift, ts, python, dotnet, generic}
+  --stack, -s       {auto, swift, ts, python, dotnet, generic} (default: auto)
   --agent, -a       {all, cline, claude, cursor, copilot, gemini, windsurf, generic}
   --doc-lang, -l    {ru, en, custom} (default: ru)
-  --git, -g         {local, github, none}
+  --git, -g         {local, github, none} (default: local)
+  --ci              {github, none} Continuous Integration workflow (default: none)
   --target-dir, -d  Destination directory (default: .)
   --non-interactive Run without interactive prompts (-y, --yes)
   --force, -f       Overwrite configurations if present
+  --update, -u      Safely update harness infrastructure preserving user tasks & notes
 ```
+
+### 🔄 Safe Lifecycle Updates (`install.py --update`)
+Upgrades templates, `kb_lint.py`, `.agents/skills/*`, and Obsidian graph settings to latest releases while guaranteeing **100% preservation** of user data (`02_Tasks/*`, `03_Decisions_ADR/*`, `04_Research/*`, `05_Testing/*`, `SPEC.md`, `README.md`). User-customized agent rules are automatically backed up as `*.bak`.
+
+### 🛡️ Continuous Integration (GitHub Actions)
+Passing `--ci github` generates `.github/workflows/kb-lint.yml`, running automated knowledge base audits on every Pull Request and Push to `main`/`master` to prevent broken wikilinks or malformed frontmatter from reaching production.
+
+### 🔍 Smart Stack Autodetection (Brownfield Adoption)
+When run in existing repositories (`--stack auto`), the harness heuristically inspects root marker files (`Package.swift`, `package.json`, `pyproject.toml`, `*.sln`) to select the appropriate toolchain preset and non-destructively appends Docs-as-Code sections to existing `README.md` and `.gitignore`.
 
 ---
 

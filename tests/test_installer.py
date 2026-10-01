@@ -603,6 +603,67 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed after update:\n{kb_lint_res.stdout}")
             self.assertIn("No broken wikilinks found", kb_lint_res.stdout)
 
+    def test_12_ci_workflow_generation_and_e2e(self):
+        """E2E test: Verify GitHub Actions CI workflow generation (--ci github) and absence by default."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # 1. Test default: no CI workflow generated
+            target_no_ci = Path(tmp_dir) / "NoCIApp"
+            target_no_ci.mkdir()
+            install.install_harness(
+                target_dir=target_no_ci,
+                project_name="NoCIApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                ci_choice="none",
+            )
+            self.assertFalse((target_no_ci / ".github" / "workflows" / "kb-lint.yml").exists())
+
+            # 2. Test with ci_choice="github" via install_harness
+            target_ci = Path(tmp_dir) / "CIApp"
+            target_ci.mkdir()
+            install.install_harness(
+                target_dir=target_ci,
+                project_name="CIApp",
+                stack_key="ts",
+                agent_choice="all",
+                git_choice="none",
+                ci_choice="github",
+            )
+            ci_file = target_ci / ".github" / "workflows" / "kb-lint.yml"
+            self.assertTrue(ci_file.is_file(), "kb-lint.yml was not created when ci_choice='github'!")
+            ci_content = ci_file.read_text(encoding="utf-8")
+            self.assertIn("Docs-as-Code Knowledge Base Audit", ci_content)
+            self.assertIn("actions/checkout", ci_content)
+            self.assertIn("actions/setup-python", ci_content)
+            self.assertIn("python scripts/kb_lint.py --path docs", ci_content)
+
+            # 3. Test CLI invocation with --ci github flag
+            target_cli = Path(tmp_dir) / "CliCIApp"
+            res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "-y", "--target-dir", str(target_cli), "--ci", "github", "--stack", "generic", "--git", "none"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"install.py --ci github failed:\n{res.stdout}\n{res.stderr}")
+            self.assertTrue((target_cli / ".github" / "workflows" / "kb-lint.yml").is_file())
+            self.assertIn("Deployed GitHub Actions CI workflow", res.stdout)
+
+            # 4. Test update_harness refreshes existing CI workflow
+            ci_cli_file = target_cli / ".github" / "workflows" / "kb-lint.yml"
+            ci_cli_file.write_text("# OUTDATED_CI_WORKFLOW", encoding="utf-8")
+            res_update = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target_cli)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_update.returncode, 0, f"install.py --update failed on CI app:\n{res_update.stdout}")
+            self.assertIn("actions/checkout", ci_cli_file.read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()
