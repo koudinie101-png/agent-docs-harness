@@ -1,7 +1,7 @@
 ---
 id: TASK-018
 title: "Рефакторинг 13 шаблонов docs/00_Templates/ в компактные каркасы (Skeleton Templates)"
-status: planned
+status: done
 type: task
 phase: 5
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-018 — Рефакторинг 13 шаблонов docs/00_Templates/ в компактные каркасы
 
 > **ID:** TASK-018  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase5 #component/templates #component/token-optimization  
 > **Родительский план:** [[../../Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]  
 > **Связанные ADR и исследования:** [[../../../04_Research/RESEARCH-004-token-efficiency-and-context-compression|RESEARCH-004]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  
@@ -96,20 +96,20 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ## 4. План верификации (Verification Plan)
 
 ### Автоматическая проверка:
-- [ ] Проверка суммарного размера каталога `docs/00_Templates/`:
+- [x] Проверка суммарного размера каталога `docs/00_Templates/`:
   ```powershell
   (Get-ChildItem -Path docs/00_Templates -Recurse -Filter *.md | Measure-Object -Property Length -Sum).Sum
   ```
-  *Критерий:* суммарный объем $\le$ 21 000 байт (было 38 774 байта).
-- [ ] Проверка размера `TEMPLATE_ONBOARDING.md`:
-  *Критерий:* $\le$ 4 000 байт (было 11 423 байта).
-- [ ] Валидация базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, frontmatter валиден во всех 13 шаблонах).
+  *Критерий:* суммарный объем $\le$ 21 000 байт (было 38 774 байта, результат: 19 712 байт).
+- [x] Проверка размера `TEMPLATE_ONBOARDING.md`:
+  *Критерий:* $\le$ 4 000 байт (было 11 423 байта, результат: 3 567 байт).
+- [x] Валидация базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, frontmatter валиден во всех 13 шаблонах).
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Все 13 шаблонов очищены от теоретических эссе и переведены в формат Skeleton Templates.
-- [ ] Шаблон `TEMPLATE_ONBOARDING.md` сокращен до компактной шпаргалки.
-- [ ] Сохранены все обязательные поля frontmatter и структура секций.
-- [ ] Линтер `kb_lint.py` подтверждает отсутствие сломанных ссылок и корректность frontmatter.
+- [x] Все 13 шаблонов очищены от теоретических эссе и переведены в формат Skeleton Templates.
+- [x] Шаблон `TEMPLATE_ONBOARDING.md` сокращен до компактной шпаргалки.
+- [x] Сохранены все обязательные поля frontmatter и структура секций.
+- [x] Линтер `kb_lint.py` подтверждает отсутствие сломанных ссылок и корректность frontmatter.

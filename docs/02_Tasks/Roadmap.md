@@ -67,7 +67,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-005-high-snr-token-optimization|PLAN-005]]
 
 - [x] High-SNR рефакторинг реестра и 12 скиллов `.agents/skills/` (микро-описания, устранение дублирования, легкий роутер) — [[Specs/05_TokenOptimization/TASK-017-skills-high-snr-refactoring|TASK-017]].
-- [ ] Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) — [[Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring|TASK-018]].
+- [x] Рефакторинг 13 шаблонов `docs/00_Templates/` в компактные каркасы (Skeleton Templates) — [[Specs/05_TokenOptimization/TASK-018-skeleton-templates-refactoring|TASK-018]].
 - [ ] Внедрение правил High-SNR, Anti-Echo и Silent-CLI в `AGENTS.md`, `scripts/kb_lint.py` и `scripts/kb_release.py` — [[Specs/05_TokenOptimization/TASK-019-anti-echo-and-silent-cli|TASK-019]].
 - [ ] Синхронизация сборщика `scripts/build_installer.py`, `install.py` (`--update`), E2E тесты и замеры сжатия — [[Specs/05_TokenOptimization/TASK-020-bundler-update-and-e2e-benchmarks|TASK-020]].
 
