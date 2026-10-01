@@ -10,17 +10,17 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-004-release-management-and-lifecycle-automation|План: Фаза 4 — Релиз-менеджмент и автоматизация жизненного цикла]] #plan #phase4 #release
-  - [ ] [[Specs/04_Releases/TASK-016-e2e-release-pipeline-verification-and-docs|TASK-016]]: Комплексное E2E тестирование релизного пайплайна (Local-Only и GitHub) и обновление документации #task #phase4
 
 ## ⏳ В работе (In Progress)
 
 
 ## ✅ Готово (Done)
 
-- [x] [[Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging|TASK-015]]: Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` (включая `--update`) (2026-10-01) #task #phase4
-- [x] [[Specs/04_Releases/TASK-014-kb-release-skill-and-complete-nudge|TASK-014]]: Исполняемый скилл `.agents/skills/kb-release/SKILL.md` (Dual-Mode workflow, префлайт-чеки, подсказка в `kb-complete`) (2026-10-01) #task #phase4
-- [x] [[Specs/04_Releases/TASK-013-template-release-and-kb-release-utility|TASK-013]]: Канонический шаблон `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/` и утилита `scripts/kb_release.py` (2026-10-01) #task #phase4
+- [x] [[Plans/PLAN-004-release-management-and-lifecycle-automation|План: Фаза 4 — Релиз-менеджмент и автоматизация жизненного цикла]] (2026-10-01) #plan #phase4 #release
+  - [x] [[Specs/04_Releases/TASK-016-e2e-release-pipeline-verification-and-docs|TASK-016]]: Комплексное E2E тестирование релизного пайплайна (Local-Only и GitHub) и обновление документации (2026-10-01) #task #phase4
+  - [x] [[Specs/04_Releases/TASK-015-github-actions-release-ci-and-installer-packaging|TASK-015]]: Шаблон GitHub Actions CI `.github/workflows/release.yml` и упаковка в инсталлятор `install.py` / `build_installer.py` (включая `--update`) (2026-10-01) #task #phase4
+  - [x] [[Specs/04_Releases/TASK-014-kb-release-skill-and-complete-nudge|TASK-014]]: Исполняемый скилл `.agents/skills/kb-release/SKILL.md` (Dual-Mode workflow, префлайт-чеки, подсказка в `kb-complete`) (2026-10-01) #task #phase4
+  - [x] [[Specs/04_Releases/TASK-013-template-release-and-kb-release-utility|TASK-013]]: Канонический шаблон `TEMPLATE_RELEASE.md`, каталог `docs/02_Tasks/Releases/` и утилита `scripts/kb_release.py` (2026-10-01) #task #phase4
 - [x] [[Plans/PLAN-003-brownfield-adoption-and-lifecycle|План: Фаза 3 — Зрелость инсталлятора (Brownfield Adoption, Clean Slate, Обновление и CI)]] (2026-10-01) #plan #phase3
   - [x] [[Specs/03_Adoption/TASK-012-github-actions-ci-and-e2e|TASK-012]]: Шаблон GitHub Actions CI (`.github/workflows/kb-lint.yml`) и E2E тесты (2026-10-01) #task #phase3
   - [x] [[Specs/03_Adoption/TASK-011-safe-update-mechanism|TASK-011]]: Механизм бережного обновления инфраструктуры (`install.py --update`) (2026-10-01) #task #phase3

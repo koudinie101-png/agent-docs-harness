@@ -18,6 +18,25 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-016: Комплексное E2E тестирование релизного пайплайна и документация (Завершение Фазы 4)
+- **Что сделано:**
+  - Написаны и интегрированы 3 сквозных E2E теста в `tests/test_installer.py`:
+    - `test_13_release_components_deployed_on_fresh_install`: верификация развертывания `docs/02_Tasks/Releases/`, `TEMPLATE_RELEASE.md`, `scripts/kb_release.py`, скилла `kb-release` и воркфлоу `release.yml`.
+    - `test_14_kb_release_utility_execution_in_sandbox`: генерация релиза, расчет потокового SHA-256 артефакта в `dist/` и проверка генерации `RELEASE-v1.0.0.md` с аудитом через `kb_lint.py`.
+    - `test_15_update_preserves_existing_releases`: верификация бережного обновления через `install.py --update` (обновление шаблонов/скиллов при 100% сохранении существующих заметок `docs/02_Tasks/Releases/RELEASE-*.md`).
+  - Синхронизирована пользовательская и агентная документация:
+    - `README.md`: добавлена 13-я позиция каталога шаблонов (`TEMPLATE_RELEASE.md`), папка `Releases/`, 12-й скилл `/kb-release`, команды запуска `scripts/kb_release.py` и раздел Dual-Mode автоматизации релизов.
+    - `docs/Onboarding.md`: добавлен раздел «3. Релиз-менеджмент и жизненный цикл (`/kb-release`)» с диаграммой каналов выпуска (Dual-Mode: GitHub / Local-Only), Pre-flight чеками и Build Hook Contract.
+    - `docs/00_Index.md`: актуализирована карта разделов, добавлен раздел `Releases/` и шаблон `TEMPLATE_RELEASE.md`.
+  - Закрыта задача `TASK-016` и полностью завершена **Фаза 4 («Релиз-менеджмент и автоматизация жизненного цикла»)** в `Kanban.md` и `Roadmap.md`.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 23/23 тестов успешно пройдены (100% pass).
+  - `python scripts/kb_lint.py --path docs` -> 54 файла, 260 ссылок, 0 broken links, 100% валидный YAML frontmatter.
+- **Следующий шаг:**
+  - Выполнение приемочных сценариев в `docs/05_Testing/` и публикация первого официального релиза Фазы 4 через `/kb-release`.
+
+---
+
 ### [2026-10-01] — Завершение TASK-015: Шаблон GitHub Actions CI release.yml и упаковка релизных компонентов в инсталлятор
 - **Что сделано:**
   - Разработан эталонный GitHub Actions workflow `.github/workflows/release.yml` для автоматической сборки и публикации релизов по push аннотированных тегов `v*`:

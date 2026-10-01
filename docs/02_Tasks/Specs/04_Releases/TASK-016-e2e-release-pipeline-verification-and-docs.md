@@ -1,7 +1,7 @@
 ---
 id: TASK-016
 title: "Комплексное E2E тестирование релизного пайплайна и обновление документации"
-status: planned
+status: done
 type: task
 phase: 4
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-016 — Комплексное E2E тестирование релизного пайплайна и документация
 
 > **ID:** TASK-016  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase4 #component/testing #component/e2e #component/documentation  
 > **Родительский план:** [[../../Plans/PLAN-004-release-management-and-lifecycle-automation|PLAN-004]]  
 > **Связанные ADR:** [[../../../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]]  
@@ -90,24 +90,24 @@ def test_update_preserves_existing_releases(self):
 ## 4. План верификации (Verification Plan)
 
 ### Автоматические тесты:
-- [ ] Полный прогон тестового набора:
+- [x] Полный прогон тестового набора:
   ```bash
   python -m unittest discover -s tests
   ```
-  *(Ожидаемый результат: все тесты зеленые, 100% pass)*
+  *(Ожидаемый результат: все тесты зеленые, 100% pass: 23/23 тестов)*
 
 ### Целостность базы знаний:
-- [ ] Запуск линтера Docs-as-Code:
+- [x] Запуск линтера Docs-as-Code:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
-  *(Ожидаемый результат: 0 broken wikilinks, 100% валидный frontmatter)*
+  *(Ожидаемый результат: 0 broken wikilinks, 100% валидный frontmatter: 54 файла, 260 ссылок)*
 
 ---
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Все E2E сценарии в `tests/test_installer.py` успешно выполняются.
-- [ ] Документация `README.md`, `docs/Onboarding.md` и `docs/00_Index.md` синхронизирована с новым функционалом.
-- [ ] Линтер `kb_lint.py` не обнаруживает ни одной битой ссылки.
-- [ ] В `Kanban.md` и `Roadmap.md` все задачи Фазы 4 полностью связаны с ТЗ.
+- [x] Все E2E сценарии в `tests/test_installer.py` успешно выполняются.
+- [x] Документация `README.md`, `docs/Onboarding.md` и `docs/00_Index.md` синхронизирована с новым функционалом.
+- [x] Линтер `kb_lint.py` не обнаруживает ни одной битой ссылки.
+- [x] В `Kanban.md` и `Roadmap.md` все задачи Фазы 4 полностью связаны с ТЗ.
