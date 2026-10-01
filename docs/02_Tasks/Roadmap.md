@@ -87,11 +87,22 @@ tags:
 
 ---
 
+## Фаза 7: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes
+**Цель:** Автоматизировать выпуск релизов на GitHub без ручного вмешательства: двухформатный экспорт в `scripts/kb_release.py` (`RELEASE-vX.Y.Z.md` для базы знаний + `dist/RELEASE_NOTES.md` для внешнего мира), автоконвертер викиссылок в чистый Markdown, передача `body_path` в `.github/workflows/release.yml`, актуализация скилла `/kb-release` и упаковка в инсталлятор `install.py`.  
+**Первоисточник плана:** [[Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
+**Нормативная база:** [[../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]
+
+- [ ] Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py` и модульные тесты — `TASK-025`.
+- [ ] Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и шаблонах инсталлятора — `TASK-026`.
+- [ ] Актуализация скилла `.agents/skills/kb-release/SKILL.md` (параметр `--notes-file` и Dual-Export шаги) — `TASK-027`.
+- [ ] Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты и аудит целостности базы знаний — `TASK-028`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Стандарт оформления публичных релизов на GitHub и экспорт Release Notes:** двухформатный экспорт в `scripts/kb_release.py` (`RELEASE-vX.Y.Z.md` для Vault + `dist/RELEASE_NOTES.md` для GitHub без сырых викиссылок), автоматическая привязка `body_path` в `.github/workflows/release.yml`, таблица контрольных сумм SHA-256 и сниппет быстрого старта — [[../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]].
 * 💡 **Архитектура каналов обратной связи и воронка триажа (Feedback Loops & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер триажа `docs/02_Tasks/Inbox/`, шаблоны GitHub Issue Forms (`.github/ISSUE_TEMPLATE/`) и Discussions (Ideas), безопасный локальный бандл `install.py --report` для друзей и оффлайн-режима, скилл `/kb-triage` — [[../04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** подробный пошаговый туториал с примерами диалогов и сценариев использования для новичков.
