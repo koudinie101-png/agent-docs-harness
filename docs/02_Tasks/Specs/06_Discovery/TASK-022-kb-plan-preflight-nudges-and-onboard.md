@@ -1,7 +1,7 @@
 ---
 id: TASK-022
 title: "Префлайт-чеки в kb-plan и обновление скилла kb-onboard (4-этапный цикл)"
-status: planned
+status: done
 type: task
 phase: 6
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-022 — Префлайт-чеки в kb-plan и обновление kb-onboard
 
 > **ID:** TASK-022  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase6 #component/skills #component/planning #component/onboarding  
 > **Родительский план:** [[../../Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../../../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  

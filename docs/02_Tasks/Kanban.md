@@ -11,16 +11,16 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|План: Фаза 6 — Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research]] #plan #phase6 #discovery
-  - [ ] [[Specs/06_Discovery/TASK-023-roadmap-onboarding-templates-update|TASK-023]]: Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` и руководства `Onboarding.md` #task #phase6
   - [ ] [[Specs/06_Discovery/TASK-024-installer-sync-and-e2e-verification|TASK-024]]: Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и аудит целостности #task #phase6
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/06_Discovery/TASK-022-kb-plan-preflight-nudges-and-onboard|TASK-022]]: Префлайт-чеки в `/kb-plan` (Nudge для невалидированных идей) и обновление `/kb-onboard` (4-этапный цикл) #task #phase6
+- [ ] [[Specs/06_Discovery/TASK-023-roadmap-onboarding-templates-update|TASK-023]]: Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` и руководства `Onboarding.md` #task #phase6
 
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/06_Discovery/TASK-022-kb-plan-preflight-nudges-and-onboard|TASK-022]]: Префлайт-чеки в `/kb-plan` (Nudge для невалидированных идей) и обновление `/kb-onboard` (4-этапный цикл) (2026-10-01) #task #phase6
 - [x] [[Specs/06_Discovery/TASK-021-kb-research-evolution-and-roadmap-routing|TASK-021]]: Эволюция скилла `.agents/skills/kb-research/SKILL.md` (двухпутевая воронка: Icebox vs Отклоненные ADR) (2026-10-01) #task #phase6
 
 - [x] [[Plans/PLAN-005-high-snr-token-optimization|План: Фаза 5 — Оптимизация токенов и High-SNR архитектура контекста]] (2026-10-01) #plan #phase5 #token-optimization

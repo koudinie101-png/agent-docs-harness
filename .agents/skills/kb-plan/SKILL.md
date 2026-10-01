@@ -13,7 +13,8 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
 
 ## Procedure
 1. **Source Discovery & Intent Routing:**
-   - **Explicit Idea:** If specified (`/kb-plan <idea>`), proceed immediately with that topic.
+   - **Explicit Idea:** If specified (`/kb-plan <idea>`), check feasibility maturity:
+     - *Pre-flight Nudge:* If proposal introduces new external dependencies (violating ADR-0001), platform uncertainties, or high risk, suggest running `/kb-research <idea>` (Mode 0) first to validate trade-offs and record ADR. If user confirms direct planning or idea is low-risk, proceed immediately.
    - **No Argument (`/kb-plan`):** Inspect Icebox in `docs/02_Tasks/Roadmap.md`. Rank candidates by value impact with 1-line rationale and top recommendation. If empty, ask user.
 2. **Clarify & Challenge:** Identify requirements, edge cases, trade-offs. Critique flawed approaches.
 3. **Draft Plan:** Break down into potential tasks, affected modules, and risks.
