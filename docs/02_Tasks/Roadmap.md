@@ -87,7 +87,7 @@ tags:
 
 ---
 
-## Фаза 7: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes
+## Фаза 7: Стандарт оформления публичных релизов на GitHub и экспорт Release Notes — ✅ Завершена
 **Цель:** Автоматизировать выпуск релизов на GitHub без ручного вмешательства: двухформатный экспорт в `scripts/kb_release.py` (`RELEASE-vX.Y.Z.md` для базы знаний + `dist/RELEASE_NOTES.md` для внешнего мира), автоконвертер викиссылок в чистый Markdown, передача `body_path` в `.github/workflows/release.yml`, актуализация скилла `/kb-release` и упаковка в инсталлятор `install.py`.  
 **Первоисточник плана:** [[Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 **Нормативная база:** [[../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]
