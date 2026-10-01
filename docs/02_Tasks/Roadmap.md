@@ -74,11 +74,22 @@ tags:
 
 ---
 
+## Фаза 6: Интеграция этапа исследования (Режим 0: Discovery & Feasibility) и эволюция /kb-research
+**Цель:** Замкнуть сквозной жизненный цикл разработки (модель Double Diamond: Discovery + Delivery), эволюционировать скилл `/kb-research` в инструмент стресс-тестирования продуктово-архитектурных гипотез с автоматической воронкой регистрации в `Roadmap.md` (Icebox vs отказные ADR), внедрить префлайт-чеки в `/kb-plan` и актуализировать онбординг.  
+**Первоисточник плана:** [[Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]  
+**Нормативная база:** [[../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]]
+
+- [ ] Эволюция скилла `.agents/skills/kb-research/SKILL.md` (двухпутевая воронка: Icebox vs Отклоненные ADR) — `TASK-021`.
+- [ ] Префлайт-чеки в `/kb-plan` (Nudge для невалидированных идей) и обновление `/kb-onboard` (4-этапный цикл) — `TASK-022`.
+- [ ] Обновление шаблонов `TEMPLATE_ROADMAP.md`, `TEMPLATE_ONBOARDING.md` и руководства `Onboarding.md` — `TASK-023`.
+- [ ] Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и аудит целостности — `TASK-024`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Интеграция этапа исследования новых идей в жизненный цикл (Режим 0: Discovery & Feasibility):** эволюция `/kb-research` в инструмент валидации продуктовых и архитектурных гипотез с критическим партнерством агента, автоматическая воронка валидации (одобрено -> Icebox, нежизнеспособно -> отказной ADR), префлайт-чеки в `/kb-plan` и обновление канона `AGENTS.md` — [[../04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007]], [[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012]].
 * 💡 **Стандарт оформления публичных релизов на GitHub и экспорт Release Notes:** двухформатный экспорт в `scripts/kb_release.py` (`RELEASE-vX.Y.Z.md` для Vault + `dist/RELEASE_NOTES.md` для GitHub без сырых викиссылок), автоматическая привязка `body_path` в `.github/workflows/release.yml`, таблица контрольных сумм SHA-256 и сниппет быстрого старта — [[../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]].
 * 💡 **Архитектура каналов обратной связи и воронка триажа (Feedback Loops & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер триажа `docs/02_Tasks/Inbox/`, шаблоны GitHub Issue Forms (`.github/ISSUE_TEMPLATE/`) и Discussions (Ideas), безопасный локальный бандл `install.py --report` для друзей и оффлайн-режима, скилл `/kb-triage` — [[../04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
