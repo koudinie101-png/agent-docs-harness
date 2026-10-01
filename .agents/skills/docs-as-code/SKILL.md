@@ -15,8 +15,8 @@ Central router for Docs-as-Code infrastructure. Enforces the 3-mode workflow and
 | `/kb-onboard` | Help | Developer and agent onboarding cheatsheet | `kb-onboard` |
 | `/kb-plan` | Mode 1 | RFC discussion, PLAN-XXX. **No code.** | `kb-plan` |
 | `/kb-task` | Mode 2 | Spec TASK-XXX with contracts and DoD. **No code.** | `kb-task` |
-| `/kb-implement`| Mode 3 | Implement code strictly adhering to TASK-XXX | `kb-implement` |
-| `/kb-complete` | Mode 3 | Mark Done in Kanban/Roadmap, Devlog, git sync | `kb-complete` |
+| `/kb-implement`| Mode 3 | Implement TASK-XXX with auto-complete | `kb-implement` |
+| `/kb-complete` | Mode 3 | Standalone sync: Done, Devlog, git | `kb-complete` |
 | `/kb-release`  | Release | Dual-Mode release, SHA-256, git tag | `kb-release` |
 | `/kb-bug` | Defect | Log BUG-XXX with RCA and regression test | `kb-bug` |
 | `/kb-adr` | Decision | ADR-XXXX record with rejected options | `kb-adr` |

@@ -64,7 +64,7 @@ Every non-trivial task or feature strictly follows three sequential modes:
   python scripts/kb_lint.py --path docs
   python -m unittest discover -s tests
   ```
-- **Completion Checklist:**
+- **Completion Checklist (Executed automatically at the end of `/kb-implement` upon passing verification, or standalone via `/kb-complete`):**
   1. All verification steps pass (Exit code 0).
   2. Spec status updated to `Выполнено` in `TASK-XXX`.
   3. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.

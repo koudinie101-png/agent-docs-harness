@@ -1,6 +1,6 @@
 ---
 name: kb-implement
-description: "Mode 3: Implement code strictly adhering to TASK-XXX spec with automated verification."
+description: "Mode 3: Implement TASK-XXX with verification and immediate auto-completion."
 ---
 
 # /kb-implement — Mode 3: Implementation & Verification
@@ -10,6 +10,7 @@ Use when the user runs `/kb-implement <TASK-XXX>` or begins writing code for an 
 ## 🚨 Constraints
 * **Spec Adherence:** Implement strictly what is defined in the approved `TASK-XXX` spec. Avoid scope creep.
 * **Verification First:** Never conclude implementation without executing all checks in the Verification Plan.
+* **Auto-Complete:** When all verification steps pass, immediately execute task completion (`kb-complete`) without waiting for an extra user prompt.
 
 ## Procedure
 1. **Sync & Review:**
@@ -25,5 +26,11 @@ Use when the user runs `/kb-implement <TASK-XXX>` or begins writing code for an 
    - Run compilation command (e.g. `dotnet build`, `python build.py`).
    - Run test suites (e.g. `python -m unittest discover -s tests`).
    - Verify exit code 0 for all commands.
-5. **Transition:**
-   - Recommend or trigger `/kb-complete <TASK-XXX>` to update knowledge base tracking and Git.
+5. **Immediate Completion (`kb-complete`):**
+   - Upon all checks passing (Exit code 0), immediately execute the completion workflow:
+     - Update `TASK-XXX` spec to `status: done`, header to `Выполнено`.
+     - Move card in `docs/02_Tasks/Kanban.md` to `## ✅ Готово (Done)` with date.
+     - Mark milestone `[x]` in `docs/02_Tasks/Roadmap.md` with permanent link.
+     - Append entry to `docs/Devlog.md` with summary and test results.
+     - Run `python scripts/kb_lint.py --path docs` (0 broken links).
+     - Commit and push to Git.
