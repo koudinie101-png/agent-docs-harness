@@ -10,8 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-003-brownfield-adoption-and-lifecycle|План: Фаза 3 — Зрелость инсталлятора (Brownfield Adoption, Clean Slate, Обновление и CI)]] #plan #phase3
+  - [ ] TASK-009: Чистый старт и устранение фантомных задач при новой установке (Clean Slate Scaffolding) #task #phase3
+  - [ ] TASK-010: Бесшовное внедрение в существующие проекты (Brownfield Adoption) и автодетект стека #task #phase3
+  - [ ] TASK-011: Механизм бережного обновления инфраструктуры (`install.py --update`) #task #phase3
+  - [ ] TASK-012: Шаблон GitHub Actions CI (`.github/workflows/kb-lint.yml`) и E2E тесты #task #phase3
 
-## ⏳ В работе (In Progress)
 
 
 ## ✅ Готово (Done)
@@ -30,10 +34,9 @@ kanban-plugin: basic
 
 ## 💡 Идеи и гипотезы (Icebox / Future Ideas)
 
-- [ ] Чистая инициализация нового проекта (Clean Slate Scaffolding): развертывание каркаса без фиктивных PLAN-001/TASK-001, с переходом к реальной идее через /kb-plan #idea #ux
-- [ ] Бесшовное подключение к существующим проектам (Brownfield Adoption): автоопределение стека (Package.swift, package.json, pyproject.toml, *.sln), защита README.md и сценарий аудита легаси-кода #idea #adoption
-- [ ] Семантический контроль фаз в kb_lint.py: автоматическая валидация соответствия phase: N, структуры папок 0N_... и тегов #phaseN в frontmatter и Kanban.md #idea #tooling
-- [ ] Команда синхронизации и обновления базы знаний (`install.py --update`) для существующих проектов #idea
-- [ ] Готовый workflow GitHub Actions (`.github/workflows/kb-lint.yml`) для автоматической проверки целостности базы знаний в CI #idea
-- [ ] Конфигурации для нишевых агентов: Continue.dev (`.continue/config.json`) и Aider (`.aider.conf.yml`) *(Windsurf и Antigravity уже взяты в TASK-007)* #idea
+- [ ] Семантический контроль фаз в kb_lint.py: валидация соответствия phase: N, структуры папок 0N_... и тегов #phaseN в frontmatter и Kanban.md (неблокирующие предупреждения) #idea #tooling
 - [ ] Простой и понятный гайд для новичков в агентном программировании: пошаговое руководство, как запустить и использовать `install.py` (Zero-to-Hero Onboarding) #idea #docs #onboarding
+- [ ] Конфигурации для нишевых агентов: Continue.dev (`.continue/config.json`) и Aider (`.aider.conf.yml`) #idea
+- [x] Отклонено: Web-визуализатор базы знаний (`install.py --serve`) — [[../03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer|ADR-0005]] #rejected
+- [x] Отклонено: Автогенерация отчетов для руководства (PDF) — [[../03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]] #rejected
+

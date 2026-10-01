@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Devlog.md",
+                "file": "02_Tasks/Plans/PLAN-003-brownfield-adoption-and-lifecycle.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Devlog"
+              "title": "PLAN-003-brownfield-adoption-and-lifecycle"
             }
           }
         ]
@@ -190,15 +190,18 @@
   },
   "active": "1517771de08e2e73",
   "lastOpenFiles": [
+    "03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator.md",
+    "03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer.md",
+    "03_Decisions_ADR/ADR-0002-self-contained-installer-bundling.md",
+    "02_Tasks/Roadmap.md",
+    "02_Tasks/Plans/PLAN-003-brownfield-adoption-and-lifecycle.md",
+    "02_Tasks/Kanban.md",
+    "Devlog.md",
     "03_Decisions_ADR/ADR-0004-multi-stack-presets-and-apple-swift-priority.md",
     "03_Decisions_ADR/ADR-0003-multi-agent-adapter-strategy.md",
-    "03_Decisions_ADR/ADR-0002-self-contained-installer-bundling.md",
     "03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib.md",
     "Onboarding.md",
-    "02_Tasks/Kanban.md",
-    "02_Tasks/Roadmap.md",
     "02_Tasks/Specs/01_MVP/TASK-001-installer-core-and-bundling.md",
-    "00_Index.md",
-    "Devlog.md"
+    "00_Index.md"
   ]
 }

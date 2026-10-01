@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-01
 tags:
   - devlog
   - journal
@@ -17,6 +17,20 @@ tags:
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
+
+---
+
+### [2026-10-01] — Режим 1: Планирование Фазы 3 и фиксация отказных архитектурных решений (ADR-0005, ADR-0006)
+- **Что сделано:**
+  - Проведен критический анализ бэклога перспективных идей из `Roadmap.md` и `Kanban.md` с позиции Senior Partner.
+  - Идеи категории C официально отклонены как оверинжиниринг и зафиксированы в отказных архитектурных решениях (`status: rejected`):
+    - [[03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer|ADR-0005]]: Отказ от встроенного локального web-визуализатора базы знаний (`install.py --serve`) во избежание раздувания бандла, нарушения Zero Dependencies и дублирования нативного Obsidian.
+    - [[03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]]: Отказ от встроенного Python-генератора PDF-отчетов в пользу нативных возможностей LLM/агентов и штатного экспорта Markdown.
+  - Сформирован и утвержден концептуальный план Фазы 3: [[02_Tasks/Plans/PLAN-003-brownfield-adoption-and-lifecycle|PLAN-003]] («Зрелость инсталлятора — Brownfield Adoption, Clean Slate Scaffolding, безопасное обновление и CI»).
+  - Декомпозированы задачи Фазы 3 (`TASK-009` — `TASK-012`), добавлены карточки в бэклог [[02_Tasks/Kanban|Kanban.md]] и вехи в [[02_Tasks/Roadmap|Roadmap.md]].
+  - Запущена проверка целостности базы знаний через `python scripts/kb_lint.py --path docs`: 0 broken wikilinks, 100% валидность frontmatter.
+- **Следующий шаг:**
+  - Переход к Режиму 2 (Task Specification) для первой задачи `TASK-009` (Clean Slate Scaffolding).
 
 ---
 
