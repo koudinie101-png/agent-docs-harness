@@ -18,6 +18,21 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-026: Автоматизация передачи заметок в CI release.yml и шаблоне инсталлятора
+- **Что сделано:**
+  - В файле `.github/workflows/release.yml` добавлен параметр `body_path: dist/RELEASE_NOTES.md` в шаг `Publish GitHub Release` (`softprops/action-gh-release@v2`). Теперь GitHub Release автоматически получает полное описание, команды быстрой установки и таблицу SHA-256 из артефакта, сгенерированного `kb_release.py --ci-mode`.
+  - В `install.py` обновлен встроенный fallback-шаблон `wf_release_content` в функции `deploy_ci_workflows()` с включением `body_path: dist/RELEASE_NOTES.md`.
+  - Задача [[02_Tasks/Specs/07_Distribution/TASK-026-github-actions-release-body-and-installer-template|TASK-026]] переведена в `status: done` в ТЗ, Канбане (`(2026-10-01)`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - Проверена валидность синтаксиса `.github/workflows/release.yml` и наличие `body_path: dist/RELEASE_NOTES.md`.
+  - Проверено наличие актуального шаблона воркфлоу в `install.py`.
+  - `python -m unittest tests/test_kb_release.py` -> 12/12 тестов успешно пройдено.
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links.
+- **Следующий шаг:**
+  - Переход к `TASK-027`: Актуализация скилла `.agents/skills/kb-release/SKILL.md` (флаг `--notes-file dist/RELEASE_NOTES.md`) и шаблона `TEMPLATE_RELEASE.md`.
+
+---
+
 ### [2026-10-01] — Завершение TASK-025: Двухформатный экспорт и автоконвертер викиссылок в scripts/kb_release.py
 - **Что сделано:**
   - В утилите `scripts/kb_release.py` реализована функция `convert_wikilinks_to_github_markdown` (Zero-Dependencies):

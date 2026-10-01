@@ -715,6 +715,7 @@ def deploy_ci_workflow(target_dir: Path, ci_provider: str = "none", assets: dict
                 "          name: Release ${{ github.ref_name }}\n"
                 "          draft: false\n"
                 "          prerelease: false\n"
+                "          body_path: dist/RELEASE_NOTES.md\n"
                 "          files: |\n"
                 "            dist/*\n"
             )

@@ -1,7 +1,7 @@
 ---
 id: TASK-026
 title: "Автоматизация передачи заметок в CI release.yml и синхронизация встроенного шаблона"
-status: planned
+status: done
 type: task
 phase: 7
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-026 — Автоматизация передачи заметок в CI и шаблоне инсталлятора
 
 > **ID:** TASK-026  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase7 #component/ci #component/automation #component/installer #release  
 > **Родительский план:** [[../../Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../../../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]  
@@ -95,14 +95,14 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксис CI: валидация структуры `.github/workflows/release.yml`.
-- [ ] Проверка шаблона в инсталляторе: поиск строки `body_path: dist/RELEASE_NOTES.md` в `install.py`.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Синтаксис CI: валидация структуры `.github/workflows/release.yml`.
+- [x] Проверка шаблона в инсталляторе: поиск строки `body_path: dist/RELEASE_NOTES.md` в `install.py`.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] В `.github/workflows/release.yml` и встроенном шаблоне `install.py` зафиксирован параметр `body_path: dist/RELEASE_NOTES.md`.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `docs/Devlog.md`.
+- [x] В `.github/workflows/release.yml` и встроенном шаблоне `install.py` зафиксирован параметр `body_path: dist/RELEASE_NOTES.md`.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `docs/Devlog.md`.
