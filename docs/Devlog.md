@@ -18,6 +18,28 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-013: Шаблон релиза, каталог Releases/ и утилита scripts/kb_release.py
+- **Что сделано:**
+  - Создан канонический 13-й шаблон `docs/00_Templates/TEMPLATE_RELEASE.md` для фиксации релизов фаз с метаданными, чейнджлогом, таблицей артефактов и контрольными суммами SHA-256.
+  - Создан постоянный каталог `docs/02_Tasks/Releases/` с правилом неизменяемости ссылок (Permalinks).
+  - Разработана автономная Zero-Dependencies CLI-утилита `scripts/kb_release.py` на стандартной библиотеке Python 3:
+    - Детекция окружения (`detect_release_environment`): статус git, чистота рабочего дерева, remote origin, `gh` CLI и режим (`github` | `local-only`).
+    - Инспекция каталога `dist/` (`inspect_release_artifacts`): расчет размеров и потоковых SHA-256 хэшей блоками по 64 КБ.
+    - Семантический сбор артефактов фазы (`find_phase_artifacts`): извлечение выполненных `TASK-XXX`, закрытых `BUG-XXX` и принятых `ADR-XXXX` из базы знаний.
+    - Генерация markdown-документа релиза по стандарту `TEMPLATE_RELEASE.md`.
+    - CLI интерфейс с флагами `--version`, `--phase`, `--dist-dir`, `--docs-dir`, `--output`, `--summary`, `--dry-run`, `--detect-only`.
+  - Создан набор модульных тестов `tests/test_kb_release.py` (8 тестов: SHA-256, Markdown-таблица, парсер frontmatter, сбор артефактов фазы, CLI).
+  - Закрыта задача `TASK-013` в `Kanban.md`, `Roadmap.md` и спецификации.
+- **Результаты верификации:**
+  - `python -m py_compile scripts/kb_release.py` -> Код 0.
+  - `python -m unittest tests/test_kb_release.py` -> 8/8 тестов успешно пройдены (100% pass).
+  - `python -m unittest discover -s tests` -> 20/20 тестов успешно пройдены (100% pass).
+  - `python scripts/kb_lint.py --path docs` -> 52 файла, 239 ссылок, 0 broken links, 100% валидный YAML frontmatter.
+- **Следующий шаг:**
+  - Реализация `TASK-014`: Исполняемый скилл `.agents/skills/kb-release/SKILL.md` (Dual-Mode workflow, префлайт-чеки, подсказка в `kb-complete`).
+
+---
+
 ### [2026-10-01] — Завершение TASK-012 и полное закрытие Фазы 3: Зрелость инсталлятора
 - **Что сделано:**
   - Реализован генератор workflow для GitHub Actions `deploy_ci_workflow` в `install.py`, создающий `.github/workflows/kb-lint.yml` для автоматического аудита базы знаний через `kb_lint.py` при Push и Pull Request.

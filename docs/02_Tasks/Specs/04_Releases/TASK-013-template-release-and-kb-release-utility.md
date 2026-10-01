@@ -1,7 +1,7 @@
 ---
 id: TASK-013
 title: "Канонический шаблон TEMPLATE_RELEASE.md, каталог docs/02_Tasks/Releases/ и утилита scripts/kb_release.py"
-status: in-progress
+status: done
 type: task
 phase: 4
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-013 — Канонический шаблон TEMPLATE_RELEASE.md, каталог Releases/ и утилита scripts/kb_release.py
 
 > **ID:** TASK-013  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase4 #component/templates #component/release #component/tooling  
 > **Родительский план:** [[../../Plans/PLAN-004-release-management-and-lifecycle-automation|PLAN-004]]  
 > **Связанные ADR и исследования:** [[../../../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007]], [[../../../04_Research/RESEARCH-002-release-management-and-github-automation|RESEARCH-002]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -212,23 +212,23 @@ def main() -> int:
 ## 4. План верификации (Verification Plan)
 
 ### Сборка и синтаксис:
-- [ ] Проверка синтаксиса `scripts/kb_release.py`:
+- [x] Проверка синтаксиса `scripts/kb_release.py`:
   ```bash
   python -m py_compile scripts/kb_release.py
   ```
   *(Ожидаемый код завершения: 0)*
 
 ### Автоматические тесты:
-- [ ] Запуск специализированных unit-тестов:
+- [x] Запуск специализированных unit-тестов:
   ```bash
   python -m unittest tests/test_kb_release.py
   ```
   *(Ожидаемый результат: все тесты зеленые, 100% pass)*
-- [ ] Проверка хэширования SHA-256: сравнение программного расчета `inspect_release_artifacts` с эталонным `hashlib.sha256()`.
-- [ ] Проверка детекции окружения: mock-тесты вызовов `git` и `gh`.
+- [x] Проверка хэширования SHA-256: сравнение программного расчета `inspect_release_artifacts` с эталонным `hashlib.sha256()`.
+- [x] Проверка детекции окружения: mock-тесты вызовов `git` и `gh`.
 
 ### Интеграционная проверка базы знаний:
-- [ ] Запуск линтера Docs-as-Code:
+- [x] Запуск линтера Docs-as-Code:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -238,9 +238,9 @@ def main() -> int:
 
 ## 5. Критерии готовности (Definition of Done)
 
-- [ ] Создан файл `docs/00_Templates/TEMPLATE_RELEASE.md` со всеми полями метаданных и таблицей артефактов.
-- [ ] Создан каталог `docs/02_Tasks/Releases/` с `.gitkeep`.
-- [ ] Реализован скрипт `scripts/kb_release.py` без внешних зависимостей.
-- [ ] Скрипт корректно формирует релизный документ с расчетом SHA-256 для файлов в `dist/`.
-- [ ] Написаны и проходят тесты в `tests/test_kb_release.py`.
-- [ ] Линтер `kb_lint.py` подтверждает 0 ошибок в базе знаний.
+- [x] Создан файл `docs/00_Templates/TEMPLATE_RELEASE.md` со всеми полями метаданных и таблицей артефактов.
+- [x] Создан каталог `docs/02_Tasks/Releases/` с `.gitkeep`.
+- [x] Реализован скрипт `scripts/kb_release.py` без внешних зависимостей.
+- [x] Скрипт корректно формирует релизный документ с расчетом SHA-256 для файлов в `dist/`.
+- [x] Написаны и проходят тесты в `tests/test_kb_release.py`.
+- [x] Линтер `kb_lint.py` подтверждает 0 ошибок в базе знаний.
