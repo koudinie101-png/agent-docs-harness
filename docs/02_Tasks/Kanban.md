@@ -13,7 +13,7 @@ kanban-plugin: basic
 ## ⏳ В работе (In Progress)
 
 - [ ] [[Plans/PLAN-007-github-release-notes-and-distribution-standard|План: Фаза 7 — Стандарт оформления публичных релизов на GitHub и экспорт Release Notes]] #plan #phase7 #release
-  - [ ] [[Specs/07_Distribution/TASK-025-dual-export-and-wikilinks-converter|TASK-025]]: Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py`, модульные тесты в `tests/test_kb_release.py` #task #phase7
+  - [x] [[Specs/07_Distribution/TASK-025-dual-export-and-wikilinks-converter|TASK-025]]: Двухформатный экспорт и автоконвертер викиссылок в `scripts/kb_release.py`, модульные тесты в `tests/test_kb_release.py` (2026-10-01) #task #phase7
   - [ ] [[Specs/07_Distribution/TASK-026-github-actions-release-body-and-installer-template|TASK-026]]: Автоматизация передачи заметок в `.github/workflows/release.yml` (`body_path: dist/RELEASE_NOTES.md`) и синхронизация встроенного шаблона в `install.py` #task #phase7
   - [ ] [[Specs/07_Distribution/TASK-027-kb-release-skill-and-notes-file|TASK-027]]: Актуализация скилла `.agents/skills/kb-release/SKILL.md` (флаг `--notes-file dist/RELEASE_NOTES.md` и Dual-Export шаги) #task #phase7
   - [ ] [[Specs/07_Distribution/TASK-028-installer-bundling-and-e2e-verification|TASK-028]]: Сборка инсталлятора `build_installer.py`, регрессионные E2E тесты (`test_installer.py`, `test_kb_release.py`) и аудит `kb_lint.py` #task #phase7

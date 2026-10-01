@@ -201,6 +201,76 @@ status: done
             content = out_file.read_text(encoding="utf-8")
             self.assertIn("Test CLI release summary", content)
             self.assertIn("dist.tar.gz", content)
+        # Verify public notes also generated in dist/
+        notes_file = dist_dir / "RELEASE_NOTES.md"
+        self.assertTrue(notes_file.exists())
+        notes_content = notes_file.read_text(encoding="utf-8")
+        self.assertIn("# 🚀 Release v0.5.0", notes_content)
+        self.assertNotIn("---", notes_content.splitlines()[0])  # No YAML frontmatter at top
+
+    def test_convert_wikilinks_to_github_markdown_with_repo_url(self):
+        repo_url = "https://github.com/myorg/myproject.git"
+        text = "- [[../Specs/07_Distribution/TASK-025-foo|TASK-025]]: Title.\n- [[../../03_Decisions_ADR/ADR-0010-arch|ADR-0010]]: Arch title.\n- [[TASK-025]]"
+        converted = kb_release.convert_wikilinks_to_github_markdown(text, repo_url=repo_url, branch="main")
+        self.assertIn("[TASK-025](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Specs/07_Distribution/TASK-025-foo.md)", converted)
+        self.assertIn("[ADR-0010](https://github.com/myorg/myproject/blob/main/docs/03_Decisions_ADR/ADR-0010-arch.md)", converted)
+        self.assertIn("[TASK-025](https://github.com/myorg/myproject/blob/main/docs/TASK-025.md)", converted)
+
+    def test_convert_wikilinks_to_github_markdown_ssh_url(self):
+        repo_url = "git@github.com:myorg/myproject.git"
+        text = "Check [[../Roadmap|Дорожная карта]]."
+        converted = kb_release.convert_wikilinks_to_github_markdown(text, repo_url=repo_url, branch="dev")
+        self.assertIn("[Дорожная карта](https://github.com/myorg/myproject/blob/dev/docs/02_Tasks/Roadmap.md)", converted)
+
+    def test_convert_wikilinks_to_github_markdown_without_repo_url(self):
+        text = "- [[../Specs/TASK-025|TASK-025]]: Title.\n- [[TASK-025]]"
+        converted = kb_release.convert_wikilinks_to_github_markdown(text, repo_url="", branch="main")
+        self.assertIn("**TASK-025**: Title.", converted)
+        self.assertIn("**TASK-025**", converted)
+        self.assertNotIn("[[", converted)
+
+    def test_generate_public_release_notes(self):
+        env_info = {
+            "has_git": True,
+            "mode": "github",
+            "branch": "main",
+            "remote_url": "https://github.com/myorg/myproject.git",
+        }
+        artifacts = [{
+            "name": "package.zip",
+            "path": "dist/package.zip",
+            "size": "1.20 MB",
+            "sha256": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+        }]
+        phase_data = {
+            "tasks": [{"id": "TASK-025", "title": "Dual Export", "link": "../Specs/07_Distribution/TASK-025"}],
+            "bugs": [{"id": "BUG-002", "title": "Windows Path Bug", "link": "../Bugs/BUG-002"}],
+            "adrs": [{"id": "ADR-0010", "title": "Release Standard", "link": "../../03_Decisions_ADR/ADR-0010"}],
+        }
+
+        notes = kb_release.generate_public_release_notes(
+            version="0.7.0",
+            phase_num=7,
+            env_info=env_info,
+            artifacts=artifacts,
+            phase_data=phase_data,
+            summary="Public release notes summary test.",
+        )
+
+        # No YAML frontmatter
+        self.assertFalse(notes.strip().startswith("---"))
+        self.assertIn("# 🚀 Release v0.7.0 — Фаза 7", notes)
+        self.assertIn("Public release notes summary test.", notes)
+        self.assertIn("curl -fsSL https://raw.githubusercontent.com/myorg/myproject/main/install.py | python3", notes)
+        self.assertIn("python install.py --update", notes)
+        self.assertIn("[TASK-025](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Specs/07_Distribution/TASK-025.md)", notes)
+        self.assertIn("[BUG-002](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Bugs/BUG-002.md)", notes)
+        self.assertIn("[ADR-0010](https://github.com/myorg/myproject/blob/main/docs/03_Decisions_ADR/ADR-0010.md)", notes)
+        self.assertIn("package.zip", notes)
+        self.assertIn("abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890", notes)
+        self.assertIn("Get-FileHash -Path ./dist/package.zip -Algorithm SHA256", notes)
+        self.assertIn("sha256sum ./dist/package.zip", notes)
+        self.assertIn("https://github.com/myorg/myproject/releases/tag/v0.7.0", notes)
 
 
 if __name__ == "__main__":

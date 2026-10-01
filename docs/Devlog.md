@@ -18,6 +18,33 @@ tags:
 
 Здесь фиксируются ключевые события, результаты сессий и важные изменения по проекту в хронологическом порядке.
 
+### [2026-10-01] — Завершение TASK-025: Двухформатный экспорт и автоконвертер викиссылок в scripts/kb_release.py
+- **Что сделано:**
+  - В утилите `scripts/kb_release.py` реализована функция `convert_wikilinks_to_github_markdown` (Zero-Dependencies):
+    - Относительные викиссылки `[ [ ../Specs/... | TASK-XXX ] ]` и `[ [ ../../03_Decisions_ADR/... | ADR-XXXX ] ]` преобразуются в полноценные кликабельные URL GitHub с учетом `remote.origin.url` и ветки `main`.
+    - В Local-Only режиме без удаленного репозитория ссылки безопасно сворачиваются в жирный шрифт `**Alias**`.
+  - Добавлена функция `generate_public_release_notes`:
+    - Формирует `dist/RELEASE_NOTES.md` в чистом GitHub Flavored Markdown (GFM) без YAML frontmatter.
+    - Включает Executive Summary, блок быстрого старта (Quick Install / Upgrade) с автоопределением `raw.githubusercontent.com`, категоризированный чейнджлог (Features, Bug Fixes, ADRs), таблицу артефактов SHA-256 с командами верификации (`Get-FileHash` / `sha256sum`) и ссылку на Release diff.
+  - Обновлен CLI интерфейс `main()`:
+    - Добавлен аргумент `--notes-output` (по умолчанию `dist/RELEASE_NOTES.md`).
+    - При обычном запуске и в `--ci-mode` генерируются оба документа: внутренний `docs/02_Tasks/Releases/RELEASE-{tag}.md` и публичный `dist/RELEASE_NOTES.md`.
+    - В режиме `--dry-run` выводятся обе секции с разделителем.
+  - Написаны модульные тесты в `tests/test_kb_release.py` (12 тестов, 100% pass):
+    - Тестирование конвертации викиссылок (HTTPS, SSH, Local-Only fallback).
+    - Тестирование структуры `dist/RELEASE_NOTES.md` и отсутствия YAML frontmatter.
+    - Тестирование одновременного создания обоих файлов через CLI.
+  - Задача [[02_Tasks/Specs/07_Distribution/TASK-025-dual-export-and-wikilinks-converter|TASK-025]] переведена в `status: done`.
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_release.py` -> 12/12 тестов успешно пройдено.
+  - `python scripts/kb_release.py --version 0.7.0 --phase 7 --dry-run` -> чистый и корректный вывод.
+  - `python -m unittest discover -s tests` -> 35/35 тестов успешно пройдено.
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links.
+- **Следующий шаг:**
+  - Переход к `TASK-026`: Автоматизация передачи заметок в CI `release.yml` (`body_path: dist/RELEASE_NOTES.md`) и синхронизация встроенного шаблона в `install.py`.
+
+---
+
 ### [2026-10-01] — Выпуск официального релиза v0.6.0: Discovery & Feasibility Lifecycle (Фаза 6)
 - **Что сделано:**
   - Осуществлен официальный релиз **v0.6.0** по завершении Фазы 6 (План [[02_Tasks/Plans/PLAN-006-discovery-mode-and-kb-research-lifecycle|PLAN-006]]).

@@ -1,7 +1,7 @@
 ---
 id: TASK-025
 title: "Двухформатный экспорт и автоконвертер викиссылок в scripts/kb_release.py"
-status: planned
+status: done
 type: task
 phase: 7
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-025 — Двухформатный экспорт и автоконвертер викиссылок
 
 > **ID:** TASK-025  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase7 #component/scripts #component/release #release-notes #supply-chain-security  
 > **Родительский план:** [[../../Plans/PLAN-007-github-release-notes-and-distribution-standard|PLAN-007]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-005-github-release-notes-and-distribution-best-practices|RESEARCH-005]], [[../../../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -93,15 +93,15 @@ def generate_public_release_notes(
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Модульные тесты: `python -m unittest tests/test_kb_release.py` (100% Pass).
-- [ ] Ручная верификация: `python scripts/kb_release.py --version 0.7.0 --phase 7 --dry-run` выводит чистые публичные заметки.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Модульные тесты: `python -m unittest tests/test_kb_release.py` (100% Pass).
+- [x] Ручная верификация: `python scripts/kb_release.py --version 0.7.0 --phase 7 --dry-run` выводит чистые публичные заметки.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Конвертер викиссылок и генератор публичных заметок реализованы на stdlib Python без внешних зависимостей.
-- [ ] Все тесты в `tests/test_kb_release.py` завершаются успешно (Exit code 0).
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись о задаче добавлена в `docs/Devlog.md`.
+- [x] Конвертер викиссылок и генератор публичных заметок реализованы на stdlib Python без внешних зависимостей.
+- [x] Все тесты в `tests/test_kb_release.py` завершаются успешно (Exit code 0).
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись о задаче добавлена в `docs/Devlog.md`.

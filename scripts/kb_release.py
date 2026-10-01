@@ -18,6 +18,7 @@ import hashlib
 import shutil
 import subprocess
 import argparse
+import posixpath
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
@@ -459,6 +460,154 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
     return content
 
 
+def convert_wikilinks_to_github_markdown(text: str, repo_url: str = "", branch: str = "main") -> str:
+    """
+    Converts internal Obsidian wikilinks to clean GitHub Flavored Markdown:
+    - [[path/to/spec|Title]] -> [Title](repo_url/blob/branch/docs/path/to/spec.md) (if repo_url provided)
+    - [[path/to/spec|Title]] -> **Title** (if repo_url is empty)
+    - [[Title]] -> **Title**
+    """
+    clean_repo_url = ""
+    if repo_url:
+        clean_repo_url = repo_url.replace("git@github.com:", "https://github.com/").rstrip("/")
+        if clean_repo_url.endswith(".git"):
+            clean_repo_url = clean_repo_url[:-4]
+
+    def replace_wikilink(match):
+        target = match.group(1).strip()
+        alias = match.group(2).strip() if match.group(2) else target
+
+        # External URLs inside wikilinks
+        if target.startswith("http://") or target.startswith("https://"):
+            return f"[{alias}]({target})"
+
+        if clean_repo_url:
+            # Resolve relative link from docs/02_Tasks/Releases/
+            if target.startswith("../") or target.startswith("./"):
+                resolved = posixpath.normpath(posixpath.join("02_Tasks/Releases", target))
+            else:
+                resolved = target.lstrip("/")
+
+            clean_target = resolved
+            if not clean_target.endswith(".md"):
+                clean_target += ".md"
+
+            full_url = f"{clean_repo_url}/blob/{branch}/docs/{clean_target}"
+            return f"[{alias}]({full_url})"
+
+        return f"**{alias}**"
+
+    pattern = r"\[\[([^\|\]]+)(?:\|([^\]]+))?\]\]"
+    return re.sub(pattern, replace_wikilink, text)
+
+
+def generate_public_release_notes(
+    version: str,
+    phase_num: int,
+    env_info: Dict[str, Any],
+    artifacts: List[Dict[str, str]],
+    phase_data: Dict[str, List[Dict[str, str]]],
+    summary: str = "",
+) -> str:
+    """Generates public dist/RELEASE_NOTES.md in clean GitHub Flavored Markdown (GFM)."""
+    ver_clean = version.lstrip("v")
+    tag = f"v{ver_clean}"
+    branch = env_info.get("branch") or "main"
+    remote_url = env_info.get("remote_url", "")
+    clean_repo_url = ""
+    raw_install_url = "https://raw.githubusercontent.com/<owner>/<repo>/main/install.py"
+    diff_url = ""
+
+    if remote_url:
+        clean_repo_url = remote_url.replace("git@github.com:", "https://github.com/").rstrip("/")
+        if clean_repo_url.endswith(".git"):
+            clean_repo_url = clean_repo_url[:-4]
+        if "github.com/" in clean_repo_url:
+            repo_path = clean_repo_url.split("github.com/", 1)[1]
+            raw_install_url = f"https://raw.githubusercontent.com/{repo_path}/{branch}/install.py"
+            diff_url = f"{clean_repo_url}/releases/tag/{tag}"
+
+    doc_summary = summary.strip() or f"Официальный релиз {tag} по завершении Фазы {phase_num}."
+
+    # Features
+    features_md: List[str] = []
+    if phase_data.get("tasks"):
+        for t in phase_data["tasks"]:
+            raw_item = f"- [[{t['link']}|{t['id']}]]: {t['title']}."
+            features_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
+    else:
+        features_md.append("- Плановые задачи фазы выполнены.")
+
+    # Bug fixes
+    bugs_md: List[str] = []
+    if phase_data.get("bugs"):
+        for b in phase_data["bugs"]:
+            raw_item = f"- [[{b['link']}|{b['id']}]]: {b['title']}."
+            bugs_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
+    else:
+        bugs_md.append("- Критических дефектов и регрессий за период фазы не зафиксировано.")
+
+    # ADRs
+    adrs_md: List[str] = []
+    if phase_data.get("adrs"):
+        for a in phase_data["adrs"]:
+            raw_item = f"- [[{a['link']}|{a['id']}]]: {a['title']}."
+            adrs_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
+    else:
+        adrs_md.append("- Архитектурных изменений в рамках фазы не вводилось.")
+
+    artifacts_table = format_artifacts_markdown_table(artifacts)
+    first_art_name = artifacts[0]["name"] if artifacts else "install.py"
+
+    full_changelog_md = ""
+    if diff_url:
+        full_changelog_md = f"\n\n---\n\n**Полный список изменений (Full Changelog):** {diff_url}"
+
+    notes = f"""# 🚀 Release {tag} — Фаза {phase_num}
+
+> 💡 **Executive Summary:** {doc_summary}
+
+---
+
+### ⚡ Быстрый старт / Обновление (Quick Install)
+```bash
+# Новая установка Docs-as-Code
+curl -fsSL {raw_install_url} | python3
+
+# Обновление существующего проекта
+python install.py --update
+```
+
+---
+
+### ✨ Новые возможности (Features)
+{chr(10).join(features_md)}
+
+### 🐛 Исправленные дефекты (Bug Fixes)
+{chr(10).join(bugs_md)}
+
+### 🏛️ Архитектурные решения (ADR)
+{chr(10).join(adrs_md)}
+
+---
+
+### 📦 Релизные артефакты и контрольные суммы (SHA-256 Checksums)
+
+{artifacts_table}
+
+**Верификация в PowerShell:**
+```powershell
+Get-FileHash -Path ./dist/{first_art_name} -Algorithm SHA256
+```
+
+**Верификация в Bash:**
+```bash
+sha256sum ./dist/{first_art_name}
+```{full_changelog_md}
+"""
+    return notes
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="kb_release.py — Zero-Dependencies Release Automation Utility for Docs-as-Code"
@@ -468,6 +617,7 @@ def main() -> int:
     parser.add_argument("--docs-dir", type=str, default="docs", help="Path to docs directory (default: docs)")
     parser.add_argument("--dist-dir", type=str, default="dist", help="Path to dist directory (default: dist)")
     parser.add_argument("--output", type=str, default="", help="Target release markdown path")
+    parser.add_argument("--notes-output", type=str, default="", help="Path to public release notes (default: <dist-dir>/RELEASE_NOTES.md)")
     parser.add_argument("--summary", type=str, default="", help="Executive summary text")
     parser.add_argument("--dry-run", action="store_true", help="Print release markdown to stdout without writing")
     parser.add_argument("--detect-only", action="store_true", help="Only detect environment and print JSON")
@@ -505,20 +655,36 @@ def main() -> int:
         summary=args.summary,
     )
 
+    public_notes = generate_public_release_notes(
+        version=ver_clean,
+        phase_num=args.phase,
+        env_info=env_info,
+        artifacts=artifacts,
+        phase_data=phase_data,
+        summary=args.summary,
+    )
+
     if args.dry_run:
         print(release_content)
+        print("\n" + "=" * 40 + " PUBLIC RELEASE NOTES " + "=" * 40 + "\n")
+        print(public_notes)
         return 0
 
     out_path = Path(args.output) if args.output else docs_path / "02_Tasks" / "Releases" / f"RELEASE-{tag}.md"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(release_content, encoding="utf-8")
 
+    notes_path = Path(args.notes_output) if args.notes_output else dist_path / "RELEASE_NOTES.md"
+    notes_path.parent.mkdir(parents=True, exist_ok=True)
+    notes_path.write_text(public_notes, encoding="utf-8")
+
     if args.verbose:
         print(f"✅ Generated release document: {out_path.as_posix()}")
+        print(f"✅ Generated public release notes: {notes_path.as_posix()}")
         print(f"📦 Artifacts cataloged: {len(artifacts)}")
         print(f"🌐 Environment mode: {env_info['mode']}")
     else:
-        print(f"OK: Release {tag} generated at {out_path.as_posix()} ({len(artifacts)} artifacts, mode: {env_info['mode']}).")
+        print(f"OK: Release {tag} generated at {out_path.as_posix()} and {notes_path.as_posix()} ({len(artifacts)} artifacts, mode: {env_info['mode']}).")
 
     return 0
 
