@@ -26,11 +26,5 @@ Use when the user runs `/kb-implement <TASK-XXX>` or begins writing code for an 
    - Run compilation command (e.g. `dotnet build`, `python build.py`).
    - Run test suites (e.g. `python -m unittest discover -s tests`).
    - Verify exit code 0 for all commands.
-5. **Immediate Completion (`kb-complete`):**
-   - Upon all checks passing (Exit code 0), immediately execute the completion workflow:
-     - Update `TASK-XXX` spec to `status: done`, header to `Выполнено`.
-     - Move card in `docs/02_Tasks/Kanban.md` to `## ✅ Готово (Done)` with date.
-     - Mark milestone `[x]` in `docs/02_Tasks/Roadmap.md` with permanent link.
-     - Append entry to `docs/Devlog.md` with summary and test results.
-     - Run `python scripts/kb_lint.py --path docs` (0 broken links).
-     - Commit and push to Git.
+5. **Immediate Auto-Completion:**
+   - Upon all checks passing (Exit code 0), immediately execute the `/kb-complete <TASK-XXX>` skill workflow to finalize the task without waiting for user input.
