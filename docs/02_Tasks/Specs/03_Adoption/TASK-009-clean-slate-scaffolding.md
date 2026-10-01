@@ -1,7 +1,7 @@
 ---
 id: TASK-009
 title: "Чистый старт и устранение фантомных задач при новой установке (Clean Slate Scaffolding)"
-status: in-progress
+status: done
 type: task
 phase: 3
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-009 — Clean Slate Scaffolding & Zero-Broken-Links FTUE
 
 > **ID:** TASK-009  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase3 #component/installer #component/scaffolding #component/kanban  
 > **Родительский план:** [[../../Plans/PLAN-003-brownfield-adoption-and-lifecycle|PLAN-003]]  
 > **Канбан:** [[../../Kanban|Канбан-доска]]  

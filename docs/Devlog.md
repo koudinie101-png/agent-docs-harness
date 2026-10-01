@@ -20,6 +20,24 @@ tags:
 
 ---
 
+### [2026-10-01] — Завершение TASK-009: Clean Slate Scaffolding & Zero-Broken-Links FTUE
+- **Что сделано:**
+  - В `install.py` (`create_starter_docs`) полностью исключена генерация фантомных ссылок на несуществующие файлы `PLAN-001` и `TASK-001` в `Kanban.md` и `Roadmap.md`.
+  - Стартовый бэклог в `Kanban.md` теперь создается чистым, с комментарием-приглашением начать работу с `/kb-plan <название>`.
+  - `Roadmap.md` генерирует чистую структуру Фазы 1 без битых ссылок.
+  - Удалена паразитная генерация фиктивных файлов планов и ТЗ в каталогах `Plans/` и `Specs/`.
+  - Обновлены канонические шаблоны `templates/TEMPLATE_KANBAN.md`, `templates/TEMPLATE_ROADMAP.md` и пересобран бандл через `build_installer.py` (размер дистрибутива `install.py`: 75.9 КБ / 77,684 байта).
+  - В тестовый набор `tests/test_installer.py` добавлен сквозной тест `test_09_clean_slate_scaffolding`, проверяющий чистоту бэклога и успешное прохождение аудита `kb_lint.py` с 0 битых ссылок при первой установке.
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> Код 0.
+  - `python scripts/build_installer.py` -> Код 0.
+  - `python -m unittest discover -s tests` -> 9/9 тестов успешно пройдены (100% pass).
+  - `python scripts/kb_lint.py --path docs` -> 44 файла, 174 ссылки, 0 broken links, 100% валидный YAML frontmatter.
+- **Следующий шаг:**
+  - Реализация `TASK-010`: Бесшовное внедрение в существующие проекты (Brownfield Adoption) и автодетект стека.
+
+---
+
 ### [2026-10-01] — Режим 1: Планирование Фазы 3 и фиксация отказных архитектурных решений (ADR-0005, ADR-0006)
 - **Что сделано:**
   - Проведен критический анализ бэклога перспективных идей из `Roadmap.md` и `Kanban.md` с позиции Senior Partner.

@@ -44,7 +44,7 @@ tags:
 **Цель:** Обеспечить кристально чистый старт без мусорных задач, безопасную интеграцию в существующие репозитории (Brownfield) с автодетектом стека, бережное обновление компонентов харнесса (`install.py --update`) и CI-контроль в GitHub Actions.  
 **Первоисточник плана:** [[Plans/PLAN-003-brownfield-adoption-and-lifecycle|PLAN-003]]
 
-- [ ] Чистый старт и устранение фантомных задач при новой установке (Clean Slate Scaffolding) — [[Specs/03_Adoption/TASK-009-clean-slate-scaffolding|TASK-009]].
+- [x] Чистый старт и устранение фантомных задач при новой установке (Clean Slate Scaffolding) — [[Specs/03_Adoption/TASK-009-clean-slate-scaffolding|TASK-009]].
 - [ ] Бесшовное внедрение в существующие проекты (Brownfield Adoption) и автодетект стека — [[Specs/03_Adoption/TASK-010-brownfield-adoption-and-stack-autodetect|TASK-010]].
 - [ ] Механизм бережного обновления инфраструктуры (`install.py --update`) — [[Specs/03_Adoption/TASK-011-safe-update-mechanism|TASK-011]].
 - [ ] Шаблон GitHub Actions CI (`.github/workflows/kb-lint.yml`) и сквозные E2E тесты — [[Specs/03_Adoption/TASK-012-github-actions-ci-and-e2e|TASK-012]].

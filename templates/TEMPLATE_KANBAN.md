@@ -10,8 +10,7 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-001-project-setup|План: Фаза 1 — Инициализация проекта]] #plan #phase1
-  - [ ] [[Specs/01_Phase1/TASK-001-scaffolding|TASK-001]]: Первичный каркас проекта #task
+<!-- Начните с создания первого плана через команду /kb-plan <название> -->
 
 ## ⏳ В работе (In Progress)
 

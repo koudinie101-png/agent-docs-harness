@@ -366,7 +366,50 @@ class TestAgentDocsHarness(unittest.TestCase):
                 )
                 self.assertEqual(res.returncode, 0, f"kb_lint failed on {target.name}:\n{res.stdout}")
 
+    def test_09_clean_slate_scaffolding(self):
+        """E2E test: Verify clean slate scaffolding without phantom PLAN-001/TASK-001."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "CleanApp"
+            target.mkdir()
+            install.install_harness(
+                target_dir=target,
+                project_name="CleanApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Check Kanban.md has clean backlog and no phantom tasks
+            kanban_text = (target / "docs" / "02_Tasks" / "Kanban.md").read_text(encoding="utf-8")
+            self.assertNotIn("PLAN-001-initial-mvp-setup", kanban_text)
+            self.assertNotIn("TASK-001-project-scaffolding", kanban_text)
+            self.assertIn("/kb-plan", kanban_text)
+
+            # Check Roadmap.md has no phantom links
+            roadmap_text = (target / "docs" / "02_Tasks" / "Roadmap.md").read_text(encoding="utf-8")
+            self.assertNotIn("TASK-001-project-scaffolding", roadmap_text)
+
+            # Check Plans and Specs dirs do not contain dummy files
+            plans_dir = target / "docs" / "02_Tasks" / "Plans"
+            self.assertFalse((plans_dir / "PLAN-001-initial-mvp-setup.md").exists())
+            specs_dir = target / "docs" / "02_Tasks" / "Specs"
+            self.assertFalse((specs_dir / "01_MVP" / "TASK-001-project-scaffolding.md").exists())
+
+            # Check kb_lint passes with 0 broken links
+            kb_lint_script = target / "scripts" / "kb_lint.py"
+            res = subprocess.run(
+                [sys.executable, str(kb_lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res.returncode, 0, f"kb_lint failed on clean slate installation:\n{res.stdout}")
+            self.assertIn("No broken wikilinks found", res.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
