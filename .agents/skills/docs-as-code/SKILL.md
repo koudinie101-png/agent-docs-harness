@@ -4,7 +4,7 @@ description: >-
   Standard Docs-as-Code knowledge base and task management system for Antigravity projects.
   Use when initializing a new project (/kb-init), onboarding developers or agents (/kb-onboard),
   navigating the 3-mode workflow (Mode 1: /kb-plan, Mode 2: /kb-task, Mode 3: /kb-implement & /kb-complete),
-  logging defects (/kb-bug), ADRs (/kb-adr), research (/kb-research), or linting knowledge base integrity (/kb-lint).
+  logging defects (/kb-bug), ADRs (/kb-adr), research (/kb-research), publishing releases (/kb-release), or linting knowledge base integrity (/kb-lint).
 ---
 
 # Docs-as-Code Knowledge Base & Task Workflow (Antigravity Standard)
@@ -23,6 +23,7 @@ This skill provides a complete, standardized **Docs-as-Code** infrastructure for
 | `/kb-task <name>` | **Mode 2: Task Specification** | Calculates next `TASK-XXX`, generates spec in `docs/02_Tasks/Specs/<Phase>/`, sets status to In Progress, and pushes to Git. |
 | `/kb-implement <TASK-XXX>` | **Mode 3: Implementation** | Guides strict implementation against spec, executes verification commands, and transitions to completion. |
 | `/kb-complete <TASK-XXX>` | **Mode 3: Done** | Marks task Done in Kanban with date, checks `[x]` in Roadmap with permalink, updates spec header, writes Devlog entry, runs kb-lint, and pushes commit to Git. |
+| `/kb-release <vX.Y.Z>` | **Release Mode** | Pre-flight checks, runs build hook to `dist/`, calculates SHA-256, generates `RELEASE-vX.Y.Z.md`, and publishes via Dual-Mode (GitHub / Local-Only). |
 | `/kb-bug <name>` | All | Creates `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` with RCA, enforces a Regression-First test, and pushes to Git. |
 | `/kb-adr <name>` | All | Records an Architectural Decision Record in `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md`, updates index, and pushes to Git. |
 | `/kb-research <name>` | All | Creates a research note in `docs/04_Research/RESEARCH-XXX-<slug>.md`, updates index, and pushes to Git. |
@@ -51,7 +52,8 @@ docs/
 │   ├── TEMPLATE_ADR.md
 │   ├── TEMPLATE_RESEARCH.md
 │   ├── TEMPLATE_ARCHITECTURE.md
-│   └── TEMPLATE_TEST.md
+│   ├── TEMPLATE_TEST.md
+│   └── TEMPLATE_RELEASE.md
 ├── Onboarding.md                     # Comprehensive developer and agent onboarding guide
 ├── Devlog.md                         # Chronological development journal
 ├── 01_Architecture/                  # System diagrams, component specs, data flows
@@ -62,7 +64,8 @@ docs/
 │   ├── Specs/                        # Detailed task specifications grouped by phase (Mode 2)
 │   │   ├── 01_<PhaseName>/
 │   │   └── ...
-│   └── Bugs/                         # Defect reports with RCA and regression tests (BUG-XXX)
+│   ├── Bugs/                         # Defect reports with RCA and regression tests (BUG-XXX)
+│   └── Releases/                     # Release documents (RELEASE-vX.Y.Z.md, SHA-256 checksums)
 ├── 03_Decisions_ADR/                 # Architectural Decision Records (ADR-XXXX)
 ├── 04_Research/                      # Platform quirks, investigation notes (RESEARCH-XXX)
 └── 05_Testing/                       # E2E test checklists, QA strategy, test matrices

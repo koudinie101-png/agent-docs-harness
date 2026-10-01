@@ -30,7 +30,7 @@ Use this skill when the user runs `/kb-complete <TASK-XXX>` or when an implement
        - Verification results (build output, tests passed).
        - Next recommended step.
 5. **Run Lint Check:**
-   - Run `python ~/.gemini/config/skills/docs-as-code/scripts/kb_lint.py --path docs` to confirm no broken links.
+   - Run `python scripts/kb_lint.py --path docs` to confirm no broken links.
 6. **Git Commit, Merge & Push (Smart Branching & Conditional):**
    - If Git is enabled:
      - Check current branch (`git branch --show-current`).
@@ -51,3 +51,9 @@ Use this skill when the user runs `/kb-complete <TASK-XXX>` or when an implement
          `git add .`
          `git commit -m "feat(<component>): complete TASK-XXX <description> and sync docs"`
        - Push to remote: `git push` (if remote configured; skip if Local-Only).
+7. **Phase Completion Nudge (Фазовое напоминание):**
+   - После отметки задачи в `docs/02_Tasks/Roadmap.md` агент проверяет текущую фазу:
+   - Если все задачи текущей фазы теперь отмечены `[x]`, вывести пользователю рекомендацию:
+     > `🎉 Все задачи Фазы N успешно завершены!`  
+     > `Рекомендуется выполнить приемочные сценарии в docs/05_Testing/ и запустить команду:`  
+     > `👉 /kb-release vX.Y.Z для автоматической сборки дистрибутива и публикации релиза.`
