@@ -68,6 +68,7 @@ flowchart TD
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
 * [[04_Research/RESEARCH-002-release-management-and-github-automation|RESEARCH-002: Архитектура подготовки релиза (GitHub / Local-Only / Build Hooks)]]
+* [[04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003: Организация каналов обратной связи и воронка триажа (GitHub vs Local-Only)]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
