@@ -16,6 +16,7 @@ related_tasks: []
 related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
   - "[[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Release Management]]"
+  - "[[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010: Стандарт оформления релизов на GitHub]]"
 ---
 
 # 🔬 Исследование: Лучшие практики оформления релизов на GitHub и автоматизация Release Notes
@@ -23,7 +24,7 @@ related_adrs:
 > **Теги:** #research #release-management #github-releases #release-notes #changelog #docs-as-code #supply-chain-security  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Архитектура релиз-менеджмента]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0007-release-management-dual-mode-and-build-hook|ADR-0007: Архитектура релиз-менеджмента]], [[../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010: Стандарт оформления релизов на GitHub]]  
 
 ---
 
