@@ -11,13 +11,13 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|План: Фаза 9 — Барьер единичной задачи и протокол гарантированной остановки]] #plan #phase9 #agent-governance #guardrails
-  - [ ] `TASK-033`: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` #task #phase9
+  - [ ] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` #task #phase9
   - [ ] `TASK-034`: Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` #task #phase9
   - [ ] `TASK-035`: Синхронизация инсталлятора `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md` #task #phase9
 
 ## ⏳ В работе (In Progress)
 
-*Нет активных задач.*
+- [ ] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` #task #phase9
 
 ## ✅ Готово (Done)
 

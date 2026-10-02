@@ -77,7 +77,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] `TASK-033`: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `.agents/skills/kb-implement/SKILL.md` и `kb-complete/SKILL.md`.
+- [ ] [[../Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `.agents/skills/kb-implement/SKILL.md` и `kb-complete/SKILL.md`.
 - [ ] `TASK-034`: Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py`.
 - [ ] `TASK-035`: Синхронизация генераторов правил и шаблонов в `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md`.
 
