@@ -272,6 +272,68 @@ status: done
         self.assertIn("sha256sum ./dist/package.zip", notes)
         self.assertIn("https://github.com/myorg/myproject/releases/tag/v0.7.0", notes)
 
+    def test_ci_mode_infers_phase_and_summary_from_existing_release_doc(self):
+        """
+        REGRESSION TEST for BUG-001:
+        In CI mode (e.g. GitHub Actions), kb_release.py is called with:
+        `python scripts/kb_release.py --version ${{ github.ref_name }} --ci-mode`
+        without `--phase` or `--summary`.
+        If docs/02_Tasks/Releases/RELEASE-vX.Y.Z.md already exists with phase: 8 and custom summary,
+        kb_release.py MUST infer the phase and summary from that file instead of falling back to Phase 1.
+        """
+        dist_dir = self.test_root / "dist"
+        dist_dir.mkdir()
+        (dist_dir / "install.py").write_bytes(b"print('installer')")
+
+        docs_dir = self.test_root / "docs"
+        releases_dir = docs_dir / "02_Tasks" / "Releases"
+        specs_dir = docs_dir / "02_Tasks" / "Specs" / "08_Greenfield"
+        releases_dir.mkdir(parents=True)
+        specs_dir.mkdir(parents=True)
+
+        # Create phase 8 task spec
+        (specs_dir / "TASK-029-foo.md").write_text(
+            "---\nid: TASK-029\ntitle: Undecided Preset\nphase: 8\nstatus: done\n---\n# TASK-029",
+            encoding="utf-8"
+        )
+
+        # Existing RELEASE-v0.8.0.md created during Mode 3 release cut
+        existing_release_doc = (
+            "---\n"
+            "id: RELEASE-v0.8.0\n"
+            "title: \"Релиз v0.8.0: Фаза 8\"\n"
+            "version: \"0.8.0\"\n"
+            "phase: 8\n"
+            "status: completed\n"
+            "---\n\n"
+            "# 🚀 Релиз v0.8.0: Фаза 8\n\n"
+            "## 📋 Обзор релиза (Executive Summary)\n"
+            "Greenfield-инициализация от идеи и Living Spec протокол.\n"
+        )
+        (releases_dir / "RELEASE-v0.8.0.md").write_text(existing_release_doc, encoding="utf-8")
+
+        # Simulate GitHub Actions call: NO --phase, NO --summary
+        test_argv = [
+            "kb_release.py",
+            "--version", "v0.8.0",
+            "--ci-mode",
+            "--docs-dir", str(docs_dir),
+            "--dist-dir", str(dist_dir),
+        ]
+        with patch.object(sys, "argv", test_argv):
+            exit_code = kb_release.main()
+            self.assertEqual(exit_code, 0)
+
+        notes_file = dist_dir / "RELEASE_NOTES.md"
+        self.assertTrue(notes_file.exists())
+        notes_content = notes_file.read_text(encoding="utf-8")
+
+        # Must NOT fallback to Phase 1!
+        self.assertNotIn("Фаза 1", notes_content)
+        self.assertIn("Фаза 8", notes_content)
+        self.assertIn("Greenfield-инициализация от идеи и Living Spec протокол.", notes_content)
+        self.assertIn("TASK-029", notes_content)
+
 
 if __name__ == "__main__":
     unittest.main()

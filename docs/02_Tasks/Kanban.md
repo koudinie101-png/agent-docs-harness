@@ -18,6 +18,8 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Bugs/BUG-001-ci-release-notes-phase-fallback|BUG-001]]: Рассинхронизация номера фазы и описания релиза в CI release.yml (fallback на Фазу 1) (2026-10-02) #bug #release #ci
+
 - [x] [[Plans/PLAN-008-greenfield-idea-first-and-living-spec|План: Фаза 8 — Greenfield-инициализация от идеи (Idea-First) и протокол Living Spec]] (2026-10-02) #plan #phase8 #greenfield #living-spec
   - [x] [[Specs/08_Greenfield/TASK-032-installer-bundling-and-e2e-verification|TASK-032]]: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты нового пресета, обновление `README.md` и `docs/Onboarding.md` (2026-10-02) #task #phase8
   - [x] [[Specs/08_Greenfield/TASK-031-kb-lint-spec-drift-audit|TASK-031]]: Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py` (2026-10-02) #task #phase8

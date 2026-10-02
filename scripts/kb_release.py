@@ -211,6 +211,77 @@ def parse_frontmatter(content: str) -> Dict[str, Any]:
     return data
 
 
+def extract_release_meta_from_doc(doc_path: Path) -> Dict[str, Any]:
+    """
+    Extracts phase and executive summary from an existing RELEASE-vX.Y.Z.md file.
+    Preserves ground-truth metadata generated during release cut.
+    """
+    meta: Dict[str, Any] = {"phase": None, "summary": ""}
+    if not doc_path.exists() or not doc_path.is_file():
+        return meta
+
+    try:
+        content = doc_path.read_text(encoding="utf-8")
+        fm = parse_frontmatter(content)
+        if "phase" in fm:
+            try:
+                meta["phase"] = int(fm["phase"])
+            except ValueError:
+                pass
+
+        # Extract Executive Summary section
+        pattern = r"##\s+.*?Executive Summary.*?\n([\s\S]*?)(?=\n##|\n---|$(?![\r\n]))"
+        match = re.search(pattern, content)
+        if match:
+            raw_summary = match.group(1).strip()
+            clean_lines = []
+            for line in raw_summary.splitlines():
+                stripped = line.strip()
+                if stripped.startswith(">"):
+                    stripped = stripped.lstrip(">").strip()
+                if stripped:
+                    clean_lines.append(stripped)
+            summary_candidate = " ".join(clean_lines).strip()
+            summary_candidate = re.sub(r"^(?:💡\s*)?(?:\*\*Executive Summary:\*\*\s*)?", "", summary_candidate).strip()
+            meta["summary"] = summary_candidate
+    except Exception:
+        pass
+
+    return meta
+
+
+def detect_latest_phase(docs_dir: Path) -> int:
+    """
+    Scans docs/02_Tasks/Specs/ to detect the highest phase number.
+    Falls back to 1 if no phases are found.
+    """
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.exists():
+        return 1
+
+    highest_phase = 1
+    for item in specs_dir.iterdir():
+        if item.is_dir():
+            match = re.match(r"^(\d+)_", item.name)
+            if match:
+                try:
+                    highest_phase = max(highest_phase, int(match.group(1)))
+                except ValueError:
+                    pass
+
+    for spec_file in specs_dir.rglob("*.md"):
+        if spec_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            fm = parse_frontmatter(spec_file.read_text(encoding="utf-8"))
+            if "phase" in fm:
+                highest_phase = max(highest_phase, int(fm["phase"]))
+        except Exception:
+            pass
+
+    return highest_phase
+
+
 def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[str, str]]]:
     """
     Scans docs/ and finds:
@@ -613,7 +684,7 @@ def main() -> int:
         description="kb_release.py — Zero-Dependencies Release Automation Utility for Docs-as-Code"
     )
     parser.add_argument("--version", type=str, default="", help="Release version (e.g. 0.4.0 or v0.4.0)")
-    parser.add_argument("--phase", type=int, default=1, help="Phase number associated with the release")
+    parser.add_argument("--phase", type=int, default=None, help="Phase number associated with the release (default: auto-detected)")
     parser.add_argument("--docs-dir", type=str, default="docs", help="Path to docs directory (default: docs)")
     parser.add_argument("--dist-dir", type=str, default="dist", help="Path to dist directory (default: dist)")
     parser.add_argument("--output", type=str, default="", help="Target release markdown path")
@@ -643,25 +714,43 @@ def main() -> int:
     docs_path = Path(args.docs_dir)
     dist_path = Path(args.dist_dir)
 
+    out_path = Path(args.output) if args.output else docs_path / "02_Tasks" / "Releases" / f"RELEASE-{tag}.md"
+
+    # Resolve phase and summary (Single Source of Truth)
+    phase_num = args.phase
+    summary_text = args.summary.strip() if args.summary else ""
+
+    # If release doc already exists, infer ground truth metadata unless explicitly overridden
+    if out_path.exists():
+        existing_meta = extract_release_meta_from_doc(out_path)
+        if phase_num is None and existing_meta.get("phase") is not None:
+            phase_num = existing_meta["phase"]
+        if not summary_text and existing_meta.get("summary"):
+            summary_text = existing_meta["summary"]
+
+    # Fallback phase detection if still None
+    if phase_num is None:
+        phase_num = detect_latest_phase(docs_path)
+
     artifacts = inspect_release_artifacts(dist_path)
-    phase_data = find_phase_artifacts(docs_path, args.phase)
+    phase_data = find_phase_artifacts(docs_path, phase_num)
 
     release_content = generate_release_markdown(
         version=ver_clean,
-        phase_num=args.phase,
+        phase_num=phase_num,
         env_info=env_info,
         artifacts=artifacts,
         phase_data=phase_data,
-        summary=args.summary,
+        summary=summary_text,
     )
 
     public_notes = generate_public_release_notes(
         version=ver_clean,
-        phase_num=args.phase,
+        phase_num=phase_num,
         env_info=env_info,
         artifacts=artifacts,
         phase_data=phase_data,
-        summary=args.summary,
+        summary=summary_text,
     )
 
     if args.dry_run:
@@ -670,7 +759,6 @@ def main() -> int:
         print(public_notes)
         return 0
 
-    out_path = Path(args.output) if args.output else docs_path / "02_Tasks" / "Releases" / f"RELEASE-{tag}.md"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(release_content, encoding="utf-8")
 

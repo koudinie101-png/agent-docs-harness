@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-02] — Устранение дефекта BUG-001: Рассинхронизация номера фазы и описания релиза в CI release.yml
+- **Что сделано:**
+  - Локализован и устранен дефект [[02_Tasks/Bugs/BUG-001-ci-release-notes-phase-fallback|BUG-001]]: сброс метаданных в дефолтную Фазу 1 при запуске в GitHub Actions CI без параметров `--phase` и `--summary`.
+  - Разработан воспроизводящий регрессионный тест `test_ci_mode_infers_phase_and_summary_from_existing_release_doc` в `tests/test_kb_release.py` (Regression-First, RED -> GREEN).
+  - В `scripts/kb_release.py` добавлены функции `extract_release_meta_from_doc` (чтение `phase` и `Executive Summary` из существующего артефакта `docs/02_Tasks/Releases/RELEASE-{tag}.md` как Single Source of Truth) и `detect_latest_phase` (эвристический автодетект фазы по `docs/02_Tasks/Specs/`).
+  - Пересобран бандл `install.py` (89.4 KB) через `scripts/build_installer.py`.
+  - Карточка дефекта переведена в статус `Done` на Канбан-доске [[02_Tasks/Kanban|Kanban.md]], отчет [[02_Tasks/Bugs/BUG-001-ci-release-notes-phase-fallback|BUG-001]] переведен в статус `fixed`.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 42/42 теста пройдено успешно (100% Pass).
+  - `python scripts/kb_release.py --version v0.8.0 --ci-mode` -> сформирован корректный `dist/RELEASE_NOTES.md` с «Фаза 8» и полным Executive Summary.
+  - `python scripts/kb_lint.py --path docs` -> 94 файла проверено, 712 викиссылок валидны (0 битых).
+
+---
+
 ### [2026-10-02] — Выпуск официального релиза v0.8.0: Greenfield-инициализация от идеи и Living Spec (Фаза 8)
 - **Что сделано:**
   - Осуществлен официальный релиз **v0.8.0** по завершении Фазы 8 (План [[02_Tasks/Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]).
