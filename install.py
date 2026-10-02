@@ -106,6 +106,17 @@ STACK_PRESETS = {
         "bug_env": "  - OS: macOS / Linux / Windows\n  - Runtime: Project runtime",
         "research_quirks": "* **Concurrency & Resources:** Thread safety, race conditions, memory lifecycle.",
     },
+    "undecided": {
+        "name": "Undecided / Idea-First Research",
+        "language": "TBD (Determined in Mode 0 via /kb-research)",
+        "build_cmd": "echo 'No build command configured yet (run /kb-research)'",
+        "test_cmd": "echo 'No test command configured yet (run /kb-research)'",
+        "lint_cmd": "echo 'No lint command configured yet (run /kb-research)'",
+        "file_ext": ".txt",
+        "sample_contract": "# Архитектурный контракт и интерфейсы будут определены по итогам RESEARCH-001\n",
+        "bug_env": "  - ОС: TBD\n  - Стек: TBD (в процессе исследования)\n",
+        "research_quirks": "* **Архитектурные ограничения и критерии выбора стека:** будут зафиксированы в ADR-0001.",
+    },
 }
 
 
@@ -423,7 +434,7 @@ Thumbs.db
             print("📁 Appended Obsidian retention rules to existing .gitignore.")
 
 
-def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, assets: dict = None, force: bool = False):
+def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, assets: dict = None, force: bool = False, idea: str = None):
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
     today_str = date.today().isoformat()
     docs_dir = target_dir / "docs"
@@ -431,10 +442,29 @@ def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, ass
     # 1. SPEC.md (Root)
     spec_path = target_dir / "SPEC.md"
     if not spec_path.exists() or force:
+        is_undecided = (stack_key == "undecided")
+        spec_status = "discovery" if is_undecided else "active"
+        if is_undecided:
+            concept_text = idea.strip() if idea else "*Краткое описание продуктовой идеи, решаемой проблемы и целевой аудитории (зафиксировано для исследования в Режиме 0).*"
+            arch_text = (
+                "* **Статус стека:** Не определен. Требуется провести первичное исследование через команду агента: `/kb-research выбор-стека-и-архитектуры`.\n"
+                "* **Сборка проекта:** `TBD (после завершения RESEARCH-001)`\n"
+                "* **Запуск тестов:** `TBD (после завершения RESEARCH-001)`\n"
+                "* **Проверка базы знаний:** `python3 scripts/kb_lint.py --path docs`"
+            )
+        else:
+            concept_text = idea.strip() if idea else "*Краткое описание назначения проекта, решаемой проблемы и целевой аудитории.*"
+            arch_text = (
+                f"* **Платформа и технологии:** {stack['name']} ({stack['language']})\n"
+                f"* **Сборка проекта:** `{stack['build_cmd']}`\n"
+                f"* **Запуск тестов:** `{stack['test_cmd']}`\n"
+                f"* **Проверка базы знаний:** `python3 scripts/kb_lint.py --path docs`"
+            )
+
         spec_content = f"""---
 id: SPEC
 title: "Мастер-спецификация: {project_name}"
-status: active
+status: {spec_status}
 type: specification
 created: {today_str}
 updated: {today_str}
@@ -453,15 +483,12 @@ tags:
 ---
 
 ## 1. Концепция и цели проекта
-*Краткое описание назначения проекта, решаемой проблемы и целевой аудитории.*
+{concept_text}
 
 ---
 
 ## 2. Архитектура и стек технологий
-* **Платформа и технологии:** {stack['name']} ({stack['language']})
-* **Сборка проекта:** `{stack['build_cmd']}`
-* **Запуск тестов:** `{stack['test_cmd']}`
-* **Проверка базы знаний:** `python3 scripts/kb_lint.py --path docs`
+{arch_text}
 
 ---
 
@@ -795,6 +822,7 @@ def install_harness(
     doc_lang: str = "ru",
     force: bool = False,
     ci_choice: str = "none",
+    idea: str = None,
 ):
     print(f"\n🚀 Installing Agent Docs-as-Code Harness into: {target_dir.resolve()}")
     print(f"   • Project Name: {project_name}")
@@ -844,7 +872,7 @@ def install_harness(
         print(f"✅ Deployed {skills_count} AI agent skills (.agents/skills/).")
 
     # 4. Generate starter knowledge base documents
-    create_starter_docs(target_dir, project_name, stack_key, assets=assets, force=force)
+    create_starter_docs(target_dir, project_name, stack_key, assets=assets, force=force, idea=idea)
     print("✅ Created starter knowledge base docs (SPEC.md, 00_Index.md, Onboarding.md, Kanban.md, Roadmap.md, Devlog.md).")
 
     # 4.1. Handle README.md and .gitignore (non-destructive)
@@ -875,8 +903,12 @@ def install_harness(
     print("  1. Open the project folder in VS Code / Cursor / Obsidian:")
     print(f"     code \"{target_dir.resolve()}\"")
     print("  2. In Obsidian: Open Vault -> choose folder 'docs/' to view the colored graph!")
-    print("  3. Ask your AI Agent:")
-    print("     \"Please read AGENTS.md and let's start Mode 1 (Planning) for our first task.\"")
+    if stack_key == "undecided":
+        print("  3. Ask your AI Agent (Start with Mode 0 Discovery & Tech Stack Research):")
+        print("     \"Please read AGENTS.md and start Mode 0: /kb-research <исследование идеи и выбор стека>\"")
+    else:
+        print("  3. Ask your AI Agent:")
+        print("     \"Please read AGENTS.md and let's start Mode 1 (Planning) for our first task.\"")
     print("  4. Verify your documentation anytime:")
     print("     python3 scripts/kb_lint.py --path docs\n")
 
@@ -1063,10 +1095,13 @@ def run_interactive_wizard(args) -> tuple:
         doc_lang = "ru"
 
     # 3. Technology Stack
-    detected_stack = detect_project_stack(target_dir)
-    if args.stack and args.stack != "auto":
-        detected_stack = args.stack
-    stack_choice_map = {"swift": "1", "ts": "2", "python": "3", "dotnet": "4", "generic": "5"}
+    if getattr(args, "idea", None) and not args.stack:
+        detected_stack = "undecided"
+    else:
+        detected_stack = detect_project_stack(target_dir)
+        if args.stack and args.stack != "auto":
+            detected_stack = args.stack
+    stack_choice_map = {"swift": "1", "ts": "2", "python": "3", "dotnet": "4", "generic": "5", "undecided": "6"}
     detected_num = stack_choice_map.get(detected_stack, "1")
 
     print("\n? Select Technology Stack:")
@@ -1075,9 +1110,16 @@ def run_interactive_wizard(args) -> tuple:
     print(f"  [3] Python (Pytest, FastAPI, CLI){' (Detected)' if detected_stack == 'python' else ''}")
     print(f"  [4] .NET / C# (MAUI, ASP.NET, CoreCLR){' (Detected)' if detected_stack == 'dotnet' else ''}")
     print(f"  [5] Generic / Other{' (Detected)' if detected_stack == 'generic' else ''}")
-    stack_choice = prompt_user_input("Select [1-5]", default=detected_num)
-    stack_map = {"1": "swift", "2": "ts", "3": "python", "4": "dotnet", "5": "generic"}
+    print(f"  [6] 💡 Undecided / Idea-First (Стек будет определен через /kb-research){' (Detected)' if detected_stack == 'undecided' else ''}")
+    stack_choice = prompt_user_input("Select [1-6]", default=detected_num)
+    stack_map = {"1": "swift", "2": "ts", "3": "python", "4": "dotnet", "5": "generic", "6": "undecided"}
     stack_key = stack_map.get(stack_choice, detected_stack)
+
+    # If stack is undecided and no idea provided via flag, ask for idea
+    if stack_key == "undecided" and not getattr(args, "idea", None):
+        user_idea = prompt_user_input("? Enter your project idea / concept (or press Enter to describe later)", default="")
+        if user_idea:
+            args.idea = user_idea
 
     # 4. AI Agent Setup
     print("\n? Select AI Agent / IDE Setup:")
@@ -1128,6 +1170,12 @@ def main():
 
     parser.add_argument("--name", "-n", type=str, help="Project name (default: current directory name)")
     parser.add_argument(
+        "--idea",
+        type=str,
+        default=None,
+        help="Краткое описание продуктовой идеи для Greenfield-инициализации (автоматически активирует пресет undecided, если --stack не указан)",
+    )
+    parser.add_argument(
         "--doc-lang", "-l",
         type=str,
         default=None,
@@ -1135,7 +1183,7 @@ def main():
     )
     parser.add_argument(
         "--stack", "-s",
-        choices=["auto", "swift", "ts", "python", "dotnet", "generic"],
+        choices=["auto", "swift", "ts", "python", "dotnet", "generic", "undecided"],
         default=None,
         help="Target technology stack preset (default: auto)",
     )
@@ -1204,7 +1252,10 @@ def main():
         project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice = run_interactive_wizard(args)
     else:
         project_name = args.name or target_dir.name or "MyProject"
-        stack_key = detect_project_stack(target_dir) if (not args.stack or args.stack == "auto") else args.stack
+        if args.idea and not args.stack:
+            stack_key = "undecided"
+        else:
+            stack_key = detect_project_stack(target_dir) if (not args.stack or args.stack == "auto") else args.stack
         agent_choice = args.agent or "all"
         git_choice = args.git or "local"
         doc_lang = args.doc_lang or "ru"
@@ -1219,6 +1270,7 @@ def main():
         doc_lang=doc_lang,
         force=args.force,
         ci_choice=ci_choice,
+        idea=args.idea,
     )
 
 

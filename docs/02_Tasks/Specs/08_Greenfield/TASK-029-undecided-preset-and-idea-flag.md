@@ -1,7 +1,7 @@
 ---
 id: TASK-029
 title: "Пресет undecided, интерактивная опция меню и CLI-флаг --idea в install.py"
-status: in-progress
+status: done
 type: task
 phase: 8
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-029 — Пресет undecided, интерактивная опция меню и CLI-флаг --idea в install.py
 
 > **ID:** TASK-029  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase8 #component/installer #component/cli #greenfield #idea-first  
 > **Родительский план:** [[../../Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../../../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -100,17 +100,17 @@ if args.idea and not args.stack:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Тестирование CLI-флага: `python install.py --dry-run --stack undecided` (Exit code 0).
-- [ ] Тестирование инициализации с `--idea`: запуск во временной директории `python install.py --target-dir <temp> --idea "Демон мониторинга"` и проверка `status: discovery` в `SPEC.md`.
-- [ ] Запуск модульных тестов инсталлятора: `python -m unittest tests/test_installer.py` (100% pass).
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Тестирование CLI-флага: `python install.py --help` и запуск установки с `--stack undecided` (Exit code 0).
+- [x] Тестирование инициализации с `--idea`: запуск во временной директории с проверкой `status: discovery` в `SPEC.md`.
+- [x] Запуск модульных тестов инсталлятора: `python -m unittest tests/test_installer.py` (100% pass).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Пресет `undecided` добавлен в `STACK_PRESETS` и интерактивное меню выбора стека.
-- [ ] Флаг `--idea` корректно обрабатывается и переносит описание идеи в `SPEC.md`.
-- [ ] Приветственный экран подсказывает вызов `/kb-research`.
-- [ ] Автотесты в `tests/test_installer.py` успешно выполняются.
-- [ ] Статус задачи обновлен в Канбане и Дорожной карте.
+- [x] Пресет `undecided` добавлен в `STACK_PRESETS` и интерактивное меню выбора стека.
+- [x] Флаг `--idea` корректно обрабатывается и переносит описание идеи в `SPEC.md`.
+- [x] Приветственный экран подсказывает вызов `/kb-research`.
+- [x] Автотесты в `tests/test_installer.py` успешно выполняются (`test_19_undecided_preset_and_idea_flag`).
+- [x] Статус задачи обновлен в Канбане и Дорожной карте.

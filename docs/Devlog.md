@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-01
+updated: 2026-10-02
 tags:
   - devlog
   - journal
@@ -15,6 +15,25 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-10-02] — Завершение TASK-029: Пресет undecided и CLI-флаг --idea в install.py
+- **Что сделано:**
+  - В утилите `install.py` реализован пресет `undecided` (*"Undecided / Idea-First Research"*) с нейтральными заглушками и отложенным выбором стека через Режим 0.
+  - Добавлена опция `6) 💡 Undecided / Idea-First` в интерактивное меню выбора стека.
+  - Реализован CLI-флаг `--idea "<текст>"` для Greenfield-старта с одной продуктовой идеи; при его указании без флага `--stack` автоматически активируется пресет `undecided`.
+  - Модифицирована функция `create_starter_docs`: при выборе пресета `undecided` мастер-спецификация `SPEC.md` создается со статусом `status: discovery`, описание идеи помещается в раздел «Концепция и цели», а в архитектурном разделе фиксируется статус TBD.
+  - Обновлен финальный приветственный баннер инсталлятора, подсказывающий первый шаг: `/kb-research <исследование идеи и выбор стека>`.
+  - Добавлен сквозной модульный и CLI тест `test_19_undecided_preset_and_idea_flag` в `tests/test_installer.py`.
+  - Задача [[02_Tasks/Specs/08_Greenfield/TASK-029-undecided-preset-and-idea-flag|TASK-029]] переведена в `status: done`, Канбан и Дорожная карта актуализированы.
+- **Результаты верификации:**
+  - `python install.py --help` -> подтверждено наличие опции `--idea` и значения `undecided` в `--stack`.
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_19_undecided_preset_and_idea_flag` -> 1/1 Pass (Exit code 0).
+  - `python -m unittest discover -s tests` -> 36/36 тестов успешно пройдено (100% Pass).
+  - `python scripts/kb_lint.py --path docs` -> 89 файлов проверено, 652 викиссылки валидны (0 битых).
+- **Следующий шаг:**
+  - Реализация задачи [[02_Tasks/Specs/08_Greenfield/TASK-030-living-spec-protocol-and-skill-sync|TASK-030]] (Протокол Living Spec и синхронизация документации в скиллах `kb-research`, `kb-complete`, `kb-release` и `AGENTS.md`).
+
+---
 
 ### [2026-10-01] — Выпуск официального релиза v0.7.0: GitHub Releases & Distribution Notes Standard (Фаза 7)
 - **Что сделано:**

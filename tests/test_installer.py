@@ -1011,6 +1011,81 @@ class TestAgentDocsHarness(unittest.TestCase):
             inst_roadmap_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_ROADMAP.md").read_text(encoding="utf-8")
             self.assertIn("Отклоненные архитектурные идеи", inst_roadmap_tpl)
 
+    def test_19_undecided_preset_and_idea_flag(self):
+        """Verify undecided preset, --idea CLI flag, SPEC.md discovery status, and kb_lint verification."""
+        self.assertIn("undecided", install.STACK_PRESETS)
+        undecided_info = install.STACK_PRESETS["undecided"]
+        self.assertEqual(undecided_info["name"], "Undecided / Idea-First Research")
+
+        # 1. Direct Python call to install_harness with stack_key="undecided" and idea
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "IdeaProject"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="IdeaProject",
+                stack_key="undecided",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+                idea="Smart Battery Monitoring Daemon for Desktop",
+            )
+
+            # Check SPEC.md
+            spec_path = target / "SPEC.md"
+            self.assertTrue(spec_path.is_file())
+            spec_content = spec_path.read_text(encoding="utf-8")
+            self.assertIn("status: discovery", spec_content)
+            self.assertIn("Smart Battery Monitoring Daemon for Desktop", spec_content)
+            self.assertIn("Не определен. Требуется провести первичное исследование", spec_content)
+            self.assertIn("/kb-research", spec_content)
+
+            # Check AGENTS.md
+            agents_path = target / "AGENTS.md"
+            self.assertTrue(agents_path.is_file())
+            agents_content = agents_path.read_text(encoding="utf-8")
+            self.assertIn("Undecided / Idea-First Research", agents_content)
+
+            # Run kb_lint
+            kb_lint_script = target / "scripts" / "kb_lint.py"
+            res = subprocess.run(
+                [sys.executable, str(kb_lint_script), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res.returncode, 0, f"kb_lint failed: {res.stdout}\n{res.stderr}")
+
+        # 2. CLI subprocess execution with --idea flag without --stack
+        with tempfile.TemporaryDirectory() as tmp_dir2:
+            target2 = Path(tmp_dir2) / "CliIdeaProject"
+            target2.mkdir()
+
+            cli_res = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO_ROOT / "install.py"),
+                    "-y",
+                    "-d",
+                    str(target2),
+                    "--idea",
+                    "Offline Local-First Encrypted Vault",
+                ],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(cli_res.returncode, 0, f"CLI install failed: {cli_res.stdout}\n{cli_res.stderr}")
+            self.assertIn("Undecided / Idea-First Research", cli_res.stdout)
+            self.assertIn("Mode 0: /kb-research", cli_res.stdout)
+
+            spec_path2 = target2 / "SPEC.md"
+            self.assertTrue(spec_path2.is_file())
+            spec_content2 = spec_path2.read_text(encoding="utf-8")
+            self.assertIn("status: discovery", spec_content2)
+            self.assertIn("Offline Local-First Encrypted Vault", spec_content2)
+
 
 if __name__ == "__main__":
     unittest.main()

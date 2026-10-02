@@ -105,7 +105,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
 **Нормативная база:** [[../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]]
 
-- [ ] Пресет `undecided`, интерактивная опция меню и CLI-флаг `--idea` в `install.py` / `build_installer.py`, генерация `SPEC.md` со статусом `discovery` — [[Specs/08_Greenfield/TASK-029-undecided-preset-and-idea-flag|TASK-029]].
+- [x] Пресет `undecided`, интерактивная опция меню и CLI-флаг `--idea` в `install.py` / `build_installer.py`, генерация `SPEC.md` со статусом `discovery` — [[Specs/08_Greenfield/TASK-029-undecided-preset-and-idea-flag|TASK-029]].
 - [ ] Протокол Living Spec и синхронизация документации в скиллах `kb-research`, `kb-complete`, `kb-release` и `AGENTS.md` — [[Specs/08_Greenfield/TASK-030-living-spec-protocol-and-skill-sync|TASK-030]].
 - [ ] Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py` — [[Specs/08_Greenfield/TASK-031-kb-lint-spec-drift-audit|TASK-031]].
 - [ ] Сборка инсталлятора `build_installer.py`, сквозные E2E тесты нового пресета, обновление `README.md` и `docs/Onboarding.md` — [[Specs/08_Greenfield/TASK-032-installer-bundling-and-e2e-verification|TASK-032]].
