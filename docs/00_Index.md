@@ -81,6 +81,7 @@ flowchart TD
 * [[04_Research/RESEARCH-006-kb-plan-icebox-prioritization-and-intent-routing|RESEARCH-006: Оптимизация точки входа планирования (/kb-plan) и маршрутизация идей из Icebox]]
 * [[04_Research/RESEARCH-007-discovery-mode-and-kb-research-lifecycle-integration|RESEARCH-007: Интеграция этапа исследования (Режим 0: Discovery) и эволюция /kb-research]]
 * [[04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008: Анализ Latency, Prompt Caching и накладных расходов скиллов в Antigravity]]
+* [[04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009: Greenfield-инициализация от идеи (Idea-First) и Living Spec / README Sync]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
