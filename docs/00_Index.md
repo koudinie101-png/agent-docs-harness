@@ -4,7 +4,7 @@ title: "База знаний: agent-docs-harness"
 status: active
 type: hub
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-02
 tags:
   - project
   - pkm
@@ -73,6 +73,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013: Архитектура Zero Round-Trip Dispatch и горячие инварианты (Hot Invariants)]]
 * [[03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014: Архитектура Greenfield-инициализации от идеи (Idea-First) и протокол Living Spec]]
 * [[03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015: Архитектура практического руководства Zero-to-Hero Onboarding Guide]]
+* [[03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Barrier)]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -86,6 +87,7 @@ flowchart TD
 * [[04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009: Greenfield-инициализация от идеи (Idea-First) и Living Spec / README Sync]]
 * [[04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010: Архитектура руководства Zero-to-Hero и ментальные модели агентной разработки]]
 * [[04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]]
+* [[04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012: Барьер единичной задачи и сдерживание конвейерного перевыполнения (Autonomous Pipeline Containment)]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
