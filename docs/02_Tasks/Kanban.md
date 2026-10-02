@@ -11,12 +11,13 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-008-greenfield-idea-first-and-living-spec|План: Фаза 8 — Greenfield-инициализация от идеи (Idea-First) и протокол Living Spec]] #plan #phase8 #greenfield #living-spec
-  - [ ] TASK-029: Пресет `undecided`, интерактивная опция меню и CLI-флаг `--idea` в `install.py` / `build_installer.py`, генерация `SPEC.md` со статусом `discovery` #task #phase8
-  - [ ] TASK-030: Протокол Living Spec и синхронизация документации в скиллах `kb-research`, `kb-complete`, `kb-release` и `AGENTS.md` #task #phase8
-  - [ ] TASK-031: Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py` #task #phase8
-  - [ ] TASK-032: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты нового пресета, обновление `README.md` и `docs/Onboarding.md` #task #phase8
+  - [ ] [[Specs/08_Greenfield/TASK-030-living-spec-protocol-and-skill-sync|TASK-030]]: Протокол Living Spec и синхронизация документации в скиллах `kb-research`, `kb-complete`, `kb-release` и `AGENTS.md` #task #phase8
+  - [ ] [[Specs/08_Greenfield/TASK-031-kb-lint-spec-drift-audit|TASK-031]]: Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py` #task #phase8
+  - [ ] [[Specs/08_Greenfield/TASK-032-installer-bundling-and-e2e-verification|TASK-032]]: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты нового пресета, обновление `README.md` и `docs/Onboarding.md` #task #phase8
 
 ## ⏳ В работе (In Progress)
+
+- [ ] [[Specs/08_Greenfield/TASK-029-undecided-preset-and-idea-flag|TASK-029]]: Пресет `undecided`, интерактивная опция меню и CLI-флаг `--idea` в `install.py` / `build_installer.py`, генерация `SPEC.md` со статусом `discovery` #task #phase8
 
 ## ✅ Готово (Done)
 
