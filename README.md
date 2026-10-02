@@ -19,24 +19,23 @@ When developing with modern AI coding agents (**VS Code Cline, Roo Code, Claude 
 
 ---
 
-## 💡 The Solution: Docs-as-Code + 3-Mode Discipline
+## 💡 The Solution: Docs-as-Code + 4-Stage Lifecycle (Discovery + Delivery)
 
 **Agent Docs-as-Code Harness** turns your project repository into a self-documenting, disciplined environment that guides AI agents like a senior software engineering partner:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                          3 OPERATING MODES                             │
-├────────────────────┬─────────────────────────────┬─────────────────────┤
-│ 🟡 Mode 1: Plan    │ 🟠 Mode 2: Specification    │ 🟢 Mode 3: Code     │
-│ (/kb-plan)         │ (/kb-task)                  │ (/kb-implement)     │
-│                    │                             │                     │
-│ • Critical review  │ • File contracts:           │ • Strict coding per │
-│ • Anti-pattern Q&A │   [NEW] / [MODIFY]          │   specification     │
-│ • Risk analysis    │ • Definition of Done (DoD)  │ • Run build & tests │
-│ • PLAN-XXX file    │ • Verification commands     │ • Devlog & Kanban   │
-│                    │ • TASK-XXX file             │ • kb_lint.py check  │
-│ 🚨 NO CODE EDITS!  │ 🚨 NO CODE EDITS!           │                     │
-└────────────────────┴─────────────────────────────┴─────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   4 OPERATING MODES                                    │
+├────────────────────┬────────────────────┬─────────────────────────────┬────────────────┤
+│ 🔬 Mode 0: Research│ 🟡 Mode 1: Plan    │ 🟠 Mode 2: Specification    │ 🟢 Mode 3: Code│
+│ (/kb-research)     │ (/kb-plan)         │ (/kb-task)                  │ (/kb-implement)│
+│                    │                    │                             │                │
+│ • Idea validation  │ • Conceptual RFC   │ • File contracts:           │ • Strict coding│
+│ • Trade-off matrix │ • Critical review  │   [NEW] / [MODIFY]          │ • Run tests    │
+│ • Icebox / Reject  │ • Risk analysis    │ • Definition of Done (DoD)  │ • Living Spec  │
+│ • Stack selection  │ • PLAN-XXX file    │ • Verification commands     │ • Devlog/Kanban│
+│ 🚨 NO CODE EDITS!  │ 🚨 NO CODE EDITS!  │ 🚨 NO CODE EDITS!           │ • kb_lint.py   │
+└────────────────────┴────────────────────┴─────────────────────────────┴────────────────┘
 ```
 
 ---
@@ -60,6 +59,13 @@ irm https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/in
 git clone https://github.com/koudinie101-png/agent-docs-harness.git
 python3 agent-docs-harness/install.py
 ```
+
+### 💡 Greenfield Idea-First (Start from a Raw Idea)
+Start in an empty folder with just your product concept:
+```bash
+python3 install.py --idea "AI-powered personal finance assistant"
+```
+Initializes with the `undecided` preset, generates `SPEC.md` in `status: discovery`, and prepares your AI Agent to conduct tech stack research via `/kb-research` (Mode 0: Discovery).
 
 The installer features an **interactive terminal wizard** that asks for your project name, stack, and agent environment, or can be run completely hands-free with CLI flags!
 
@@ -187,12 +193,16 @@ The installer tailors templates, build commands, and agent prompts to your stack
 | **Python** | `python` | **Pytest, FastAPI, CLI**: type hinting, asyncio, packaging, cross-platform UTF-8. |
 | **.NET / C#** | `dotnet` | **ASP.NET, MAUI, CoreCLR**: async/await, IDisposable, LOH allocations. |
 | **Generic** | `generic` | Universal templates for any language or toolchain. |
+| **Undecided / Idea-First** | `undecided` | **Research & Discovery**: Stack postponed to Mode 0 (`/kb-research`). Creates `SPEC.md` in `status: discovery`. |
 
 ---
 
 ## 💻 CLI Options & Non-Interactive Usage
 
 ```bash
+# Greenfield installation starting from a raw verbal idea:
+python3 install.py --idea "AI note taking service"
+
 # Non-interactive installation with autodetection, all agent rules, and GitHub Actions CI:
 python3 install.py --non-interactive --name "MySwiftApp" --stack auto --agent all --ci github --git local
 
@@ -202,7 +212,8 @@ python3 install.py --update
 # CLI Options summary:
 python3 install.py --help
   --name, -n        Project name (default: directory name)
-  --stack, -s       {auto, swift, ts, python, dotnet, generic} (default: auto)
+  --stack, -s       {auto, swift, ts, python, dotnet, generic, undecided} (default: auto)
+  --idea, -i        Verbal product idea prompt for Greenfield initialization (undecided preset)
   --agent, -a       {all, cline, claude, cursor, copilot, gemini, windsurf, generic}
   --doc-lang, -l    {ru, en, custom} (default: ru)
   --git, -g         {local, github, none} (default: local)

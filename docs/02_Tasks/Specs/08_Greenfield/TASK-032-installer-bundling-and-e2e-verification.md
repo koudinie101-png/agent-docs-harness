@@ -1,7 +1,7 @@
 ---
 id: TASK-032
 title: "Сборка инсталлятора build_installer.py, сквозные E2E тесты и документация"
-status: planned
+status: done
 type: task
 phase: 8
 component:
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-032 — Сборка инсталлятора, E2E тесты и документация
 
 > **ID:** TASK-032  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3, 2026-10-02)  
 > **Теги:** #task/spec #phase8 #component/bundler #component/installer #e2e-testing #documentation  
 > **Родительский план:** [[../../Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../../../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -78,16 +78,16 @@ python scripts/build_installer.py
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка монолита: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Полный прогон тестового набора: `python -m unittest discover -s tests` (100% pass).
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Сборка монолита: `python scripts/build_installer.py` (Exit code 0).
+- [x] Полный прогон тестового набора: `python -m unittest discover -s tests` (100% pass).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `install.py` пересобран и содержит все обновленные компоненты.
-- [ ] Документация `README.md` и `docs/Onboarding.md` актуализирована.
-- [ ] Все автотесты (модульные и сквозные E2E) проходят успешно.
-- [ ] Финальный аудит линтера завершается без ошибок.
-- [ ] Статус всех задач Фазы 8 обновлен в Канбане и Дорожной карте.
+- [x] `install.py` пересобран и содержит все обновленные компоненты.
+- [x] Документация `README.md` и `docs/Onboarding.md` актуализирована.
+- [x] Все автотесты (модульные и сквозные E2E) проходят успешно.
+- [x] Финальный аудит линтера завершается без ошибок.
+- [x] Статус всех задач Фазы 8 обновлен в Канбане и Дорожной карте.

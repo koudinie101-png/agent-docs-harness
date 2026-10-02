@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-02] — Завершение TASK-032: Сборка инсталлятора, E2E тесты и документация (Завершение Фазы 8)
+- **Что сделано:**
+  - Запущен сборщик `scripts/build_installer.py`: актуализирован монолит `install.py` с упаковкой обновленных шаблонов (`TEMPLATE_ONBOARDING.md`), скиллов (`kb-research`, `kb-complete`, `kb-release`), скрипта `kb_lint.py` и конфигов (`EMBEDDED_ASSETS_B64`).
+  - Расширен тестовый сценарий `test_19_undecided_preset_and_idea_flag` в `tests/test_installer.py`: добавлена валидация развертывания всех 12 скиллов и успешного прогона `kb_lint.py` на созданном проекте.
+  - Актуализирован `README.md`: добавлен раздел быстрого старта с опцией `--idea` (Greenfield Idea-First), пресет `undecided` в таблицу поддерживаемых стеков, CLI-флаг `--idea`, и диаграмма 4-этапного жизненного цикла (Discovery + Delivery).
+  - Актуализировано руководство `docs/Onboarding.md` и шаблон `templates/TEMPLATE_ONBOARDING.md`: добавлен раздел 7 с регламентом Greenfield Idea-First старта, инварианта Living Spec и эвристического контроля дрифта.
+  - Задача [[02_Tasks/Specs/08_Greenfield/TASK-032-installer-bundling-and-e2e-verification|TASK-032]] и весь план [[02_Tasks/Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]] переведены в статус `done`, Канбан и Дорожная карта актуализированы (Фаза 8 завершена).
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> успешная сборка монолита `install.py` (88.4 KB).
+  - `python -m unittest discover -s tests` -> 41/41 тест пройден (100% Pass).
+  - `python scripts/kb_lint.py --path docs` -> 89 файлов проверено, 658 викиссылок валидны (0 битых).
+- **Следующий шаг:**
+  - Выпуск официального релиза Фазы 8 через `/kb-release v0.8.0`.
+
+---
+
 ### [2026-10-02] — Завершение TASK-031: Эвристический контроль дрифта спецификации в scripts/kb_lint.py
 - **Что сделано:**
   - В автономном линтере `scripts/kb_lint.py` реализована функция `check_spec_drift(docs_dir: Path)` для неблокирующего эвристического анализа устаревания мастер-спецификации.

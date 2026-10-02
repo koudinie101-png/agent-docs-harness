@@ -913,8 +913,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints)
-            self.assertLessEqual(total_skills_size, 20000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 20000)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec)
+            self.assertLessEqual(total_skills_size, 22000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 22000)")
             self.assertLessEqual(total_templates_size, 21000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21000)")
 
             # Micro-benchmarks for critical files
@@ -1085,6 +1085,22 @@ class TestAgentDocsHarness(unittest.TestCase):
             spec_content2 = spec_path2.read_text(encoding="utf-8")
             self.assertIn("status: discovery", spec_content2)
             self.assertIn("Offline Local-First Encrypted Vault", spec_content2)
+
+            # Check all 12 skills deployed
+            skills_dir2 = target2 / ".agents" / "skills"
+            self.assertTrue(skills_dir2.is_dir())
+            skill_subdirs = [d for d in skills_dir2.iterdir() if d.is_dir()]
+            self.assertEqual(len(skill_subdirs), 12)
+
+            # Run kb_lint on installed project
+            kb_lint_res = subprocess.run(
+                [sys.executable, str(target2 / "scripts" / "kb_lint.py"), "--path", str(target2 / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
+            self.assertIn("OK:", kb_lint_res.stdout)
 
 
 if __name__ == "__main__":
