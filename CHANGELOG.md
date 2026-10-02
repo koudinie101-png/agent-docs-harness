@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-10-02
+
+### Added
+- Greenfield initialization from verbal idea (Idea-First) based on ADR-0014 and RESEARCH-009.
+- Undecided tech stack preset (`undecided`) and `--idea "<text>"` CLI parameter in `install.py` / `build_installer.py`.
+- Dynamic generation of `SPEC.md` with `status: discovery` and preliminary architecture questions.
+- Living Spec Invariant protocol embedded into `AGENTS.md` and skills (`kb-research`, `kb-complete`, `kb-release`).
+- Automated crystallization of `SPEC.md` (`status: active`) and `README.md` upon completing Mode 0 Discovery research.
+- Heuristic specification drift audit in `scripts/kb_lint.py` validating sync between `SPEC.md` and root `README.md`.
+- Comprehensive unit and E2E regression tests in `tests/test_kb_lint.py` and `tests/test_installer.py` (41 passing tests).
+
+### Changed
+- Re-bundled standalone installer `install.py` with updated skills, templates, and drift linter (88.4 KB).
+
 ## [0.7.0] - 2026-10-01
 
 ### Added
@@ -52,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-bundled and compressed standalone installer `install.py` down to 81.2 KB (-17.6%).
 - Enhanced `install.py --update` with non-destructive updates and stack customization for skeleton templates.
 
+[0.8.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.8.0
 [0.7.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.7.0
 [0.6.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.6.0
 [0.5.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.5.0

@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-02] — Выпуск официального релиза v0.8.0: Greenfield-инициализация от идеи и Living Spec (Фаза 8)
+- **Что сделано:**
+  - Осуществлен официальный релиз **v0.8.0** по завершении Фазы 8 (План [[02_Tasks/Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]).
+  - Сформирован релизный документ [[02_Tasks/Releases/RELEASE-v0.8.0|RELEASE-v0.8.0]] и публичные заметки `dist/RELEASE_NOTES.md` с чистым GitHub Markdown и автоконвертером викиссылок.
+  - Собраны релизные артефакты через хук `scripts/build_release.py`:
+    - `dist/install.py` (88.4 KB) — SHA-256: `867757bad12d737fa8409fdfea41e63850c9658f8e5fb0cc4a60c62e6351ec26`.
+    - `dist/RELEASE_NOTES.md` (6.4 KB) — SHA-256: `1469cd999b113ab5a8f98ad4eb9c96e996e1c936d865186d8dcf431cecaf421e`.
+  - Обновлены [[02_Tasks/Roadmap|Roadmap.md]] (ссылка на официальный релиз `RELEASE-v0.8.0`) и корневой `CHANGELOG.md` (секция `[0.8.0]`).
+  - Зафиксирован аннотированный Git-тег `v0.8.0`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 93 файла проверено, 683 викиссылки валидны (0 битых).
+  - `python -m unittest discover -s tests` -> 41/41 тест успешно пройден (100% Pass).
+  - Контрольная сумма SHA-256 `dist/install.py` подтверждена (`867757bad12d737fa8409fdfea41e63850c9658f8e5fb0cc4a60c62e6351ec26`).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Определение приоритета следующей инициативы из Icebox (например, реализация Single-Task Execution Barrier по итогам [[04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]] и [[03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]) через `/kb-plan`.
+
+---
+
 ### [2026-10-02] — Завершение TASK-032: Сборка инсталлятора, E2E тесты и документация (Завершение Фазы 8)
 - **Что сделано:**
   - Запущен сборщик `scripts/build_installer.py`: актуализирован монолит `install.py` с упаковкой обновленных шаблонов (`TEMPLATE_ONBOARDING.md`), скиллов (`kb-research`, `kb-complete`, `kb-release`), скрипта `kb_lint.py` и конфигов (`EMBEDDED_ASSETS_B64`).
