@@ -1,7 +1,7 @@
 ---
 id: TASK-031
 title: "Эвристический контроль дрифта спецификации в scripts/kb_lint.py и модульные тесты"
-status: planned
+status: done
 type: task
 phase: 8
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-031 — Эвристический контроль дрифта спецификации в scripts/kb_lint.py
 
 > **ID:** TASK-031  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3, 2026-10-02)  
 > **Теги:** #task/spec #phase8 #component/scripts #component/linter #living-spec #documentation-drift  
 > **Родительский план:** [[../../Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../../../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -105,15 +105,15 @@ for dw in drift_warnings:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Модульные тесты: `python -m unittest tests/test_kb_lint.py` (100% pass).
-- [ ] Проверка на текущем репозитории: `python scripts/kb_lint.py --path docs` (должен завершиться успешно с кодом 0).
-- [ ] Тестирование на синтетическом репозитории с устаревшим `SPEC.md` и подтверждение вывода `⚠️ WARN: Living Spec Drift`.
+- [x] Модульные тесты: `python -m unittest tests/test_kb_lint.py` (100% pass).
+- [x] Проверка на текущем репозитории: `python scripts/kb_lint.py --path docs` (должен завершиться успешно с кодом 0).
+- [x] Тестирование на синтетическом репозитории с устаревшим `SPEC.md` и подтверждение вывода `⚠️ WARN: Living Spec Drift`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Функция `check_spec_drift` реализована без внешних зависимостей (только Python stdlib `re`, `pathlib`).
-- [ ] Предупреждения о дрифте не влияют на код возврата линтера (`exit code 0`).
-- [ ] Все тесты в `tests/test_kb_lint.py` успешно проходят.
-- [ ] Статус задачи обновлен в Канбане и Дорожной карте.
+- [x] Функция `check_spec_drift` реализована без внешних зависимостей (только Python stdlib `re`, `pathlib`).
+- [x] Предупреждения о дрифте не влияют на код возврата линтера (`exit code 0`).
+- [x] Все тесты в `tests/test_kb_lint.py` успешно проходят.
+- [x] Статус задачи обновлен в Канбане и Дорожной карте.

@@ -108,6 +108,117 @@ class TestKbLint(unittest.TestCase):
                 sys.exit(0)
             self.assertEqual(cm.exception.code, 0)
 
+    def test_spec_drift_detection_warns_when_drifted(self):
+        """Spec drift should emit warning when >= 2 phases completed and SPEC.md not updated."""
+        repo_root = self.docs_dir.parent
+        spec_content = "---\nid: SPEC\nstatus: active\ncreated: 2026-10-01\nupdated: 2026-10-01\n---\n# Spec"
+        (repo_root / "SPEC.md").write_text(spec_content, encoding="utf-8")
+
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        roadmap_content = (
+            "# Roadmap\n\n"
+            "## Фаза 1: First Phase — ✅ Завершена\n"
+            "- [x] Task 1\n\n"
+            "## Фаза 2: Second Phase — ✅ Завершена\n"
+            "- [x] Task 2\n"
+        )
+        (tasks_dir / "Roadmap.md").write_text(roadmap_content, encoding="utf-8")
+
+        warnings = kb_lint.check_spec_drift(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("Living Spec Drift", warnings[0])
+        self.assertIn("2 completed phases", warnings[0])
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+
+        # Exit code must remain 0 (non-blocking warning)
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertIn("⚠️  WARN: Living Spec Drift", output)
+        self.assertIn("OK:", output)
+
+    def test_spec_drift_no_warning_when_spec_updated(self):
+        """No drift warning when SPEC.md updated date differs from created date."""
+        repo_root = self.docs_dir.parent
+        spec_content = "---\nid: SPEC\nstatus: active\ncreated: 2026-10-01\nupdated: 2026-10-02\n---\n# Spec"
+        (repo_root / "SPEC.md").write_text(spec_content, encoding="utf-8")
+
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        roadmap_content = (
+            "# Roadmap\n\n"
+            "## Фаза 1: First Phase — ✅ Завершена\n"
+            "- [x] Task 1\n\n"
+            "## Фаза 2: Second Phase — ✅ Завершена\n"
+            "- [x] Task 2\n"
+        )
+        (tasks_dir / "Roadmap.md").write_text(roadmap_content, encoding="utf-8")
+
+        warnings = kb_lint.check_spec_drift(self.docs_dir)
+        self.assertEqual(len(warnings), 0)
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertNotIn("Living Spec Drift", output)
+
+    def test_spec_drift_no_warning_when_single_phase_completed(self):
+        """No drift warning when only 1 phase is completed (threshold is >= 2)."""
+        repo_root = self.docs_dir.parent
+        spec_content = "---\nid: SPEC\nstatus: active\ncreated: 2026-10-01\nupdated: 2026-10-01\n---\n# Spec"
+        (repo_root / "SPEC.md").write_text(spec_content, encoding="utf-8")
+
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        roadmap_content = (
+            "# Roadmap\n\n"
+            "## Фаза 1: First Phase — ✅ Завершена\n"
+            "- [x] Task 1\n\n"
+            "## Фаза 2: Second Phase In Progress\n"
+            "- [ ] Task 2\n"
+        )
+        (tasks_dir / "Roadmap.md").write_text(roadmap_content, encoding="utf-8")
+
+        warnings = kb_lint.check_spec_drift(self.docs_dir)
+        self.assertEqual(len(warnings), 0)
+
+    def test_spec_drift_missing_spec_or_roadmap(self):
+        """No drift warning if SPEC.md or Roadmap.md does not exist."""
+        warnings = kb_lint.check_spec_drift(self.docs_dir)
+        self.assertEqual(warnings, [])
+
+    def test_spec_drift_verbose_mode(self):
+        """Verbose mode should format spec drift warnings in a dedicated section."""
+        repo_root = self.docs_dir.parent
+        spec_content = "---\nid: SPEC\nstatus: active\ncreated: 2026-10-01\nupdated: 2026-10-01\n---\n# Spec"
+        (repo_root / "SPEC.md").write_text(spec_content, encoding="utf-8")
+
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        roadmap_content = (
+            "# Roadmap\n\n"
+            "## Phase 1: Alpha (Completed)\n"
+            "- [x] Task 1\n\n"
+            "## Phase 2: Beta (Completed)\n"
+            "- [x] Task 2\n"
+        )
+        (tasks_dir / "Roadmap.md").write_text(roadmap_content, encoding="utf-8")
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertIn("⚠️ Spec Drift Warnings (1):", output)
+        self.assertIn("Living Spec Drift", output)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -49,6 +49,58 @@ def check_file_frontmatter(file_path: Path):
     return False, "Missing or malformed YAML frontmatter (starts without ---)"
 
 
+def check_spec_drift(docs_dir: Path) -> list:
+    """
+    Heuristic audit for living spec drift.
+    Checks if multiple phases in Roadmap.md are completed while SPEC.md remains un-updated.
+    Returns a list of non-blocking warning strings.
+    """
+    warnings = []
+    repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
+
+    roadmap_path = docs_dir / "02_Tasks" / "Roadmap.md"
+    if not roadmap_path.is_file() and (docs_dir / "docs" / "02_Tasks" / "Roadmap.md").is_file():
+        roadmap_path = docs_dir / "docs" / "02_Tasks" / "Roadmap.md"
+
+    spec_path = repo_root / "SPEC.md"
+    if not spec_path.is_file():
+        spec_path = docs_dir / "SPEC.md"
+    if not spec_path.is_file() and (docs_dir / "docs" / "SPEC.md").is_file():
+        spec_path = docs_dir / "docs" / "SPEC.md"
+
+    if not roadmap_path.is_file() or not spec_path.is_file():
+        return warnings
+
+    roadmap_content = roadmap_path.read_text(encoding="utf-8")
+    phase_blocks = re.split(r'\n(?=##\s+(?:Фаза|Phase)\s+\d+:)', roadmap_content, flags=re.IGNORECASE)
+    completed_phases = 0
+    for block in phase_blocks:
+        lines = [line.strip() for line in block.strip().splitlines() if line.strip()]
+        if not lines:
+            continue
+        first_line = lines[0]
+        if re.search(r'##\s+(?:Фаза|Phase)\s+\d+:', first_line, re.IGNORECASE):
+            if re.search(r'Завершена|Completed|Done', first_line, re.IGNORECASE):
+                completed_phases += 1
+            elif "- [x]" in block and "- [ ]" not in block:
+                completed_phases += 1
+
+    spec_content = spec_path.read_text(encoding="utf-8")
+    updated_match = re.search(r'^updated:\s*(\d{4}-\d{2}-\d{2})', spec_content, re.MULTILINE)
+    created_match = re.search(r'^created:\s*(\d{4}-\d{2}-\d{2})', spec_content, re.MULTILINE)
+
+    if completed_phases >= 2 and updated_match:
+        updated_date = updated_match.group(1)
+        created_date = created_match.group(1) if created_match else None
+        if created_date and updated_date == created_date:
+            warnings.append(
+                f"Living Spec Drift: SPEC.md was never updated since creation ({created_date}), "
+                f"despite {completed_phases} completed phases in Roadmap.md. Consider syncing Master Spec."
+            )
+
+    return warnings
+
+
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
@@ -148,6 +200,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             if not found:
                 broken_links.append((rel, link))
 
+    drift_warnings = check_spec_drift(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings)
 
     if verbose:
@@ -170,6 +223,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         else:
             print("✅ All inspected task/spec/plan files have valid YAML frontmatter!\n")
 
+        if drift_warnings:
+            print(f"⚠️ Spec Drift Warnings ({len(drift_warnings)}):")
+            for dw in drift_warnings:
+                print(f"   • {dw}")
+            print()
+
         if has_errors:
             print("❌ Linter failed: please resolve broken links.")
             return 1
@@ -178,6 +237,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             return 0
     else:
         # Silent-on-Success mode
+        for dw in drift_warnings:
+            print(f"⚠️  WARN: {dw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0
