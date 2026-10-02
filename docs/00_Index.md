@@ -85,6 +85,7 @@ flowchart TD
 * [[04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008: Анализ Latency, Prompt Caching и накладных расходов скиллов в Antigravity]]
 * [[04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009: Greenfield-инициализация от идеи (Idea-First) и Living Spec / README Sync]]
 * [[04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010: Архитектура руководства Zero-to-Hero и ментальные модели агентной разработки]]
+* [[04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
