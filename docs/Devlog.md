@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-02] — Завершение TASK-030: Протокол Living Spec и синхронизация документации
+- **Что сделано:**
+  - В скилле `.agents/skills/kb-research/SKILL.md` добавлен шаг первичного выбора стека (Primary Stack Selection): если `SPEC.md` находится в `status: discovery`, принятие `ADR-0001` автоматически переводит спецификацию в `status: active`, наполняет реальными командами сборки/тестирования и синхронизирует `README.md`.
+  - В скилле `.agents/skills/kb-complete/SKILL.md` внедрен шаг `Living Spec Sync`: если завершенная задача изменила публичный CLI, интерфейсы или системную архитектуру, агент обязан актуализировать `SPEC.md` и `README.md` в той же сессии.
+  - В скилле `.agents/skills/kb-release/SKILL.md` в раздел префлайт-чеков добавлена обязательная верификация актуальности `README.md` (CLI команды/примеры) и `SPEC.md` перед срезом релиза.
+  - В `AGENTS.md` закреплено каноническое правило `Living Spec Invariant (No Documentation Drift)` и обновлены чеклисты режимов 0 и 3.
+  - В утилите `install.py` синхронизированы шаблоны правил агентов (`_RULES_BODY`, `_3MODES`) с обязательным напоминанием о синхронизации Living Spec.
+  - Задача [[02_Tasks/Specs/08_Greenfield/TASK-030-living-spec-protocol-and-skill-sync|TASK-030]] переведена в `status: done`, Канбан и Дорожная карта актуализированы.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 36/36 тестов успешно пройдено (100% Pass).
+  - `python scripts/kb_lint.py --path docs` -> 89 файлов проверено, 654 викиссылки валидны (0 битых).
+- **Следующий шаг:**
+  - Реализация задачи [[02_Tasks/Specs/08_Greenfield/TASK-031-kb-lint-spec-drift-audit|TASK-031]] (Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py`).
+
+---
+
 ### [2026-10-02] — Завершение TASK-029: Пресет undecided и CLI-флаг --idea в install.py
 - **Что сделано:**
   - В утилите `install.py` реализован пресет `undecided` (*"Undecided / Idea-First Research"*) с нейтральными заглушками и отложенным выбором стека через Режим 0.

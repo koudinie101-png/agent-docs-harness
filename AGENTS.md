@@ -20,7 +20,8 @@ All project knowledge, task tracking, and architectural decisions are maintained
 ### Core Rules & Principles
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
 2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass.
-3. **Graph Visual Color Scheme & Tagging:** Preserved in `.obsidian/graph.json`:
+3. **Living Spec Invariant (No Documentation Drift):** `SPEC.md` is the Master Specification (Ground Truth), and `README.md` is the project storefront. When a task introduces new CLI arguments, APIs, or architectural modules, update `SPEC.md` and `README.md` in that same task session. Releases (`/kb-release`) cannot proceed if documentation is stale.
+4. **Graph Visual Color Scheme & Tagging:** Preserved in `.obsidian/graph.json`:
    | Color / Category | Obsidian Path / Query | Tags | Description |
    | :--- | :--- | :--- | :--- |
    | ⚪ White / Light | `file:00_Index`, `file:Devlog`, `file:SPEC` | — | Entry points & root navigation hubs |
@@ -64,6 +65,7 @@ Every feature or architectural initiative follows structured stages:
 - **When:** Validating new ideas, architectural hypotheses, platform limits, or feature proposals BEFORE adding to Roadmap or planning.
 - **Action:** Critical stress-testing, risk analysis, benchmarks, and Trade-off Matrix.
 - **Output:** `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md`.
+- **Greenfield Stack Selection:** If `SPEC.md` has `status: discovery`, primary ADR crystallizes `SPEC.md` (`status: active`) and `README.md` with factual stack commands.
 - **Roadmap Integration:** Validated ideas are registered in `docs/02_Tasks/Roadmap.md` (`## 🔮 Перспективные направления / Icebox`); rejected ideas are recorded with `status: rejected` ADR in `## 🚫 Отклоненные архитектурные идеи`.
 
 ### 🟡 Mode 1: Planning / RFC (`/kb-plan` or "Режим 1")
@@ -93,8 +95,9 @@ Every feature or architectural initiative follows structured stages:
 - **Completion Checklist (Executed automatically at the end of `/kb-implement` upon passing verification, or standalone via `/kb-complete`):**
   1. All verification steps pass (Exit code 0).
   2. Spec status updated to `Выполнено` in `TASK-XXX`.
-  3. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.
-  4. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec.
-  5. `docs/Devlog.md`: record chronological summary of the session.
-  6. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
-  7. Commit and push to Git.
+  3. Living Spec Sync: update `SPEC.md` / `README.md` if task modified public CLI/API or architecture.
+  4. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.
+  5. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec.
+  6. `docs/Devlog.md`: record chronological summary of the session.
+  7. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
+  8. Commit and push to Git.

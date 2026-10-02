@@ -20,10 +20,12 @@ Use when the user runs `/kb-complete <TASK-XXX>` after all verification steps ha
    - In `docs/02_Tasks/Roadmap.md`: check milestone `[x]` with permanent link `[[Specs/<Phase>/TASK-XXX-<slug>|TASK-XXX]]`.
 4. **Append Devlog:**
    - In `docs/Devlog.md`: record summary of changes, test verification results, and next step.
-5. **Lint Verification:**
+5. **Living Spec Sync:**
+   - If task modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same task session.
+6. **Lint Verification:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
-6. **Git Commit & Sync:**
+7. **Git Commit & Sync:**
    - **Feature Branch:** commit changes, checkout `main`, pull rebase, merge branch, push, delete local feature branch.
    - **Trunk-Based (`main`):** `git add .`, `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`, `git push` (if remote exists).
-7. **Phase Completion Nudge:**
+8. **Phase Completion Nudge:**
    - If all tasks in the current phase are now `[x]`, recommend running acceptance testing in `docs/05_Testing/` and executing `/kb-release <vX.Y.Z>`.

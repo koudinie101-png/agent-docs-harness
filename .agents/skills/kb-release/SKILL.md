@@ -18,6 +18,7 @@ Use when the user runs `/kb-release <vX.Y.Z>` to finalize a development phase an
    - Run project test suites.
    - Verify `git status` is clean.
    - Verify all tasks of the target phase are marked `[x]` in `docs/02_Tasks/Roadmap.md`.
+   - Verify Living Spec & README: `README.md` contains actual CLI commands and `SPEC.md` reflects current architecture.
 2. **Environment & Mode Detection:**
    - Detect mode: `github` (remote origin on GitHub + `gh` CLI available) or `local-only`.
 3. **Execute Build Hook:**

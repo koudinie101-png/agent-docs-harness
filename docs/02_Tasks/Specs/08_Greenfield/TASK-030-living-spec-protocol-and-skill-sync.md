@@ -1,7 +1,7 @@
 ---
 id: TASK-030
 title: "Протокол Living Spec и синхронизация документации в скиллах kb-research, kb-complete, kb-release и AGENTS.md"
-status: planned
+status: done
 type: task
 phase: 8
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-030 — Протокол Living Spec и синхронизация документации
 
 > **ID:** TASK-030  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase8 #component/skills #component/agents #living-spec #documentation-drift  
 > **Родительский план:** [[../../Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../../../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]  
@@ -89,16 +89,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Аудит синтаксиса и ссылок: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
-- [ ] Проверка консистентности инструкций: поиск упоминаний `Living Spec` в `.agents/skills/` и `AGENTS.md`.
-- [ ] Верификация High-SNR лаконичности: размер измененных скиллов не должен вырасти более чем на 5–10 строк.
+- [x] Аудит синтаксиса и ссылок: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Проверка консистентности инструкций: поиск упоминаний `Living Spec` в `.agents/skills/` и `AGENTS.md`.
+- [x] Верификация High-SNR лаконичности: размер измененных скиллов не превышает 30–38 строк.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скилл `kb-research` содержит логику кристаллизации `SPEC.md` из статуса `discovery`.
-- [ ] Скилл `kb-complete` содержит пункт синхронизации документации при изменении контрактов.
-- [ ] Скилл `kb-release` содержит префлайт-проверку актуальности витрины и спецификации.
-- [ ] Правило Living Spec Invariant зафиксировано в `AGENTS.md`.
-- [ ] Пройдена проверка целостности `kb_lint.py`.
+- [x] Скилл `kb-research` содержит логику кристаллизации `SPEC.md` из статуса `discovery`.
+- [x] Скилл `kb-complete` содержит пункт синхронизации документации при изменении контрактов.
+- [x] Скилл `kb-release` содержит префлайт-проверку актуальности витрины и спецификации.
+- [x] Правило Living Spec Invariant зафиксировано в `AGENTS.md`.
+- [x] Пройдена проверка целостности `kb_lint.py`.

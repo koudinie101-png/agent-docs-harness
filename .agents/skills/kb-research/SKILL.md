@@ -16,6 +16,10 @@ Use when validating new ideas, testing technical hypotheses, exploring architect
 2. **Stress-Test & Measure:** Prototype minimally, measure limits, identify trade-offs, evaluate Value vs Effort.
 3. **Draft Research Note:** Create `docs/04_Research/RESEARCH-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_RESEARCH.md` (Context, Hypotheses, Trade-off Matrix, Discarded Options, Conclusions).
 4. **Automated Outcome Routing:**
+   - **Primary Stack Selection (Greenfield):** If `SPEC.md` has `status: discovery` and this research selects the foundational stack (ADR-0001):
+     - Update `SPEC.md` status to `status: active`.
+     - Populate Section 2 of `SPEC.md` with chosen tech stack, build/test commands, and architectural layers.
+     - Synchronize `README.md` with factual quickstart commands.
    - **Validated & Approved:**
      - If architectural impact: invoke `/kb-adr` to record accepted `ADR-XXXX`.
      - Register validated initiative in `## 🔮 Перспективные направления (Future Horizons / Icebox)` in `docs/02_Tasks/Roadmap.md` with wikilinks and Value Impact rating.

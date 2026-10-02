@@ -171,7 +171,7 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
 
 _RULES_BODY = ("## Docs-as-Code (12 Disciplines)\n"
     "Language: {lang}\n"
-    "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start.\n"
+    "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).\n"
     "2. Kanban: move cards with date `(YYYY-MM-DD)`.\n"
     "3. Roadmap: mark `[x]` + link `[[Specs/.../TASK-XXX|TASK-XXX]]`.\n"
     "4. ADR & Rejected-ADR: log all decisions incl. rejected (`status: rejected`).\n"
@@ -198,7 +198,7 @@ _3MODES = (
     "**Mode 2 -- Task Spec (`/kb-task`):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.\n"
     "**Mode 3 -- Implementation (`/kb-implement`):\n"
     "```bash\n{test_cmd}\npython3 scripts/kb_lint.py --path docs\n```\n"
-    "Auto-complete: spec->done · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push.\n\n"
+    "Auto-complete: spec->done · Living Spec sync · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push.\n\n"
     "Anti-Echo: NEVER reprint entire files in chat; emit link + 3-5 bullets + next step.\n"
     "Senior Partner: flag risks, propose alternatives. Rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).\n"
 )
