@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-01
+updated: 2026-10-02
 tags:
   - roadmap
   - planning
@@ -100,11 +100,21 @@ tags:
 
 ---
 
+## Фаза 8: Greenfield-инициализация от идеи (Idea-First) и протокол Living Spec
+**Цель:** Обеспечить старт проектов с чистого листа от одной вербальной идеи (`install.py --idea "..."` с пресетом `undecided`), сквозную кристаллизацию `SPEC.md` и `README.md` по итогам Режима 0 (`/kb-research`), закрепить Living Spec Invariant в скиллах и эвристический аудит дрифта спецификации в `kb_lint.py`.  
+**Первоисточник плана:** [[Plans/PLAN-008-greenfield-idea-first-and-living-spec|PLAN-008]]  
+**Нормативная база:** [[../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]]
+
+- [ ] Пресет `undecided`, интерактивная опция меню и CLI-флаг `--idea` в `install.py` / `build_installer.py`, генерация `SPEC.md` со статусом `discovery` — `TASK-029`.
+- [ ] Протокол Living Spec и синхронизация документации в скиллах `kb-research`, `kb-complete`, `kb-release` и `AGENTS.md` — `TASK-030`.
+- [ ] Эвристический контроль дрифта спецификации в `scripts/kb_lint.py` и модульные тесты в `tests/test_kb_lint.py` — `TASK-031`.
+- [ ] Сборка инсталлятора `build_installer.py`, сквозные E2E тесты нового пресета, обновление `README.md` и `docs/Onboarding.md` — `TASK-032`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
-
-* 💡 **Greenfield-инициализация от идеи (Idea-First) и протокол Living Spec против дрифта документации:** пресет `undecided` и флаг `--idea` в `install.py`, отложенный выбор стека через Режим 0 (`/kb-research`), автоматическая кристаллизация `SPEC.md` и `README.md`, обязательные префлайт-чеки актуализации в `/kb-release` и `/kb-complete` и эвристический аудит в `kb_lint.py` — [[../04_Research/RESEARCH-009-greenfield-initialization-and-living-spec-drift|RESEARCH-009]], [[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]].
 * 💡 **Архитектура Zero Round-Trip Dispatch и устранение латентности скиллов (Hot Invariants):** оптимизация задержки отклика в Antigravity при сохранении High-SNR токеномики: прямое исполнение типовых режимов (0–3) из Always-On кэша `AGENTS.md` без промежуточного tool call `view_file(SKILL.md)`, пайплайнинг I/O и защита префиксного KV-кэша — [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]].
 * 💡 **Архитектура каналов обратной связи и воронка триажа (Feedback Loops & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер триажа `docs/02_Tasks/Inbox/`, шаблоны GitHub Issue Forms (`.github/ISSUE_TEMPLATE/`) и Discussions (Ideas), безопасный локальный бандл `install.py --report` для друзей и оффлайн-режима, скилл `/kb-triage` — [[../04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
