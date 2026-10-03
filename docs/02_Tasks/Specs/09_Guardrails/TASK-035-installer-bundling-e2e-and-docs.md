@@ -1,7 +1,7 @@
 ---
 id: TASK-035
 title: "Синхронизация генераторов правил и шаблонов в install.py / build_installer.py (включая --update), сквозные E2E тесты в tests/test_installer.py, обновление README.md и docs/Onboarding.md"
-status: planned
+status: done
 type: task
 phase: 9
 component:
@@ -11,7 +11,7 @@ component:
   - documentation
 parent_plan: "[[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]"
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-03
 tags:
   - task/spec
   - phase9
@@ -26,7 +26,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-035 — Синхронизация инсталлятора, E2E тесты и документация
 
 > **ID:** TASK-035  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase9 #installer #packaging #tests #documentation #guardrails  
 > **Родительский план:** [[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../../../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
@@ -91,19 +91,19 @@ Code strictly per approved spec. Once complete, strictly STOP tool calls; never 
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0, успешное обновление `install.py`).
-- [ ] Полный прогон всех тестов проекта: `python -m unittest discover -s tests` (100% pass, Exit code 0).
-- [ ] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
-- [ ] Проверка автономности инсталлятора: `python install.py --help` (Exit code 0).
+- [x] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0, успешное обновление `install.py`).
+- [x] Полный прогон всех тестов проекта: `python -m unittest discover -s tests` (100% pass, Exit code 0).
+- [x] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Проверка автономности инсталлятора: `python install.py --help` (Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Генератор правил `generate_agents_md` и константы в `install.py` обновлены.
-- [ ] Инсталлятор пересобран через `build_installer.py` и протестирован.
-- [ ] Сквозные тесты в `tests/test_installer.py` успешно проходят.
-- [ ] Витрина `README.md` и руководство `docs/Onboarding.md` актуализированы.
-- [ ] Все пункты Плана верификации выполнены.
-- [ ] Статус обновлен в ТЗ, Канбане и Roadmap.
-- [ ] Запись сессии внесена в `Devlog.md`.
+- [x] Генератор правил `generate_agents_md` и константы в `install.py` обновлены.
+- [x] Инсталлятор пересобран через `build_installer.py` и протестирован.
+- [x] Сквозные тесты в `tests/test_installer.py` успешно проходят.
+- [x] Витрина `README.md` и руководство `docs/Onboarding.md` актуализированы.
+- [x] Все пункты Плана верификации выполнены.
+- [x] Статус обновлен в ТЗ, Канбане и Roadmap.
+- [x] Запись сессии внесена в `Devlog.md`.

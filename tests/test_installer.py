@@ -913,9 +913,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec)
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails)
             self.assertLessEqual(total_skills_size, 22000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 22000)")
-            self.assertLessEqual(total_templates_size, 21000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21000)")
+            self.assertLessEqual(total_templates_size, 21500, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21500)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
@@ -1101,6 +1101,95 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
             self.assertIn("OK:", kb_lint_res.stdout)
+
+    def test_20_single_task_barrier_and_stop_on_complete(self):
+        """Verify Single-Task Execution Barrier and Stop & Yield protocol across rule generators, skills, and --update."""
+        # 1. Rule generators checks
+        agents_content = install.generate_agents_md("TestApp", "generic", "ru")
+        self.assertIn("13. Single-Task Barrier", agents_content)
+        self.assertIn("Single-Task Execution Barrier (No Auto-Chaining)", agents_content)
+        self.assertIn("STOP tool calls (Stop & Yield)", agents_content)
+
+        for gen_fn in [
+            install.generate_gemini_md,
+            install.generate_windsurfrules,
+            install.generate_clinerules,
+            install.generate_claude_md,
+            install.generate_cursorrules,
+            install.generate_copilot_instructions,
+        ]:
+            out = gen_fn("TestApp", "generic", "ru")
+            self.assertIn("13. Single-Task Barrier", out)
+            self.assertIn("Single-Task Barrier: strictly ONE task per `/kb-implement`", out)
+            self.assertIn("STOP tool calls (Stop & Yield)", out)
+
+        # 2. Fresh installation check: skill contents and Devlog template
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "BarrierApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="BarrierApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Check skills
+            kb_impl = (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Single-Task Barrier", kb_impl)
+            self.assertIn("Never auto-chain", kb_impl)
+            self.assertIn("STOP calling tools and yield control", kb_impl)
+
+            kb_comp = (target / ".agents" / "skills" / "kb-complete" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Single-Task Barrier", kb_comp)
+            self.assertIn("Stop & Yield Control", kb_comp)
+            self.assertIn("Рекомендуемый следующий шаг (Ожидает команды пользователя)", kb_comp)
+
+            # Check devlog template
+            devlog_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_DEVLOG.md").read_text(encoding="utf-8")
+            self.assertIn("Рекомендуемый следующий шаг (Ожидает команды пользователя)", devlog_tpl)
+
+            # 3. Simulate existing outdated project and test --update
+            # Overwrite skills and AGENTS.md with dummy legacy versions
+            (target / "AGENTS.md").write_text("Legacy AGENTS content without barrier", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").write_text("Legacy kb-implement", encoding="utf-8")
+
+            # Run install.py --update via CLI
+            update_res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "-d", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(update_res.returncode, 0, f"Update failed: {update_res.stdout}\n{update_res.stderr}")
+
+            # Verify backup created and AGENTS.md updated
+            self.assertTrue((target / "AGENTS.md.bak").is_file())
+            self.assertEqual((target / "AGENTS.md.bak").read_text(encoding="utf-8"), "Legacy AGENTS content without barrier")
+            updated_agents = (target / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("Single-Task Execution Barrier (No Auto-Chaining)", updated_agents)
+
+            # Verify skill was refreshed
+            updated_kb_impl = (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Single-Task Barrier", updated_kb_impl)
+
+            # Verify Devlog updated with semantic marker
+            devlog_content = (target / "docs" / "Devlog.md").read_text(encoding="utf-8")
+            self.assertIn("Рекомендуемый следующий шаг (Ожидает команды пользователя)", devlog_content)
+
+            # Verify kb_lint passes with 0 warnings
+            kb_lint_res = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_lint.py"), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
+            self.assertIn("OK:", kb_lint_res.stdout)
+            self.assertNotIn("WARN: Devlog Semantic Guard", kb_lint_res.stdout)
 
 
 if __name__ == "__main__":

@@ -113,14 +113,14 @@ tags:
 
 ---
 
-## Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete Protocol)
+## Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete Protocol) — ✅ Завершена
 **Цель:** Исключить своевольный авто-чейнинг задач (Eager Task Chaining) при сжатии контекста с помощью трехуровневой эшелонированной защиты: нормативного инварианта в `AGENTS.md`, терминального шага `Stop & Yield Control` в `kb-implement`/`kb-complete`, семантического разделения субъекта в `Devlog.md` и неблокирующего аудита в `scripts/kb_lint.py`.  
 **Первоисточник плана:** [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
 **Нормативная база:** [[../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]
 
 - [x] Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` — [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]].
 - [x] Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` — [[Specs/09_Guardrails/TASK-034-devlog-semantic-guard-and-kb-lint-audit|TASK-034]].
-- [ ] Синхронизация инсталлятора `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md` — [[Specs/09_Guardrails/TASK-035-installer-bundling-e2e-and-docs|TASK-035]].
+- [x] Синхронизация инсталлятора `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md` — [[Specs/09_Guardrails/TASK-035-installer-bundling-e2e-and-docs|TASK-035]].
 
 ---
 
