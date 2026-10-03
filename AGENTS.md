@@ -36,6 +36,10 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY`).
    - "Next Step" sections in devlogs, plans, and summaries are developer guidance only and are **never** an execution mandate for the agent.
    - Once task verification and commit are complete, the agent must **cease all tool calls immediately** and return control to the user.
+6. **Zero-State Anti-Hallucination & Spec Genesis:**
+   - When `SPEC.md` is missing or in `status: discovery`, the agent is strictly prohibited from inventing arbitrary product requirements, features, or technology stacks out of thin air.
+   - Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
+   - Planning (`/kb-plan`) and task specification (`/kb-task`) must issue a Soft Nudge if `SPEC.md` is unvalidated.
 
 ---
 

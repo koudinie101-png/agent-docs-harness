@@ -18,7 +18,8 @@ Use when the user runs `/kb-init` or requests setting up the knowledge base in a
 3. **Deploy Templates & Configs:**
    - Deploy `docs/.obsidian/graph.json` (Obsidian color-coded palette).
    - Deploy all 13 canonical templates to `docs/00_Templates/`.
-4. **Deploy Core Tracking Files:**
+4. **Deploy Core Tracking Files & Master Spec:**
+   - Deploy root `SPEC.md` with frontmatter `status: discovery` (Spec Genesis skeleton), matching `install.py` behavior.
    - Deploy `docs/Onboarding.md`, `docs/00_Index.md`, `docs/02_Tasks/Kanban.md`, `docs/02_Tasks/Roadmap.md`, and `docs/Devlog.md`.
 5. **Verify & Onboard Git:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 errors.

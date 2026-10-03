@@ -13,6 +13,7 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
 
 ## Procedure
 1. **Source Discovery & Intent Routing:**
+   - **Spec Genesis Check (Zero-State Guard):** If `SPEC.md` is missing or has `status: discovery`, issue a Soft Nudge: suggest running `/kb-research <topic>` (Mode 0) to validate the architectural stack and crystallize `SPEC.md` (`status: active`) before deep planning, or confirm to proceed directly.
    - **Explicit Idea:** If specified (`/kb-plan <idea>`), check feasibility maturity:
      - *Pre-flight Nudge:* If proposal introduces new external dependencies (violating ADR-0001), platform uncertainties, or high risk, suggest running `/kb-research <idea>` (Mode 0) first to validate trade-offs and record ADR. If user confirms direct planning or idea is low-risk, proceed immediately.
    - **No Argument (`/kb-plan`):** Inspect Icebox in `docs/02_Tasks/Roadmap.md`. Rank candidates by value impact with 1-line rationale and top recommendation. If empty, ask user.

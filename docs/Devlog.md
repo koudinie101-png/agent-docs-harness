@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-03] — Завершение TASK-036: Spec Genesis Protocol и Zero-State Guardrails
+- **Что сделано:**
+  - Реализован входной шлюз методологии Docs-as-Code — Протокол рождения Мастер-Спецификации (Spec Genesis) и защита от галлюцинаций в пустом состоянии (Zero-State) согласно [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]] и [[04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]].
+  - В скилл `.agents/skills/kb-init/SKILL.md` добавлено гарантированное развертывание каркаса `SPEC.md` со статусом `status: discovery` (Spec Genesis skeleton), устраняя архитектурный пробел тулинга по сравнению с `install.py`.
+  - В скилл `.agents/skills/kb-plan/SKILL.md` внедрен префлайт-чек Spec Genesis (Zero-State Guard), выдающий мягкое предупреждение (Soft Nudge) с предложением кристаллизовать концепцию и стек через `/kb-research` (Режим 0) до перехода к детальному планированию.
+  - В скилл `.agents/skills/kb-task/SKILL.md` добавлена проверка статуса `SPEC.md`, предотвращающая нарезку ТЗ без согласованной спецификации.
+  - В [AGENTS.md](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/AGENTS.md) закреплен инвариант `6. Zero-State Anti-Hallucination & Spec Genesis`: категорический запрет директивного выдумывания архитектуры, стека и бизнес-требований без прямого диалога с пользователем.
+  - Спецификация задачи [[02_Tasks/Specs/10_SpecLifecycle/TASK-036-spec-genesis-and-zero-state-guardrails|TASK-036]] переведена в статус `done`, Канбан и Дорожная карта актуализированы.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 105 файлов проверено, 855 связей валидны (0 битых, 0 предупреждений, Exit code 0).
+  - `python -m unittest discover -s tests` -> 47/47 тестов успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация задачи `TASK-037`: `/kb-implement TASK-037`.
+
+---
+
 ### [2026-10-03] — Завершение TASK-035: Синхронизация инсталлятора, E2E тесты и документация (Завершение Фазы 9)
 - **Что сделано:**
   - Завершена реализация Фазы 9: комплексная интеграция барьера единичной задачи и протокола гарантированной остановки в дистрибутив харнесса Docs-as-Code ([[03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]], [[04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]]).

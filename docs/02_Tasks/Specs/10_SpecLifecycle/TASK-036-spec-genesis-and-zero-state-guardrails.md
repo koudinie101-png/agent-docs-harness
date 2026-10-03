@@ -1,7 +1,7 @@
 ---
 id: TASK-036
 title: "Spec Genesis Protocol & Zero-State Guardrails (kb-init, kb-plan, kb-task, AGENTS.md)"
-status: in-progress
+status: done
 type: task
 phase: 10
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-036 — Spec Genesis Protocol & Zero-State Guardrails
 
 > **ID:** TASK-036  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase10 #spec-genesis #master-spec #zero-state #guardrails  
 > **Родительский план:** [[../../Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../../../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]]  
@@ -82,16 +82,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Статический аудит: проверить наличие префлайт-чеков в `kb-init`, `kb-plan`, `kb-task` и `AGENTS.md`.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
-- [ ] Юнит-тесты: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Статический аудит: проверить наличие префлайт-чеков в `kb-init`, `kb-plan`, `kb-task` и `AGENTS.md`.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
+- [x] Юнит-тесты: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скилл `kb-init` создает `SPEC.md` (`status: discovery`).
-- [ ] Скиллы `kb-plan` и `kb-task` содержат правила Zero-State гейткипинга.
-- [ ] `AGENTS.md` содержит инвариант Zero-State Anti-Hallucination.
-- [ ] Линтер `kb_lint.py` проходит без ошибок.
-- [ ] Статус обновлен в ТЗ, Канбане и Дорожной карте.
+- [x] Скилл `kb-init` создает `SPEC.md` (`status: discovery`).
+- [x] Скиллы `kb-plan` и `kb-task` содержат правила Zero-State гейткипинга.
+- [x] `AGENTS.md` содержит инвариант Zero-State Anti-Hallucination.
+- [x] Линтер `kb_lint.py` проходит без ошибок.
+- [x] Статус обновлен в ТЗ, Канбане и Дорожной карте.
