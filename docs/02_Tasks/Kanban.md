@@ -11,15 +11,17 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|План: Фаза 9 — Барьер единичной задачи и протокол гарантированной остановки]] #plan #phase9 #agent-governance #guardrails
-  - [ ] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` #task #phase9
+  - [x] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` (2026-10-03) #task #phase9
   - [ ] [[Specs/09_Guardrails/TASK-034-devlog-semantic-guard-and-kb-lint-audit|TASK-034]]: Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` #task #phase9
   - [ ] [[Specs/09_Guardrails/TASK-035-installer-bundling-e2e-and-docs|TASK-035]]: Синхронизация инсталлятора `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md` #task #phase9
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` #task #phase9
+*Нет активных задач.*
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]]: Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` (2026-10-03) #task #phase9
 
 - [x] [[Bugs/BUG-001-ci-release-notes-phase-fallback|BUG-001]]: Рассинхронизация номера фазы и описания релиза в CI release.yml (fallback на Фазу 1) (2026-10-02) #bug #release #ci
 

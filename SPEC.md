@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-02
+updated: 2026-10-03
 tags:
   - spec
   - master
@@ -83,6 +83,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода строго по ТЗ, прогон тестов, Living Spec Sync, автоматическое закрытие задачи в Канбане, Дорожной карте и Devlog.
 * **Протокол Living Spec (Anti-Drift):** обязательная синхронизация `SPEC.md` и `README.md` при изменении публичных контрактов и префлайт-проверка перед релизом.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
+* **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX>` авторизует работу строго над одной задачей; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
 * **Permalinks Principle:** файлы ТЗ и багов не перемещаются в архивы при закрытии.
 * **Regression-First:** баги закрываются только после создания падающего воспроизводящего автотеста.
 
@@ -126,3 +127,4 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 6: Интеграция этапа исследования (Режим 0: Discovery)** — Double Diamond цикл, воронка `/kb-research`, префлайты `/kb-plan`.
 * **Фаза 7: Стандарт оформления публичных релизов на GitHub** — Dual-Export в `kb_release.py`, очистка викиссылок, автоматизация GitHub Releases.
 * **Фаза 8: Greenfield-инициализация от идеи (Idea-First) и Living Spec** — пресет `undecided`, флаг `--idea`, протокол Living Spec и эвристический аудит дрифта в `kb_lint.py`.
+* **Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete)** — трехуровневая защита от Eager Task Chaining: норматив в `AGENTS.md`, терминальный шаг `Stop & Yield` в скиллах, семантический маркер в `Devlog.md` и аудит в `kb_lint.py`.

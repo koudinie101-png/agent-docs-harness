@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-02
+updated: 2026-10-03
 tags:
   - roadmap
   - planning
@@ -118,7 +118,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
 **Нормативная база:** [[../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]
 
-- [ ] Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` — [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]].
+- [x] Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` — [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]].
 - [ ] Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` — [[Specs/09_Guardrails/TASK-034-devlog-semantic-guard-and-kb-lint-audit|TASK-034]].
 - [ ] Синхронизация инсталлятора `install.py` / `build_installer.py` (включая `--update`), сквозные E2E тесты в `tests/test_installer.py`, обновление `README.md` и `docs/Onboarding.md` — [[Specs/09_Guardrails/TASK-035-installer-bundling-e2e-and-docs|TASK-035]].
 

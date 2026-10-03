@@ -9,6 +9,7 @@ Use when the user runs `/kb-implement <TASK-XXX>` or begins writing code for an 
 
 ## 🚨 Constraints
 * **Spec Adherence:** Implement strictly what is defined in the approved `TASK-XXX` spec. Avoid scope creep.
+* **Single-Task Barrier:** Execute strictly ONE approved task. Never auto-chain to subsequent tasks without an explicit user command.
 * **Verification First:** Never conclude implementation without executing all checks in the Verification Plan.
 * **Auto-Complete:** When all verification steps pass, immediately execute task completion (`kb-complete`) without waiting for an extra user prompt.
 
@@ -26,5 +27,6 @@ Use when the user runs `/kb-implement <TASK-XXX>` or begins writing code for an 
    - Run compilation command (e.g. `dotnet build`, `python build.py`).
    - Run test suites (e.g. `python -m unittest discover -s tests`).
    - Verify exit code 0 for all commands.
-5. **Immediate Auto-Completion:**
-   - Upon all checks passing (Exit code 0), immediately execute the `/kb-complete <TASK-XXX>` skill workflow to finalize the task without waiting for user input.
+5. **Immediate Auto-Completion & Stop:**
+   - Upon all checks passing (Exit code 0), immediately execute `/kb-complete <TASK-XXX>` to finalize the task without waiting for user input.
+   - Once kb-complete finishes, strictly STOP calling tools and yield control to the user.

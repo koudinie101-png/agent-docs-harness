@@ -31,6 +31,11 @@ All project knowledge, task tracking, and architectural decisions are maintained
    | 🟠 Orange | `path:02_Tasks` | `#task` | Backlog, Roadmap, Plans & Task Specs |
    | 🔴 Red | `path:02_Tasks/Bugs` | `#bug` | Defects, bugs, RCA & regression tests |
    | 🟢 Green | `path:05_Testing` | `#testing` | Acceptance testing & E2E UX checklists |
+5. **Single-Task Execution Barrier (No Auto-Chaining):**
+   - The command `/kb-implement <TASK-XXX>` authorizes work **strictly on that single task specification**.
+   - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY`).
+   - "Next Step" sections in devlogs, plans, and summaries are developer guidance only and are **never** an execution mandate for the agent.
+   - Once task verification and commit are complete, the agent must **cease all tool calls immediately** and return control to the user.
 
 ---
 
@@ -101,3 +106,4 @@ Every feature or architectural initiative follows structured stages:
   6. `docs/Devlog.md`: record chronological summary of the session.
   7. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
   8. Commit and push to Git.
+  9. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.

@@ -1,7 +1,7 @@
 ---
 id: TASK-033
 title: "Нормативный инвариант барьера единичной задачи в AGENTS.md и терминальный шаг Stop & Yield Control в kb-implement и kb-complete"
-status: in-progress
+status: done
 type: task
 phase: 9
 component:
@@ -10,7 +10,7 @@ component:
   - guardrails
 parent_plan: "[[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]"
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-03
 tags:
   - task/spec
   - phase9
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-033 — Нормативный инвариант барьера единичной задачи и терминальный шаг Stop & Yield Control
 
 > **ID:** TASK-033  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase9 #agent-governance #guardrails #single-task-barrier #stop-on-complete #anti-runaway  
 > **Родительский план:** [[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../../../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
@@ -105,17 +105,17 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
-- [ ] Аудит High-SNR компактности: размеры `kb-implement/SKILL.md` и `kb-complete/SKILL.md` остаются компактными (до 35–40 строк).
-- [ ] Проверка наличия инварианта в `AGENTS.md` и терминов `Stop & Yield Control` в обоих скиллах.
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Аудит High-SNR компактности: размеры `kb-implement/SKILL.md` (32 строки) и `kb-complete/SKILL.md` (37 строк) остаются компактными (до 35–40 строк).
+- [x] Проверка наличия инварианта в `AGENTS.md` и терминов `Stop & Yield Control` в обоих скиллах.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Правило Single-Task Execution Barrier внесено в `AGENTS.md`.
-- [ ] Скилл `kb-implement` содержит ограничение на одну задачу и предписание остановки.
-- [ ] Скилл `kb-complete` содержит семантический формат записи в Devlog и шаг 9 `Stop & Yield Control`.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ, Канбане и Roadmap.
-- [ ] Запись сессии внесена в `Devlog.md`.
+- [x] Правило Single-Task Execution Barrier внесено в `AGENTS.md`.
+- [x] Скилл `kb-implement` содержит ограничение на одну задачу и предписание остановки.
+- [x] Скилл `kb-complete` содержит семантический формат записи в Devlog и шаг 9 `Stop & Yield Control`.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ, Канбане и Roadmap.
+- [x] Запись сессии внесена в `Devlog.md`.
