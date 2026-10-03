@@ -33,7 +33,7 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
 ## 🚀 Что нового (Changelog)
 * **Фичи:** [[Specs/0N_Phase/TASK-XXX-slug|TASK-XXX]]: <!-- Описание -->
 * **Багфиксы:** [[Bugs/BUG-XXX-slug|BUG-XXX]]: <!-- Описание -->
-* **ADR:** [[../../03_Decisions_ADR/ADR-XXXX-slug|ADR-XXXX]]: <!-- Описание -->
+* **ADR:** [[../../03_Decisions_ADR/ADR-XXXX-slug|ADR-XXXX]]: <!-- Описание решений текущей фазы (без кумулятивного списка) -->
 
 ## 📦 Артефакты (SHA-256)
 

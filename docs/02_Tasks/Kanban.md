@@ -11,13 +11,13 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|План: Фаза 10 — Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки]] #plan #phase10 #spec-genesis #release-notes
-  - [ ] [[Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]]: High-SNR Release Notes Generator & Phase ADR Scoping (scripts/kb_release.py, kb-release, TEMPLATE_RELEASE.md) #task #phase10
   - [ ] [[Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]]: Синхронизация инсталлятора, сквозные E2E тесты и документация (install.py, README.md, Onboarding.md) #task #phase10
 
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]]: High-SNR Release Notes Generator & Phase ADR Scoping (scripts/kb_release.py, kb-release, TEMPLATE_RELEASE.md) (2026-10-03) #task #phase10 #release-notes #high-snr
 - [x] [[Specs/10_SpecLifecycle/TASK-036-spec-genesis-and-zero-state-guardrails|TASK-036]]: Spec Genesis Protocol & Zero-State Guardrails (kb-init, kb-plan, kb-task, AGENTS.md) (2026-10-03) #task #phase10 #spec-genesis #guardrails
 
 - [x] [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|План: Фаза 9 — Барьер единичной задачи и протокол гарантированной остановки]] (2026-10-03) #plan #phase9 #agent-governance #guardrails

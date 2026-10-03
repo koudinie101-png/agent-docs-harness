@@ -24,9 +24,9 @@ Use when the user runs `/kb-release <vX.Y.Z>` to finalize a development phase an
 3. **Execute Build Hook:**
    - Trigger build hook targeting `dist/` (e.g., `scripts/build_release.py`, package manager build script).
    - If no hook exists, fallback to clean Source Release.
-4. **Generate Release Document:**
+4. **Generate Release Document (Dual-Export & High-SNR):**
    - Run `python scripts/kb_release.py --version X.Y.Z --phase N`.
-   - Generates internal `docs/02_Tasks/Releases/RELEASE-vX.Y.Z.md` and public `dist/RELEASE_NOTES.md` (clean GFM, SHA-256 table, install snippet).
+   - Generates internal `docs/02_Tasks/Releases/RELEASE-vX.Y.Z.md` (scoped ADRs for current phase) and public `dist/RELEASE_NOTES.md` (High-SNR clean GFM: Highlights, Quick Install, Features, Fixes, SHA-256 table; strictly excludes ADR block).
 5. **Sync Knowledge Base:**
    - Mark phase as completed in `docs/02_Tasks/Roadmap.md`.
    - Prepend release section to `CHANGELOG.md`.

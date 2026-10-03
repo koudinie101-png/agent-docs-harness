@@ -1,7 +1,7 @@
 ---
 id: TASK-037
 title: "High-SNR Release Notes Generator & Phase ADR Scoping (scripts/kb_release.py, kb-release, тесты)"
-status: planned
+status: done
 type: task
 phase: 10
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-037 — High-SNR Release Notes Generator & Phase ADR Scoping
 
 > **ID:** TASK-037  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase10 #release-notes #high-snr #distribution #clean-changelog  
 > **Родительский план:** [[../../Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../../../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]  
@@ -78,15 +78,15 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Модульные тесты: `python -m unittest tests/test_kb_release.py` (100% Pass, Exit code 0).
-- [ ] Все тесты проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
+- [x] Модульные тесты: `python -m unittest tests/test_kb_release.py` (100% Pass, Exit code 0).
+- [x] Все тесты проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] В `dist/RELEASE_NOTES.md` отсутствует секция ADR.
-- [ ] Внутренний архив релиза фильтрует ADR по фазе.
-- [ ] Тесты в `tests/test_kb_release.py` успешно проходят.
-- [ ] Статус обновлен в ТЗ, Канбане и Дорожной карте.
+- [x] В `dist/RELEASE_NOTES.md` отсутствует секция ADR.
+- [x] Внутренний архив релиза фильтрует ADR по фазе.
+- [x] Тесты в `tests/test_kb_release.py` успешно проходят.
+- [x] Статус обновлен в ТЗ, Канбане и Дорожной карте.

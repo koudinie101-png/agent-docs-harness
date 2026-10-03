@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-03] — Завершение TASK-037: High-SNR Release Notes Generator и фазовый скоупинг ADR
+- **Что сделано:**
+  - Реализован выходной шлюз методологии Docs-as-Code — Стандарт высокой плотности полезного сигнала в релизных заметках (High-SNR Release Notes) согласно [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]] и [[04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]].
+  - В функции `generate_public_release_notes()` утилиты `scripts/kb_release.py` полностью упразднена секция `### 🏛️ Архитектурные решения (ADR)`, исключая кумулятивное раздувание публичных заметок на GitHub (сокращение объема заметок на 45% и фокус на Highlights, Quick Install, Features, Fixes и SHA-256).
+  - В функции `find_phase_artifacts()` реализован предикат `is_adr_for_phase()`, ограничивающий сбор ADR во внутреннем документе релиза `docs/02_Tasks/Releases/RELEASE-vX.Y.Z.md` только решениями, релевантными текущей фазе (`phase: N`, теги `#phaseN` или ссылки в задачах/плане фазы).
+  - Актуализирован скилл `.agents/skills/kb-release/SKILL.md` (High-SNR dual export) и шаблоны `docs/00_Templates/TEMPLATE_RELEASE.md` и `templates/TEMPLATE_RELEASE.md`.
+  - В `tests/test_kb_release.py` добавлены модульные тесты `test_generate_public_release_notes_excludes_adrs` и `test_generate_release_note_filters_adrs_by_phase` (все 15 тестов пройдены).
+  - Спецификация задачи [[02_Tasks/Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]] переведена в статус `done`, Канбан и Дорожная карта актуализированы.
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_release.py` -> 15/15 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 49/49 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 105 файлов проверено, 858 связей валидны (0 битых, 0 предупреждений, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация задачи `TASK-038`: `/kb-implement TASK-038`.
+
+---
+
 ### [2026-10-03] — Завершение TASK-036: Spec Genesis Protocol и Zero-State Guardrails
 - **Что сделано:**
   - Реализован входной шлюз методологии Docs-as-Code — Протокол рождения Мастер-Спецификации (Spec Genesis) и защита от галлюцинаций в пустом состоянии (Zero-State) согласно [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]] и [[04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]].

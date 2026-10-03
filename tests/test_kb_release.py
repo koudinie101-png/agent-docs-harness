@@ -113,9 +113,14 @@ status: done
             "---\nid: BUG-001\ntitle: Critical Fix\nstatus: closed\n---\n# Bug",
             encoding="utf-8"
         )
-        # ADR (accepted)
+        # ADR (accepted, phase 4)
         (adrs_dir / "ADR-0010-arch.md").write_text(
-            "---\nid: ADR-0010\ntitle: Cool Architecture\nstatus: accepted\n---\n# ADR",
+            "---\nid: ADR-0010\ntitle: Cool Architecture\nphase: 4\nstatus: accepted\n---\n# ADR",
+            encoding="utf-8"
+        )
+        # ADR (accepted, phase 3 - should not match phase 4)
+        (adrs_dir / "ADR-0005-other.md").write_text(
+            "---\nid: ADR-0005\ntitle: Other Architecture\nphase: 3\nstatus: accepted\n---\n# ADR",
             encoding="utf-8"
         )
 
@@ -265,12 +270,65 @@ status: done
         self.assertIn("python install.py --update", notes)
         self.assertIn("[TASK-025](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Specs/07_Distribution/TASK-025.md)", notes)
         self.assertIn("[BUG-002](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Bugs/BUG-002.md)", notes)
-        self.assertIn("[ADR-0010](https://github.com/myorg/myproject/blob/main/docs/03_Decisions_ADR/ADR-0010.md)", notes)
+        self.assertNotIn("Архитектурные решения", notes)
+        self.assertNotIn("ADR-0010", notes)
         self.assertIn("package.zip", notes)
         self.assertIn("abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890", notes)
         self.assertIn("Get-FileHash -Path ./dist/package.zip -Algorithm SHA256", notes)
         self.assertIn("sha256sum ./dist/package.zip", notes)
         self.assertIn("https://github.com/myorg/myproject/releases/tag/v0.7.0", notes)
+
+    def test_generate_public_release_notes_excludes_adrs(self):
+        """Verifies dist/RELEASE_NOTES.md strictly excludes the ADR section (High-SNR)."""
+        env_info = {
+            "has_git": True,
+            "mode": "github",
+            "branch": "main",
+            "remote_url": "https://github.com/myorg/myproject.git",
+        }
+        artifacts = [{"name": "app.zip", "path": "dist/app.zip", "size": "100 KB", "sha256": "123456"}]
+        phase_data = {
+            "tasks": [{"id": "TASK-037", "title": "High-SNR Notes", "link": "../Specs/TASK-037"}],
+            "bugs": [],
+            "adrs": [{"id": "ADR-0017", "title": "Release Notes ADR Exclusion", "link": "../../03_Decisions_ADR/ADR-0017"}],
+        }
+        notes = kb_release.generate_public_release_notes(
+            version="0.10.0",
+            phase_num=10,
+            env_info=env_info,
+            artifacts=artifacts,
+            phase_data=phase_data,
+            summary="High-SNR summary",
+        )
+        self.assertNotIn("Архитектурные решения", notes)
+        self.assertNotIn("ADR-0017", notes)
+        self.assertIn("TASK-037", notes)
+
+    def test_generate_release_note_filters_adrs_by_phase(self):
+        """Verifies internal RELEASE-vX.Y.Z.md filters ADRs to only those relevant to the target phase."""
+        docs_dir = self.test_root / "docs"
+        adrs_dir = docs_dir / "03_Decisions_ADR"
+        specs_dir = docs_dir / "02_Tasks" / "Specs" / "10_SpecLifecycle"
+        adrs_dir.mkdir(parents=True)
+        specs_dir.mkdir(parents=True)
+
+        (adrs_dir / "ADR-0017-high-snr.md").write_text(
+            "---\nid: ADR-0017\ntitle: High-SNR Release Notes\nphase: 10\nstatus: accepted\n---\n# ADR-0017",
+            encoding="utf-8"
+        )
+        (adrs_dir / "ADR-0016-barrier.md").write_text(
+            "---\nid: ADR-0016\ntitle: Barrier\nphase: 9\nstatus: accepted\n---\n# ADR-0016",
+            encoding="utf-8"
+        )
+        (specs_dir / "TASK-037-notes.md").write_text(
+            "---\nid: TASK-037\ntitle: Release Notes\nphase: 10\nstatus: done\n---\nSee [[ADR-0017]]",
+            encoding="utf-8"
+        )
+
+        found = kb_release.find_phase_artifacts(docs_dir, phase_num=10)
+        adr_ids = [a["id"] for a in found["adrs"]]
+        self.assertIn("ADR-0017", adr_ids)
+        self.assertNotIn("ADR-0016", adr_ids)
 
     def test_ci_mode_infers_phase_and_summary_from_existing_release_doc(self):
         """

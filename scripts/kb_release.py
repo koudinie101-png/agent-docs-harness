@@ -282,12 +282,45 @@ def detect_latest_phase(docs_dir: Path) -> int:
     return highest_phase
 
 
+def is_adr_for_phase(
+    adr_path: Path,
+    adr_content: str,
+    phase_num: int,
+    phase_context_text: str,
+) -> bool:
+    """
+    Determines if an accepted ADR belongs to the specified phase_num:
+    1. Explicit 'phase: N' in ADR frontmatter.
+    2. Tag 'phaseN', 'phase-N', or '#phaseN' in ADR content.
+    3. ADR id (e.g. 'ADR-0017') or filename stem referenced in phase tasks, plans, or roadmap.
+    """
+    fm = parse_frontmatter(adr_content)
+    if "phase" in fm:
+        try:
+            return int(fm["phase"]) == phase_num
+        except ValueError:
+            return str(fm["phase"]).strip() == str(phase_num).strip()
+
+    # Check phase tags in ADR content
+    if re.search(rf"(?:#|\b)phase[-_]?{phase_num}\b", adr_content, re.IGNORECASE):
+        return True
+
+    # Check if ADR ID or stem is mentioned in phase context (tasks, plan, roadmap)
+    adr_id = fm.get("id", adr_path.stem)
+    adr_stem = adr_path.stem
+    if re.search(rf"\b{re.escape(adr_id)}\b", phase_context_text, re.IGNORECASE) or \
+       re.search(rf"\b{re.escape(adr_stem)}\b", phase_context_text, re.IGNORECASE):
+        return True
+
+    return False
+
+
 def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[str, str]]]:
     """
     Scans docs/ and finds:
     - tasks: Specs in docs/02_Tasks/Specs/ matching phase_num.
     - bugs: Closed defect reports in docs/02_Tasks/Bugs/.
-    - adrs: Accepted ADRs in docs/03_Decisions_ADR/.
+    - adrs: Accepted ADRs in docs/03_Decisions_ADR/ relevant to phase_num.
     """
     result: Dict[str, List[Dict[str, str]]] = {
         "tasks": [],
@@ -297,6 +330,8 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
 
     if not docs_dir.exists():
         return result
+
+    phase_tasks_text_parts: List[str] = []
 
     # 1. Tasks / Specs
     specs_dir = docs_dir / "02_Tasks" / "Specs"
@@ -320,10 +355,9 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                         phase_match = True
 
                 if phase_match:
+                    phase_tasks_text_parts.append(content)
                     task_id = fm.get("id", spec_file.stem.split("-")[0])
                     title = fm.get("title", spec_file.stem)
-                    # Compute relative link from docs/02_Tasks/Releases/
-                    # We can use ../Specs/<subfolder>/<filename>
                     rel_to_tasks = spec_file.relative_to(docs_dir / "02_Tasks")
                     link = f"../{rel_to_tasks.as_posix()[:-3]}"
                     result["tasks"].append({
@@ -334,6 +368,47 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                     })
             except Exception:
                 pass
+
+    # Collect phase context from plans and roadmap
+    phase_context_parts: List[str] = list(phase_tasks_text_parts)
+    plans_dir = docs_dir / "02_Tasks" / "Plans"
+    if plans_dir.exists():
+        for plan_file in sorted(plans_dir.glob("*.md")):
+            if plan_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                plan_content = plan_file.read_text(encoding="utf-8")
+                plan_fm = parse_frontmatter(plan_content)
+                plan_phase = plan_fm.get("phase")
+                match_plan = False
+                if plan_phase is not None:
+                    try:
+                        match_plan = int(plan_phase) == phase_num
+                    except ValueError:
+                        match_plan = str(plan_phase) == str(phase_num)
+                elif f"PLAN-{phase_num:03d}" in plan_file.name or f"phase{phase_num}" in plan_file.name.lower():
+                    match_plan = True
+
+                if match_plan:
+                    phase_context_parts.append(plan_content)
+            except Exception:
+                pass
+
+    roadmap_file = docs_dir / "02_Tasks" / "Roadmap.md"
+    if roadmap_file.is_file():
+        try:
+            rm_content = roadmap_file.read_text(encoding="utf-8")
+            m = re.search(
+                rf"(?:##\s+Фаза\s+{phase_num}:|##\s+Phase\s+{phase_num}:)([\s\S]*?)(?=\n##|\n---|$)",
+                rm_content,
+                re.IGNORECASE,
+            )
+            if m:
+                phase_context_parts.append(m.group(0))
+        except Exception:
+            pass
+
+    phase_context_text = "\n".join(phase_context_parts)
 
     # 2. Bugs
     bugs_dir = docs_dir / "02_Tasks" / "Bugs"
@@ -359,7 +434,7 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
             except Exception:
                 pass
 
-    # 3. ADRs
+    # 3. ADRs (filtered by phase)
     adrs_dir = docs_dir / "03_Decisions_ADR"
     if adrs_dir.exists():
         for adr_file in sorted(adrs_dir.glob("*.md")):
@@ -370,15 +445,16 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                 fm = parse_frontmatter(content)
                 status = fm.get("status", "").lower()
                 if status == "accepted":
-                    adr_id = fm.get("id", adr_file.stem)
-                    title = fm.get("title", adr_file.stem)
-                    link = f"../../03_Decisions_ADR/{adr_file.stem}"
-                    result["adrs"].append({
-                        "id": adr_id,
-                        "title": title,
-                        "link": link,
-                        "status": status,
-                    })
+                    if is_adr_for_phase(adr_file, content, phase_num, phase_context_text):
+                        adr_id = fm.get("id", adr_file.stem)
+                        title = fm.get("title", adr_file.stem)
+                        link = f"../../03_Decisions_ADR/{adr_file.stem}"
+                        result["adrs"].append({
+                            "id": adr_id,
+                            "title": title,
+                            "link": link,
+                            "status": status,
+                        })
             except Exception:
                 pass
 
@@ -618,15 +694,6 @@ def generate_public_release_notes(
     else:
         bugs_md.append("- Критических дефектов и регрессий за период фазы не зафиксировано.")
 
-    # ADRs
-    adrs_md: List[str] = []
-    if phase_data.get("adrs"):
-        for a in phase_data["adrs"]:
-            raw_item = f"- [[{a['link']}|{a['id']}]]: {a['title']}."
-            adrs_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
-    else:
-        adrs_md.append("- Архитектурных изменений в рамках фазы не вводилось.")
-
     artifacts_table = format_artifacts_markdown_table(artifacts)
     first_art_name = artifacts[0]["name"] if artifacts else "install.py"
 
@@ -656,9 +723,6 @@ python install.py --update
 
 ### 🐛 Исправленные дефекты (Bug Fixes)
 {chr(10).join(bugs_md)}
-
-### 🏛️ Архитектурные решения (ADR)
-{chr(10).join(adrs_md)}
 
 ---
 
