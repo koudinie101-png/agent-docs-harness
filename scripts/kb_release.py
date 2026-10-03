@@ -228,6 +228,11 @@ def extract_release_meta_from_doc(doc_path: Path) -> Dict[str, Any]:
                 meta["phase"] = int(fm["phase"])
             except ValueError:
                 pass
+        if "phases" in fm:
+            raw_phases = str(fm["phases"]).strip("[] ")
+            phases_list = [int(p.strip()) for p in raw_phases.split(",") if p.strip().isdigit()]
+            if phases_list:
+                meta["phases"] = phases_list
 
         # Extract Executive Summary section
         pattern = r"##\s+.*?Executive Summary.*?\n([\s\S]*?)(?=\n##|\n---|$(?![\r\n]))"
@@ -315,12 +320,16 @@ def is_adr_for_phase(
     return False
 
 
-def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[str, str]]]:
+def find_phase_artifacts(
+    docs_dir: Path,
+    phase_num: int,
+    phases: Optional[List[int]] = None,
+) -> Dict[str, List[Dict[str, str]]]:
     """
     Scans docs/ and finds:
-    - tasks: Specs in docs/02_Tasks/Specs/ matching phase_num.
+    - tasks: Specs in docs/02_Tasks/Specs/ matching phase_num (or phases list).
     - bugs: Closed defect reports in docs/02_Tasks/Bugs/.
-    - adrs: Accepted ADRs in docs/03_Decisions_ADR/ relevant to phase_num.
+    - adrs: Accepted ADRs in docs/03_Decisions_ADR/ relevant to phase_num (or phases list).
     """
     result: Dict[str, List[Dict[str, str]]] = {
         "tasks": [],
@@ -331,6 +340,7 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
     if not docs_dir.exists():
         return result
 
+    target_phases = phases if phases else [phase_num]
     phase_tasks_text_parts: List[str] = []
 
     # 1. Tasks / Specs
@@ -346,13 +356,15 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                 phase_match = False
                 if file_phase is not None:
                     try:
-                        phase_match = int(file_phase) == phase_num
+                        phase_match = int(file_phase) in target_phases
                     except ValueError:
-                        phase_match = str(file_phase) == str(phase_num)
+                        phase_match = str(file_phase) in [str(p) for p in target_phases]
                 else:
                     # Fallback only if frontmatter phase is missing
-                    if f"0{phase_num}_" in str(spec_file) or f"phase{phase_num}" in str(spec_file).lower():
-                        phase_match = True
+                    for p in target_phases:
+                        if f"0{p}_" in str(spec_file) or f"phase{p}" in str(spec_file).lower():
+                            phase_match = True
+                            break
 
                 if phase_match:
                     phase_tasks_text_parts.append(content)
@@ -383,11 +395,14 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                 match_plan = False
                 if plan_phase is not None:
                     try:
-                        match_plan = int(plan_phase) == phase_num
+                        match_plan = int(plan_phase) in target_phases
                     except ValueError:
-                        match_plan = str(plan_phase) == str(phase_num)
-                elif f"PLAN-{phase_num:03d}" in plan_file.name or f"phase{phase_num}" in plan_file.name.lower():
-                    match_plan = True
+                        match_plan = str(plan_phase) in [str(p) for p in target_phases]
+                else:
+                    for p in target_phases:
+                        if f"PLAN-{p:03d}" in plan_file.name or f"phase{p}" in plan_file.name.lower():
+                            match_plan = True
+                            break
 
                 if match_plan:
                     phase_context_parts.append(plan_content)
@@ -398,13 +413,14 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
     if roadmap_file.is_file():
         try:
             rm_content = roadmap_file.read_text(encoding="utf-8")
-            m = re.search(
-                rf"(?:##\s+Фаза\s+{phase_num}:|##\s+Phase\s+{phase_num}:)([\s\S]*?)(?=\n##|\n---|$)",
-                rm_content,
-                re.IGNORECASE,
-            )
-            if m:
-                phase_context_parts.append(m.group(0))
+            for p in target_phases:
+                m = re.search(
+                    rf"(?:##\s+Фаза\s+{p}:|##\s+Phase\s+{p}:)([\s\S]*?)(?=\n##|\n---|$)",
+                    rm_content,
+                    re.IGNORECASE,
+                )
+                if m:
+                    phase_context_parts.append(m.group(0))
         except Exception:
             pass
 
@@ -434,7 +450,7 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
             except Exception:
                 pass
 
-    # 3. ADRs (filtered by phase)
+    # 3. ADRs (filtered by target phases)
     adrs_dir = docs_dir / "03_Decisions_ADR"
     if adrs_dir.exists():
         for adr_file in sorted(adrs_dir.glob("*.md")):
@@ -445,7 +461,7 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                 fm = parse_frontmatter(content)
                 status = fm.get("status", "").lower()
                 if status == "accepted":
-                    if is_adr_for_phase(adr_file, content, phase_num, phase_context_text):
+                    if any(is_adr_for_phase(adr_file, content, p, phase_context_text) for p in target_phases):
                         adr_id = fm.get("id", adr_file.stem)
                         title = fm.get("title", adr_file.stem)
                         link = f"../../03_Decisions_ADR/{adr_file.stem}"
@@ -469,6 +485,7 @@ def generate_release_markdown(
     phase_data: Dict[str, List[Dict[str, str]]],
     summary: str = "",
     release_date: Optional[str] = None,
+    phases: Optional[List[int]] = None,
 ) -> str:
     """Generates complete RELEASE-vX.Y.Z.md content conforming to TEMPLATE_RELEASE.md."""
     import datetime
@@ -485,6 +502,23 @@ def generate_release_markdown(
         if clean_url.endswith(".git"):
             clean_url = clean_url[:-4]
         gh_release_url = f"{clean_url}/releases/tag/{tag}"
+
+    is_cumulative = phases is not None and len(phases) > 1
+    if is_cumulative:
+        phases_title = " и ".join(str(p) for p in phases) if len(phases) == 2 else ", ".join(str(p) for p in phases)
+        title_str = f"Релиз {tag}: Фазы {phases_title} (Кумулятивный)"
+        phases_fm_str = f"phases: [{', '.join(str(p) for p in phases)}]\n"
+        meta_phase_line = f"> **Фазы:** {phases_title} (Кумулятивный)  "
+        checklist_phase_line = f"- [x] Все задачи фаз {phases_title} завершены и проверены в `Roadmap.md`."
+        default_summary = f"Официальный кумулятивный релиз {tag} по завершении Фаз {phases_title}."
+        tags_cumulative = "\n  - cumulative"
+    else:
+        title_str = f"Релиз {tag}: Фаза {phase_num}"
+        phases_fm_str = ""
+        meta_phase_line = f"> **Фаза:** {phase_num}  "
+        checklist_phase_line = f"- [x] Все задачи фазы {phase_num} завершены и проверены в `Roadmap.md`."
+        default_summary = f"Официальный релиз {tag} по завершении Фазы {phase_num}."
+        tags_cumulative = ""
 
     # Features list
     features_md: List[str] = []
@@ -524,7 +558,7 @@ sha256sum dist/{first_art_name}
 shasum -a 256 dist/{first_art_name}
 ```"""
 
-    doc_summary = summary.strip() or f"Официальный релиз {tag} по завершении Фазы {phase_num}."
+    doc_summary = summary.strip() or default_summary
 
     frontmatter_artifacts = []
     for art in artifacts:
@@ -538,10 +572,10 @@ shasum -a 256 dist/{first_art_name}
 
     content = f"""---
 id: RELEASE-{tag}
-title: "Релиз {tag}: Фаза {phase_num}"
+title: "{title_str}"
 version: "{ver_clean}"
 phase: {phase_num}
-status: completed
+{phases_fm_str}status: completed
 date: {today}
 git_tag: "{tag}"
 github_release_url: "{gh_release_url}"
@@ -550,16 +584,16 @@ artifacts:
 {fm_artifacts_str}
 tags:
   - release
-  - changelog
+  - changelog{tags_cumulative}
   - {tag}
 kanban: "[[../Kanban|Канбан-доска]]"
 roadmap: "[[../Roadmap|Дорожная карта]]"
 ---
 
-# 🚀 Релиз {tag}: Фаза {phase_num}
+# 🚀 {title_str}
 
 > **Версия:** {tag}  
-> **Фаза:** {phase_num}  
+{meta_phase_line}
 > **Дата:** {today}  
 > **Режим публикации:** {'GitHub Release' if mode == 'github' else 'Local-Only Package'}  
 > **Git Tag:** `{tag}`  
@@ -598,7 +632,7 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
 ---
 
 ## 📋 Чеклист верификации и приемки релиза
-- [x] Все задачи фазы {phase_num} завершены и проверены в `Roadmap.md`.
+{checklist_phase_line}
 - [x] Все приемочные тесты (`05_Testing/`) успешно пройдены.
 - [x] Целостность базы знаний подтверждена (`python scripts/kb_lint.py --path docs`).
 - [x] Все артефакты в `dist/` собраны и контрольные суммы SHA-256 рассчитаны.
@@ -655,6 +689,7 @@ def generate_public_release_notes(
     artifacts: List[Dict[str, str]],
     phase_data: Dict[str, List[Dict[str, str]]],
     summary: str = "",
+    phases: Optional[List[int]] = None,
 ) -> str:
     """Generates public dist/RELEASE_NOTES.md in clean GitHub Flavored Markdown (GFM)."""
     ver_clean = version.lstrip("v")
@@ -674,7 +709,16 @@ def generate_public_release_notes(
             raw_install_url = f"https://raw.githubusercontent.com/{repo_path}/{branch}/install.py"
             diff_url = f"{clean_repo_url}/releases/tag/{tag}"
 
-    doc_summary = summary.strip() or f"Официальный релиз {tag} по завершении Фазы {phase_num}."
+    is_cumulative = phases is not None and len(phases) > 1
+    if is_cumulative:
+        phases_title = " и ".join(str(p) for p in phases) if len(phases) == 2 else ", ".join(str(p) for p in phases)
+        header_title = f"# 🚀 Release {tag} — Фазы {phases_title} (Кумулятивный)"
+        default_summary = f"Официальный кумулятивный релиз {tag} по завершении Фаз {phases_title}."
+    else:
+        header_title = f"# 🚀 Release {tag} — Фаза {phase_num}"
+        default_summary = f"Официальный релиз {tag} по завершении Фазы {phase_num}."
+
+    doc_summary = summary.strip() or default_summary
 
     # Features
     features_md: List[str] = []
@@ -701,7 +745,7 @@ def generate_public_release_notes(
     if diff_url:
         full_changelog_md = f"\n\n---\n\n**Полный список изменений (Full Changelog):** {diff_url}"
 
-    notes = f"""# 🚀 Release {tag} — Фаза {phase_num}
+    notes = f"""{header_title}
 
 > 💡 **Executive Summary:** {doc_summary}
 
@@ -749,6 +793,7 @@ def main() -> int:
     )
     parser.add_argument("--version", type=str, default="", help="Release version (e.g. 0.4.0 or v0.4.0)")
     parser.add_argument("--phase", type=int, default=None, help="Phase number associated with the release (default: auto-detected)")
+    parser.add_argument("--phases", type=str, default="", help="Comma-separated list of phase numbers for cumulative release (e.g. '9,10')")
     parser.add_argument("--docs-dir", type=str, default="docs", help="Path to docs directory (default: docs)")
     parser.add_argument("--dist-dir", type=str, default="dist", help="Path to dist directory (default: dist)")
     parser.add_argument("--output", type=str, default="", help="Target release markdown path")
@@ -780,24 +825,40 @@ def main() -> int:
 
     out_path = Path(args.output) if args.output else docs_path / "02_Tasks" / "Releases" / f"RELEASE-{tag}.md"
 
-    # Resolve phase and summary (Single Source of Truth)
+    # Resolve phase, phases and summary (Single Source of Truth)
     phase_num = args.phase
     summary_text = args.summary.strip() if args.summary else ""
+    phases_list: Optional[List[int]] = None
+    if args.phases.strip():
+        try:
+            phases_list = [int(p.strip()) for p in args.phases.split(",") if p.strip()]
+        except ValueError:
+            print("❌ Error: --phases must be comma-separated integers, e.g. '9,10'", file=sys.stderr)
+            return 1
 
     # If release doc already exists, infer ground truth metadata unless explicitly overridden
     if out_path.exists():
         existing_meta = extract_release_meta_from_doc(out_path)
         if phase_num is None and existing_meta.get("phase") is not None:
             phase_num = existing_meta["phase"]
+        if phases_list is None and existing_meta.get("phases"):
+            phases_list = existing_meta["phases"]
         if not summary_text and existing_meta.get("summary"):
             summary_text = existing_meta["summary"]
+
+    if phases_list:
+        if phase_num is None:
+            phase_num = max(phases_list)
+        elif phase_num not in phases_list:
+            phases_list.append(phase_num)
+            phases_list.sort()
 
     # Fallback phase detection if still None
     if phase_num is None:
         phase_num = detect_latest_phase(docs_path)
 
     artifacts = inspect_release_artifacts(dist_path)
-    phase_data = find_phase_artifacts(docs_path, phase_num)
+    phase_data = find_phase_artifacts(docs_path, phase_num, phases=phases_list)
 
     release_content = generate_release_markdown(
         version=ver_clean,
@@ -806,6 +867,7 @@ def main() -> int:
         artifacts=artifacts,
         phase_data=phase_data,
         summary=summary_text,
+        phases=phases_list,
     )
 
     public_notes = generate_public_release_notes(
@@ -815,6 +877,7 @@ def main() -> int:
         artifacts=artifacts,
         phase_data=phase_data,
         summary=summary_text,
+        phases=phases_list,
     )
 
     if args.dry_run:

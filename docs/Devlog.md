@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-03] — Выпуск кумулятивного релиза v0.10.0 (Фазы 9 и 10)
+- **Что сделано:**
+  - Осуществлен выпуск кумулятивного релиза [[02_Tasks/Releases/RELEASE-v0.10.0|v0.10.0]], объединяющего наработки Фазы 9 (Single-Task Execution Barrier & Stop-on-Complete Protocol), Фазы 10 (Spec Genesis Protocol & High-SNR Release Notes) и исправление дефекта CI [[02_Tasks/Bugs/BUG-001-ci-release-notes-phase-fallback|BUG-001]].
+  - В утилиту `scripts/kb_release.py` добавлена поддержка кумулятивных релизов (`--phases 9,10`) с автоматическим парсингом метаданных из существующих релизных документов для CI-пайплайна.
+  - Сгенерирован публичный файл заметок `dist/RELEASE_NOTES.md` по стандарту высокой плотности полезного сигнала (High-SNR) без шума кумулятивных ADR, а также структурированный документ базы знаний `docs/02_Tasks/Releases/RELEASE-v0.10.0.md` с фазовым скоупингом ADR.
+  - Скомпилирован финальный автономный дистрибутив инсталлятора `dist/install.py` (95.1 KB, SHA-256: `1e31643af92b5fb3c8347e71c70e02a48c8abe9d764a3c8c2ed09320b7983a19`).
+  - Актуализированы отметки о релизах в [[02_Tasks/Roadmap|Дорожной карте]] для Фазы 9 и Фазы 10.
+- **Результаты верификации:**
+  - `python scripts/kb_release.py --version v0.10.0 --phase 10 --phases 9,10` -> Exit code 0 (сгенерированы `RELEASE-v0.10.0.md` и `dist/RELEASE_NOTES.md`).
+  - `python -m unittest discover -s tests` -> 51/51 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 битых связей, 0 предупреждений.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Создание git-тега `v0.10.0` и отправка в удаленный репозиторий (`git push origin main --tags`).
+
 ### [2026-10-03] — Завершение TASK-038: Синхронизация инсталлятора, E2E тесты и документация (Завершение Фазы 10)
 - **Что сделано:**
   - Завершена реализация Фазы 10: комплексная синхронизация инсталлятора `install.py`, генераторов правил агентов, сквозных E2E тестов и документации проекта согласно [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]] и [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]].

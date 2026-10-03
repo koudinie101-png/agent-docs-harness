@@ -392,6 +392,101 @@ status: done
         self.assertIn("Greenfield-инициализация от идеи и Living Spec протокол.", notes_content)
         self.assertIn("TASK-029", notes_content)
 
+    def test_cumulative_release_phases_notes_and_doc(self):
+        """
+        Tests cumulative release cutting across multiple phases (e.g. 9 and 10),
+        verifying that tasks from both phases and bugs are bundled,
+        ADRs are not dumped into public notes (High-SNR),
+        and CI mode can infer cumulative phases from existing release doc.
+        """
+        dist_dir = self.test_root / "dist"
+        dist_dir.mkdir()
+        (dist_dir / "install.py").write_bytes(b"print('installer-payload')")
+
+        docs_dir = self.test_root / "docs"
+        releases_dir = docs_dir / "02_Tasks" / "Releases"
+        specs_p9 = docs_dir / "02_Tasks" / "Specs" / "09_Phase9"
+        specs_p10 = docs_dir / "02_Tasks" / "Specs" / "10_Phase10"
+        bugs_dir = docs_dir / "02_Tasks" / "Bugs"
+        adrs_dir = docs_dir / "03_Decisions_ADR"
+
+        releases_dir.mkdir(parents=True)
+        specs_p9.mkdir(parents=True)
+        specs_p10.mkdir(parents=True)
+        bugs_dir.mkdir(parents=True)
+        adrs_dir.mkdir(parents=True)
+
+        (specs_p9 / "TASK-033-barrier.md").write_text(
+            "---\nid: TASK-033\ntitle: Single-Task Execution Barrier\nphase: 9\nstatus: done\n---\n# TASK-033",
+            encoding="utf-8"
+        )
+        (specs_p10 / "TASK-036-genesis.md").write_text(
+            "---\nid: TASK-036\ntitle: Spec Genesis Protocol\nphase: 10\nstatus: done\n---\n# TASK-036",
+            encoding="utf-8"
+        )
+        (bugs_dir / "BUG-001-fallback.md").write_text(
+            "---\nid: BUG-001\ntitle: Release Fallback Defect\nstatus: fixed\n---\n# BUG-001",
+            encoding="utf-8"
+        )
+        (adrs_dir / "ADR-0021-genesis.md").write_text(
+            "---\nid: ADR-0021\ntitle: Spec Genesis\nphase: 10\nstatus: accepted\n---\n# ADR-0021",
+            encoding="utf-8"
+        )
+
+        test_argv = [
+            "kb_release.py",
+            "--version", "v0.10.0",
+            "--phases", "9,10",
+            "--docs-dir", str(docs_dir),
+            "--dist-dir", str(dist_dir),
+            "--summary", "Кумулятивный релиз с барьером выполнения и генезисом спецификации.",
+        ]
+        with patch.object(sys, "argv", test_argv):
+            exit_code = kb_release.main()
+            self.assertEqual(exit_code, 0)
+
+        # Verify RELEASE-v0.10.0.md
+        release_doc = releases_dir / "RELEASE-v0.10.0.md"
+        self.assertTrue(release_doc.exists())
+        doc_content = release_doc.read_text(encoding="utf-8")
+        self.assertIn("phases: [9, 10]", doc_content)
+        self.assertIn("TASK-033", doc_content)
+        self.assertIn("TASK-036", doc_content)
+        self.assertIn("BUG-001", doc_content)
+        self.assertIn("ADR-0021", doc_content)
+        self.assertIn("Кумулятивный", doc_content)
+
+        # Verify public dist/RELEASE_NOTES.md
+        notes_file = dist_dir / "RELEASE_NOTES.md"
+        self.assertTrue(notes_file.exists())
+        notes_content = notes_file.read_text(encoding="utf-8")
+        self.assertIn("TASK-033", notes_content)
+        self.assertIn("TASK-036", notes_content)
+        self.assertIn("BUG-001", notes_content)
+        self.assertNotIn("ADR-0021", notes_content)  # High-SNR: ADRs excluded from public notes
+        self.assertNotIn("Архитектурные решения", notes_content)
+        self.assertIn("Кумулятивный", notes_content)
+
+        # Now simulate CI running on git tag without --phase or --phases
+        ci_argv = [
+            "kb_release.py",
+            "--version", "v0.10.0",
+            "--ci-mode",
+            "--docs-dir", str(docs_dir),
+            "--dist-dir", str(dist_dir),
+        ]
+        with patch.object(sys, "argv", ci_argv):
+            exit_code_ci = kb_release.main()
+            self.assertEqual(exit_code_ci, 0)
+
+        ci_notes = notes_file.read_text(encoding="utf-8")
+        self.assertIn("TASK-033", ci_notes)
+        self.assertIn("TASK-036", ci_notes)
+        self.assertIn("BUG-001", ci_notes)
+        self.assertNotIn("ADR-0021", ci_notes)
+        self.assertIn("Кумулятивный", ci_notes)
+
 
 if __name__ == "__main__":
     unittest.main()
+

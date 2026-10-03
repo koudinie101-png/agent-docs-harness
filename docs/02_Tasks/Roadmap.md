@@ -116,7 +116,8 @@ tags:
 ## Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete Protocol) — ✅ Завершена
 **Цель:** Исключить своевольный авто-чейнинг задач (Eager Task Chaining) при сжатии контекста с помощью трехуровневой эшелонированной защиты: нормативного инварианта в `AGENTS.md`, терминального шага `Stop & Yield Control` в `kb-implement`/`kb-complete`, семантического разделения субъекта в `Devlog.md` и неблокирующего аудита в `scripts/kb_lint.py`.  
 **Первоисточник плана:** [[Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
-**Нормативная база:** [[../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]
+**Нормативная база:** [[../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.10.0|RELEASE-v0.10.0 (Кумулятивный)]]
 
 - [x] Нормативный инвариант барьера единичной задачи в `AGENTS.md` и терминальный шаг `Stop & Yield Control` в `kb-implement` и `kb-complete` — [[Specs/09_Guardrails/TASK-033-single-task-barrier-and-stop-yield-skills|TASK-033]].
 - [x] Семантический протокол следующего шага в `TEMPLATE_DEVLOG.md`, аудит формулировок `check_devlog_semantic_guard` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` — [[Specs/09_Guardrails/TASK-034-devlog-semantic-guard-and-kb-lint-audit|TASK-034]].
@@ -127,7 +128,8 @@ tags:
 ## Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки (Spec Genesis Protocol & High-SNR Release Notes) — ✅ Завершена
 **Цель:** Создать замкнутый контур чистоты спецификаций и релизных артефактов: устранить рассинхронизацию `kb-init` и `install.py` при рождении `SPEC.md`, внедрить префлайт-чеки Zero-State в `kb-plan` и `kb-task`, закрепить инвариант защиты от галлюцинаций в `AGENTS.md` ([[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]]), и исключить кумулятивный шум архитектурных решений (ADR) из публичных заметок на GitHub ([[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]).  
 **Первоисточник плана:** [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
-**Нормативная база:** [[../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]], [[../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]
+**Нормативная база:** [[../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]], [[../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.10.0|RELEASE-v0.10.0 (Кумулятивный)]]
 
 - [x] [[Specs/10_SpecLifecycle/TASK-036-spec-genesis-and-zero-state-guardrails|TASK-036]]: Spec Genesis Protocol & Zero-State Guardrails (генерация `SPEC.md` в `kb-init`, префлайт-чеки в `kb-plan`/`kb-task`, инвариант в `AGENTS.md`).
 - [x] [[Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]]: High-SNR Release Notes Generator & Phase ADR Scoping (упразднение секции ADR в `generate_public_release_notes` в `scripts/kb_release.py`, фазовый скоупинг во внутреннем чейнджлоге, обновление `TEMPLATE_RELEASE.md` и `kb-release`, модульные тесты в `tests/test_kb_release.py`).
