@@ -10,6 +10,11 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|План: Фаза 10 — Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки]] #plan #phase10 #spec-genesis #release-notes
+  - [ ] TASK-036: Spec Genesis Protocol & Zero-State Guardrails (kb-init, kb-plan, kb-task, AGENTS.md) #task #phase10
+  - [ ] TASK-037: High-SNR Release Notes Generator & Phase ADR Scoping (scripts/kb_release.py, kb-release, TEMPLATE_RELEASE.md) #task #phase10
+  - [ ] TASK-038: Синхронизация инсталлятора, сквозные E2E тесты и документация (install.py, README.md, Onboarding.md) #task #phase10
+
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)

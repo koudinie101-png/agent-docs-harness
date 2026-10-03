@@ -124,11 +124,21 @@ tags:
 
 ---
 
+## Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки (Spec Genesis Protocol & High-SNR Release Notes)
+**Цель:** Создать замкнутый контур чистоты спецификаций и релизных артефактов: устранить рассинхронизацию `kb-init` и `install.py` при рождении `SPEC.md`, внедрить префлайт-чеки Zero-State в `kb-plan` и `kb-task`, закрепить инвариант защиты от галлюцинаций в `AGENTS.md` ([[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]]), и исключить кумулятивный шум архитектурных решений (ADR) из публичных заметок на GitHub ([[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]).  
+**Первоисточник плана:** [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
+**Нормативная база:** [[../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]], [[../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]
+
+- [ ] TASK-036: Spec Genesis Protocol & Zero-State Guardrails (генерация `SPEC.md` в `kb-init`, префлайт-чеки в `kb-plan`/`kb-task`, инвариант в `AGENTS.md`).
+- [ ] TASK-037: High-SNR Release Notes Generator & Phase ADR Scoping (упразднение секции ADR в `generate_public_release_notes` в `scripts/kb_release.py`, фазовый скоупинг во внутреннем чейнджлоге, обновление `TEMPLATE_RELEASE.md` и `kb-release`, модульные тесты в `tests/test_kb_release.py`).
+- [ ] TASK-038: Синхронизация инсталлятора, сквозные E2E тесты и документация (сборка `install.py` через `scripts/build_installer.py`, регрессионные E2E тесты в `tests/test_installer.py`, аудит `scripts/kb_lint.py`, обновление `README.md` и `docs/Onboarding.md`).
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
-* 💡 **Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State:** инициализация SPEC.md из идеи в kb-init и install.py, диалоговый опросник и критический анализ архитектуры до начала кодирования — [[../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]]. (Value Impact: High, Effort: Low)
-* 💡 **Оптимизация публичных релизных заметок (High-SNR Release Notes):** исключение секции архитектурных решений (ADR) из публичного `dist/RELEASE_NOTES.md` на GitHub, предотвращение кумулятивного разрастания шума, фокусировка на пользовательской ценности (Features, Fixes, SHA-256) и инлайн-трассировка ADR в задачах — [[../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]. (Value Impact: High, Effort: Low)
+
 * 💡 **Архитектура Zero Round-Trip Dispatch и устранение латентности скиллов (Hot Invariants):** оптимизация задержки отклика в Antigravity при сохранении High-SNR токеномики: прямое исполнение типовых режимов (0–3) из Always-On кэша `AGENTS.md` без промежуточного tool call `view_file(SKILL.md)`, пайплайнинг I/O и защита префиксного KV-кэша — [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]].
 * 💡 **Архитектура каналов обратной связи и воронка триажа (Feedback Loops & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер триажа `docs/02_Tasks/Inbox/`, шаблоны GitHub Issue Forms (`.github/ISSUE_TEMPLATE/`) и Discussions (Ideas), безопасный локальный бандл `install.py --report` для друзей и оффлайн-режима, скилл `/kb-triage` — [[../04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]], [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]].
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
