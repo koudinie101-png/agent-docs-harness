@@ -420,7 +420,7 @@ def find_phase_artifacts(docs_dir: Path, phase_num: int) -> Dict[str, List[Dict[
                 content = bug_file.read_text(encoding="utf-8")
                 fm = parse_frontmatter(content)
                 status = fm.get("status", "").lower()
-                if status in ["done", "resolved", "closed"]:
+                if status in ["done", "resolved", "closed", "fixed"]:
                     bug_id = fm.get("id", bug_file.stem)
                     title = fm.get("title", bug_file.stem)
                     rel_to_tasks = bug_file.relative_to(docs_dir / "02_Tasks")
