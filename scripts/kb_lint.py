@@ -101,6 +101,42 @@ def check_spec_drift(docs_dir: Path) -> list:
     return warnings
 
 
+def check_devlog_semantic_guard(docs_dir: Path) -> list:
+    """
+    Scans Devlog.md for bare 'Следующий шаг:' or 'Next Step:' triggers
+    that lack explicit human-waiting markers, provoking eager auto-chaining.
+    Returns a list of non-blocking warning strings.
+    """
+    warnings = []
+    devlog_path = docs_dir / "Devlog.md"
+    if not devlog_path.is_file():
+        devlog_path = docs_dir.parent / "Devlog.md" if docs_dir.name == "docs" else devlog_path
+    if not devlog_path.is_file() and (docs_dir / "docs" / "Devlog.md").is_file():
+        devlog_path = docs_dir / "docs" / "Devlog.md"
+    if not devlog_path.is_file():
+        return warnings
+
+    try:
+        content = devlog_path.read_text(encoding="utf-8")
+    except Exception:
+        return warnings
+
+    # Matches bare trigger without awaiting user confirmation guard
+    pattern = re.compile(
+        r'^\s*-\s*\*\*(?:Следующий шаг|Next Step):?\*\*:?\s*(?!.*(?:ожидает команды пользователя|awaits user command|awaiting user input))',
+        re.IGNORECASE
+    )
+
+    rel_name = devlog_path.name
+    for i, line in enumerate(content.splitlines(), start=1):
+        if pattern.search(line):
+            warnings.append(
+                f"In '{rel_name}' line {i}: bare step trigger detected without user guardrail. "
+                f"Prefer '- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**' to prevent auto-chaining."
+            )
+    return warnings
+
+
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
@@ -201,6 +237,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 broken_links.append((rel, link))
 
     drift_warnings = check_spec_drift(docs_dir)
+    devlog_warnings = check_devlog_semantic_guard(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings)
 
     if verbose:
@@ -229,6 +266,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {dw}")
             print()
 
+        if devlog_warnings:
+            print(f"⚠️ Devlog Semantic Guard Warnings ({len(devlog_warnings)}):")
+            for dw in devlog_warnings:
+                print(f"   • {dw}")
+            print()
+
         if has_errors:
             print("❌ Linter failed: please resolve broken links.")
             return 1
@@ -238,6 +281,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     else:
         # Silent-on-Success mode
         for dw in drift_warnings:
+            print(f"⚠️  WARN: {dw}")
+        for dw in devlog_warnings:
             print(f"⚠️  WARN: {dw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")

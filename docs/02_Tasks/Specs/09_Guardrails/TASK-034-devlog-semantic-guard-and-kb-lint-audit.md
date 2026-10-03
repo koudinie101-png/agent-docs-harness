@@ -1,7 +1,7 @@
 ---
 id: TASK-034
 title: "Семантический протокол следующего шага в TEMPLATE_DEVLOG.md, аудит формулировок check_devlog_semantic_guard в scripts/kb_lint.py и тесты в tests/test_kb_lint.py"
-status: planned
+status: done
 type: task
 phase: 9
 component:
@@ -10,7 +10,7 @@ component:
   - guardrails
 parent_plan: "[[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]"
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-03
 tags:
   - task/spec
   - phase9
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-034 — Семантический протокол журнала разработки и аудит в kb_lint.py
 
 > **ID:** TASK-034  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase9 #templates #tooling #guardrails #devlog #kb-lint  
 > **Родительский план:** [[../../Plans/PLAN-009-single-task-barrier-and-stop-on-complete|PLAN-009]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012]], [[../../../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
@@ -108,17 +108,17 @@ def check_devlog_semantic_guard(docs_dir: Path) -> list:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Модульные тесты: `python -m unittest tests/test_kb_lint.py` (100% pass, Exit code 0).
-- [ ] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings в чистом репозитории).
-- [ ] Ручная проверка шаблонов: проверка совпадения `docs/00_Templates/TEMPLATE_DEVLOG.md` и `templates/TEMPLATE_DEVLOG.md`.
+- [x] Модульные тесты: `python -m unittest tests/test_kb_lint.py` (14/14 tests pass, Exit code 0).
+- [x] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings в чистом репозитории).
+- [x] Ручная проверка шаблонов: проверка совпадения `docs/00_Templates/TEMPLATE_DEVLOG.md` и `templates/TEMPLATE_DEVLOG.md`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Шаблоны `docs/00_Templates/TEMPLATE_DEVLOG.md` и `templates/TEMPLATE_DEVLOG.md` обновлены.
-- [ ] Функция `check_devlog_semantic_guard` реализована в `scripts/kb_lint.py` с сохранением Zero Dependencies.
-- [ ] Модульные тесты в `tests/test_kb_lint.py` успешно проходят.
-- [ ] Все пункты Плана верификации выполнены.
-- [ ] Статус обновлен в ТЗ, Канбане и Roadmap.
-- [ ] Запись сессии внесена в `Devlog.md`.
+- [x] Шаблоны `docs/00_Templates/TEMPLATE_DEVLOG.md` и `templates/TEMPLATE_DEVLOG.md` обновлены.
+- [x] Функция `check_devlog_semantic_guard` реализована в `scripts/kb_lint.py` с сохранением Zero Dependencies.
+- [x] Модульные тесты в `tests/test_kb_lint.py` успешно проходят.
+- [x] Все пункты Плана верификации выполнены.
+- [x] Статус обновлен в ТЗ, Канбане и Roadmap.
+- [x] Запись сессии внесена в `Devlog.md`.

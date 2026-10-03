@@ -70,6 +70,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах и ADR.
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
+  * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
   * Dual-Export: экспорт `RELEASE-vX.Y.Z.md` в базу знаний и `dist/RELEASE_NOTES.md` с очищенными от викиссылок Markdown-текстами для GitHub Releases.

@@ -219,6 +219,65 @@ class TestKbLint(unittest.TestCase):
         self.assertIn("⚠️ Spec Drift Warnings (1):", output)
         self.assertIn("Living Spec Drift", output)
 
+    def test_devlog_semantic_guard_detects_bare_trigger(self):
+        """Bare 'Следующий шаг:' or 'Next Step:' triggers should produce non-blocking warnings."""
+        devlog_content = (
+            "# Devlog\n\n"
+            "### [2026-10-03] — Task 1\n"
+            "- **Что сделано:** Some work.\n"
+            "- **Следующий шаг:** /kb-implement TASK-002\n\n"
+            "### [2026-10-02] — Task 0\n"
+            "- **Next Step:** /kb-implement TASK-001\n"
+        )
+        (self.docs_dir / "Devlog.md").write_text(devlog_content, encoding="utf-8")
+
+        warnings = kb_lint.check_devlog_semantic_guard(self.docs_dir)
+        self.assertEqual(len(warnings), 2)
+        self.assertIn("line 5: bare step trigger detected", warnings[0])
+        self.assertIn("line 8: bare step trigger detected", warnings[1])
+
+    def test_devlog_semantic_guard_passes_with_guardrail(self):
+        """Semantic guard with explicit user waiting markers should produce 0 warnings."""
+        devlog_content = (
+            "# Devlog\n\n"
+            "### [2026-10-03] — Task 1\n"
+            "- **Что сделано:** Some work.\n"
+            "- **Рекомендуемый следующий шаг (Ожидает команды пользователя):** /kb-implement TASK-002\n\n"
+            "### [2026-10-02] — Task 0\n"
+            "- **Next Step (Awaits user command):** /kb-implement TASK-001\n"
+        )
+        (self.docs_dir / "Devlog.md").write_text(devlog_content, encoding="utf-8")
+
+        warnings = kb_lint.check_devlog_semantic_guard(self.docs_dir)
+        self.assertEqual(warnings, [])
+
+    def test_devlog_semantic_guard_missing_file(self):
+        """Returns empty list if Devlog.md does not exist."""
+        warnings = kb_lint.check_devlog_semantic_guard(self.docs_dir)
+        self.assertEqual(warnings, [])
+
+    def test_devlog_semantic_guard_non_blocking_in_linter(self):
+        """Devlog semantic warnings must be non-blocking (exit code 0) in both silent and verbose modes."""
+        devlog_content = (
+            "# Devlog\n\n"
+            "- **Следующий шаг:** /kb-implement TASK-002\n"
+        )
+        (self.docs_dir / "Devlog.md").write_text(devlog_content, encoding="utf-8")
+
+        # Silent mode
+        captured_silent = io.StringIO()
+        with patch("sys.stdout", captured_silent):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("⚠️  WARN:", captured_silent.getvalue())
+
+        # Verbose mode
+        captured_verbose = io.StringIO()
+        with patch("sys.stdout", captured_verbose):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("⚠️ Devlog Semantic Guard Warnings (1):", captured_verbose.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
