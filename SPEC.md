@@ -73,7 +73,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
-  * Dual-Export: экспорт `RELEASE-vX.Y.Z.md` в базу знаний и `dist/RELEASE_NOTES.md` с очищенными от викиссылок Markdown-текстами для GitHub Releases.
+  * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.
 
 ### 2.4. Дисциплина 4 этапов (Modes 0–3) и конфигурация агентов
 * Единый канонический файл правил **`AGENTS.md`** и адаптеры (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`).
@@ -83,6 +83,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * **Режим 2: Формирование ТЗ (Task Spec, `/kb-task`)** — точные контракты `[NEW]`/`[MODIFY]`, сигнатуры, DoD, план верификации. Запрет на редактирование кода!
   * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода строго по ТЗ, прогон тестов, Living Spec Sync, автоматическое закрытие задачи в Канбане, Дорожной карте и Devlog.
 * **Протокол Living Spec (Anti-Drift):** обязательная синхронизация `SPEC.md` и `README.md` при изменении публичных контрактов и префлайт-проверка перед релизом.
+* **Spec Genesis Protocol & Zero-State Guardrails (Anti-Hallucination):** трехстадийная модель зрелости спецификации (`Missing` -> `Discovery` -> `Active`). Категорический запрет на директивное выдумывание требований агентом в Zero-State; кристаллизация через диалог, Режим 0 (`/kb-research`) и `ADR-0001`. Префлайт Soft Nudge в `/kb-plan` и `/kb-task`.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
 * **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX>` авторизует работу строго над одной задачей; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
 * **Permalinks Principle:** файлы ТЗ и багов не перемещаются в архивы при закрытии.
@@ -129,3 +130,4 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 7: Стандарт оформления публичных релизов на GitHub** — Dual-Export в `kb_release.py`, очистка викиссылок, автоматизация GitHub Releases.
 * **Фаза 8: Greenfield-инициализация от идеи (Idea-First) и Living Spec** — пресет `undecided`, флаг `--idea`, протокол Living Spec и эвристический аудит дрифта в `kb_lint.py`.
 * **Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete)** — трехуровневая защита от Eager Task Chaining: норматив в `AGENTS.md`, терминальный шаг `Stop & Yield` в скиллах, семантический маркер в `Devlog.md` и аудит в `kb_lint.py`.
+* **Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки** — протокол кристаллизации спецификации из идеи (`Missing` -> `Discovery` -> `Active`), префлайт-чеки в `kb-init`/`kb-plan`/`kb-task`, исключение кумулятивных ADR из публичных релизов (`dist/RELEASE_NOTES.md`) и фазовая изоляция ADR в `scripts/kb_release.py`.

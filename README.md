@@ -65,7 +65,10 @@ Start in an empty folder with just your product concept:
 ```bash
 python3 install.py --idea "AI-powered personal finance assistant"
 ```
-Initializes with the `undecided` preset, generates `SPEC.md` in `status: discovery`, and prepares your AI Agent to conduct tech stack research via `/kb-research` (Mode 0: Discovery).
+Initializes with the `undecided` preset, generates `SPEC.md` in `status: discovery`, and prepares your AI Agent to conduct tech stack research via `/kb-research` (Mode 0: Discovery). The harness enforces the **Spec Genesis Protocol** with three maturity stages:
+* **Missing (Zero-State):** `SPEC.md` is absent; agents are barred from inventing architectures out of thin air.
+* **Discovery (Stub):** `SPEC.md` contains raw ideas; agents guide tech stack validation via Mode 0 (`/kb-research`).
+* **Active (Ground Truth):** Architectural stack is crystallized through `ADR-0001`, enabling full planning and implementation.
 
 The installer features an **interactive terminal wizard** that asks for your project name, stack, and agent environment, or can be run completely hands-free with CLI flags!
 
@@ -235,6 +238,7 @@ Passing `--ci github` generates:
 ### 🚀 Release Management & Dual-Mode Publishing (`/kb-release`)
 The harness provides a built-in release automation lifecycle:
 * **Dual-Mode Publishing:** Supports both online releases (GitHub Releases via `gh` CLI) and offline/local packages (cataloging build artifacts with SHA-256 in `RELEASE-vX.Y.Z.md`).
+* **High-SNR Dual-Export Standard:** Public release notes (`dist/RELEASE_NOTES.md`) exclude internal ADR logs for high-signal user changelogs ([ADR-0017](docs/03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard.md)), while internal vault notes (`docs/02_Tasks/Releases/`) scope architectural decisions strictly to the current phase.
 * **Build Hook Contract:** Automatically invokes your project's build hook (`scripts/build_release.sh`, `scripts/build_release.py`, `package.json`, etc.) outputting artifacts to `dist/`.
 * **Zero-Dependencies Checksums:** Calculates streaming SHA-256 hashes and formats Markdown tables for customer verification.
 
@@ -276,6 +280,9 @@ Once installed, your workflow is seamless:
    * The command `/kb-implement <TASK-XXX>` authorizes work strictly on a single task specification. Auto-chaining next tasks is prohibited.
    * Upon completing verification and the completion checklist, the agent immediately ceases tool calls (`Stop & Yield Control`) and awaits user commands.
    * Devlog next steps use non-executable semantic markers (`- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**`), preventing runaway autonomous loops.
+5. **Spec Genesis & Zero-State Anti-Hallucination Guardrails:**
+   * When `SPEC.md` is in `status: discovery` or missing, AI agents are strictly barred from hallucinating arbitrary product architectures or inventing features ([ADR-0018](docs/03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling.md)). Requirements must crystallize through interactive dialogue or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before `SPEC.md` transitions to `status: active`.
+   * Planning (`/kb-plan`) and task specification (`/kb-task`) automatically issue a Soft Nudge if the specification is not yet validated.
 
 ---
 

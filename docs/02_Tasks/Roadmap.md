@@ -124,14 +124,14 @@ tags:
 
 ---
 
-## Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки (Spec Genesis Protocol & High-SNR Release Notes)
+## Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки (Spec Genesis Protocol & High-SNR Release Notes) — ✅ Завершена
 **Цель:** Создать замкнутый контур чистоты спецификаций и релизных артефактов: устранить рассинхронизацию `kb-init` и `install.py` при рождении `SPEC.md`, внедрить префлайт-чеки Zero-State в `kb-plan` и `kb-task`, закрепить инвариант защиты от галлюцинаций в `AGENTS.md` ([[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]]), и исключить кумулятивный шум архитектурных решений (ADR) из публичных заметок на GitHub ([[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]).  
 **Первоисточник плана:** [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
 **Нормативная база:** [[../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]], [[../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]
 
 - [x] [[Specs/10_SpecLifecycle/TASK-036-spec-genesis-and-zero-state-guardrails|TASK-036]]: Spec Genesis Protocol & Zero-State Guardrails (генерация `SPEC.md` в `kb-init`, префлайт-чеки в `kb-plan`/`kb-task`, инвариант в `AGENTS.md`).
 - [x] [[Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]]: High-SNR Release Notes Generator & Phase ADR Scoping (упразднение секции ADR в `generate_public_release_notes` в `scripts/kb_release.py`, фазовый скоупинг во внутреннем чейнджлоге, обновление `TEMPLATE_RELEASE.md` и `kb-release`, модульные тесты в `tests/test_kb_release.py`).
-- [ ] [[Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]]: Синхронизация инсталлятора, сквозные E2E тесты и документация (сборка `install.py` через `scripts/build_installer.py`, регрессионные E2E тесты в `tests/test_installer.py`, аудит `scripts/kb_lint.py`, обновление `README.md` и `docs/Onboarding.md`).
+- [x] [[Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]]: Синхронизация инсталлятора, сквозные E2E тесты и документация (сборка `install.py` через `scripts/build_installer.py`, регрессионные E2E тесты в `tests/test_installer.py`, аудит `scripts/kb_lint.py`, обновление `README.md` и `docs/Onboarding.md`).
 
 ---
 

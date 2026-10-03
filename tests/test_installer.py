@@ -913,8 +913,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails)
-            self.assertLessEqual(total_skills_size, 22000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 22000)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails + Spec Genesis)
+            self.assertLessEqual(total_skills_size, 23000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 23000)")
             self.assertLessEqual(total_templates_size, 21500, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21500)")
 
             # Micro-benchmarks for critical files
@@ -1190,6 +1190,139 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
             self.assertIn("OK:", kb_lint_res.stdout)
             self.assertNotIn("WARN: Devlog Semantic Guard", kb_lint_res.stdout)
+
+    def test_21_spec_genesis_and_high_snr_release_notes(self):
+        """Verify Spec Genesis guardrails, Zero-State rules, High-SNR release notes, and phase ADR scoping in installer & --update."""
+        # 1. Rule generators verification
+        agents_content = install.generate_agents_md("TestApp", "generic", "ru")
+        self.assertIn("14. Zero-State & Spec Genesis", agents_content)
+        self.assertIn("Zero-State Anti-Hallucination & Spec Genesis", agents_content)
+        self.assertIn("6. Zero-State Anti-Hallucination & Spec Genesis", agents_content)
+
+        for gen_fn in [
+            install.generate_gemini_md,
+            install.generate_windsurfrules,
+            install.generate_clinerules,
+            install.generate_claude_md,
+            install.generate_cursorrules,
+            install.generate_copilot_instructions,
+        ]:
+            out = gen_fn("TestApp", "generic", "ru")
+            self.assertIn("14. Zero-State & Spec Genesis", out)
+            self.assertIn("Zero-State Guard", out)
+
+        # 2. Fresh installation check (preset undecided / --idea)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "GenesisApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="GenesisApp",
+                stack_key="undecided",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+                idea="Cloud AI Video Editor",
+            )
+
+            # Check SPEC.md created with discovery status
+            spec_path = target / "SPEC.md"
+            self.assertTrue(spec_path.is_file())
+            spec_content = spec_path.read_text(encoding="utf-8")
+            self.assertIn("status: discovery", spec_content)
+            self.assertIn("Cloud AI Video Editor", spec_content)
+
+            # 3. Simulate existing outdated project and test --update
+            # Overwrite skills, templates, scripts, AGENTS.md with dummy legacy versions
+            (target / "AGENTS.md").write_text("Legacy AGENTS content without spec genesis", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-init" / "SKILL.md").write_text("Legacy kb-init", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-plan" / "SKILL.md").write_text("Legacy kb-plan", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-task" / "SKILL.md").write_text("Legacy kb-task", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-release" / "SKILL.md").write_text("Legacy kb-release", encoding="utf-8")
+            (target / "scripts" / "kb_release.py").write_text("# Legacy kb_release", encoding="utf-8")
+
+            # Run install.py --update via CLI
+            update_res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "-d", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(update_res.returncode, 0, f"Update failed: {update_res.stdout}\n{update_res.stderr}")
+
+            # Verify backup created and AGENTS.md updated with Spec Genesis
+            self.assertTrue((target / "AGENTS.md.bak").is_file())
+            updated_agents = (target / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("Zero-State Anti-Hallucination & Spec Genesis", updated_agents)
+
+            # Verify skills refreshed
+            updated_kb_init = (target / ".agents" / "skills" / "kb-init" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("SPEC.md", updated_kb_init)
+            self.assertIn("status: discovery", updated_kb_init)
+
+            updated_kb_plan = (target / ".agents" / "skills" / "kb-plan" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Zero-State Guard", updated_kb_plan)
+
+            updated_kb_task = (target / ".agents" / "skills" / "kb-task" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Zero-State", updated_kb_task)
+
+            updated_kb_release_skill = (target / ".agents" / "skills" / "kb-release" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("High-SNR", updated_kb_release_skill)
+
+            # Verify scripts/kb_release.py refreshed
+            updated_kb_release_py = (target / "scripts" / "kb_release.py").read_text(encoding="utf-8")
+            self.assertIn("is_adr_for_phase", updated_kb_release_py)
+
+            # 4. Test release note generation in updated sandbox
+            # Create a mock phase task and an ADR
+            task_dir = target / "docs" / "02_Tasks" / "Specs" / "01_MVP"
+            task_dir.mkdir(parents=True, exist_ok=True)
+            (task_dir / "TASK-001-setup.md").write_text(
+                "---\nid: TASK-001\ntitle: MVP Setup\nstatus: done\nphase: 1\n---\n# TASK-001: MVP Setup\n",
+                encoding="utf-8"
+            )
+            adr_dir = target / "docs" / "03_Decisions_ADR"
+            adr_dir.mkdir(parents=True, exist_ok=True)
+            (adr_dir / "ADR-0001-init.md").write_text(
+                "---\nid: ADR-0001\ntitle: Initial Stack\nstatus: accepted\nphase: 1\n---\n# ADR-0001: Initial Stack\n",
+                encoding="utf-8"
+            )
+
+            # Run kb_release.py in target sandbox
+            rel_res = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_release.py"), "--version", "v0.1.0", "--phase", "1"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(rel_res.returncode, 0, f"kb_release failed: {rel_res.stdout}\n{rel_res.stderr}")
+
+            # Verify dist/RELEASE_NOTES.md exists and EXCLUDES ADR section (High-SNR)
+            dist_notes = target / "dist" / "RELEASE_NOTES.md"
+            self.assertTrue(dist_notes.is_file())
+            dist_notes_txt = dist_notes.read_text(encoding="utf-8")
+            self.assertNotIn("Архитектурные решения (ADR)", dist_notes_txt)
+            self.assertNotIn("ADR-0001", dist_notes_txt)
+            self.assertIn("MVP Setup", dist_notes_txt)
+
+            # Verify docs/02_Tasks/Releases/RELEASE-v0.1.0.md exists and INCLUDES phase ADR
+            internal_notes = target / "docs" / "02_Tasks" / "Releases" / "RELEASE-v0.1.0.md"
+            self.assertTrue(internal_notes.is_file())
+            internal_notes_txt = internal_notes.read_text(encoding="utf-8")
+            self.assertIn("Архитектурные решения (ADR)", internal_notes_txt)
+            self.assertIn("ADR-0001", internal_notes_txt)
+
+            # 5. Verify kb_lint passes
+            kb_lint_res = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_lint.py"), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
+            self.assertIn("OK:", kb_lint_res.stdout)
 
 
 if __name__ == "__main__":

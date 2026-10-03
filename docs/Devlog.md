@@ -16,6 +16,29 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-03] — Завершение TASK-038: Синхронизация инсталлятора, E2E тесты и документация (Завершение Фазы 10)
+- **Что сделано:**
+  - Завершена реализация Фазы 10: комплексная синхронизация инсталлятора `install.py`, генераторов правил агентов, сквозных E2E тестов и документации проекта согласно [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]] и [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]].
+  - В `install.py` актуализированы генераторы правил агентов (`_RULES_BODY`, `_3MODES` с 14 дисциплинами и правилом Spec Genesis, а также `generate_agents_md()` с инвариантом `6. Zero-State Anti-Hallucination & Spec Genesis`).
+  - Через `scripts/build_installer.py` пересобран автономный дистрибутив `install.py` с упаковкой обновленных скиллов (`kb-init`, `kb-plan`, `kb-task`, `kb-release`), скрипта `scripts/kb_release.py`, шаблонов (`TEMPLATE_ONBOARDING.md`, `TEMPLATE_RELEASE.md`) и рабочих процессов.
+  - В `tests/test_installer.py` добавлен сквозной E2E тест `test_21_spec_genesis_and_high_snr_release_notes`, подтвердивший:
+    1. Создание проекта с пресетом `undecided` / `--idea` развертывает `SPEC.md` со статусом `discovery`.
+    2. Механизм `install.py --update` обновляет скиллы `kb-init`, `kb-plan`, `kb-task`, `kb-release`, утилиту `kb_release.py`, сохраняет бэкап `AGENTS.md.bak` и актуализирует `AGENTS.md`.
+    3. Генерация релизных заметок в целевом проекте создает публичный `dist/RELEASE_NOTES.md` без кумулятивной секции ADR (High-SNR) и внутренний `docs/02_Tasks/Releases/RELEASE-vX.Y.Z.md` с фазово-изолированными решениями ADR.
+    4. Аудит `kb_lint.py` проходит успешно с 0 предупреждений.
+  - Актуализированы витрина [README.md](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/README.md), руководство [docs/Onboarding.md](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/docs/Onboarding.md) и мастер-спецификация [SPEC.md](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/SPEC.md).
+  - Спецификация задачи [[02_Tasks/Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]], родительский план [[02_Tasks/Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]] и вся Фаза 10 переведены в статус завершенных в [[02_Tasks/Kanban|Канбане]] и [[02_Tasks/Roadmap|Дорожной карте]].
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> успешная компиляция бандла в `install.py` (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 21/21 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 50/50 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 105 файлов проверено, 863 связи валидны (0 битых, 0 предупреждений, Exit code 0).
+  - `python install.py --help` -> Exit code 0.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Выпуск релиза Фазы 10: `/kb-release v0.10.0 --phase 10`.
+
+---
+
 ### [2026-10-03] — Завершение TASK-037: High-SNR Release Notes Generator и фазовый скоупинг ADR
 - **Что сделано:**
   - Реализован выходной шлюз методологии Docs-as-Code — Стандарт высокой плотности полезного сигнала в релизных заметках (High-SNR Release Notes) согласно [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]] и [[04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]].

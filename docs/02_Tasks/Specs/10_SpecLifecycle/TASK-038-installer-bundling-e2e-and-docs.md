@@ -1,7 +1,7 @@
 ---
 id: TASK-038
 title: "Синхронизация инсталлятора, сквозные E2E тесты и актуализация документации"
-status: planned
+status: done
 type: task
 phase: 10
 component:
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-038 — Синхронизация инсталлятора, сквозные E2E тесты и документация
 
 > **ID:** TASK-038  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase10 #installer #bundling #e2e #docs  
 > **Родительский план:** [[../../Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|PLAN-010]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-011-spec-genesis-protocol-and-zero-state-handling|RESEARCH-011]], [[../../../04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013]], [[../../../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018]], [[../../../03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017]]  
@@ -59,7 +59,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ### 3.2. E2E тестирование в `tests/test_installer.py`
 - Тест проверяет:
-  1. Создание нового проекта с пресетом `undecided` или вызов `install.py` без флагов развертывает `SPEC.md` со статусом `discovery`.
+  1. Создание нового проекта с пресетом undecided или вызов `install.py` без флагов развертывает `SPEC.md` со статусом `discovery`.
   2. Вызов `install.py --update` в существующем проекте обновляет скиллы `kb-init`, `kb-plan`, `kb-task`, `kb-release` и утилиту `kb_release.py`.
   3. Экспорт релизных заметок не содержит кумулятивной секции ADR.
 
@@ -71,18 +71,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка: `python scripts/build_installer.py` (Exit code 0).
-- [ ] E2E тесты: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
-- [ ] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
-- [ ] Проверка CLI: `python install.py --help` (Exit code 0).
+- [x] Сборка: `python scripts/build_installer.py` (Exit code 0).
+- [x] E2E тесты: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
+- [x] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, 0 warnings, Exit code 0).
+- [x] Проверка CLI: `python install.py --help` (Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Дистрибутив `install.py` пересобран и содержит все артефакты Фазы 10.
-- [ ] Все тесты `tests/` проходят успешно (100% Pass).
-- [ ] `kb_lint.py` не выдает ошибок и предупреждений.
-- [ ] Документация (`README.md`, `Onboarding.md`) актуализирована.
-- [ ] Статус обновлен в ТЗ, Канбане, Дорожной карте и Devlog.
+- [x] Дистрибутив `install.py` пересобран и содержит все артефакты Фазы 10.
+- [x] Все тесты `tests/` проходят успешно (100% Pass).
+- [x] `kb_lint.py` не выдает ошибок и предупреждений.
+- [x] Документация (`README.md`, `Onboarding.md`) актуализирована.
+- [x] Статус обновлен в ТЗ, Канбане, Дорожной карте и Devlog.
