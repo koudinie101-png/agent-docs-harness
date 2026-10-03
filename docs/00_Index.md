@@ -75,6 +75,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015: Архитектура практического руководства Zero-to-Hero Onboarding Guide]]
 * [[03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Barrier)]]
 * [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017: Исключение секции архитектурных решений (ADR) из публичных релизных заметок]]
+* [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]

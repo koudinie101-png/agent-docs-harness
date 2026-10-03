@@ -17,6 +17,7 @@ related_adrs:
   - "[[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]]"
   - "[[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012: Режим 0 Discovery]]"
   - "[[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014: Greenfield и Living Spec]]"
+  - "[[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Spec Genesis Protocol]]"
 ---
 
 # 🔬 Исследование: Протокол рождения Мастер-Спецификации (Spec Genesis) и критический анализ автогенерации SPEC.md
@@ -24,7 +25,7 @@ related_adrs:
 > **Теги:** #research #spec-genesis #master-spec #zero-state #critical-thinking #prompt-engineering #docs-as-code  
 > **Связанный канбан:** [[../02_Tasks/Kanban|Канбан-доска]]  
 > **Связанная дорожная карта:** [[../02_Tasks/Roadmap|Дорожная карта]]  
-> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012: Режим 0 Discovery]], [[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014: Greenfield и Living Spec]]  
+> **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[../03_Decisions_ADR/ADR-0012-discovery-mode-and-kb-research-lifecycle-integration|ADR-0012: Режим 0 Discovery]], [[../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014: Greenfield и Living Spec]], [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Spec Genesis Protocol]]  
 
 ---
 
@@ -134,5 +135,5 @@ related_adrs:
 2. **Практические доработки харнесса:**
    * **Устранить баг в `kb-init`:** добавить генерацию каркаса `SPEC.md` со статусом `status: discovery` в `.agents/skills/kb-init/SKILL.md` и шаблоны.
    * **Добавить правило Spec Genesis в `AGENTS.md`:** зафиксировать 3 состояния спецификации (`missing`, `discovery`, `active`) и правила выдачи ненавязчивого Nudge.
-   * **Зафиксировать архитектурное решение:** оформить `ADR-0016: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State`.
+   * **Зафиксировать архитектурное решение:** оформить [[../03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]].
    * **Зарегистрировать инициативу в `Roadmap.md` (Icebox).**
