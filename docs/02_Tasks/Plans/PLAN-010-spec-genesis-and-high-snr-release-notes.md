@@ -89,9 +89,9 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] `TASK-036`: Spec Genesis Protocol & Zero-State Guardrails (генерация `SPEC.md` со статусом `discovery` в `kb-init`, префлайт-проверки в `kb-plan` и `kb-task`, инвариант в `AGENTS.md`).
-- [ ] `TASK-037`: High-SNR Release Notes Generator & Phase ADR Scoping (упразднение секции ADR в `generate_public_release_notes` в `scripts/kb_release.py`, фазовый скоупинг во внутреннем чейнджлоге, обновление `TEMPLATE_RELEASE.md` и `kb-release`, модульные тесты в `tests/test_kb_release.py`).
-- [ ] `TASK-038`: Синхронизация инсталлятора, сквозные E2E тесты и документация (сборка `install.py` через `scripts/build_installer.py`, регрессионные E2E тесты в `tests/test_installer.py`, аудит `scripts/kb_lint.py`, обновление `README.md` и `docs/Onboarding.md`).
+- [ ] [[../Specs/10_SpecLifecycle/TASK-036-spec-genesis-and-zero-state-guardrails|TASK-036]]: Spec Genesis Protocol & Zero-State Guardrails (генерация `SPEC.md` со статусом `discovery` в `kb-init`, префлайт-проверки в `kb-plan` и `kb-task`, инвариант в `AGENTS.md`).
+- [ ] [[../Specs/10_SpecLifecycle/TASK-037-high-snr-release-notes-and-phase-adr-scoping|TASK-037]]: High-SNR Release Notes Generator & Phase ADR Scoping (упразднение секции ADR в `generate_public_release_notes` в `scripts/kb_release.py`, фазовый скоупинг во внутреннем чейнджлоге, обновление `TEMPLATE_RELEASE.md` и `kb-release`, модульные тесты в `tests/test_kb_release.py`).
+- [ ] [[../Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]]: Синхронизация инсталлятора, сквозные E2E тесты и документация (сборка `install.py` через `scripts/build_installer.py`, регрессионные E2E тесты в `tests/test_installer.py`, аудит `scripts/kb_lint.py`, обновление `README.md` и `docs/Onboarding.md`).
 
 ---
 
