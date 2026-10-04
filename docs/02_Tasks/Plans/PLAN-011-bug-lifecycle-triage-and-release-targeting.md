@@ -84,10 +84,10 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] `TASK-039`: Рефакторинг `TEMPLATE_BUG.md` и скилла `kb-bug` (строгий триаж Режима 2B и терминальный `Stop & Yield`).
-- [ ] `TASK-040`: Нативная поддержка дефектов в `kb-implement` (`/kb-implement BUG-XXX` и строгий TDD-цикл).
-- [ ] `TASK-041`: Релизный таргетинг и фильтрация дефектов в `scripts/kb_release.py` и тесты.
-- [ ] `TASK-042`: Синхронизация инсталлятора, сквозные E2E тесты и документация.
+- [ ] [[../Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield)]]
+- [ ] [[../Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040: Нативная поддержка дефектов в kb-implement (/kb-implement BUG-XXX и строгий TDD-цикл)]]
+- [ ] [[../Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты]]
+- [ ] [[../Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042: Синхронизация инсталлятора, сквозные E2E тесты и документация]]
 
 ---
 

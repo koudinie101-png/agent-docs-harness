@@ -142,10 +142,10 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 **Нормативная база:** [[../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]]
 
-- [ ] Рефакторинг `TEMPLATE_BUG.md` и скилла `kb-bug` (строгий триаж Режима 2B и терминальный `Stop & Yield`) — `TASK-039`.
-- [ ] Нативная поддержка дефектов в `kb-implement` (`/kb-implement BUG-XXX` и строгий TDD-цикл) — `TASK-040`.
-- [ ] Релизный таргетинг и фильтрация дефектов в `scripts/kb_release.py` и тесты — `TASK-041`.
-- [ ] Синхронизация инсталлятора, сквозные E2E тесты и документация (`install.py`, `README.md`, `SPEC.md`, `Onboarding.md`) — `TASK-042`.
+- [ ] Рефакторинг `TEMPLATE_BUG.md` и скилла `kb-bug` (строгий триаж Режима 2B и терминальный `Stop & Yield`) — [[Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039]].
+- [ ] Нативная поддержка дефектов в `kb-implement` (`/kb-implement BUG-XXX` и строгий TDD-цикл) — [[Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040]].
+- [ ] Релизный таргетинг и фильтрация дефектов в `scripts/kb_release.py` и тесты — [[Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]].
+- [ ] Синхронизация инсталлятора, сквозные E2E тесты и документация (`install.py`, `README.md`, `SPEC.md`, `Onboarding.md`) — [[Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042]].
 
 ---
 
