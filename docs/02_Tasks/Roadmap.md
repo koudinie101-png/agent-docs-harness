@@ -155,11 +155,11 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]]  
 **Нормативная база:** [[../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]
 
-- [ ] Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py — TASK-043.
-- [ ] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — TASK-044.
-- [ ] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — TASK-045.
-- [ ] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — TASK-046.
-- [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — TASK-047.
+- [ ] Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py — [[Specs/12_FeedbackIngestion/TASK-043-triage-buffer-template-feedback-and-kb-lint|TASK-043]].
+- [ ] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — [[Specs/12_FeedbackIngestion/TASK-044-zero-deps-kb-ingest-script-and-tests|TASK-044]].
+- [ ] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]].
+- [ ] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]].
+- [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]].
 
 ---
 
