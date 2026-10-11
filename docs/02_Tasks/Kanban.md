@@ -17,13 +17,11 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
-  - [ ] [[Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]]: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py #task #phase13 #installer #adapters #thin-forwarders
-
 
 ## ✅ Готово (Done)
 
 - [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
+  - [x] [[Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]]: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py (2026-10-11) #task #phase13 #installer #adapters #thin-forwarders
   - [x] [[Specs/13_RulesLayering/TASK-048-clean-agents-md-and-obsidian-taxonomy|TASK-048]]: Очистка AGENTS.md от графового шума и изоляция таксономии Obsidian Graph в .obsidian/graph.json (2026-10-11) #task #phase13 #agents #obsidian-graph
 
 - [x] [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|План: Фаза 12 — Воронка каналов обратной связи, автоматизация импорта и буфер триажа]] (2026-10-11) #plan #phase12 #feedback #triage #ingestion
@@ -100,7 +98,7 @@ kanban-plugin: basic
 ## 💡 Идеи и гипотезы (Icebox / Future Ideas)
 
 - [ ] Семантический контроль фаз в kb_lint.py: валидация соответствия phase: N, структуры папок 0N_... и тегов #phaseN в frontmatter и Kanban.md (неблокирующие предупреждения) #idea #tooling
-- [ ] Простой и понятный гайд для новичков в агентном программировании: пошаговое руководство, как запустить и использовать `install.py` (Zero-to-Hero Onboarding) #idea #docs #onboarding
+- [ ] Адаптация для вайбкодеров и новичков (Chat-First DX & Protected Vibe Coding): устранение барьеров отпугивания пользователей, One-Prompt старт в чате, гайд и диалоговый ментор — [[../04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017]], [[../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]] #idea #dx #onboarding #vibe-coding
 - [ ] Конфигурации для нишевых агентов: Continue.dev (`.continue/config.json`) и Aider (`.aider.conf.yml`) #idea
 - [x] Отклонено: Web-визуализатор базы знаний (`install.py --serve`) — [[../03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer|ADR-0005]] #rejected
 - [x] Отклонено: Автогенерация отчетов для руководства (PDF) — [[../03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]] #rejected

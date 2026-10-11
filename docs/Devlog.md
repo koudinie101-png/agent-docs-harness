@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-049: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py
+- **Что сделано:**
+  - Переведены все 6 генераторов адаптеров AI-ассистентов в `install.py` (`generate_gemini_md`, `generate_windsurfrules`, `generate_clinerules`, `generate_claude_md`, `generate_cursorrules`, `generate_copilot_instructions`) на паттерн **Thin Forwarders**: адаптеры сжаты до $\le 25$ строк (сокращение на 80%), устранены дублирование 15 дисциплин и риск двойной инжекции контекста.
+  - Адаптеры сфокусированы на командах верификации стека (`Build`, `Test`, `Lint`), прямой ссылке на канонический `[[AGENTS.md]]` как единый источник правды (SSOT) и ключевых горячих инвариантах (Read-Only в Режимах 1/2, Anti-Echo, Single-Task Barrier, TDD-цикл).
+  - Сгенерированы актуальные тонкие форвардеры в корне проекта `agent-docs-harness`: `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`.
+  - Реализован комплексный модульный тест `test_25_thin_forwarders_rules_layering` в `tests/test_installer.py`, верифицирующий длину файлов ($\le 35$ строк), ссылки на `AGENTS.md` и развертывание в изолированном окружении.
+  - Актуализированы статусы задачи в ТЗ [[02_Tasks/Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]], Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]].
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - `python scripts/kb_lint.py --path docs -v` -> 134 файла проверено, 1198 связей валидны (0 broken links, Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 25/25 тестов успешно пройдено (OK, 18.8s).
+  - `python -m unittest discover -s tests` -> 65/65 тестов успешно пройдено (100% Pass, Exit code 0, 15.5s).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Приступить к реализации TASK-050: `/kb-implement TASK-050` (Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md).
+
+---
+
 ### [2026-10-11] — Реализация TASK-048: Очистка AGENTS.md от графового шума и изоляция таксономии Obsidian Graph в .obsidian/graph.json
 - **Что сделано:**
   - Устранена 10-строчная таблица цветов интерфейса Obsidian Graph из канонического `AGENTS.md` и генератора `generate_agents_md` в `install.py` (-150 токенов контекста модели на каждом запросе).

@@ -199,52 +199,54 @@ def _rules(doc_lang: str) -> str:
 
 
 
-_3MODES = (
-    "## 🔄 Operating Modes & Workflow\n\n"
-    "**Mode 1 -- Planning (`/kb-plan`):** STRICTLY NO CODE CHANGES. User approval before writing plan docs. Soft Nudge if `SPEC.md` is in status: discovery.\n"
-    "**Mode 2 -- Task Spec (`/kb-task`):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.\n"
-    "**Mode 2B -- Defect Triage (`/kb-bug`):** STRICTLY NO CODE CHANGES. Reproduce bug, RCA, set release target & blocker, write `BUG-XXX` spec. Stop & Yield.\n"
-    "**Mode 2C -- Feedback Triage (`/kb-triage`):** STRICTLY NO CODE CHANGES. Screen `docs/02_Tasks/Inbox/`, dispatch to bug/icebox/FAQ, in-place update. Stop & Yield.\n"
-    "**Mode 3 -- Implementation (`/kb-implement`):\n"
-    "Tasks (`TASK-XXX`) per spec; Defects (`BUG-XXX`) via TDD cycle (RED -> GREEN -> REFACTOR).\n"
-    "```bash\n{test_cmd}\npython3 scripts/kb_lint.py --path docs\n```\n"
-    "Auto-complete: spec->done / bug->fixed · Living Spec sync · Kanban+date · Roadmap `[x]` · Devlog · kb_lint · git push · STOP tool calls (Stop & Yield).\n\n"
-    "Single-Task Barrier: strictly ONE task per `/kb-implement` (or bug). Never auto-chain next tasks. Stop tool calls on completion.\n"
-    "Zero-State Guard: when `SPEC.md` is missing or discovery, never invent requirements; suggest Mode 0 (`/kb-research`).\n"
-    "Anti-Echo: NEVER reprint entire files in chat; emit link + 3-5 bullets + next step.\n"
-    "Senior Partner: flag risks, propose alternatives. Rejected ADRs: `docs/03_Decisions_ADR/` (`status: rejected`).\n"
-)
-
-
-def _gen_rule(title: str, p: str, s: str, l: str, extra: str = "", tail: str = "") -> str:
+def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "", tail: str = "") -> str:
     st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
-    return f"# {title} for {p}\n\nStack: **{st['name']}**{extra}\n\n{_rules(l)}\n{_3MODES.format(test_cmd=st['test_cmd'])}{tail}"
+    lang_desc = "Russian (docs), English (code)" if l == "ru" else "English"
+    build_cmd = st.get("build_cmd", "")
+    build_line = f"- **Build:** `{build_cmd}`\n" if build_cmd else ""
+    return (
+        f"# {title} for {p}\n\n"
+        f"> **Stack:** {st['name']} | **Language:** {lang_desc}{extra_header}\n"
+        f"> **Canonical Standard (SSOT):** [[AGENTS.md]] | **KB Index:** [[docs/00_Index|00_Index]]\n\n"
+        f"## ⚡ Stack Verification Commands\n"
+        f"{build_line}"
+        f"- **Test:** `{st['test_cmd']}`\n"
+        f"- **Lint:** `python3 scripts/kb_lint.py --path docs`\n\n"
+        f"## 🛡️ Operating Rules & Routing\n"
+        f"1. **Single Source of Truth:** Read `AGENTS.md` at session start. All 4 operating modes, skills, and disciplines are governed strictly by `AGENTS.md`.\n"
+        f"2. **Read-Only Invariant:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES (strictly prohibit modifying or creating project code).\n"
+        f"3. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
+        f"4. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
+        f"{tail}"
+    )
 
 
 def generate_gemini_md(p: str, s: str, l: str = "ru") -> str:
-    return _gen_rule("GEMINI.md -- Google Antigravity & Gemini CLI Rules", p, s, l, " | Full Guidelines: `AGENTS.md`", "\nSkills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-triage` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`\n")
+    return _gen_rule(
+        "GEMINI.md -- Google Antigravity & Gemini CLI Rules",
+        p, s, l,
+        tail="\nSkills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-triage` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`\n",
+    )
 
 
 def generate_windsurfrules(p: str, s: str, l: str = "ru") -> str:
-    st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
-    return _gen_rule(".windsurfrules -- Windsurf Cascade AI Rules", p, s, l, f" | Build: `{st['build_cmd']}` | Test: `{st['test_cmd']}`")
+    return _gen_rule(".windsurfrules -- Windsurf Cascade AI Rules", p, s, l)
 
 
 def generate_clinerules(p: str, s: str, l: str = "ru") -> str:
-    return _gen_rule("Cline / Roo Code AI Rules", p, s, l, " | Read `AGENTS.md` and `docs/Onboarding.md` first.")
+    return _gen_rule("Cline / Roo Code AI Rules", p, s, l)
 
 
 def generate_claude_md(p: str, s: str, l: str = "ru") -> str:
-    st = STACK_PRESETS.get(s, STACK_PRESETS["generic"])
-    return _gen_rule("CLAUDE.md -- Claude Code Guidelines", p, s, l, f" | Build: `{st['build_cmd']}` | Test: `{st['test_cmd']}` | Lint: `python3 scripts/kb_lint.py --path docs`")
+    return _gen_rule("CLAUDE.md -- Claude Code Guidelines", p, s, l)
 
 
 def generate_cursorrules(p: str, s: str, l: str = "ru") -> str:
-    return _gen_rule("Cursor Rules", p, s, l, "\nYou are a **Senior Engineering Partner**. Read `AGENTS.md`.")
+    return _gen_rule("Cursor Rules", p, s, l, extra_header=" | Role: **Senior Engineering Partner**")
 
 
 def generate_copilot_instructions(p: str, s: str, l: str = "ru") -> str:
-    return _gen_rule("GitHub Copilot Instructions", p, s, l, " | Read `AGENTS.md` for full guidelines.")
+    return _gen_rule("GitHub Copilot Instructions", p, s, l)
 
 
 def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") -> str:

@@ -1,7 +1,7 @@
 ---
 id: TASK-049
 title: "Реализация паттерна Thin Forwarders в генераторах адаптеров install.py"
-status: in-progress
+status: done
 type: task
 phase: 13
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-049 — Реализация паттерна Thin Forwarders в генераторах адаптеров install.py
 
-> **ID:** TASK-049 | **Статус:** В работе  
+> **ID:** TASK-049 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]] | **Решение:** [[../../../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]
 
@@ -88,18 +88,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая проверка: `python -m py_compile install.py` (Exit code 0).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
-- [ ] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
-- [ ] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Синтаксическая проверка: `python -m py_compile install.py` (Exit code 0).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
+- [x] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
+- [x] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Все 6 адаптеров в `install.py` и корне репозитория переведены на паттерн Thin Forwarders.
-- [ ] Размер сгенерированных адаптеров составляет не более 35 строк.
-- [ ] Отсутствует дублирование 15 дисциплин между `AGENTS.md` и адаптерами.
-- [ ] Все тесты из Плана верификации пройдены с кодом 0.
-- [ ] Статус задачи обновлен в Канбане (`Done`), ТЗ (`Выполнено`), Дорожной карте (`[x]`).
-- [ ] Результаты зафиксированы в `Devlog.md`.
+- [x] Все 6 адаптеров в `install.py` и корне репозитория переведены на паттерн Thin Forwarders.
+- [x] Размер сгенерированных адаптеров составляет не более 35 строк.
+- [x] Отсутствует дублирование 15 дисциплин между `AGENTS.md` и адаптерами.
+- [x] Все тесты из Плана верификации пройдены с кодом 0.
+- [x] Статус задачи обновлен в Канбане (`Done`), ТЗ (`Выполнено`), Дорожной карте (`[x]`).
+- [x] Результаты зафиксированы в `Devlog.md`.

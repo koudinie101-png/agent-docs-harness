@@ -1119,9 +1119,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             install.generate_copilot_instructions,
         ]:
             out = gen_fn("TestApp", "generic", "ru")
-            self.assertIn("13. Single-Task Barrier", out)
-            self.assertIn("Single-Task Barrier: strictly ONE task per `/kb-implement`", out)
-            self.assertIn("STOP tool calls (Stop & Yield)", out)
+            self.assertIn("Anti-Echo & Single-Task Barrier", out)
+            self.assertIn("Stop & Yield", out)
+            self.assertIn("AGENTS.md", out)
 
         # 2. Fresh installation check: skill contents and Devlog template
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1208,8 +1208,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             install.generate_copilot_instructions,
         ]:
             out = gen_fn("TestApp", "generic", "ru")
-            self.assertIn("14. Zero-State & Spec Genesis", out)
-            self.assertIn("Zero-State Guard", out)
+            self.assertIn("AGENTS.md", out)
+            self.assertIn("Read `AGENTS.md`", out)
 
         # 2. Fresh installation check (preset undecided / --idea)
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1342,8 +1342,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             install.generate_copilot_instructions,
         ]:
             out = gen_fn("BugTestApp", "generic", "ru")
-            self.assertIn("Mode 2B -- Defect Triage", out)
-            self.assertIn("/kb-implement BUG-XXX", out)
+            self.assertIn("2B (`/kb-bug`)", out)
+            self.assertIn("/kb-implement <TASK-XXX | BUG-XXX>", out)
 
         # 2. Fresh installation check
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1637,6 +1637,78 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Visual graph taxonomy is configured in `.obsidian/graph.json`", installed_agents)
             self.assertNotIn("⚪ White / Light", installed_agents)
             self.assertNotIn("🟣 Purple", installed_agents)
+
+    def test_25_thin_forwarders_rules_layering(self):
+        """Verify Thin Forwarders pattern across all adapter generators, root files, and fresh installation."""
+        # 1. Generator functions checks
+        for gen_fn in [
+            install.generate_gemini_md,
+            install.generate_windsurfrules,
+            install.generate_clinerules,
+            install.generate_claude_md,
+            install.generate_cursorrules,
+            install.generate_copilot_instructions,
+        ]:
+            out = gen_fn("ForwarderApp", "python", "ru")
+            lines = out.strip().splitlines()
+            self.assertLessEqual(len(lines), 35, f"Generator {gen_fn.__name__} exceeds 35 lines ({len(lines)} lines)")
+            self.assertIn("[[AGENTS.md]]", out)
+            self.assertIn("[[docs/00_Index|00_Index]]", out)
+            self.assertIn("## ⚡ Stack Verification Commands", out)
+            self.assertIn("## 🛡️ Operating Rules & Routing", out)
+            self.assertIn("STRICTLY NO CODE CHANGES", out)
+            self.assertIn("Anti-Echo & Single-Task Barrier", out)
+            self.assertNotIn("## Docs-as-Code (15 Disciplines)", out)
+            self.assertNotIn("1. Read `SPEC.md`", out)
+
+        # 2. Project root adapter files check
+        root_adapters = [
+            REPO_ROOT / "GEMINI.md",
+            REPO_ROOT / "CLAUDE.md",
+            REPO_ROOT / ".cursorrules",
+            REPO_ROOT / ".windsurfrules",
+            REPO_ROOT / ".clinerules",
+            REPO_ROOT / ".github" / "copilot-instructions.md",
+        ]
+        for adapter_file in root_adapters:
+            self.assertTrue(adapter_file.is_file(), f"Root adapter missing: {adapter_file}")
+            content = adapter_file.read_text(encoding="utf-8")
+            lines = content.strip().splitlines()
+            self.assertLessEqual(len(lines), 35, f"Root adapter {adapter_file.name} exceeds 35 lines ({len(lines)} lines)")
+            self.assertIn("[[AGENTS.md]]", content)
+            self.assertIn("## ⚡ Stack Verification Commands", content)
+            self.assertIn("STRICTLY NO CODE CHANGES", content)
+            self.assertNotIn("## Docs-as-Code (15 Disciplines)", content)
+
+        # 3. Fresh installation with all adapters check
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "ThinForwarderApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="ThinForwarderApp",
+                stack_key="ts",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            for path in [
+                target / "GEMINI.md",
+                target / "CLAUDE.md",
+                target / ".cursorrules",
+                target / ".windsurfrules",
+                target / ".clinerules",
+                target / ".github" / "copilot-instructions.md",
+            ]:
+                self.assertTrue(path.is_file(), f"Target adapter missing: {path}")
+                content = path.read_text(encoding="utf-8")
+                lines = content.strip().splitlines()
+                self.assertLessEqual(len(lines), 35, f"{path.name} exceeds 35 lines")
+                self.assertIn("[[AGENTS.md]]", content)
+                self.assertIn("npm test", content)
+                self.assertNotIn("## Docs-as-Code (15 Disciplines)", content)
 
 
 if __name__ == "__main__":
