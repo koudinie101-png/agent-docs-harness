@@ -21,16 +21,7 @@ All project knowledge, task tracking, and architectural decisions are maintained
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
 2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass. Bug fixing is executed strictly through `/kb-implement BUG-XXX` via the TDD cycle (RED $\to$ GREEN $\to$ REFACTOR).
 3. **Living Spec Invariant (No Documentation Drift):** `SPEC.md` is the Master Specification (Ground Truth), and `README.md` is the project storefront. When a task introduces new CLI arguments, APIs, or architectural modules, update `SPEC.md` and `README.md` in that same task session. Releases (`/kb-release`) cannot proceed if documentation is stale.
-4. **Graph Visual Color Scheme & Tagging:** Preserved in `.obsidian/graph.json`:
-   | Color / Category | Obsidian Path / Query | Tags | Description |
-   | :--- | :--- | :--- | :--- |
-   | ⚪ White / Light | `file:00_Index`, `file:Devlog`, `file:SPEC` | — | Entry points & root navigation hubs |
-   | 🟣 Purple | `path:01_Architecture` | `#arch` | System architecture, contracts & modules |
-   | 🔵 Blue / Cyan | `path:03_Decisions_ADR` | `#adr` | Architecture Decision Records |
-   | 🟡 Yellow / Amber | `path:04_Research` | `#research` | Platform research, benchmarks & quirks |
-   | 🟠 Orange | `path:02_Tasks` | `#task` | Backlog, Roadmap, Plans & Task Specs |
-   | 🔴 Red | `path:02_Tasks/Bugs` | `#bug` | Defects, bugs, RCA & regression tests |
-   | 🟢 Green | `path:05_Testing` | `#testing` | Acceptance testing & E2E UX checklists |
+4. **Obsidian Graph & Taxonomy:** Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`).
 5. **Single-Task Execution Barrier (No Auto-Chaining):**
    - The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work **strictly on that single task specification or defect report**.
    - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY` or `/kb-implement BUG-YYY`).

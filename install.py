@@ -258,16 +258,8 @@ def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") 
 ---
 
 {rules}
-### 🎨 Obsidian Graph Color Scheme & Tagging
-| Color / Category | Obsidian Path / Query | Tags | Description |
-| :--- | :--- | :--- | :--- |
-| ⚪ White / Light | `file:00_Index`, `file:Devlog`, `file:SPEC` | — | Entry points & root navigation hubs |
-| 🟣 Purple | `path:01_Architecture` | `#arch` | System architecture, contracts & modules |
-| 🔵 Blue / Cyan | `path:03_Decisions_ADR` | `#adr` | Architecture Decision Records |
-| 🟡 Yellow / Amber | `path:04_Research` | `#research` | Platform research, benchmarks & quirks |
-| 🟠 Orange | `path:02_Tasks` | `#task` | Backlog, Roadmap, Plans & Task Specs |
-| 🔴 Red | `path:02_Tasks/Bugs` | `#bug` | Defects, bugs, RCA & regression tests |
-| 🟢 Green | `path:05_Testing` | `#testing` | Acceptance testing & E2E UX checklists |
+### 🎨 Obsidian Graph & Taxonomy
+Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`).
 
 ---
 

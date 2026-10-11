@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
-  - [ ] **TASK-048**: Очистка AGENTS.md от графового шума и изоляция таксономии Obsidian Graph в .obsidian/graph.json #task #phase13 #agents #obsidian-graph
   - [ ] **TASK-049**: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py #task #phase13 #installer #adapters #thin-forwarders
   - [ ] **TASK-050**: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md #task #phase13 #skills #onboarding #templates
   - [ ] **TASK-051**: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec #task #phase13 #installer #e2e #spec
@@ -21,6 +20,9 @@ kanban-plugin: basic
 
 
 ## ✅ Готово (Done)
+
+- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
+  - [x] [[Specs/13_RulesLayering/TASK-048-clean-agents-md-and-obsidian-taxonomy|TASK-048]]: Очистка AGENTS.md от графового шума и изоляция таксономии Obsidian Graph в .obsidian/graph.json (2026-10-11) #task #phase13 #agents #obsidian-graph
 
 - [x] [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|План: Фаза 12 — Воронка каналов обратной связи, автоматизация импорта и буфер триажа]] (2026-10-11) #plan #phase12 #feedback #triage #ingestion
   - [x] [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]]: Диагностический модуль install.py --report, синхронизация сборщика и E2E тесты (2026-10-11) #task #phase12 #diagnostics #installer #e2e

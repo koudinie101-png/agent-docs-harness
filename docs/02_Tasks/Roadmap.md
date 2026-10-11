@@ -168,7 +168,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]]  
 **Нормативная база:** [[../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]], [[../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]
 
-- [ ] **TASK-048**: Очистка `AGENTS.md` от графового шума и изоляция таксономии Obsidian Graph в `.obsidian/graph.json`.
+- [x] [[Specs/13_RulesLayering/TASK-048-clean-agents-md-and-obsidian-taxonomy|TASK-048]]: Очистка `AGENTS.md` от графового шума и изоляция таксономии Obsidian Graph в `.obsidian/graph.json`.
 - [ ] **TASK-049**: Реализация паттерна Thin Forwarders в генераторах адаптеров `install.py`.
 - [ ] **TASK-050**: Консолидация `docs-as-code` и `kb-onboard`, двухуровневая таксономия шаблонов в `Onboarding.md`.
 - [ ] **TASK-051**: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec.
@@ -185,6 +185,7 @@ tags:
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
 * 💡 **Протокол Fast-Track для микро-задач (Agile Docs-as-Code):** облегченный регламент согласования и исполнения задач со сложностью $\le 30$ строк кода или локальных фиксов без отдельного RFC в `Plans/` (инлайн-DoD, сокращение диалогового трения на 60% при сохранении карточки в Канбане и проверки тестами).
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
+* 💡 **Прозрачный UX инжеста и статус источников (User-Centric Ingestion & Channel Transparency):** устранение неявных соглашений в `kb_ingest.py` и `/kb-triage`: автоопределение репозитория из `git remote origin`, явные предупреждения об отсутствии конфигурации каналов (вместо тихого пропуска), гибкая фильтрация по меткам (`--label` / `--all-open`) и диагностический отчет о доступности источников при пустом Inbox.
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
 

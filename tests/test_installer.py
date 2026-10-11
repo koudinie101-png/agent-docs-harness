@@ -1600,6 +1600,44 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed on fresh target:\n{kb_lint_res.stdout}\n{kb_lint_res.stderr}")
 
+    def test_24_obsidian_taxonomy_decoupling(self):
+        """Verify Obsidian Graph color table is removed from AGENTS.md generator and compact taxonomy directive is present."""
+        # 1. Generator check
+        agents_content = install.generate_agents_md("TaxonomyApp", "generic", "ru")
+        self.assertIn("### 🎨 Obsidian Graph & Taxonomy", agents_content)
+        self.assertIn("Visual graph taxonomy is configured in `.obsidian/graph.json`", agents_content)
+        self.assertIn("`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`", agents_content)
+        self.assertNotIn("⚪ White / Light", agents_content)
+        self.assertNotIn("🟣 Purple", agents_content)
+        self.assertNotIn("Color / Category", agents_content)
+
+        # 2. Root AGENTS.md check
+        root_agents = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("Visual graph taxonomy is configured in `.obsidian/graph.json`", root_agents)
+        self.assertNotIn("⚪ White / Light", root_agents)
+        self.assertNotIn("🟣 Purple", root_agents)
+        self.assertNotIn("Color / Category", root_agents)
+
+        # 3. Fresh installation check
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "TaxonomyTestApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="TaxonomyTestApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                force=True,
+            )
+
+            installed_agents = (target / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("### 🎨 Obsidian Graph & Taxonomy", installed_agents)
+            self.assertIn("Visual graph taxonomy is configured in `.obsidian/graph.json`", installed_agents)
+            self.assertNotIn("⚪ White / Light", installed_agents)
+            self.assertNotIn("🟣 Purple", installed_agents)
+
 
 if __name__ == "__main__":
     unittest.main()
