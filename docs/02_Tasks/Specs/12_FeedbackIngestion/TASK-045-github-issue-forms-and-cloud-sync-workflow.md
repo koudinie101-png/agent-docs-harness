@@ -1,7 +1,7 @@
 ---
 id: TASK-045
 title: "GitHub Issue Forms и облачный workflow кросс-агентной синхронизации"
-status: in-progress
+status: done
 type: task
 phase: 12
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-045 — GitHub Issue Forms и облачный workflow кросс-агентной синхронизации
 
 > **ID:** TASK-045  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase12 #github #actions #issue-forms #automation  
 > **Родительский план:** [[../../Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../../../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]  

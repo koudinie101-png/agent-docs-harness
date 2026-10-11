@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-045: GitHub Issue Forms и облачный workflow кросс-агентной синхронизации
+- **Что сделано:**
+  - Созданы декларативные формы сбора обратной связи в `.github/ISSUE_TEMPLATE/` согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]:
+    - `.github/ISSUE_TEMPLATE/bug_report.yml`: форма баг-репорта с авто-лейблами `needs-triage` и `kind:defect`.
+    - `.github/ISSUE_TEMPLATE/feature_request.yml`: форма запроса улучшений с авто-лейблами `needs-triage` и `kind:enhancement`.
+    - `.github/ISSUE_TEMPLATE/config.yml`: запрет пустых обращений и ссылки на онбординг/дискуссии.
+  - Разработан кросс-агентный облачный рабочий процесс `.github/workflows/feedback-sync.yml`, запускающийся по расписанию (раз в 6 часов) и `workflow_dispatch`, который выполняет `scripts/kb_ingest.py --all` и фиксирует новые обращения в `docs/02_Tasks/Inbox/` без необходимости локального запуска разработчиком.
+- **Результаты верификации:**
+  - Валидация структуры и разметки YAML пройдена без ошибок.
+  - `python scripts/kb_lint.py --path docs` -> 123 файла проверено, 1087 связей валидны (0 broken links).
+  - `python -m unittest discover -s tests` -> 62/62 теста успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать скилл триажа: `/kb-implement TASK-046`.
+
+---  
+
 ### [2026-10-11] — Реализация TASK-044: Zero-Dependencies модуль импорта обратной связи (scripts/kb_ingest.py) и тесты
 - **Что сделано:**
   - Разработан автономный модуль импорта `scripts/kb_ingest.py` на стандартной библиотеке Python 3 (Zero Dependencies) согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]].

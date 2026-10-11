@@ -14,7 +14,6 @@ kanban-plugin: basic
 ## ⏳ В работе (In Progress)
 
 - [ ] [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|План: Фаза 12 — Воронка каналов обратной связи, автоматизация импорта и буфер триажа]] #plan #phase12 #feedback #triage #ingestion
-  - [ ] [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]]: GitHub Issue Forms и облачный workflow кросс-агентной синхронизации #task #phase12 #github #actions
   - [ ] [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]]: Исполняемый скилл /kb-triage и интеграция в правила агентов #task #phase12 #skill #triage
   - [ ] [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]]: Диагностический модуль install.py --report, синхронизация сборщика и E2E тесты #task #phase12 #diagnostics #installer #e2e
 
@@ -22,6 +21,7 @@ kanban-plugin: basic
 ## ✅ Готово (Done)
 
 - [ ] [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|План: Фаза 12 — Воронка каналов обратной связи, автоматизация импорта и буфер триажа]] #plan #phase12 #feedback #triage #ingestion
+  - [x] [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]]: GitHub Issue Forms и облачный workflow кросс-агентной синхронизации (2026-10-11) #task #phase12 #github #actions
   - [x] [[Specs/12_FeedbackIngestion/TASK-044-zero-deps-kb-ingest-script-and-tests|TASK-044]]: Zero-Dependencies модуль импорта обратной связи (scripts/kb_ingest.py) и тесты (2026-10-11) #task #phase12 #ingestion #python-stdlib
   - [x] [[Specs/12_FeedbackIngestion/TASK-043-triage-buffer-template-feedback-and-kb-lint|TASK-043]]: Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py (2026-10-11) #task #phase12 #templates #lint
 

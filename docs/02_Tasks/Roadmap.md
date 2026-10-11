@@ -157,7 +157,7 @@ tags:
 
 - [x] Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py — [[Specs/12_FeedbackIngestion/TASK-043-triage-buffer-template-feedback-and-kb-lint|TASK-043]].
 - [x] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — [[Specs/12_FeedbackIngestion/TASK-044-zero-deps-kb-ingest-script-and-tests|TASK-044]].
-- [ ] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]].
+- [x] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]].
 - [ ] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]].
 - [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]].
 

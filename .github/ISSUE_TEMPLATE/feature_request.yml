@@ -1,0 +1,34 @@
+name: "💡 Предложение улучшения (Feature Request)"
+description: "Предложить новую возможность, скилл, правило или оптимизацию"
+title: "[FEAT]: "
+labels: ["needs-triage", "kind:enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Предложите идею или улучшение для экосистемы Docs-as-Code харнесса.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую проблему решает предложение?
+      description: С какими трудностями сталкивается разработчик или AI-агент в текущей версии?
+      placeholder: Текущее поведение затрудняет...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Предлагаемое решение
+      description: Как должна выглядеть новая возможность, CLI команда или скилл?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Рассмотренные альтернативы
+      description: Какие другие варианты решения вы рассматривали?
+    validations:
+      required: false
