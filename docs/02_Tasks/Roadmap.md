@@ -150,12 +150,24 @@ tags:
 
 ---
 
+## Фаза 12: Воронка каналов обратной связи, автоматизация импорта и буфер триажа (Feedback Ingestion & Triage Buffer)
+**Цель:** Создать безопасный контур приема внешних обращений без риска засорения базы знаний и нарушения Permalinks Principle: буфер `docs/02_Tasks/Inbox/` с шаблоном `TEMPLATE_FEEDBACK.md`, дедупликацию `.inbox_state.json`, автономную Zero-Deps утилиту `scripts/kb_ingest.py` (GitHub Issues, Email IMAP, Quick Paste), декларативные формы `.github/ISSUE_TEMPLATE/`, кросс-агентный Cloud Cron workflow `.github/workflows/feedback-sync.yml`, исполняемый скилл `/kb-triage` с двухстадийной эвристикой и оффлайн-диагностику `install.py --report`.  
+**Первоисточник плана:** [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]]  
+**Нормативная база:** [[../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]
+
+- [ ] Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py — TASK-043.
+- [ ] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — TASK-044.
+- [ ] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — TASK-045.
+- [ ] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — TASK-046.
+- [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — TASK-047.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
 * 💡 **Архитектура Zero Round-Trip Dispatch и устранение латентности скиллов (Hot Invariants):** оптимизация задержки отклика в Antigravity при сохранении High-SNR токеномики: прямое исполнение типовых режимов (0–3) из Always-On кэша `AGENTS.md` без промежуточного tool call `view_file(SKILL.md)`, пайплайнинг I/O и защита префиксного KV-кэша — [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]].
-* 💡 **Архитектура каналов обратной связи, автоматизация импорта и буфер триажа (Feedback Ingestion & Triage Buffer):** интеграция внешнего фидбека в Docs-as-Code: буфер `docs/02_Tasks/Inbox/` с дедупликацией `.inbox_state.json`, сбор через GitHub Issues API / `gh`, чтение почты IMAP (`scripts/kb_ingest.py`), быстрый ввод из мессенджеров (Paste), безопасный оффлайн-бандл `install.py --report`, двухстадийный триаж (дефекты $\to$ `BUG-XXX`, фичи $\to$ Icebox) и скилл `/kb-triage` — [[../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]] (заменяет [[../03_Decisions_ADR/ADR-0008-feedback-loops-triage-buffer-and-local-diagnostics|ADR-0008]]).
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** пошаговый туториал с концепцией «RAM vs SSD», шпаргалкой по средам (Antigravity, Cursor, Windsurf, Obsidian), 3 сценариями первых 15 минут (Greenfield, Brownfield, Hotfix), поваренной книгой промптов и галереей антипаттернов — [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]].
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
