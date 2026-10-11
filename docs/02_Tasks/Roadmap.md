@@ -158,7 +158,7 @@ tags:
 - [x] Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py — [[Specs/12_FeedbackIngestion/TASK-043-triage-buffer-template-feedback-and-kb-lint|TASK-043]].
 - [x] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — [[Specs/12_FeedbackIngestion/TASK-044-zero-deps-kb-ingest-script-and-tests|TASK-044]].
 - [x] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]].
-- [ ] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]].
+- [x] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]].
 - [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]].
 
 ---
@@ -171,6 +171,7 @@ tags:
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** пошаговый туториал с концепцией «RAM vs SSD», шпаргалкой по средам (Antigravity, Cursor, Windsurf, Obsidian), 3 сценариями первых 15 минут (Greenfield, Brownfield, Hotfix), поваренной книгой промптов и галереей антипаттернов — [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]].
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
+* 💡 **Слоистая архитектура правил агентов (Thin Forwarders), декуплинг графа Obsidian и таксономия базы знаний:** оптимизация распределения правил по слоям L0–L3, устранение двойной инжекции правил (Double Prompt Injection) через тонкие адаптеры IDE, вынос визуальной таблицы цветов графа из AGENTS.md в `graph.json` (-150 токенов на шаг) и структурирование шаблонов — [[../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]].
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
 
 ---

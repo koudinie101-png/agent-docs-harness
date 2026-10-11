@@ -95,6 +95,7 @@ flowchart TD
 * [[04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013: Оптимизация публичных релизных заметок (High-SNR Release Notes)]]
 * [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг]]
 * [[04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015: Архитектура сбора обратной связи (Feedback Ingestion): каналы, периодичность и двухстадийный триаж]]
+* [[04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016: Архитектура распределения правил AI-агентов, слоистая конфигурация и таксономия базы знаний]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
