@@ -487,6 +487,88 @@ status: done
         self.assertIn("Кумулятивный", ci_notes)
 
 
+class TestBugReleaseTargeting(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory()
+        self.test_root = Path(self.tmp_dir.name)
+        self.bugs_dir = self.test_root / "docs" / "02_Tasks" / "Bugs"
+        self.bugs_dir.mkdir(parents=True)
+
+    def tearDown(self):
+        self.tmp_dir.cleanup()
+
+    def test_collect_fixed_bugs_matching_version(self):
+        """Verifies bugs targeted for v0.11.0 via fixed_in or target_release are included."""
+        (self.bugs_dir / "BUG-101-crash.md").write_text(
+            "---\nid: BUG-101\ntitle: Memory Leak\nstatus: fixed\nfixed_in: v0.11.0\n---\n# BUG-101",
+            encoding="utf-8"
+        )
+        (self.bugs_dir / "BUG-102-ui.md").write_text(
+            "---\nid: BUG-102\ntitle: UI Glitch\nstatus: fixed\ntarget_release: v0.11.0\n---\n# BUG-102",
+            encoding="utf-8"
+        )
+        found = kb_release.collect_fixed_bugs(self.bugs_dir, target_version="v0.11.0")
+        found_ids = [b["id"] for b in found]
+        self.assertIn("BUG-101", found_ids)
+        self.assertIn("BUG-102", found_ids)
+        self.assertEqual(len(found), 2)
+
+    def test_collect_fixed_bugs_excludes_prior_versions(self):
+        """Verifies bugs from prior or future versions are excluded from release notes."""
+        (self.bugs_dir / "BUG-001-old.md").write_text(
+            "---\nid: BUG-001\ntitle: Old Bug\nstatus: fixed\nfixed_in: v0.10.0\n---\n# BUG-001",
+            encoding="utf-8"
+        )
+        (self.bugs_dir / "BUG-002-past.md").write_text(
+            "---\nid: BUG-002\ntitle: Past Issue\nstatus: closed\ntarget_release: v0.09.0\n---\n# BUG-002",
+            encoding="utf-8"
+        )
+        (self.bugs_dir / "BUG-003-current.md").write_text(
+            "---\nid: BUG-003\ntitle: Current Bug\nstatus: fixed\nfixed_in: v0.11.0\n---\n# BUG-003",
+            encoding="utf-8"
+        )
+        found = kb_release.collect_fixed_bugs(self.bugs_dir, target_version="v0.11.0")
+        found_ids = [b["id"] for b in found]
+        self.assertEqual(found_ids, ["BUG-003"])
+        self.assertNotIn("BUG-001", found_ids)
+        self.assertNotIn("BUG-002", found_ids)
+
+    def test_check_release_blockers_aborts_on_open_blocker(self):
+        """Verifies open defects with release_blocker: true return errors and abort release."""
+        (self.bugs_dir / "BUG-099-blocker.md").write_text(
+            "---\nid: BUG-099\ntitle: Fatal Crash On Start\nstatus: open\nrelease_blocker: true\ntarget_release: v0.11.0\n---\n# BUG-099",
+            encoding="utf-8"
+        )
+        errors = kb_release.check_release_blockers(self.bugs_dir, target_version="v0.11.0")
+        self.assertEqual(len(errors), 1)
+        self.assertIn("BUG-099", errors[0])
+        self.assertIn("release_blocker=true", errors[0])
+
+        # Test CLI abort
+        dist_dir = self.test_root / "dist"
+        dist_dir.mkdir(parents=True)
+        (dist_dir / "app.tar.gz").write_bytes(b"payload")
+        argv = [
+            "kb_release.py",
+            "--version", "v0.11.0",
+            "--phase", "11",
+            "--docs-dir", str(self.test_root / "docs"),
+            "--dist-dir", str(dist_dir),
+        ]
+        with patch.object(sys, "argv", argv):
+            exit_code = kb_release.main()
+            self.assertEqual(exit_code, 1)
+
+    def test_check_release_blockers_passes_when_fixed(self):
+        """Verifies resolved defects with release_blocker: true do not block release."""
+        (self.bugs_dir / "BUG-099-blocker.md").write_text(
+            "---\nid: BUG-099\ntitle: Fatal Crash On Start\nstatus: fixed\nrelease_blocker: true\nfixed_in: v0.11.0\n---\n# BUG-099",
+            encoding="utf-8"
+        )
+        errors = kb_release.check_release_blockers(self.bugs_dir, target_version="v0.11.0")
+        self.assertEqual(errors, [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

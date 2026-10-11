@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Завершение TASK-041: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py (Фаза 11)
+- **Что сделано:**
+  - Реализован строгий релизный таргетинг дефектов в `scripts/kb_release.py` согласно [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]] и [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]].
+  - Добавлена функция `collect_fixed_bugs`: сбор только устраненных багов (`status: fixed | closed`), у которых `fixed_in` или `target_release` совпадает с версией релиза (с fallback-поддержкой `target_phase` для legacy-багов).
+  - Внедрена функция `check_release_blockers`: префлайт-проверка открытых дефектов (`status: open | in-progress`) с флагом `release_blocker: true`. При их обнаружении релиз немедленно прерывается с `Exit code 1`.
+  - В `tests/test_kb_release.py` добавлен тест-сьют `TestBugReleaseTargeting` (4 теста), покрывающий корректную фильтрацию версий и блокировку открытыми багами-блокерами.
+  - Спецификация задачи [[02_Tasks/Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]] переведена в статус `done`, карточка перемещена в `Done` в [[02_Tasks/Kanban|Канбане]], веха отмечена в [[02_Tasks/Roadmap|Дорожной карте]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_release.py` -> 20/20 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 55/55 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 113 файлов проверено, 972 связи валидны (0 битых связей, 0 ошибок).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-042-installer-bundling-e2e-and-docs`.
+
+---
+
 ### [2026-10-11] — Завершение TASK-040: Нативная поддержка дефектов в kb-implement и kb-complete (Фаза 11)
 - **Что сделано:**
   - Унифицировано исполнение дефектов в рамках Режима 3 (Implementation & Verification) согласно [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]].

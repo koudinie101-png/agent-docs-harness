@@ -1,7 +1,7 @@
 ---
 id: TASK-041
 title: "Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты"
-status: planned
+status: done
 type: task
 phase: 11
 component:
@@ -11,7 +11,7 @@ component:
   - testing
 parent_plan: "[[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]"
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-10-11
 tags:
   - task/spec
   - phase11
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-041 — Релизный таргетинг и фильтрация дефектов в kb_release.py
 
 > **ID:** TASK-041  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase11 #releases #bug-lifecycle #kb-release #blockers  
 > **Родительский план:** [[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../../../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]], [[../../../03_Decisions_ADR/ADR-0010-github-release-notes-and-public-distribution-standard|ADR-0010]]  
@@ -93,16 +93,16 @@ ERROR: Release vX.Y.Z is blocked by open defect BUG-XXX: <Title> (release_blocke
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Запуск модульных тестов релиза:
+- [x] Запуск модульных тестов релиза:
   ```bash
   python -m unittest tests/test_kb_release.py
   ```
   *(Ожидаемый результат: 100% pass)*.
-- [ ] Полный прогон всех существующих тестов:
+- [x] Полный прогон всех существующих тестов:
   ```bash
   python -m unittest discover -s tests
   ```
-- [ ] Аудит базы знаний:
+- [x] Аудит базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -111,7 +111,7 @@ ERROR: Release vX.Y.Z is blocked by open defect BUG-XXX: <Title> (release_blocke
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Утилита `scripts/kb_release.py` фильтрует баги строго по целевому релизу.
-- [ ] Наличие открытого релиз-блокера блокирует выпуск с Exit code 1.
-- [ ] Все модульные тесты в `tests/test_kb_release.py` успешно проходят.
-- [ ] Отсутствуют регрессии в существующих сценариях сборки релизов.
+- [x] Утилита `scripts/kb_release.py` фильтрует баги строго по целевому релизу.
+- [x] Наличие открытого релиз-блокера блокирует выпуск с Exit code 1.
+- [x] Все модульные тесты в `tests/test_kb_release.py` успешно проходят.
+- [x] Отсутствуют регрессии в существующих сценариях сборки релизов.

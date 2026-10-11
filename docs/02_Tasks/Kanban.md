@@ -11,12 +11,14 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|План: Фаза 11 — Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг]] #plan #phase11 #bug-lifecycle #triage #release-targeting
-  - [ ] [[Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]]: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты #task #phase11
   - [ ] [[Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042]]: Синхронизация инсталлятора, сквозные E2E тесты и документация #task #phase11
 
 ## ⏳ В работе (In Progress)
 
+
 ## ✅ Готово (Done)
+
+- [x] [[Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]]: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты (2026-10-11) #task #phase11 #bug-lifecycle #release-targeting #blockers
 
 - [x] [[Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040]]: Нативная поддержка дефектов в kb-implement (/kb-implement BUG-XXX и строгий TDD-цикл) (2026-10-11) #task #phase11 #bug-lifecycle #tdd #implementation
 

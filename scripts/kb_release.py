@@ -211,6 +211,186 @@ def parse_frontmatter(content: str) -> Dict[str, Any]:
     return data
 
 
+def normalize_version(ver: Optional[str]) -> str:
+    """Normalizes version string for reliable comparison (strips leading 'v', trims, lowercases)."""
+    if not ver:
+        return ""
+    ver = str(ver).strip().lower()
+    if ver.startswith("v"):
+        ver = ver[1:]
+    return ver
+
+
+def is_release_blocker(val: Any) -> bool:
+    """Checks if a frontmatter release_blocker value evaluates to True."""
+    if isinstance(val, bool):
+        return val
+    if isinstance(val, str):
+        return val.strip().lower() in ["true", "1", "yes"]
+    if isinstance(val, (int, float)):
+        return bool(val)
+    return False
+
+
+def collect_fixed_bugs(
+    bugs_dir: Path,
+    target_version: Optional[str] = None,
+    current_phase: Optional[int] = None,
+    target_phases: Optional[List[int]] = None,
+) -> List[Dict[str, str]]:
+    """
+    Collects closed defect reports targeted strictly for the release version or phase.
+
+    Inclusion criteria:
+    1. status in ['done', 'resolved', 'closed', 'fixed']
+    2. If target_version is provided:
+       - If bug specifies fixed_in: include if normalize_version(fixed_in) == normalize_version(target_version), else exclude.
+       - Else if bug specifies target_release: include if normalize_version(target_release) == normalize_version(target_version), else exclude.
+       - Else if bug specifies target_phase: include if (current_phase is not None and bug_phase == current_phase) or (target_phases and bug_phase in target_phases), else exclude.
+       - Else (no fixed_in, no target_release, no target_phase): include for backward compatibility with legacy unannotated reports.
+    3. If target_version is not provided:
+       - If current_phase or target_phases provided:
+         * If bug specifies target_phase: include if bug_phase in active_phases, else exclude.
+         * Else: include.
+       - Else: include all closed bugs.
+    """
+    bugs: List[Dict[str, str]] = []
+    if not bugs_dir.exists():
+        return bugs
+
+    active_phases = list(target_phases) if target_phases else ([current_phase] if current_phase is not None else [])
+    norm_target_ver = normalize_version(target_version)
+
+    for bug_file in sorted(bugs_dir.rglob("*.md")):
+        if bug_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            content = bug_file.read_text(encoding="utf-8")
+            fm = parse_frontmatter(content)
+            status = fm.get("status", "").strip().lower()
+            if status not in ["done", "resolved", "closed", "fixed"]:
+                continue
+
+            bug_id = fm.get("id", bug_file.stem)
+            title = fm.get("title", bug_file.stem)
+            fixed_in = fm.get("fixed_in", "")
+            target_release = fm.get("target_release", "")
+            target_phase_raw = fm.get("target_phase")
+            bug_phase: Optional[int] = None
+            if target_phase_raw is not None and str(target_phase_raw).strip() != "" and str(target_phase_raw).strip().lower() != "null":
+                try:
+                    bug_phase = int(str(target_phase_raw).strip())
+                except ValueError:
+                    pass
+
+            include = False
+            if norm_target_ver:
+                if fixed_in and fixed_in.lower() != "null":
+                    include = (normalize_version(fixed_in) == norm_target_ver)
+                elif target_release and target_release.lower() != "null":
+                    include = (normalize_version(target_release) == norm_target_ver)
+                elif bug_phase is not None:
+                    include = (bug_phase in active_phases)
+                else:
+                    # Legacy fallback: bug has no version and no phase metadata
+                    include = True
+            elif active_phases:
+                if bug_phase is not None:
+                    include = (bug_phase in active_phases)
+                else:
+                    include = True
+            else:
+                include = True
+
+            if include:
+                try:
+                    if bugs_dir.name == "Bugs" and bugs_dir.parent.name == "02_Tasks":
+                        rel_to_tasks = bug_file.relative_to(bugs_dir.parent)
+                        link = f"../{rel_to_tasks.as_posix()[:-3]}"
+                    else:
+                        link = f"../Bugs/{bug_file.stem}"
+                except Exception:
+                    link = f"../Bugs/{bug_file.stem}"
+
+                bugs.append({
+                    "id": bug_id,
+                    "title": title,
+                    "link": link,
+                    "status": status,
+                })
+        except Exception:
+            pass
+
+    return bugs
+
+
+def check_release_blockers(
+    bugs_dir: Path,
+    target_version: Optional[str] = None,
+    current_phase: Optional[int] = None,
+    target_phases: Optional[List[int]] = None,
+) -> List[str]:
+    """
+    Checks for open defects with release_blocker == True targeting the release version or phase.
+    Returns a list of error messages. If non-empty, release pipeline must abort with Exit Code 1.
+    """
+    errors: List[str] = []
+    if not bugs_dir.exists():
+        return errors
+
+    active_phases = list(target_phases) if target_phases else ([current_phase] if current_phase is not None else [])
+    norm_target_ver = normalize_version(target_version)
+
+    for bug_file in sorted(bugs_dir.rglob("*.md")):
+        if bug_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            content = bug_file.read_text(encoding="utf-8")
+            fm = parse_frontmatter(content)
+            status = fm.get("status", "").strip().lower()
+            if status in ["done", "resolved", "closed", "fixed"]:
+                continue
+
+            if not is_release_blocker(fm.get("release_blocker")):
+                continue
+
+            bug_id = fm.get("id", bug_file.stem)
+            title = fm.get("title", bug_file.stem)
+            target_rel = fm.get("target_release", "")
+            target_ph_raw = fm.get("target_phase")
+            bug_phase: Optional[int] = None
+            if target_ph_raw is not None and str(target_ph_raw).strip() != "" and str(target_ph_raw).strip().lower() != "null":
+                try:
+                    bug_phase = int(str(target_ph_raw).strip())
+                except ValueError:
+                    pass
+
+            applies = False
+            if norm_target_ver:
+                if target_rel and target_rel.lower() != "null":
+                    applies = (normalize_version(target_rel) == norm_target_ver)
+                elif bug_phase is not None:
+                    applies = (bug_phase in active_phases)
+                else:
+                    # Unspecified open blocker applies to current active release
+                    applies = True
+            elif active_phases:
+                if bug_phase is not None:
+                    applies = (bug_phase in active_phases)
+                elif not target_rel or target_rel.lower() == "null":
+                    applies = True
+            else:
+                applies = True
+
+            if applies:
+                ver_display = target_version if target_version else (f"Phase {current_phase}" if current_phase else "target")
+                errors.append(f"Release {ver_display} is blocked by open defect {bug_id}: {title} (release_blocker=true)")
+        except Exception:
+            pass
+
+    return errors
+
+
 def extract_release_meta_from_doc(doc_path: Path) -> Dict[str, Any]:
     """
     Extracts phase and executive summary from an existing RELEASE-vX.Y.Z.md file.
@@ -324,6 +504,7 @@ def find_phase_artifacts(
     docs_dir: Path,
     phase_num: int,
     phases: Optional[List[int]] = None,
+    target_version: Optional[str] = None,
 ) -> Dict[str, List[Dict[str, str]]]:
     """
     Scans docs/ and finds:
@@ -428,27 +609,12 @@ def find_phase_artifacts(
 
     # 2. Bugs
     bugs_dir = docs_dir / "02_Tasks" / "Bugs"
-    if bugs_dir.exists():
-        for bug_file in sorted(bugs_dir.rglob("*.md")):
-            if bug_file.name.startswith("TEMPLATE_"):
-                continue
-            try:
-                content = bug_file.read_text(encoding="utf-8")
-                fm = parse_frontmatter(content)
-                status = fm.get("status", "").lower()
-                if status in ["done", "resolved", "closed", "fixed"]:
-                    bug_id = fm.get("id", bug_file.stem)
-                    title = fm.get("title", bug_file.stem)
-                    rel_to_tasks = bug_file.relative_to(docs_dir / "02_Tasks")
-                    link = f"../{rel_to_tasks.as_posix()[:-3]}"
-                    result["bugs"].append({
-                        "id": bug_id,
-                        "title": title,
-                        "link": link,
-                        "status": status,
-                    })
-            except Exception:
-                pass
+    result["bugs"] = collect_fixed_bugs(
+        bugs_dir=bugs_dir,
+        target_version=target_version,
+        current_phase=phase_num,
+        target_phases=target_phases,
+    )
 
     # 3. ADRs (filtered by target phases)
     adrs_dir = docs_dir / "03_Decisions_ADR"
@@ -857,8 +1023,26 @@ def main() -> int:
     if phase_num is None:
         phase_num = detect_latest_phase(docs_path)
 
+    # Pre-flight check: Release Blockers
+    bugs_dir = docs_path / "02_Tasks" / "Bugs"
+    blockers = check_release_blockers(
+        bugs_dir=bugs_dir,
+        target_version=ver_clean,
+        current_phase=phase_num,
+        target_phases=phases_list,
+    )
+    if blockers:
+        for b_msg in blockers:
+            print(f"❌ ERROR: {b_msg}", file=sys.stderr)
+        return 1
+
     artifacts = inspect_release_artifacts(dist_path)
-    phase_data = find_phase_artifacts(docs_path, phase_num, phases=phases_list)
+    phase_data = find_phase_artifacts(
+        docs_path,
+        phase_num,
+        phases=phases_list,
+        target_version=ver_clean,
+    )
 
     release_content = generate_release_markdown(
         version=ver_clean,
