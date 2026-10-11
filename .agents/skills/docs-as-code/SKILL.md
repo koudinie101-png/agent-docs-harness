@@ -17,10 +17,10 @@ Central router for Docs-as-Code infrastructure. Enforces the 4-stage lifecycle (
 | `/kb-adr` | Mode 0 / ADR | ADR-XXXX record with rejected options | `kb-adr` |
 | `/kb-plan` | Mode 1 | RFC discussion, PLAN-XXX. **No code.** | `kb-plan` |
 | `/kb-task` | Mode 2 | Spec TASK-XXX with contracts and DoD. **No code.** | `kb-task` |
-| `/kb-implement`| Mode 3 | Implement TASK-XXX with auto-complete | `kb-implement` |
+| `/kb-implement`| Mode 3 | Implement TASK-XXX or resolve BUG-XXX with auto-complete | `kb-implement` |
 | `/kb-complete` | Mode 3 | Standalone sync: Done, Devlog, git | `kb-complete` |
 | `/kb-release`  | Release | Dual-Mode release, SHA-256, git tag | `kb-release` |
-| `/kb-bug` | Defect | Log BUG-XXX with RCA and regression test | `kb-bug` |
+| `/kb-bug` | Mode 2B | Triage defect BUG-XXX with RCA. **No code.** | `kb-bug` |
 | `/kb-lint` | Audit | Verify wikilinks and YAML integrity | `kb-lint` |
 
 ## 🏛️ Directory Layout (`docs/`)

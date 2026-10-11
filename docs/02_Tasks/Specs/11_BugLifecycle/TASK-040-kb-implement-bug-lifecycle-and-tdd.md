@@ -1,7 +1,7 @@
 ---
 id: TASK-040
 title: "Нативная поддержка дефектов в kb-implement (/kb-implement BUG-XXX и строгий TDD-цикл)"
-status: planned
+status: done
 type: task
 phase: 11
 component:
@@ -11,7 +11,7 @@ component:
   - implementation
 parent_plan: "[[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]"
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-10-11
 tags:
   - task/spec
   - phase11
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-040 — Нативная поддержка дефектов в kb-implement
 
 > **ID:** TASK-040  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase11 #bug-lifecycle #tdd #implementation #kb-complete  
 > **Родительский план:** [[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../../../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]], [[../../../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
@@ -91,19 +91,19 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Проверка текста скиллов на соблюдение High-SNR бюджета токенов.
-- [ ] Аудит целостности базы знаний:
+- [x] Проверка текста скиллов на соблюдение High-SNR бюджета токенов.
+- [x] Аудит целостности базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
   *(Ожидаемый результат: 0 broken links, 0 errors)*.
-- [ ] Проверка формулировок терминального шага Stop & Yield в `kb-implement` и `kb-complete`.
+- [x] Проверка формулировок терминального шага Stop & Yield в `kb-implement` и `kb-complete`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скилл `kb-implement` нативно поддерживает запуск исправления дефекта по TDD.
-- [ ] Скилл `kb-complete` корректно проставляет `status: fixed` и `fixed_in`.
-- [ ] Руководство `AGENTS.md` синхронизировано.
-- [ ] Все пункты Плана верификации пройдены.
+- [x] Скилл `kb-implement` нативно поддерживает запуск исправления дефекта по TDD.
+- [x] Скилл `kb-complete` корректно проставляет `status: fixed` и `fixed_in`.
+- [x] Руководство `AGENTS.md` синхронизировано.
+- [x] Все пункты Плана верификации пройдены.

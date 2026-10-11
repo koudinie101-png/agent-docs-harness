@@ -1,37 +1,41 @@
 ---
 name: kb-complete
-description: "Mode 3: Finalize TASK-XXX, update Kanban/Roadmap/Devlog, run kb_lint, and git commit."
+description: "Mode 3: Finalize TASK-XXX or BUG-XXX, update Kanban/Roadmap/Devlog, run kb_lint, and git commit."
 ---
 
-# /kb-complete — Mode 3: Task Finalization & Knowledge Base Sync
+# /kb-complete — Mode 3: Finalization & Knowledge Base Sync
 
-Use when the user runs `/kb-complete <TASK-XXX>` after all verification steps have passed.
+Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verification steps have passed.
 
 ## 🚨 Constraints
-* **Single-Task Barrier:** Finalize only the specified task. Do not begin or execute subsequent tasks.
+* **Single-Task Barrier:** Finalize only the specified task or bug. Do not begin or execute subsequent work.
 * **Passing Tests Required:** Do not mark complete if any verification step failed.
-* **Permalinks Invariant:** Never move or archive spec files. Update status in-place.
+* **Permalinks Invariant:** Never move or archive spec or bug files. Update status in-place.
 
 ## Procedure
-1. **Update Task Spec:**
-   - In `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`: set frontmatter `status: done`, `updated: <YYYY-MM-DD>`, and header `> **Статус:** Выполнено (Режим 3)`.
+1. **Update Target Status:**
+   - **Task (`TASK-XXX`):** In `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`: set frontmatter `status: done`, `updated: <YYYY-MM-DD>`, and header `> **Статус:** Выполнено (Режим 3)`.
+   - **Defect (`BUG-XXX`):** In `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md`: set frontmatter `status: fixed`, `fixed_in: "<target_release>"`, `updated: <YYYY-MM-DD>`, and header `> **Статус:** [fixed]`. If `target_release` is empty, use current active version from `SPEC.md` / `Roadmap.md`.
 2. **Update Kanban:**
-   - Move task card from `## ⏳ В работе (In Progress)` to `## ✅ Готово (Done)` in `docs/02_Tasks/Kanban.md` with completion date `(YYYY-MM-DD)`.
+   - Move target card from `## ⏳ В работе (In Progress)` to `## ✅ Готово (Done)` in `docs/02_Tasks/Kanban.md` with completion date `(YYYY-MM-DD)`.
 3. **Update Roadmap:**
-   - In `docs/02_Tasks/Roadmap.md`: check milestone `[x]` with permanent link `[[Specs/<Phase>/TASK-XXX-<slug>|TASK-XXX]]`.
+   - For `TASK-XXX`: check milestone `[x]` with permanent link `[[Specs/<Phase>/TASK-XXX-<slug>|TASK-XXX]]`.
+   - For `BUG-XXX`: if tracked in a Roadmap phase, mark milestone `[x]`.
 4. **Append Devlog:**
-   - In `docs/Devlog.md`: record summary of changes, test verification results, and recommended next step using semantic format:
-     `- **Рекомендуемый следующий шаг (Ожидает команды пользователя):** \`/kb-implement TASK-YYY\`.`
+   - In `docs/Devlog.md`: record summary of changes and test verification results using semantic format:
+     * For tasks: `- **Рекомендуемый следующий шаг (Ожидает команды пользователя):** \`/kb-implement TASK-YYY\`.`
+     * For bugs: note resolution via TDD with link to regression test.
 5. **Living Spec Sync:**
-   - If task modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same task session.
+   - If task or fix modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same session.
 6. **Lint Verification:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
 7. **Git Commit & Sync:**
-   - **Feature Branch:** commit changes, checkout `main`, pull rebase, merge branch, push, delete local feature branch.
-   - **Trunk-Based (`main`):** `git add .`, `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`, `git push` (if remote exists).
+   - **Task Commit:** `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`.
+   - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.
+   - Push to remote if origin exists.
 8. **Phase Completion Nudge:**
    - If all tasks in the current phase are now `[x]`, recommend running acceptance testing in `docs/05_Testing/` and executing `/kb-release <vX.Y.Z>`.
 9. **Terminal Step: Stop & Yield Control:**
    - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets).
-   - Propose next command to user (e.g. `/kb-implement TASK-YYY` or `/kb-release`).
+   - Propose next command to user (e.g. `/kb-implement <NEXT>` or `/kb-release`).
    - STRICTLY STOP calling tools. Yield control to user and wait for explicit prompt.

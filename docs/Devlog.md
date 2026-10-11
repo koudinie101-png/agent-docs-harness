@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Завершение TASK-040: Нативная поддержка дефектов в kb-implement и kb-complete (Фаза 11)
+- **Что сделано:**
+  - Унифицировано исполнение дефектов в рамках Режима 3 (Implementation & Verification) согласно [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]].
+  - В скилл `.agents/skills/kb-implement/SKILL.md` добавлена нативная поддержка аргумента `BUG-XXX` со строгим TDD-пайплайном: **RED** (запуск падающего теста из `regression_test`) $\to$ **GREEN** (минимальный фикс в коде) $\to$ **REFACTOR** (прогон полного тестового набора репозитория).
+  - В скилл `.agents/skills/kb-complete/SKILL.md` добавлена логика финализации дефектов: простановка `status: fixed`, заполнение `fixed_in: "<target_release>"`, перемещение карточки дефекта в `Done` на Канбане и коммит `fix(...)`.
+  - В `AGENTS.md` актуализированы правила: Regression-First Principle (закрепление TDD через `/kb-implement BUG-XXX`), Single-Task Execution Barrier (поддержка целей `TASK-XXX | BUG-XXX`) и регламент Режима 3.
+  - В роутере `.agents/skills/docs-as-code/SKILL.md` синхронизированы описания скиллов `kb-implement` и `kb-bug`.
+  - Спецификация задачи [[02_Tasks/Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040]] переведена в статус `done`, карточка перемещена в `Done` в [[02_Tasks/Kanban|Канбане]], веха отмечена в [[02_Tasks/Roadmap|Дорожной карте]].
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 113 файлов проверено, 968 связей валидны (0 битых связей, 0 ошибок).
+  - `python -m unittest discover -s tests` -> 51/51 тестов успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-041-kb-release-defect-filtering-and-blockers`.
+
+---
+
 ### [2026-10-11] — Завершение TASK-039: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (Фаза 11)
 - **Что сделано:**
   - Реализован изолированный входной шлюз обработки дефектов — Режим 2B (Defect Logging & Interactive Triage) согласно [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]] и [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]].

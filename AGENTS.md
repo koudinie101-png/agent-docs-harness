@@ -19,7 +19,7 @@ All project knowledge, task tracking, and architectural decisions are maintained
 
 ### Core Rules & Principles
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
-2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass.
+2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass. Bug fixing is executed strictly through `/kb-implement BUG-XXX` via the TDD cycle (RED $\to$ GREEN $\to$ REFACTOR).
 3. **Living Spec Invariant (No Documentation Drift):** `SPEC.md` is the Master Specification (Ground Truth), and `README.md` is the project storefront. When a task introduces new CLI arguments, APIs, or architectural modules, update `SPEC.md` and `README.md` in that same task session. Releases (`/kb-release`) cannot proceed if documentation is stale.
 4. **Graph Visual Color Scheme & Tagging:** Preserved in `.obsidian/graph.json`:
    | Color / Category | Obsidian Path / Query | Tags | Description |
@@ -32,8 +32,8 @@ All project knowledge, task tracking, and architectural decisions are maintained
    | 🔴 Red | `path:02_Tasks/Bugs` | `#bug` | Defects, bugs, RCA & regression tests |
    | 🟢 Green | `path:05_Testing` | `#testing` | Acceptance testing & E2E UX checklists |
 5. **Single-Task Execution Barrier (No Auto-Chaining):**
-   - The command `/kb-implement <TASK-XXX>` authorizes work **strictly on that single task specification**.
-   - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY`).
+   - The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work **strictly on that single task specification or defect report**.
+   - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY` or `/kb-implement BUG-YYY`).
    - "Next Step" sections in devlogs, plans, and summaries are developer guidance only and are **never** an execution mandate for the agent.
    - Once task verification and commit are complete, the agent must **cease all tool calls immediately** and return control to the user.
 6. **Zero-State Anti-Hallucination & Spec Genesis:**
@@ -95,7 +95,9 @@ Every feature or architectural initiative follows structured stages:
 - **Kanban:** Move task card to `## ⏳ В работе (In Progress)` in `docs/02_Tasks/Kanban.md`.
 
 ### 🟢 Mode 3: Implementation & Verification (`/kb-implement` & `/kb-complete` or "Режим 3")
-- **Action:** Implement code strictly adhering to the approved `TASK-XXX` spec.
+- **Action:**
+  - For tasks (`TASK-XXX`): implement code strictly adhering to the approved spec.
+  - For defects (`BUG-XXX`): execute strict TDD cycle (**RED:** reproduction test fails $\to$ **GREEN:** fix passes $\to$ **REFACTOR:** full test suite passes).
 - **Verification:** Run all commands from the Verification Plan:
   ```bash
   python scripts/kb_lint.py --path docs
@@ -103,11 +105,11 @@ Every feature or architectural initiative follows structured stages:
   ```
 - **Completion Checklist (Executed automatically at the end of `/kb-implement` upon passing verification, or standalone via `/kb-complete`):**
   1. All verification steps pass (Exit code 0).
-  2. Spec status updated to `Выполнено` in `TASK-XXX`.
+  2. Status updated to `Выполнено` in `TASK-XXX` (or `status: fixed`, `fixed_in: "vX.Y.Z"` in `BUG-XXX`).
   3. Living Spec Sync: update `SPEC.md` / `README.md` if task modified public CLI/API or architecture.
   4. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.
-  5. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec.
+  5. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec or bug.
   6. `docs/Devlog.md`: record chronological summary of the session.
   7. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
-  8. Commit and push to Git.
+  8. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
   9. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
