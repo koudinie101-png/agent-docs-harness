@@ -1,25 +1,38 @@
 ---
 name: kb-bug
-description: "Record defect BUG-XXX with Root Cause Analysis (RCA) and Regression-First TDD test."
+description: "Mode 2B: Defect logging, RCA analysis, and interactive triage. Prohibits code modifications."
 ---
 
-# /kb-bug — Defect Logging & Bug Tracking
+# /kb-bug — Mode 2B: Defect Logging & Interactive Triage
 
-Use when the user runs `/kb-bug <name>` or reports a software defect.
+Use when the user runs `/kb-bug <name>`, reports a software defect, or logs a bug.
 
 ## 🚨 Constraints
-* **Regression-First Principle:** Every defect MUST be reproduced with an automated test that FAILS before the fix and PASSES after the fix. Closing a bug without a regression test is strictly prohibited.
+* **READ-ONLY FOR CODE:** Modifying or creating project code files is STRICTLY PROHIBITED.
+* **Triage Isolation:** Focus strictly on defect recording, RCA analysis, regression test specification, and interactive triage. Implementation is performed separately via `/kb-implement BUG-XXX`.
 * **Permalinks Invariant:** Defect reports are never moved or deleted upon resolution.
+* **Terminal Stop:** Once the bug report is committed, immediately STOP tool calls and yield control.
 
-## Procedure: Logging a Bug
-1. **Calculate Bug ID:** Scan `docs/02_Tasks/Bugs/` to determine next `BUG-XXX` ID.
-2. **Draft Report:** Create `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_BUG.md`. Include STR, expected vs actual behavior, stack trace, and Root Cause Analysis (RCA).
-3. **Update Kanban:** Add card to `## 📥 Бэклог (Backlog)` or `## ⏳ В работе (In Progress)` in `docs/02_Tasks/Kanban.md`.
-4. **Git Sync (Conditional):** Stage report and Kanban, commit `docs(bug): log BUG-XXX <slug>`, push if remote exists.
-
-## Procedure: Resolving a Bug
-1. **Write Regression Test:** Create automated test reproducing defect (must fail).
-2. **Apply Fix:** Implement fix in source code until the regression test passes.
-3. **Update Report:** Set frontmatter `status: fixed`, `resolved: <YYYY-MM-DD>`.
-4. **Update Kanban & Devlog:** Move card to `## ✅ Готово (Done)` in `docs/02_Tasks/Kanban.md`. Add entry to `docs/Devlog.md` with link to regression test.
-5. **Git Sync (Conditional):** Commit `fix(<scope>): resolve BUG-XXX <title> with regression test`, push if remote exists.
+## Procedure
+1. **Calculate Bug ID:**
+   - Scan `docs/02_Tasks/Bugs/` to determine the next available `BUG-XXX` ID.
+2. **Analyze Defect:**
+   - Collect steps to reproduce (STR), environment, expected vs actual behavior, stack trace/logs.
+   - Perform Root Cause Analysis (RCA) to document architectural or logical defect cause.
+3. **Interactive Triage:**
+   - Solicit or clarify `severity` (`low | medium | high | critical`), `target_release` (`vX.Y.Z | hotfix | backlog`), `target_phase` (phase number or `null`), and `release_blocker` (`true | false`).
+   - If release context is unspecified by the user, set safe default `target_release: "backlog"` and `release_blocker: false`.
+4. **Draft Defect Report:**
+   - Create `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_BUG.md`.
+5. **Update Kanban:**
+   - Add card to `## 📥 Бэклог (Backlog)` (or `## ⏳ В работе (In Progress)` if triaged for immediate fix) in `docs/02_Tasks/Kanban.md`.
+6. **Git Sync (Conditional):**
+   - Stage: `git add docs/02_Tasks/Bugs/ docs/02_Tasks/Kanban.md`
+   - Commit: `git commit -m "docs(bug): record BUG-XXX <slug>"`
+   - Push if remote origin exists.
+7. **Stop & Yield Control (Terminal Step):**
+   - Output concise Anti-Echo summary with actionable triage menu:
+     * Hotfix immediately via TDD: `/kb-implement BUG-XXX`
+     * Schedule into active roadmap phase
+     * Retain in backlog
+   - **STRICTLY STOP ALL TOOL CALLS.** Yield control to user and wait for explicit command.

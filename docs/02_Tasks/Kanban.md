@@ -17,9 +17,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039]]: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield) #task #phase11
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039]]: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield) (2026-10-11) #task #phase11 #bug-triage #templates #stop-yield
 
 - [x] [[Plans/PLAN-010-spec-genesis-and-high-snr-release-notes|План: Фаза 10 — Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки]] (2026-10-03) #plan #phase10 #spec-genesis #release-notes
   - [x] [[Specs/10_SpecLifecycle/TASK-038-installer-bundling-e2e-and-docs|TASK-038]]: Синхронизация инсталлятора, сквозные E2E тесты и документация (install.py, README.md, Onboarding.md) (2026-10-03) #task #phase10

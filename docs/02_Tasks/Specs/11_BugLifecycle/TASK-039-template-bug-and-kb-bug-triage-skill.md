@@ -1,7 +1,7 @@
 ---
 id: TASK-039
 title: "Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield)"
-status: in-progress
+status: done
 type: task
 phase: 11
 component:
@@ -10,7 +10,7 @@ component:
   - bug-triage
 parent_plan: "[[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]"
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-10-11
 tags:
   - task/spec
   - phase11
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-039 — Рефакторинг TEMPLATE_BUG.md и скилла kb-bug
 
 > **ID:** TASK-039  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase11 #bug-triage #templates #stop-yield #guardrails  
 > **Родительский план:** [[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../../../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]], [[../../../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]]  
@@ -103,19 +103,19 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Проверка синтаксиса frontmatter шаблона `TEMPLATE_BUG.md` и `templates/TEMPLATE_BUG.md`.
-- [ ] Аудит целостности базы знаний:
+- [x] Проверка синтаксиса frontmatter шаблона `TEMPLATE_BUG.md` и `templates/TEMPLATE_BUG.md`.
+- [x] Аудит целостности базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
   *(Ожидаемый результат: 0 broken links, 0 errors)*.
-- [ ] Проверка отсутствия директив изменения кода в `kb-bug/SKILL.md`.
+- [x] Проверка отсутствия директив изменения кода в `kb-bug/SKILL.md`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Шаблоны `docs/00_Templates/TEMPLATE_BUG.md` и `templates/TEMPLATE_BUG.md` обновлены релизным контрактом.
-- [ ] Скилл `.agents/skills/kb-bug/SKILL.md` рефакторен в чистый Режим 2B с шагом Stop & Yield.
-- [ ] Все пункты Плана верификации выполнены.
-- [ ] Статус задачи обновлен в ТЗ, Канбане и Дорожной карте.
+- [x] Шаблоны `docs/00_Templates/TEMPLATE_BUG.md` и `templates/TEMPLATE_BUG.md` обновлены релизным контрактом.
+- [x] Скилл `.agents/skills/kb-bug/SKILL.md` рефакторен в чистый Режим 2B с шагом Stop & Yield.
+- [x] Все пункты Плана верификации выполнены.
+- [x] Статус задачи обновлен в ТЗ, Канбане и Дорожной карте.
