@@ -77,6 +77,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0017-release-notes-adr-exclusion-and-high-snr-standard|ADR-0017: Исключение секции архитектурных решений (ADR) из публичных релизных заметок]]
 * [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]]
 * [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019: Архитектура жизненного цикла дефектов, изолированный триаж и релизный таргетинг]]
+* [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020: Архитектура сбора обратной связи (Feedback Ingestion), каналы, периодичность и двухстадийный триаж]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -93,6 +94,7 @@ flowchart TD
 * [[04_Research/RESEARCH-012-single-task-execution-barrier-and-autonomous-pipeline-containment|RESEARCH-012: Барьер единичной задачи и сдерживание конвейерного перевыполнения (Autonomous Pipeline Containment)]]
 * [[04_Research/RESEARCH-013-release-notes-adr-exclusion-and-high-snr|RESEARCH-013: Оптимизация публичных релизных заметок (High-SNR Release Notes)]]
 * [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг]]
+* [[04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015: Архитектура сбора обратной связи (Feedback Ingestion): каналы, периодичность и двухстадийный триаж]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.

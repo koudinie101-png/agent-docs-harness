@@ -1,9 +1,9 @@
 ---
 id: ADR-0008
 title: "Архитектура каналов обратной связи, буфера триажа и локальной диагностики (Feedback Loops & Local Diagnostics)"
-status: accepted
+status: superseded
 date: 2026-10-01
-superseded_by: ""
+superseded_by: "[[ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]"
 tags:
   - adr
   - architecture
