@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-043: Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py
+- **Что сделано:**
+  - Реализован изолированный буфер триажа `docs/02_Tasks/Inbox/` и созданы эталонные шаблоны `docs/00_Templates/TEMPLATE_FEEDBACK.md` и `templates/TEMPLATE_FEEDBACK.md` согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]].
+  - Инициализирован файл состояния дедупликации `docs/02_Tasks/Inbox/.inbox_state.json` с курсорами источников (GitHub, Email, Paste) и защитный `.gitignore` для каталога `Inbox/`.
+  - В `scripts/kb_lint.py` добавлен аудит обязательного YAML frontmatter для файлов обращений (`id`, `title`, `status`, `type`, `channel`, `created`) и допустимых статусов (`new`, `triaged`, `processed`, `rejected`).
+  - Добавлены модульные тесты валидации файлов обращений в `tests/test_kb_lint.py`.
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_lint.py` -> 15/15 тестов успешно пройдено.
+  - `python scripts/kb_lint.py --path docs` -> 123 файла проверено, 1082 викиссылки валидны (0 broken links).
+  - `python -m unittest discover -s tests` -> 57/57 тестов успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать утилиту импорта: `/kb-implement TASK-044`.
+
+---  
+
 ### [2026-10-11] — Выпуск официального релиза v0.11.0: Bug Lifecycle & Release Targeting (Фаза 11)
 - **Что сделано:**
   - Осуществлен официальный релиз **v0.11.0** по завершении Фазы 11 (План [[02_Tasks/Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]).

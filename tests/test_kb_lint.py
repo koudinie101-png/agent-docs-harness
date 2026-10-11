@@ -278,6 +278,42 @@ class TestKbLint(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn("⚠️ Devlog Semantic Guard Warnings (1):", captured_verbose.getvalue())
 
+    def test_inbox_frontmatter_validation(self):
+        """Inbox items must contain required fields and valid status."""
+        inbox_dir = self.docs_dir / "02_Tasks" / "Inbox"
+        inbox_dir.mkdir(parents=True, exist_ok=True)
+
+        valid_item = inbox_dir / "FB-GH-1.md"
+        valid_item.write_text(
+            "---\nid: FB-GH-1\ntitle: Issue 1\nstatus: new\ntype: feedback\nchannel: github\ncreated: 2026-10-11\n---\n# Feedback\n[[../../00_Index]]",
+            encoding="utf-8"
+        )
+
+        ok, msg = kb_lint.check_file_frontmatter(valid_item)
+        self.assertTrue(ok)
+        self.assertIn("Valid", msg)
+
+        # Missing field
+        invalid_missing = inbox_dir / "FB-GH-2.md"
+        invalid_missing.write_text(
+            "---\nid: FB-GH-2\ntitle: Issue 2\nstatus: new\n---\n# Incomplete",
+            encoding="utf-8"
+        )
+        ok, msg = kb_lint.check_file_frontmatter(invalid_missing)
+        self.assertFalse(ok)
+        self.assertIn("Missing required frontmatter fields", msg)
+
+        # Invalid status
+        invalid_status = inbox_dir / "FB-GH-3.md"
+        invalid_status.write_text(
+            "---\nid: FB-GH-3\ntitle: Issue 3\nstatus: unknown_status\ntype: feedback\nchannel: github\ncreated: 2026-10-11\n---\n# Bad Status",
+            encoding="utf-8"
+        )
+        ok, msg = kb_lint.check_file_frontmatter(invalid_status)
+        self.assertFalse(ok)
+        self.assertIn("Invalid status", msg)
+
 
 if __name__ == "__main__":
     unittest.main()
+

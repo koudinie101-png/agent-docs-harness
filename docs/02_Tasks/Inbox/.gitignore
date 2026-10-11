@@ -1,0 +1,5 @@
+# Ignore raw message dumps and local secrets
+Raw/
+*.tmp
+.env.local
+*.secret

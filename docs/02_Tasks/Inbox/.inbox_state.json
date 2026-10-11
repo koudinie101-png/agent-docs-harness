@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "github": {
+    "last_issue_number": 0,
+    "processed_ids": []
+  },
+  "email": {
+    "last_uid": 0,
+    "processed_message_ids": []
+  },
+  "paste": {
+    "processed_hashes": []
+  }
+}

@@ -42,11 +42,33 @@ def check_file_frontmatter(file_path: Path):
     except Exception as e:
         return False, f"Could not read file: {e}"
 
-    if text.startswith("---"):
-        parts = text.split("---", 2)
-        if len(parts) >= 3:
-            return True, "Valid YAML frontmatter"
-    return False, "Missing or malformed YAML frontmatter (starts without ---)"
+    if not text.startswith("---"):
+        return False, "Missing or malformed YAML frontmatter (starts without ---)"
+
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return False, "Malformed YAML frontmatter (missing closing ---)"
+
+    fm_raw = parts[1]
+    # Check specific requirements for Inbox/ feedback files
+    rel_posix = file_path.as_posix()
+    if "02_Tasks/Inbox" in rel_posix:
+        required_fields = ["id", "title", "status", "type", "channel", "created"]
+        missing = []
+        for field in required_fields:
+            if not re.search(rf'^{field}:\s*.+', fm_raw, re.MULTILINE):
+                missing.append(field)
+        if missing:
+            return False, f"Missing required frontmatter fields: {', '.join(missing)}"
+
+        status_match = re.search(r'^status:\s*([^\s#]+)', fm_raw, re.MULTILINE)
+        if status_match:
+            val = status_match.group(1).lower()
+            allowed_statuses = ["new", "triaged", "processed", "rejected"]
+            if val not in allowed_statuses:
+                return False, f"Invalid status '{val}' in Inbox item. Expected one of: {allowed_statuses}"
+
+    return True, "Valid YAML frontmatter"
 
 
 def check_spec_drift(docs_dir: Path) -> list:
@@ -180,8 +202,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         else:
             rel = f.name
 
-        # Check frontmatter for task/spec/bug/adr/plan
-        if any(prefix in rel for prefix in ["02_Tasks/Specs", "02_Tasks/Plans", "02_Tasks/Bugs", "03_Decisions_ADR"]):
+        # Check frontmatter for task/spec/bug/adr/plan/inbox
+        if any(prefix in rel for prefix in ["02_Tasks/Specs", "02_Tasks/Plans", "02_Tasks/Bugs", "03_Decisions_ADR", "02_Tasks/Inbox"]):
             if not f.name.startswith("TEMPLATE_"):
                 has_fm, msg = check_file_frontmatter(f)
                 if not has_fm:
