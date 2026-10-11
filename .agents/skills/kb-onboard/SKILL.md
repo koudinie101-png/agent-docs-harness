@@ -7,19 +7,34 @@ description: "Display developer onboarding guide, 4-stage lifecycle cheatsheet, 
 
 Use when the user runs `/kb-onboard` or asks how to interact with the project and knowledge base.
 
-## 🚨 Constraints
-* **Adherence to Core Rules:** All work strictly adheres to the 4 operating modes defined in `AGENTS.md`.
+## 🧭 Command Router
+
+| Trigger | Mode | Function | Skill |
+| :--- | :--- | :--- | :--- |
+| `/kb-init` | Init | Scaffold `docs/`, 14 templates, Obsidian graph | `kb-init` |
+| `/kb-onboard` | Help | Developer and agent onboarding cheatsheet | `kb-onboard` |
+| `/kb-research` | Mode 0 | Discovery & feasibility (RESEARCH-XXX, Icebox sync) | `kb-research` |
+| `/kb-adr` | Mode 0 / ADR | ADR-XXXX record with rejected options | `kb-adr` |
+| `/kb-plan` | Mode 1 | RFC discussion, PLAN-XXX. **No code.** | `kb-plan` |
+| `/kb-task` | Mode 2 | Spec TASK-XXX with contracts and DoD. **No code.** | `kb-task` |
+| `/kb-bug` | Mode 2B | Triage defect BUG-XXX with RCA. **No code.** | `kb-bug` |
+| `/kb-triage` | Mode 2C | Ingestion triage from `docs/02_Tasks/Inbox/`. **No code.** | `kb-triage` |
+| `/kb-implement`| Mode 3 | Implement TASK-XXX or resolve BUG-XXX with auto-complete | `kb-implement` |
+| `/kb-complete` | Mode 3 | Standalone sync: Done, Devlog, git | `kb-complete` |
+| `/kb-release`  | Release | Dual-Mode release, SHA-256, git tag | `kb-release` |
+| `/kb-lint` | Audit | Verify wikilinks and YAML integrity | `kb-lint` |
+
+## 🏛️ Directory Layout (`docs/`)
+`00_Templates/` (14 templates: 4 Core, 10 Advanced), `01_Architecture/`, `02_Tasks/` (Kanban, Roadmap, Plans, Specs, Bugs, Inbox, Releases), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `Devlog.md`, `Onboarding.md`.
+
+## 🚨 Invariants
+* **Permalinks:** Specs, plans, bugs, and feedback are never moved or renamed when closed.
+* **Regression-First:** Bugs (`BUG-XXX`) closed strictly after automated failing test reproduces defect and passes.
+* **Anti-Echo:** Link + 3–5 bullet summary instead of dumping full file bodies into chat.
+* **Single-Task Barrier:** `/kb-implement` executes exactly one spec; never auto-chain.
+* **SSOT:** Behavioral standards are defined in `AGENTS.md`.
 
 ## Procedure
-1. **Present Onboarding Cheatsheet:**
-   - Display reference table of `/kb-*` slash commands and 4-stage development lifecycle:
-     - **Mode 0 (`/kb-research` & `/kb-adr`):** Discovery & Feasibility. Falsification, benchmarks, Icebox sync.
-     - **Mode 1 (`/kb-plan`):** Conceptual Planning & RFC. Modifying code is prohibited.
-     - **Mode 2 (`/kb-task`):** Engineering Specification & Contracts. Modifying code is prohibited.
-     - **Mode 3 (`/kb-implement` & `/kb-complete`):** Strict implementation, automated tests, Devlog, and git sync.
-2. **Review Invariants:**
-   - **Permalinks:** Specs and bugs are never moved or deleted upon completion.
-   - **Regression-First:** Bugs require an automated failing test before fix.
-   - **Anti-Echo:** Response summaries with links instead of dumping full file bodies into chat.
-3. **Reference Full Guide:**
-   - Direct developer to `docs/Onboarding.md` and `docs/00_Index.md` for full onboarding guide.
+1. **Present Onboarding Cheatsheet:** Display `/kb-*` command router and 4-stage lifecycle (Discovery $\to$ Planning $\to$ Spec $\to$ Verification/TDD $\to$ Release $\to$ Ingestion).
+2. **Review Core Invariants:** Permalinks, Regression-First, Anti-Echo, Single-Task Barrier, Living Spec.
+3. **Reference Full Guide:** Direct developer to `docs/Onboarding.md` and `docs/00_Index.md`.

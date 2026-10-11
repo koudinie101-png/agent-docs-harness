@@ -1,7 +1,7 @@
 ---
 id: TASK-050
 title: "Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md"
-status: planned
+status: done
 type: task
 phase: 13
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-050 — Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md
 
-> **ID:** TASK-050 | **Статус:** К реализации  
+> **ID:** TASK-050 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]] | **Решение:** [[../../../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]
 
@@ -67,18 +67,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая проверка: `python -m py_compile install.py` (Exit code 0).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
-- [ ] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
-- [ ] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Синтаксическая проверка: `python -m py_compile install.py` (Exit code 0).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
+- [x] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
+- [x] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скилл `.agents/skills/docs-as-code/` удален, `kb-onboard` обновлен и содержит полную сводку.
-- [ ] В `docs/Onboarding.md` и `TEMPLATE_ONBOARDING.md` зафиксирована двухуровневая таксономия шаблонов.
-- [ ] Инсталлятор `install.py` разворачивает ровно 12 скиллов.
-- [ ] Все тесты из Плана верификации пройдены с кодом 0.
-- [ ] Статус задачи обновлен в Канбане (`Done`), ТЗ (`Выполнено`), Дорожной карте (`[x]`).
-- [ ] Результаты зафиксированы в `Devlog.md`.
+- [x] Скилл `.agents/skills/docs-as-code/` удален, `kb-onboard` обновлен и содержит полную сводку.
+- [x] В `docs/Onboarding.md` и `TEMPLATE_ONBOARDING.md` зафиксирована двухуровневая таксономия шаблонов.
+- [x] Инсталлятор `install.py` разворачивает ровно 12 скиллов.
+- [x] Все тесты из Плана верификации пройдены с кодом 0.
+- [x] Статус задачи обновлен в Канбане (`Done`), ТЗ (`Выполнено`), Дорожной карте (`[x]`).
+- [x] Результаты зафиксированы в `Devlog.md`.

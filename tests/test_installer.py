@@ -248,7 +248,6 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertTrue(skills_dir.is_dir(), ".agents/skills directory not found")
 
             expected_skills = [
-                "docs-as-code",
                 "kb-adr",
                 "kb-bug",
                 "kb-complete",
@@ -257,9 +256,12 @@ class TestAgentDocsHarness(unittest.TestCase):
                 "kb-lint",
                 "kb-onboard",
                 "kb-plan",
+                "kb-release",
                 "kb-research",
                 "kb-task",
+                "kb-triage",
             ]
+            self.assertFalse((skills_dir / "docs-as-code").exists(), "docs-as-code should be consolidated into kb-onboard")
             for skill_name in expected_skills:
                 skill_file = skills_dir / skill_name / "SKILL.md"
                 self.assertTrue(skill_file.is_file(), f"Missing skill file: {skill_file}")
@@ -921,8 +923,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
             self.assertLessEqual(onboarding_size, 5000, f"TEMPLATE_ONBOARDING.md exceeded budget: {onboarding_size} bytes (budget <= 5000)")
 
-            router_size = (skills_dir / "docs-as-code" / "SKILL.md").stat().st_size
-            self.assertLessEqual(router_size, 3000, f"docs-as-code router exceeded budget: {router_size} bytes (budget <= 3000)")
+            router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
+            self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
             # Installer size check
             installer_size = (REPO_ROOT / "install.py").stat().st_size
@@ -948,7 +950,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             bloated_tpl.write_text("# Bloated Onboarding Essay\n" + ("Lots of tokens here...\n" * 500), encoding="utf-8")
             self.assertGreater(bloated_tpl.stat().st_size, 10000)
 
-            bloated_router = target / ".agents" / "skills" / "docs-as-code" / "SKILL.md"
+            bloated_router = target / ".agents" / "skills" / "kb-onboard" / "SKILL.md"
             bloated_router.write_text("# Bloated Router\n" + ("Lots of documentation text...\n" * 500), encoding="utf-8")
             self.assertGreater(bloated_router.stat().st_size, 10000)
 
@@ -1086,11 +1088,11 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("status: discovery", spec_content2)
             self.assertIn("Offline Local-First Encrypted Vault", spec_content2)
 
-            # Check all 13 skills deployed
+            # Check all 12 skills deployed
             skills_dir2 = target2 / ".agents" / "skills"
             self.assertTrue(skills_dir2.is_dir())
             skill_subdirs = [d for d in skills_dir2.iterdir() if d.is_dir()]
-            self.assertEqual(len(skill_subdirs), 13)
+            self.assertEqual(len(skill_subdirs), 12)
 
             # Run kb_lint on installed project
             kb_lint_res = subprocess.run(
@@ -1709,6 +1711,50 @@ class TestAgentDocsHarness(unittest.TestCase):
                 self.assertIn("[[AGENTS.md]]", content)
                 self.assertIn("npm test", content)
                 self.assertNotIn("## Docs-as-Code (15 Disciplines)", content)
+
+    def test_26_skills_consolidation_and_template_taxonomy(self):
+        """E2E test: Verify consolidation of docs-as-code into kb-onboard (12 skills total) and two-tier template taxonomy."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "ConsolidatedApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="ConsolidatedApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # 1. Exactly 12 skills deployed
+            skills_dir = target / ".agents" / "skills"
+            self.assertTrue(skills_dir.is_dir())
+            skill_dirs = [d for d in skills_dir.iterdir() if d.is_dir()]
+            self.assertEqual(len(skill_dirs), 12, f"Expected 12 skills, got: {[d.name for d in skill_dirs]}")
+
+            # 2. docs-as-code must NOT exist, kb-onboard must exist and contain command router
+            self.assertFalse((skills_dir / "docs-as-code").exists(), "docs-as-code must be consolidated and removed")
+            onboard_skill = skills_dir / "kb-onboard" / "SKILL.md"
+            self.assertTrue(onboard_skill.is_file())
+            onboard_text = onboard_skill.read_text(encoding="utf-8")
+            self.assertIn("Command Router", onboard_text)
+            self.assertIn("/kb-init", onboard_text)
+            self.assertIn("/kb-implement", onboard_text)
+            self.assertIn("14 templates: 4 Core, 10 Advanced", onboard_text)
+
+            # 3. Two-tier template taxonomy documented in TEMPLATE_ONBOARDING.md and repo Onboarding.md
+            template_onboarding = target / "docs" / "00_Templates" / "TEMPLATE_ONBOARDING.md"
+            self.assertTrue(template_onboarding.is_file())
+            template_content = template_onboarding.read_text(encoding="utf-8")
+            self.assertIn("Core Essentials (4)", template_content)
+            self.assertIn("Advanced Governance (10)", template_content)
+
+            repo_onboarding = REPO_ROOT / "docs" / "Onboarding.md"
+            repo_content = repo_onboarding.read_text(encoding="utf-8")
+            self.assertIn("Двухуровневая таксономия шаблонов", repo_content)
+            self.assertIn("Core Essentials — 4 шаблона", repo_content)
+            self.assertIn("Advanced Governance — 10 шаблонов", repo_content)
 
 
 if __name__ == "__main__":

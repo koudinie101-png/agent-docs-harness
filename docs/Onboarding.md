@@ -183,9 +183,9 @@ flowchart LR
 
 ## 6. High-SNR архитектура и контекстная эффективность
 
-Для предотвращения деградации контекста модели при длительных сессиях действует стандарт [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]]:
-* **Micro-Descriptions (-53%):** Описания скиллов в YAML frontmatter сжаты до 10–13 слов, снижая постоянный налог системного реестра.
-* **Progressive Disclosure Router:** Мастер-скилл `docs-as-code` работает как легковесный индекс (~2.2 КБ), раскрывая подробности по требованию.
+Для предотвращения деградации контекста модели при длительных сессиях действует стандарт [[03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]] и [[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]:
+* **Micro-Descriptions (-53%):** Описания 12 скиллов в YAML frontmatter сжаты до 10–13 слов, снижая постоянный налог системного реестра.
+* **Consolidated Onboarding Hub (`kb-onboard`):** Навигация, таблица команд и жизненный цикл объединены в `kb-onboard`, высвобождая слот в Always-On системном промпте модели (12 специализированных скиллов вместо 13).
 * **Skeleton Templates (-49%):** 14 шаблонов `docs/00_Templates/` сведены к компактным каркасам с однострочными директивами `<!-- prompt -->`.
 * **Anti-Echo Protocol:** Запрещена перепечатка содержимого файлов в чат — ответ содержит permalink `[File](file://...)`, 3–5 пунктов резюме и следующий шаг.
 * **Silent-on-Success CLI:** Скрипты `kb_lint.py` и `kb_release.py` при успехе выводят ровно одну строку, экономя токены истории вывода.
@@ -240,4 +240,31 @@ flowchart LR
 1. **Буферная изоляция (Inbox Buffer Invariant):** Любые сигналы из внешних каналов (GitHub Issues, Email, буфер обмена) никогда не конвертируются в задачи напрямую. Они оседают в `docs/02_Tasks/Inbox/FB-*.md` через утилиту `scripts/kb_ingest.py` со сквозной дедупликацией по `.inbox_state.json`.
 2. **Двухэтапный триаж (Режим 2C `/kb-triage`):** Агент классифицирует сигналы (Noise vs Signal) и маршрутизирует их в дефекты (`/kb-bug`), идеи Дорожной карты (`Roadmap.md` Icebox) или документацию. Статус `FB-XXX` обновляется in-place (`status: processed | rejected`) с обязательной ссылкой на целевой артефакт (принцип Permalinks) и завершается шагом **Stop & Yield Control**.
 3. **Оффлайн-диагностика (`install.py --report`):** Команда генерирует самодостаточный анонимизированный Markdown-отчет об окружении (ОС, Python, Git, статус kb_lint, найденные конфиги агентов), маскируя персональные пути пользователей (`<user>`), для быстрой локализации инцидентов без доступа в интернет.
+
+---
+
+## 12. Двухуровневая таксономия шаблонов (Core vs Advanced)
+
+Для снижения когнитивной нагрузки 14 шаблонов базы знаний (`docs/00_Templates/`) разделены на два ясных уровня ([[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]):
+
+### 🌟 1. Базовые шаблоны (Core Essentials — 4 шаблона)
+Инструменты повседневного рабочего процесса, с которыми разработчик и агент взаимодействуют в каждой задаче:
+1. `TEMPLATE_ADR.md` — Архитектурные решения (ADR-XXXX) с контекстом, компромиссами и отклоненными вариантами (`/kb-adr`).
+2. `TEMPLATE_PLAN.md` — Концептуальные планы и RFC (PLAN-XXX) перед началом крупных фич (`/kb-plan`).
+3. `TEMPLATE_TASK.md` — Инженерные спецификации (TASK-XXX) с точными файловыми контрактами и планом верификации (`/kb-task`).
+4. `TEMPLATE_BUG.md` — Отчеты о дефектах (BUG-XXX) с RCA-анализом и контрактом воспроизводящего TDD-теста (`/kb-bug`).
+
+### 🏛️ 2. Системные шаблоны управления (Advanced Governance — 10 шаблонов)
+Инфраструктурные каркасы, используемые скиллами харнесса и системными процессами базы знаний (не требуют ручного заполнения с нуля):
+1. `TEMPLATE_RESEARCH.md` — Исследования гипотез и платформенных ограничений (RESEARCH-XXX, `/kb-research`).
+2. `TEMPLATE_RELEASE.md` — Заметки о выпуске версий (RELEASE-vX.Y.Z, `/kb-release`).
+3. `TEMPLATE_FEEDBACK.md` — Фиксация внешних сигналов в буфере обратной связи (FB-XXX, `/kb-triage`).
+4. `TEMPLATE_TEST.md` — Интерактивные чек-листы приемочного тестирования (`docs/05_Testing/`).
+5. `TEMPLATE_DEVLOG.md` — Структура хронологического журнала разработки (`docs/Devlog.md`).
+6. `TEMPLATE_INDEX.md` — Главный навигационный индекс базы знаний (`docs/00_Index.md`).
+7. `TEMPLATE_KANBAN.md` — Канбан-доска задач (`docs/02_Tasks/Kanban.md`).
+8. `TEMPLATE_ROADMAP.md` — Дорожная карта и релизные вехи (`docs/02_Tasks/Roadmap.md`).
+9. `TEMPLATE_ARCHITECTURE.md` — Архитектурные срезы подсистем (`docs/01_Architecture/`).
+10. `TEMPLATE_ONBOARDING.md` — Руководство по онбордингу проекта (`docs/Onboarding.md`).
+
 

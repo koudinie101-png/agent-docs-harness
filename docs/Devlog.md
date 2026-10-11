@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-050: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md
+- **Что сделано:**
+  - Упразднен избыточный мета-скилл `.agents/skills/docs-as-code/`, высвободивший постоянный слот в Always-On системном промпте модели (реестр скиллов сокращен с 13 до 12 специализированных инструментов).
+  - Скилл `.agents/skills/kb-onboard/SKILL.md` расширен и стал единой точкой входа: включены компактная таблица Command Router (12 команд), навигационная карта каталогов `docs/` и сводка 4-этапного жизненного цикла. Размер скилла удержан в лимите $\le 3000$ байт (2525 байт).
+  - В руководстве [[Onboarding|docs/Onboarding.md]] и эталонных шаблонах `docs/00_Templates/TEMPLATE_ONBOARDING.md` / `templates/TEMPLATE_ONBOARDING.md` зафиксирована двухуровневая таксономия шаблонов (Core Essentials [4] vs Advanced Governance [10]).
+  - Обновлен тестовый сьют `tests/test_installer.py`: проверки адаптированы на развертывание 12 скиллов без `docs-as-code`, добавлен тест `test_26_skills_consolidation_and_template_taxonomy`.
+  - Синхронизированы сборщик и дистрибутивный инсталлятор `install.py` через `scripts/build_installer.py`.
+  - Актуализированы статусы задачи в ТЗ [[02_Tasks/Specs/13_RulesLayering/TASK-050-consolidate-onboard-and-template-taxonomy|TASK-050]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]], Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]].
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - `python scripts/kb_lint.py --path docs -v` -> 134 файла проверено, 1205 связей валидны (0 broken links, Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 26/26 тестов успешно пройдено (OK, 18.2s).
+  - `python -m unittest discover -s tests` -> 66/66 тестов успешно пройдено (100% Pass, Exit code 0, 22.8s).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Приступить к реализации TASK-051: `/kb-implement TASK-051` (Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec).
+
+---
+
 ### [2026-10-11] — Реализация TASK-049: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py
 - **Что сделано:**
   - Переведены все 6 генераторов адаптеров AI-ассистентов в `install.py` (`generate_gemini_md`, `generate_windsurfrules`, `generate_clinerules`, `generate_claude_md`, `generate_cursorrules`, `generate_copilot_instructions`) на паттерн **Thin Forwarders**: адаптеры сжаты до $\le 25$ строк (сокращение на 80%), устранены дублирование 15 дисциплин и риск двойной инжекции контекста.

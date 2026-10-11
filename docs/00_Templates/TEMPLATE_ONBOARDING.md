@@ -49,9 +49,11 @@ tags:
 
 ---
 
-## 4. Архитектура каталогов `docs/`
-* `00_Templates/` (шаблоны), `01_Architecture/` (архитектура), `02_Tasks/` (задачи, планы, релизы).
-* `03_Decisions_ADR/` (ADR), `04_Research/` (исследования), `05_Testing/` (тестирование UX).
+## 4. Архитектура каталогов `docs/` и таксономия шаблонов
+* `00_Templates/` (14 шаблонов):
+  - **Core Essentials (4):** `TEMPLATE_ADR.md`, `TEMPLATE_PLAN.md`, `TEMPLATE_TASK.md`, `TEMPLATE_BUG.md` — регулярная разработка.
+  - **Advanced Governance (10):** `TEMPLATE_RESEARCH.md`, `TEMPLATE_RELEASE.md`, `TEMPLATE_FEEDBACK.md`, `TEMPLATE_TEST.md`, `TEMPLATE_DEVLOG.md`, `TEMPLATE_INDEX.md`, `TEMPLATE_KANBAN.md`, `TEMPLATE_ROADMAP.md`, `TEMPLATE_ARCHITECTURE.md`, `TEMPLATE_ONBOARDING.md` — системный харнесс.
+* `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`.
 * `Devlog.md` (журнал сессий) и `00_Index.md` (карта заметок).
 
 ---
