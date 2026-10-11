@@ -11,12 +11,14 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
-  - [ ] **TASK-049**: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py #task #phase13 #installer #adapters #thin-forwarders
-  - [ ] **TASK-050**: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md #task #phase13 #skills #onboarding #templates
-  - [ ] **TASK-051**: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec #task #phase13 #installer #e2e #spec
+  - [ ] [[Specs/13_RulesLayering/TASK-050-consolidate-onboard-and-template-taxonomy|TASK-050]]: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md #task #phase13 #skills #onboarding #templates
+  - [ ] [[Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]]: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec #task #phase13 #installer #e2e #spec
 
 
 ## ⏳ В работе (In Progress)
+
+- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
+  - [ ] [[Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]]: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py #task #phase13 #installer #adapters #thin-forwarders
 
 
 ## ✅ Готово (Done)

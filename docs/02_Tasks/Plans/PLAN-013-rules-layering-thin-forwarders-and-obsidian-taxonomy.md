@@ -65,9 +65,9 @@ related_research: "[[../../04_Research/RESEARCH-016-agent-rules-hierarchy-and-kn
 ## 4. Декомпозиция задач (Task Breakdown)
 
 - [x] [[../Specs/13_RulesLayering/TASK-048-clean-agents-md-and-obsidian-taxonomy|TASK-048]]: Очистка `AGENTS.md` от графового шума и изоляция таксономии Obsidian Graph в `.obsidian/graph.json`
-- [ ] **TASK-049:** Реализация паттерна Thin Forwarders в генераторах адаптеров `install.py`
-- [ ] **TASK-050:** Консолидация `docs-as-code` и `kb-onboard`, двухуровневая таксономия шаблонов в `Onboarding.md`
-- [ ] **TASK-051:** Сборка инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec
+- [ ] [[../Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]]: Реализация паттерна Thin Forwarders в генераторах адаптеров `install.py`
+- [ ] [[../Specs/13_RulesLayering/TASK-050-consolidate-onboard-and-template-taxonomy|TASK-050]]: Консолидация `docs-as-code` и `kb-onboard`, двухуровневая таксономия шаблонов в `Onboarding.md`
+- [ ] [[../Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]]: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec
 
 ---
 
