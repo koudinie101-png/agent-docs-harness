@@ -79,6 +79,8 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019: Архитектура жизненного цикла дефектов, изолированный триаж и релизный таргетинг]]
 * [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020: Архитектура сбора обратной связи (Feedback Ingestion), каналы, периодичность и двухстадийный триаж]]
 * [[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021: Архитектура распределения правил (Thin Forwarders), декуплинг графа Obsidian и консолидация онбординга]]
+* [[03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022: Архитектура Chat-First DX, адаптация для начинающих и превентивные подсказки]]
+* [[03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023: Архитектура протокола Fast-Track для микро-задач и легковесные спецификации]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -97,6 +99,8 @@ flowchart TD
 * [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг]]
 * [[04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015: Архитектура сбора обратной связи (Feedback Ingestion): каналы, периодичность и двухстадийный триаж]]
 * [[04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016: Архитектура распределения правил AI-агентов, слоистая конфигурация и таксономия базы знаний]]
+* [[04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017: Chat-First DX и адаптация Docs-as-Code для начинающих и вайбкодеров]]
+* [[04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018: Протокол Fast-Track для микро-задач (Agile Docs-as-Code)]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
