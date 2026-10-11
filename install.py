@@ -169,7 +169,7 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
 
 # --- GENERATORS FOR AGENTS & REPO RULES ---
 
-_RULES_BODY = ("## Docs-as-Code (14 Disciplines)\n"
+_RULES_BODY = ("## Docs-as-Code (15 Disciplines)\n"
     "Language: {lang}\n"
     "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).\n"
     "2. Kanban: move cards with date `(YYYY-MM-DD)`.\n"
@@ -178,13 +178,14 @@ _RULES_BODY = ("## Docs-as-Code (14 Disciplines)\n"
     "5. Research: worst-case tests; record discarded prototypes in `RESEARCH-XXX`.\n"
     "6. Devlog: write entry at task/session end with next step awaiting user command.\n"
     "7. Obsidian: wikilinks `[[...]]` + tags.\n"
-    "8. Permalinks: NEVER move `TASK-XXX`/`BUG-XXX` to Done/Archive.\n"
+    "8. Permalinks: NEVER move `TASK-XXX`/`BUG-XXX`/`FB-XXX` to Done/Archive.\n"
     "9. Regression-First: failing test BEFORE fixing any bug via /kb-implement BUG-XXX (RED -> GREEN -> REFACTOR).\n"
     "10. QA: checklists `- [ ]` in `docs/05_Testing/`, separate from Plans.\n"
     "11. Graph: 7 Obsidian color groups (White/Purple/Cyan/Yellow/Orange/Red/Green).\n"
     "12. Git: Remote/Local/None + Trunk-Based docs + Feature Branching.\n"
     "13. Single-Task Barrier: `/kb-implement <TASK-XXX | BUG-XXX>` executes ONE task/bug; stop tool calls on complete, never auto-chain.\n"
-    "14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.\n")
+    "14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.\n"
+    "15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -199,6 +200,7 @@ _3MODES = (
     "**Mode 1 -- Planning (`/kb-plan`):** STRICTLY NO CODE CHANGES. User approval before writing plan docs. Soft Nudge if `SPEC.md` is in status: discovery.\n"
     "**Mode 2 -- Task Spec (`/kb-task`):** STRICTLY NO CODE CHANGES. `[NEW]`/`[MODIFY]`/`[DELETE]` contracts + DoD.\n"
     "**Mode 2B -- Defect Triage (`/kb-bug`):** STRICTLY NO CODE CHANGES. Reproduce bug, RCA, set release target & blocker, write `BUG-XXX` spec. Stop & Yield.\n"
+    "**Mode 2C -- Feedback Triage (`/kb-triage`):** STRICTLY NO CODE CHANGES. Screen `docs/02_Tasks/Inbox/`, dispatch to bug/icebox/FAQ, in-place update. Stop & Yield.\n"
     "**Mode 3 -- Implementation (`/kb-implement`):\n"
     "Tasks (`TASK-XXX`) per spec; Defects (`BUG-XXX`) via TDD cycle (RED -> GREEN -> REFACTOR).\n"
     "```bash\n{test_cmd}\npython3 scripts/kb_lint.py --path docs\n```\n"
@@ -216,7 +218,7 @@ def _gen_rule(title: str, p: str, s: str, l: str, extra: str = "", tail: str = "
 
 
 def generate_gemini_md(p: str, s: str, l: str = "ru") -> str:
-    return _gen_rule("GEMINI.md -- Google Antigravity & Gemini CLI Rules", p, s, l, " | Full Guidelines: `AGENTS.md`", "\nSkills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`\n")
+    return _gen_rule("GEMINI.md -- Google Antigravity & Gemini CLI Rules", p, s, l, " | Full Guidelines: `AGENTS.md`", "\nSkills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-triage` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`\n")
 
 
 def generate_windsurfrules(p: str, s: str, l: str = "ru") -> str:

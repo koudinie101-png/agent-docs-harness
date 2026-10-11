@@ -40,6 +40,10 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - When `SPEC.md` is missing or in `status: discovery`, the agent is strictly prohibited from inventing arbitrary product requirements, features, or technology stacks out of thin air.
    - Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
    - Planning (`/kb-plan`) and task specification (`/kb-task`) must issue a Soft Nudge if `SPEC.md` is unvalidated.
+7. **Feedback Ingestion & Triage Buffer Invariant:**
+   - Raw external inputs (GitHub issues, emails, chat pastes) must never bypass the triage buffer `docs/02_Tasks/Inbox/` directly into task specs or codebase modifications.
+   - Triage is performed via Mode 2C (`/kb-triage`) with **Stop & Yield**.
+   - Feedback items `FB-*.md` are subject to the **Permalinks Principle**: never move or delete them upon triage; update `status: processed` (or `rejected`) with `target: "[[...]]"` in-place.
 
 ---
 
@@ -93,6 +97,16 @@ Every feature or architectural initiative follows structured stages:
   - Explicit **Verification Plan** with commands and expected outputs.
 - **Output:** Specification file `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`.
 - **Kanban:** Move task card to `## ⏳ В работе (In Progress)` in `docs/02_Tasks/Kanban.md`.
+
+### 🐞 Mode 2B: Defect Logging & Interactive Triage (`/kb-bug` or "Режим 2B")
+- **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
+- **Action:** Defect recording, RCA, setting `target_release` and `release_blocker`, failing regression test contract.
+- **Output:** Defect report `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` + Kanban card + **Stop & Yield Control**.
+
+### 📥 Mode 2C: Feedback Triage & Dispatch (`/kb-triage` or "Режим 2C")
+- **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
+- **Action:** Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, `Roadmap.md` (Icebox), or FAQ. In-place status update (`status: processed` or `rejected`).
+- **Output:** Updated `FB-*.md` frontmatter + **Stop & Yield Control**.
 
 ### 🟢 Mode 3: Implementation & Verification (`/kb-implement` & `/kb-complete` or "Режим 3")
 - **Action:**

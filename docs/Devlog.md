@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-046: Исполняемый скилл /kb-triage и интеграция в правила агентов
+- **Что сделано:**
+  - Создан исполняемый скилл `.agents/skills/kb-triage/SKILL.md` (Режим 2C: Feedback Triage & Dispatch) согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]:
+    - Реализована процедура двухстадийного скрининга обращений в `docs/02_Tasks/Inbox/`.
+    - Закреплен запрет модификации кода проекта и обязательный терминальный шаг **Stop & Yield Control**.
+    - Закреплен **Permalinks Invariant** для обращений: файлы `FB-*.md` никогда не перемещаются, статус и целевой артефакт (`target: "[[...]]"`) обновляются in-place.
+  - Актуализирован канонический файл руководства агентов `AGENTS.md`: добавлены 7-й инвариант (буфер триажа) и регламент Режима 2C.
+  - В генераторах правил инсталлятора `install.py` (`_RULES_BODY`, `_3MODES`, `generate_gemini_md` и др.) закреплены 15 дисциплин Docs-as-Code и зарегистрирован скилл `/kb-triage`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 124 файла проверено, 1101 связь валидна (0 broken links).
+  - `python -m unittest discover -s tests` -> 62/62 теста успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать финальную интеграцию фазы: `/kb-implement TASK-047`.
+
+---  
+
 ### [2026-10-11] — Реализация TASK-045: GitHub Issue Forms и облачный workflow кросс-агентной синхронизации
 - **Что сделано:**
   - Созданы декларативные формы сбора обратной связи в `.github/ISSUE_TEMPLATE/` согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]:
