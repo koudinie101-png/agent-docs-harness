@@ -7,6 +7,10 @@ component:
   - automation
   - release
 status: fixed
+target_release: "v0.8.0"
+target_phase: 8
+release_blocker: false
+fixed_in: "v0.8.0"
 resolved: 2026-10-02
 regression_test: "tests/test_kb_release.py"
 created: 2026-10-02

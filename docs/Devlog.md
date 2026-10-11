@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Выпуск официального релиза v0.11.0: Bug Lifecycle & Release Targeting (Фаза 11)
+- **Что сделано:**
+  - Осуществлен официальный релиз **v0.11.0** по завершении Фазы 11 (План [[02_Tasks/Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]).
+  - Сформирован структурированный релизный документ [[02_Tasks/Releases/RELEASE-v0.11.0|RELEASE-v0.11.0]] во внутренней базе знаний и публичный файл заметок `dist/RELEASE_NOTES.md` по High-SNR стандарту (без шума ADR).
+  - Собраны релизные артефакты в `dist/` через хук `scripts/build_release.py`:
+    - `dist/install.py` (99.0 KB / 101 356 байт) — SHA-256: `c6b877a95817af8a9156666f4decaaceb498593a9ea130e2145a5734a4a105c7`.
+    - `dist/RELEASE_NOTES.md` (3.0 KB / 2 988 байт) — SHA-256: `4e0bf47abf6519f2fca53dd31e4805519e3d309a30702340667f4e32e694d1b5`.
+  - Обновлены [[02_Tasks/Roadmap|Roadmap.md]] (ссылка на официальный релиз `RELEASE-v0.11.0`) и корневой `CHANGELOG.md` (секция `[0.11.0]`).
+  - Зафиксирован аннотированный Git-тег `v0.11.0`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 113 файлов проверено, 988 связей валидны (0 битых связей, 0 ошибок).
+  - `python -m unittest discover -s tests` -> 56/56 тестов успешно пройдено (100% Pass, Exit code 0).
+  - Контрольные суммы SHA-256 подтверждены.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Выбор и концептуальная проработка следующей инициативы из Icebox (например, Zero Round-Trip Dispatch [[04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]] или Feedback Loops & Triage Buffer [[04_Research/RESEARCH-003-feedback-channels-and-triage-pipeline|RESEARCH-003]]) через `/kb-plan`.
+
+---
+
 ### [2026-10-11] — Завершение TASK-042 и Фазы 11: Синхронизация инсталлятора, E2E тесты и документация
 - **Что сделано:**
   - Полностью завершена **Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг** согласно [[02_Tasks/Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]], [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]] и [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]].

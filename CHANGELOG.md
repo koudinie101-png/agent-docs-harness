@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-10-11
+
+### Added
+- Bug Lifecycle Architecture & Release Targeting standard based on ADR-0019 and RESEARCH-014.
+- Isolated Mode 2B Defect Logging & Interactive Triage (`/kb-bug`) strictly prohibiting code modifications and enforcing Stop & Yield Control.
+- Defect release contract metadata (`target_release`, `target_phase`, `release_blocker`, `fixed_in`, `regression_test`) in canonical `TEMPLATE_BUG.md`.
+- Native bug resolution via Mode 3 (`/kb-implement BUG-XXX`) enforcing the strict TDD cycle (RED -> GREEN -> REFACTOR).
+- Release defect filtering (`collect_fixed_bugs`) in `scripts/kb_release.py` scoping bug fixes strictly to the target release version.
+- Pre-flight release blocker check (`check_release_blockers`) halting releases with Exit code 1 upon detecting open blockers.
+- Comprehensive E2E installer test `test_22_bug_lifecycle_and_phase11_assets` in `tests/test_installer.py`.
+
+### Changed
+- Re-bundled standalone installer `install.py` (99.0 KB) with updated templates, skills, and release manager.
+- Synchronized `SPEC.md`, `README.md`, `docs/Onboarding.md`, and agent rules with the 4-Stage Development Lifecycle.
+
+## [0.10.0] - 2026-10-03
+
+### Added
+- Single-Task Execution Barrier & Stop-on-Complete Protocol based on ADR-0016 and RESEARCH-012.
+- Spec Genesis Protocol & Zero-State Guardrails based on ADR-0018 and RESEARCH-011.
+- High-SNR Release Notes Generator & Phase ADR Scoping based on ADR-0017 and RESEARCH-013.
+- Cumulative multi-phase release packaging (`--phases`) in `scripts/kb_release.py`.
+
 ## [0.8.0] - 2026-10-02
 
 ### Added
