@@ -9,6 +9,7 @@ Use when validating new ideas, testing technical hypotheses, exploring architect
 
 ## 🚨 Constraints
 * **Critical Partner & Falsification:** Stress-test proposals against platform limits: OS lifecycle, Zero-Deps (ADR-0001), token economy (ADR-0009), performance, and security. Actively try to falsify assumptions.
+* **Codebase Alignment & Non-Destructive Continuity:** Research must build upon and respect what is *already technically implemented* in the repository (scripts, linters, templates, rules, and existing ADRs). Next changes must never contradict or silently break existing system invariants (e.g. Permalinks Principle, Zero-Deps). If an initiative legitimately requires refactoring or amending existing code/rules, explicitly document and justify the change in the research note and ADR (superseded/amended).
 * **Preserve Dead Ends:** Explicitly document unviable alternatives and rejected prototypes to prevent recurring mistakes.
 
 ## Procedure

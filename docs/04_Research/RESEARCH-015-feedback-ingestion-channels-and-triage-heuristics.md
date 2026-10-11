@@ -89,14 +89,25 @@ related_adrs:
 | :--- | :--- | :--- | :--- | :--- |
 | **Постоянный демон (Background Daemon)** | Скрипт в `while True: sleep(300)` крутится в фоне ОС | Мгновенный сбор | Жрет память, падает при перезагрузке, блокирует консоль, уязвим к сбоям сети | ❌ Отклонён |
 | **Системный Cron / Windows Task Scheduler** | Настройка `cron` в Linux/macOS или Планировщика Windows | Работает без участия пользователя | Платформозависим, сложная установка через `install.py`, засоряет ОС | ❌ Отклонён |
-| **GitHub Actions Schedule (Cloud Cron)** | Workflow `.github/workflows/feedback-sync.yml` по крону `0 */4 * * *` опрашивает issues и коммитит в ветку | Автономен в облаке | Требует права на коммит в репозиторий, не работает в Local-Only режиме | 🟡 Опционально для GitHub |
-| **Antigravity Scheduler (`/schedule`)** | Шедулер среды Antigravity вызывает периодическую проверку | Нативен для среды агента | Доступен только пока запущена сессия IDE | 🟡 Рекомендован как опция |
-| **On-Demand CLI / Agent Trigger (`/kb-triage ingest`)** | Запуск разработчиком по требованию перед сессией триажа | 100% стабилен, контролируем, 0 фоновой нагрузки | Требует запуска команды человеком | ✅ **Основной стандарт** |
+| **Облачный GitHub Actions Schedule** | Workflow `.github/workflows/feedback-sync.yml` по крону `0 */4 * * *` опрашивает issues и коммитит в ветку | Автономен в облаке, работает для любых IDE и агентов | Требует права на коммит в репозиторий, не работает в Local-Only режиме | 🟡 Опционально для GitHub |
+| **Antigravity Scheduler (`/schedule`)** | Шедулер среды Antigravity вызывает периодическую проверку | Нативен для среды агента | Доступен только пока запущена сессия IDE Antigravity | 🟡 Поддерживается для Antigravity |
+| **VS Code / Cursor / Windsurf Task Runner** | Автоматическая задача `.vscode/tasks.json` (`runOn: folderOpen`) | Срабатывает при открытии IDE, не тратит фон | Требует открытия IDE разработчиком | 🟡 Поддерживается для VS Code / Cursor |
+| **Claude Code CLI / Terminal Pre-flight Hook** | Инструкция в `CLAUDE.md` / `AGENTS.md` проверки `Inbox/` на старте | Универсально для всех LLM-агентов | Зависит от дисциплины агента | 🟡 Поддерживается для всех агентов |
+| **On-Demand CLI / Agent Trigger (`/kb-triage ingest`)** | Запуск разработчиком по требованию перед сессией триажа | 100% стабилен, контролируем, 0 фоновой нагрузки | Требует запуска команды человеком | ✅ **Основной универсальный стандарт** |
 
-**Архитектурный консенсус:**  
-Основным сценарием является **On-Demand триггер** (команда `python scripts/kb_ingest.py` или шаг скилла `/kb-triage`). Для пользователей, желающих автоматизации:
-- Внутри Antigravity агент предлагает подключить скилл `/schedule`.
-- Для проектов на GitHub предоставляется опциональный шаблон `.github/workflows/feedback-sync.yml`.
+#### Кросс-агентная матрица автоматизации сбора (Multi-Agent Automation Matrix):
+
+Харнесс `agent-docs-harness` поддерживает множество сред разработки, поэтому автоматизация сбора строится по трехуровневому принципу:
+
+1. **Универсальный облачный уровень (Cloud Headless):**
+   - Шаблон `.github/workflows/feedback-sync.yml` запускает `scripts/kb_ingest.py --github --email` каждые 4-6 часов.
+   - Независимо от того, какую IDE использует разработчик (Cursor, Windsurf, Cline, Antigravity), свежие обращения появляются в `docs/02_Tasks/Inbox/` прямо из облака.
+2. **Сессионный уровень конкретных IDE и сред:**
+   - **Google Antigravity:** нативный скилл `/schedule` для периодического запуска сбора в активной сессии.
+   - **VS Code / Cursor / Windsurf / Cline / Roo Code:** задача запуска `python scripts/kb_ingest.py` в `.vscode/tasks.json` по триггеру открытия папки (`folderOpen`).
+   - **Claude Code CLI / Generic:** pre-flight правило в `CLAUDE.md` и `AGENTS.md` (автоматическая проверка папки `Inbox/` при первом обращении разработчика).
+3. **Локальный On-Demand уровень (Zero Friction):**
+   - Единая команда `python scripts/kb_ingest.py` и скилл `/kb-triage`, доступные разработчику в любой среде.
 
 ---
 
@@ -113,7 +124,7 @@ flowchart TD
     Classify -->|Дефект| DefectBranch[Оценка Perceived Severity: Critical / Major / Minor]
     Classify -->|Идея / Фича| FeatureBranch[Оценка Value vs Effort]
     Classify -->|Вопрос / UX| SupportBranch[Формирование ответа пользователю]
-    Classify -->|Спам / Мусор| RejectBranch[Удаление / Отклонение]
+    Classify -->|Спам / Мусор| RejectBranch[Отклонение / status: rejected]
     
     DefectBranch --> BugSpec[Режим 2B: Создание BUG-XXX.md по TEMPLATE_BUG]
     BugSpec --> TDD[Режим 3: Воспроизведение, TDD и фикс через /kb-implement BUG-XXX]
@@ -121,11 +132,15 @@ flowchart TD
     FeatureBranch --> Icebox[Добавление в Roadmap.md Icebox под Режим 0/1]
     SupportBranch --> DocUpdate[Обновление Onboarding.md / FAQ + черновик ответа]
     
-    BugSpec --> Archive[Перенос FB-*.md в Inbox/Processed/]
-    Icebox --> Archive
-    SupportBranch --> Archive
-    RejectBranch --> Archive
+    BugSpec --> Processed[Permalinks Principle: Обновление frontmatter status: processed, target: link]
+    Icebox --> Processed
+    SupportBranch --> Processed
+    RejectBranch --> Processed
 ```
+
+> [!IMPORTANT]
+> **Принцип неизменяемости ссылок (Permalinks Invariant):**  
+> Файлы обращений `FB-*.md` **никогда не перемещаются** физически в папки `Processed/` или `Archive/`, так как это ведет к эффекту Link Rot (поломке викиссылок `[[...]]`). Вместо перемещения статус файла обновляется в YAML frontmatter: `status: processed`, `triaged_date: YYYY-MM-DD`, с обязательной постоянной ссылкой на целевой артефакт `target: "[[../Bugs/BUG-XXX]]"` или `target: "[[Roadmap#Icebox]]"`.
 
 #### Матрица тяжести (Severity) до и после воспроизведения:
 1. **До воспроизведения (Входной скрининг — Perceived Severity):**
@@ -220,11 +235,12 @@ tags:
 
 ## 6. Выводы и нормативные правила
 
-1. Создать буфер `docs/02_Tasks/Inbox/` и подкаталог архивного перемещения `docs/02_Tasks/Inbox/Processed/`.
-2. Внедрить детерминированный учет обработанных сущностей в `docs/02_Tasks/Inbox/.inbox_state.json`.
+1. Создать буфер `docs/02_Tasks/Inbox/`. В соответствии с **Permalinks Principle** файлы `FB-*.md` не перемещаются, а меняют статус в frontmatter на `status: processed` (или `status: rejected`) со ссылкой `target: "[[...]]"`.
+2. Внедрить детерминированный учет смещений в `docs/02_Tasks/Inbox/.inbox_state.json`.
 3. Создать Zero-Deps утилиту `scripts/kb_ingest.py` с драйверами:
    - `github`: опрос через `gh` CLI или GitHub REST API.
    - `email`: опрос через `imaplib` с защитой учетных данных в окружении.
    - `paste`: быстрая вставка текста из мессенджеров/буфера.
-4. Скилл `/kb-triage` обучить двухстадийному процессу: входной скрининг $\to$ маршрутизация (`BUG-XXX` / `Roadmap.md Icebox` / FAQ) $\to$ перемещение в `Processed/` со `Stop & Yield`.
-5. Зафиксировать решения в новом каноническом **`ADR-0020`**, который заменит и расширит `ADR-0008`.
+4. Добавить префикс `02_Tasks/Inbox` в проверку обязательного YAML frontmatter в `scripts/kb_lint.py`.
+5. Скилл `/kb-triage` обучить двухстадийному процессу: входной скрининг $\to$ маршрутизация (`BUG-XXX` / `Roadmap.md Icebox` / FAQ) $\to$ перевод в `status: processed` со `Stop & Yield`.
+6. Зафиксировать решения в каноническом **`ADR-0020`**, который заменяет и расширяет `ADR-0008`.
