@@ -118,10 +118,10 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 | :--- | :--- | :--- |
 | **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. **🚨 STRICTLY NO CODE EDITS!** |
 | **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. **🚨 NO CODE EDITS!** |
-| **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict implementation of ONE task spec, verification, auto-completion, and Stop & Yield Control. |
-| **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done`, moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
-| **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
-| **`/kb-bug`** | Defect Tracking | Enforces the **Regression-First Principle** (reproducing failing test required before fix) and root cause analysis. |
+| **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict execution of ONE task spec (TASK-XXX) or defect fix (BUG-XXX via TDD), verification, auto-completion, and Stop & Yield Control. |
+| **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
+| **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, defect release targeting, blocker validation, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
+| **`/kb-bug`** | 🐞 Mode 2B (Triage) | Isolated defect logging, root cause analysis (RCA), release targeting & blocker triage. **🚨 STRICTLY NO CODE EDITS!** Enforces Stop & Yield Control. |
 | **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
 | **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
 | **`/kb-lint`** | Health Audit | Scans internal wikilinks, YAML frontmatter, detects link rot, and ensures knowledge base consistency. |
@@ -273,11 +273,11 @@ Once installed, your workflow is seamless:
 1. **Permalinks Principle (No Link Rot):**
    * Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **never moved** to `Done/` or `Archive/` folders when closed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
 2. **Regression-First Principle:**
-   * Bugs are closed **only** when an automated regression test reproducing the defect is added to the test suite and passes.
+   * Bugs are closed **only** after creating a failing automated regression test and resolving the defect via `/kb-implement BUG-XXX` following the strict TDD cycle (**RED** -> **GREEN** -> **REFACTOR**).
 3. **Фиксация нежизнеспособных решений (Documenting Rejected Ideas):**
    * Rejected architectural proposals and failed prototypes are logged as Rejected ADRs (`status: rejected`) or in Research notes to permanently protect against recurring mistakes.
 4. **Single-Task Execution Barrier & Stop-on-Complete Protocol:**
-   * The command `/kb-implement <TASK-XXX>` authorizes work strictly on a single task specification. Auto-chaining next tasks is prohibited.
+   * The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on a single task specification or defect report. Auto-chaining next tasks is prohibited.
    * Upon completing verification and the completion checklist, the agent immediately ceases tool calls (`Stop & Yield Control`) and awaits user commands.
    * Devlog next steps use non-executable semantic markers (`- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**`), preventing runaway autonomous loops.
 5. **Spec Genesis & Zero-State Anti-Hallucination Guardrails:**

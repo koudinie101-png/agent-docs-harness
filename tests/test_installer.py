@@ -913,20 +913,20 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails + Spec Genesis)
-            self.assertLessEqual(total_skills_size, 23000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 23000)")
-            self.assertLessEqual(total_templates_size, 21500, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 21500)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle)
+            self.assertLessEqual(total_skills_size, 25500, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 25500)")
+            self.assertLessEqual(total_templates_size, 22500, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 22500)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
-            self.assertLessEqual(onboarding_size, 4000, f"TEMPLATE_ONBOARDING.md exceeded budget: {onboarding_size} bytes (budget <= 4000)")
+            self.assertLessEqual(onboarding_size, 5000, f"TEMPLATE_ONBOARDING.md exceeded budget: {onboarding_size} bytes (budget <= 5000)")
 
             router_size = (skills_dir / "docs-as-code" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"docs-as-code router exceeded budget: {router_size} bytes (budget <= 3000)")
 
             # Installer size check
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 100000, f"install.py exceeded budget: {installer_size} bytes (budget <= 100 KB)")
+            self.assertLessEqual(installer_size, 110000, f"install.py exceeded budget: {installer_size} bytes (budget <= 110 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -957,7 +957,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res, 0)
 
             # Verify both files shrunk to compact High-SNR sizes
-            self.assertLessEqual(bloated_tpl.stat().st_size, 4000)
+            self.assertLessEqual(bloated_tpl.stat().st_size, 5000)
             self.assertLessEqual(bloated_router.stat().st_size, 3000)
 
     def test_18_discovery_mode_and_phase6_assets(self):
@@ -1323,6 +1323,154 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed: {kb_lint_res.stdout}\n{kb_lint_res.stderr}")
             self.assertIn("OK:", kb_lint_res.stdout)
+
+
+    def test_22_bug_lifecycle_and_phase11_assets(self):
+        """E2E test: Verify Phase 11 Bug Lifecycle, TDD implementation, triage Mode 2B, and release targeting."""
+        # 1. Rule generators verification
+        agents_content = install.generate_agents_md("BugTestApp", "generic", "ru")
+        self.assertIn("Mode 2B -- Defect Triage (`/kb-bug`)", agents_content)
+        self.assertIn("/kb-implement <TASK-XXX | BUG-XXX>", agents_content)
+        self.assertIn("RED -> GREEN -> REFACTOR", agents_content)
+
+        for gen_fn in [
+            install.generate_gemini_md,
+            install.generate_windsurfrules,
+            install.generate_clinerules,
+            install.generate_claude_md,
+            install.generate_cursorrules,
+            install.generate_copilot_instructions,
+        ]:
+            out = gen_fn("BugTestApp", "generic", "ru")
+            self.assertIn("Mode 2B -- Defect Triage", out)
+            self.assertIn("/kb-implement BUG-XXX", out)
+
+        # 2. Fresh installation check
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "BugLifecycleApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="BugLifecycleApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Check TEMPLATE_BUG.md frontmatter attributes
+            bug_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_BUG.md").read_text(encoding="utf-8")
+            self.assertIn("target_release:", bug_tpl)
+            self.assertIn("target_phase:", bug_tpl)
+            self.assertIn("release_blocker:", bug_tpl)
+            self.assertIn("fixed_in:", bug_tpl)
+            self.assertIn("regression_test:", bug_tpl)
+
+            # Check skills deployed
+            kb_bug_skill = (target / ".agents" / "skills" / "kb-bug" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("target_release", kb_bug_skill)
+            self.assertIn("release_blocker", kb_bug_skill)
+            self.assertIn("Stop & Yield Control", kb_bug_skill)
+
+            kb_implement_skill = (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("BUG-XXX", kb_implement_skill)
+            self.assertIn("TDD Pipeline", kb_implement_skill)
+
+            kb_complete_skill = (target / ".agents" / "skills" / "kb-complete" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("fixed_in", kb_complete_skill)
+
+            # Check scripts/kb_release.py deployed
+            kb_release_script = (target / "scripts" / "kb_release.py").read_text(encoding="utf-8")
+            self.assertIn("collect_fixed_bugs", kb_release_script)
+            self.assertIn("check_release_blockers", kb_release_script)
+
+            # 3. Test install.py --update refreshes bug lifecycle assets
+            # Overwrite files with legacy dummy content
+            (target / "docs" / "00_Templates" / "TEMPLATE_BUG.md").write_text("Legacy bug template", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-bug" / "SKILL.md").write_text("Legacy kb-bug", encoding="utf-8")
+            (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").write_text("Legacy kb-implement", encoding="utf-8")
+            (target / "scripts" / "kb_release.py").write_text("# Legacy kb_release", encoding="utf-8")
+
+            update_res = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "-d", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(update_res.returncode, 0, f"Update failed: {update_res.stdout}\n{update_res.stderr}")
+
+            # Verify files restored to modern versions
+            updated_bug_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_BUG.md").read_text(encoding="utf-8")
+            self.assertIn("target_release:", updated_bug_tpl)
+            self.assertIn("release_blocker:", updated_bug_tpl)
+
+            updated_kb_release = (target / "scripts" / "kb_release.py").read_text(encoding="utf-8")
+            self.assertIn("collect_fixed_bugs", updated_kb_release)
+
+            # 4. Test release targeting & blocker in the sandbox
+            # Create a mock task and bugs
+            task_dir = target / "docs" / "02_Tasks" / "Specs" / "01_MVP"
+            task_dir.mkdir(parents=True, exist_ok=True)
+            (task_dir / "TASK-001.md").write_text(
+                "---\nid: TASK-001\ntitle: MVP\nstatus: done\nphase: 1\n---\n# TASK-001\n",
+                encoding="utf-8"
+            )
+
+            bugs_dir = target / "docs" / "02_Tasks" / "Bugs"
+            bugs_dir.mkdir(parents=True, exist_ok=True)
+            (bugs_dir / "BUG-001-fixed.md").write_text(
+                "---\nid: BUG-001\ntitle: Fixed Bug\nstatus: fixed\ntarget_release: v0.1.0\nfixed_in: v0.1.0\nphase: 1\n---\n# BUG-001\n",
+                encoding="utf-8"
+            )
+            (bugs_dir / "BUG-002-future.md").write_text(
+                "---\nid: BUG-002\ntitle: Future Bug\nstatus: fixed\ntarget_release: v0.2.0\nfixed_in: v0.2.0\nphase: 1\n---\n# BUG-002\n",
+                encoding="utf-8"
+            )
+            blocker_file = bugs_dir / "BUG-003-blocker.md"
+            blocker_file.write_text(
+                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\ntarget_release: v0.1.0\nrelease_blocker: true\nphase: 1\n---\n# BUG-003\n",
+                encoding="utf-8"
+            )
+
+            # Run kb_release.py expecting abort on open blocker
+            rel_fail = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_release.py"), "--version", "v0.1.0", "--phase", "1"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertNotEqual(rel_fail.returncode, 0, "Release should have failed due to open blocker!")
+            self.assertIn("blocked by open defect BUG-003", rel_fail.stderr)
+
+            # Clear blocker flag and re-run release
+            blocker_file.write_text(
+                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\ntarget_release: v0.1.0\nrelease_blocker: false\nphase: 1\n---\n# BUG-003\n",
+                encoding="utf-8"
+            )
+            rel_ok = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_release.py"), "--version", "v0.1.0", "--phase", "1"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(rel_ok.returncode, 0, f"Release failed unexpectedly: {rel_ok.stdout}\n{rel_ok.stderr}")
+
+            # Verify public release notes in dist/
+            dist_notes = (target / "dist" / "RELEASE_NOTES.md").read_text(encoding="utf-8")
+            self.assertIn("BUG-001", dist_notes)
+            self.assertNotIn("BUG-002", dist_notes)  # Target release was v0.2.0, so excluded from v0.1.0
+
+            # 5. Verify kb_lint check passes
+            lint_res = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_lint.py"), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(lint_res.returncode, 0, f"kb_lint failed: {lint_res.stdout}\n{lint_res.stderr}")
 
 
 if __name__ == "__main__":

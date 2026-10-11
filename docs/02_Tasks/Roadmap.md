@@ -137,7 +137,7 @@ tags:
 
 ---
 
-## Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting)
+## Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting) — ✅ Завершена
 **Цель:** Исключить хаотичный фикс багов агентом (Eager Auto-Fixing) за счет изоляции заведения дефектов от их устранения (Режим 2B `kb-bug` со `Stop & Yield`), унифицировать исполнение дефектов в Режиме 3 (`kb-implement BUG-XXX` по циклу TDD), внедрить строгий релизный контракт дефектов (`target_release`, `target_phase`, `release_blocker`, `fixed_in`), устранить утечку старых багов в чейнджлогах релизов GitHub (`scripts/kb_release.py`) и разблокировать воронку входящего фидбека.  
 **Первоисточник плана:** [[Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 **Нормативная база:** [[../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]]
@@ -145,7 +145,7 @@ tags:
 - [x] Рефакторинг `TEMPLATE_BUG.md` и скилла `kb-bug` (строгий триаж Режима 2B и терминальный `Stop & Yield`) — [[Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039]].
 - [x] Нативная поддержка дефектов в `kb-implement` (`/kb-implement BUG-XXX` и строгий TDD-цикл) — [[Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040]].
 - [x] Релизный таргетинг и фильтрация дефектов в `scripts/kb_release.py` и тесты — [[Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]].
-- [ ] Синхронизация инсталлятора, сквозные E2E тесты и документация (`install.py`, `README.md`, `SPEC.md`, `Onboarding.md`) — [[Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042]].
+- [x] Синхронизация инсталлятора, сквозные E2E тесты и документация (`install.py`, `README.md`, `SPEC.md`, `Onboarding.md`) — [[Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042]].
 
 ---
 

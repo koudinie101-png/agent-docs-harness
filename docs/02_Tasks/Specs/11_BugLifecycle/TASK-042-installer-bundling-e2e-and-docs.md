@@ -1,7 +1,7 @@
 ---
 id: TASK-042
 title: "Синхронизация инсталлятора, сквозные E2E тесты и документация"
-status: planned
+status: done
 type: task
 phase: 11
 component:
@@ -10,7 +10,7 @@ component:
   - docs
 parent_plan: "[[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]"
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-10-11
 tags:
   - task/spec
   - phase11
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-042 — Синхронизация инсталлятора, E2E тесты и документация
 
 > **ID:** TASK-042  
-> **Статус:** К реализации (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase11 #installer #bundling #e2e #documentation  
 > **Родительский план:** [[../../Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]], [[../../../03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]], [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]  
@@ -75,21 +75,21 @@ python scripts/build_installer.py
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка дистрибутива:
+- [x] Сборка дистрибутива:
   ```bash
   python scripts/build_installer.py
   ```
   *(Ожидаемый результат: Exit code 0, install.py обновлен)*.
-- [ ] Запуск сквозных тестов инсталлятора:
+- [x] Запуск сквозных тестов инсталлятора:
   ```bash
   python -m unittest tests/test_installer.py
   ```
   *(Ожидаемый результат: 100% pass)*.
-- [ ] Полный прогон тестового набора репозитория:
+- [x] Полный прогон тестового набора репозитория:
   ```bash
   python -m unittest discover -s tests
   ```
-- [ ] Аудит базы знаний:
+- [x] Аудит базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -98,7 +98,7 @@ python scripts/build_installer.py
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Инсталлятор `install.py` успешно пересобран и упаковывает все компоненты Фазы 11.
-- [ ] Сквозные тесты `test_installer.py` подтверждают корректность развертывания и обновления.
-- [ ] Документация (`SPEC.md`, `README.md`, `Onboarding.md`) полностью синхронизирована без дрифта.
-- [ ] Все пункты Плана верификации пройдены.
+- [x] Инсталлятор `install.py` успешно пересобран и упаковывает все компоненты Фазы 11.
+- [x] Сквозные тесты `test_installer.py` подтверждают корректность развертывания и обновления.
+- [x] Документация (`SPEC.md`, `README.md`, `Onboarding.md`) полностью синхронизирована без дрифта.
+- [x] Все пункты Плана верификации пройдены.

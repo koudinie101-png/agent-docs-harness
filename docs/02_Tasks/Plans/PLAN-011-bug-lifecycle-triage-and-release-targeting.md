@@ -1,11 +1,11 @@
 ---
 id: PLAN-011
 title: "Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting)"
-status: accepted
+status: completed
 type: plan
 phase: 11
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-10-11
 tags:
   - plan
   - phase11
@@ -21,7 +21,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 # 📋 План: PLAN-011 — Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг
 
 > **ID:** PLAN-011  
-> **Статус:** Согласовано (Режим 1)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #plan #phase11 #bug-lifecycle #triage #release-targeting #tdd #docs-as-code  
 > **Родительская спецификация:** [[../../SPEC|SPEC.md]]  
 > **Канбан:** [[../Kanban|Канбан-доска]]  
@@ -84,16 +84,16 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] [[../Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield)]]
-- [ ] [[../Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040: Нативная поддержка дефектов в kb-implement (/kb-implement BUG-XXX и строгий TDD-цикл)]]
-- [ ] [[../Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты]]
-- [ ] [[../Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042: Синхронизация инсталлятора, сквозные E2E тесты и документация]]
+- [x] [[../Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039: Рефакторинг TEMPLATE_BUG.md и скилла kb-bug (строгий триаж Режима 2B и терминальный Stop & Yield)]]
+- [x] [[../Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040: Нативная поддержка дефектов в kb-implement (/kb-implement BUG-XXX и строгий TDD-цикл)]]
+- [x] [[../Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py и тесты]]
+- [x] [[../Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042: Синхронизация инсталлятора, сквозные E2E тесты и документация]]
 
 ---
 
 ## 5. Критерии приемки плана (DoD Режима 1)
 
 - [x] Концепция согласована с пользователем (READ-ONLY, без кода).
-- [ ] Дорожная карта `Roadmap.md` обновлена (Фаза 11 перенесена из Icebox в активный трек).
-- [ ] Карточки добавлены в `Kanban.md` в `📥 Бэклог`.
-- [ ] Целостность базы знаний подтверждена через `python scripts/kb_lint.py --path docs`.
+- [x] Дорожная карта `Roadmap.md` обновлена (Фаза 11 перенесена из Icebox в активный трек).
+- [x] Карточки добавлены в `Kanban.md` в `📥 Бэклог`.
+- [x] Целостность базы знаний подтверждена через `python scripts/kb_lint.py --path docs`.

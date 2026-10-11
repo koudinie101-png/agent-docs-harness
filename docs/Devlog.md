@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Завершение TASK-042 и Фазы 11: Синхронизация инсталлятора, E2E тесты и документация
+- **Что сделано:**
+  - Полностью завершена **Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг** согласно [[02_Tasks/Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]], [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]] и [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]].
+  - Пересобран автономный монолитный инсталлятор `install.py` (99.0 KB) через `scripts/build_installer.py`: упакованы обновленные шаблоны `TEMPLATE_BUG.md`, `TEMPLATE_ONBOARDING.md`, скиллы `kb-bug`, `kb-implement`, `kb-complete`, и скрипт `kb_release.py`.
+  - В генераторах правил агентов `install.py` (`_RULES_BODY`, `_3MODES`, `generate_agents_md` и др.) закреплены дисциплины: изоляция триажа дефектов Режима 2B (`kb-bug` со Stop & Yield), обязательный TDD-цикл устранения багов в Режиме 3 (`/kb-implement BUG-XXX`: RED -> GREEN -> REFACTOR) и барьер единичной задачи.
+  - В `tests/test_installer.py` добавлен сквозной E2E тест `test_22_bug_lifecycle_and_phase11_assets`, проверяющий развертывание дефектов, бережное обновление через `install.py --update` и прерывание релиза открытыми блокерами.
+  - Синхронизирована документация: актуализированы мастер-спецификация `SPEC.md`, витрина `README.md`, руководство `docs/Onboarding.md` и шаблон `templates/TEMPLATE_ONBOARDING.md`.
+  - Все задачи Фазы 11 ([[02_Tasks/Specs/11_BugLifecycle/TASK-039-template-bug-and-kb-bug-triage-skill|TASK-039]], [[02_Tasks/Specs/11_BugLifecycle/TASK-040-kb-implement-bug-lifecycle-and-tdd|TASK-040]], [[02_Tasks/Specs/11_BugLifecycle/TASK-041-kb-release-defect-filtering-and-blockers|TASK-041]], [[02_Tasks/Specs/11_BugLifecycle/TASK-042-installer-bundling-e2e-and-docs|TASK-042]]) и план [[02_Tasks/Plans/PLAN-011-bug-lifecycle-triage-and-release-targeting|PLAN-011]] переведены в статус `done`/`completed`, Канбан и Дорожная карта актуализированы (Фаза 11 переведена в статус `✅ Завершена`).
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> Payload 98 138 bytes -> compressed 39 356 b64 chars, `install.py` 101 356 bytes (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 22/22 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 56/56 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 113 файлов проверено, 979 связей валидны (0 битых связей, 0 ошибок).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовка и публикация официального релиза Фазы 11: `/kb-release v0.11.0`.
+
+---
+
 ### [2026-10-11] — Завершение TASK-041: Релизный таргетинг и фильтрация дефектов в scripts/kb_release.py (Фаза 11)
 - **Что сделано:**
   - Реализован строгий релизный таргетинг дефектов в `scripts/kb_release.py` согласно [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019]] и [[04_Research/RESEARCH-014-bug-lifecycle-triage-and-release-targeting|RESEARCH-014]].

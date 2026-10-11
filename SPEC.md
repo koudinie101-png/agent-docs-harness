@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-03
+updated: 2026-10-11
 tags:
   - spec
   - master
@@ -74,20 +74,23 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
   * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.
+  * Релизный таргетинг дефектов (`collect_fixed_bugs`): включение в чейнджлог только устраненных багов целевой версии (`fixed_in` или `target_release`).
+  * Префлайт-контроль релиз-блокеров (`check_release_blockers`): аварийная остановка сборки релиза (Exit code 1) при наличии открытых багов с флагом `release_blocker: true`.
 
 ### 2.4. Дисциплина 4 этапов (Modes 0–3) и конфигурация агентов
 * Единый канонический файл правил **`AGENTS.md`** и адаптеры (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`).
-* **4 структурированных режима:**
+* **Структурированные режимы:**
   * **Режим 0: Исследование и валидация гипотез (`/kb-research`)** — стресс-тестирование рисков, матрица компромиссов, двухпутевая воронка регистрации (Icebox vs отказные ADR).
   * **Режим 1: Планирование (Planning / RFC, `/kb-plan`)** — только концептуальное обсуждение, критика, архитектурный план. Запрет на редактирование кода!
   * **Режим 2: Формирование ТЗ (Task Spec, `/kb-task`)** — точные контракты `[NEW]`/`[MODIFY]`, сигнатуры, DoD, план верификации. Запрет на редактирование кода!
-  * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода строго по ТЗ, прогон тестов, Living Spec Sync, автоматическое закрытие задачи в Канбане, Дорожной карте и Devlog.
+  * **Режим 2B: Заведение и триаж дефектов (`/kb-bug`)** — изолированная фиксация дефекта, RCA, назначение `target_release`, `target_phase`, `release_blocker` и падающего теста `regression_test`. Запрет на правку кода! Терминальный шаг Stop & Yield.
+  * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода задач (`TASK-XXX`) строго по ТЗ, исправление багов (`BUG-XXX`) строго по циклу TDD (**RED** failing test -> **GREEN** fix -> **REFACTOR** full test suite), Living Spec Sync, автоматическое закрытие карточки в Канбане, Дорожной карте и Devlog.
 * **Протокол Living Spec (Anti-Drift):** обязательная синхронизация `SPEC.md` и `README.md` при изменении публичных контрактов и префлайт-проверка перед релизом.
 * **Spec Genesis Protocol & Zero-State Guardrails (Anti-Hallucination):** трехстадийная модель зрелости спецификации (`Missing` -> `Discovery` -> `Active`). Категорический запрет на директивное выдумывание требований агентом в Zero-State; кристаллизация через диалог, Режим 0 (`/kb-research`) и `ADR-0001`. Префлайт Soft Nudge в `/kb-plan` и `/kb-task`.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
-* **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX>` авторизует работу строго над одной задачей; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
+* **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX | BUG-XXX>` авторизует работу строго над одной задачей или багом; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
 * **Permalinks Principle:** файлы ТЗ и багов не перемещаются в архивы при закрытии.
-* **Regression-First:** баги закрываются только после создания падающего воспроизводящего автотеста.
+* **Regression-First:** баги закрываются только после создания падающего воспроизводящего автотеста и успешного прохождения TDD-цикла через `/kb-implement BUG-XXX`.
 
 ---
 
@@ -131,3 +134,4 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 8: Greenfield-инициализация от идеи (Idea-First) и Living Spec** — пресет `undecided`, флаг `--idea`, протокол Living Spec и эвристический аудит дрифта в `kb_lint.py`.
 * **Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete)** — трехуровневая защита от Eager Task Chaining: норматив в `AGENTS.md`, терминальный шаг `Stop & Yield` в скиллах, семантический маркер в `Devlog.md` и аудит в `kb_lint.py`.
 * **Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки** — протокол кристаллизации спецификации из идеи (`Missing` -> `Discovery` -> `Active`), префлайт-чеки в `kb-init`/`kb-plan`/`kb-task`, исключение кумулятивных ADR из публичных релизов (`dist/RELEASE_NOTES.md`) и фазовая изоляция ADR в `scripts/kb_release.py`.
+* **Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting)** — изоляция триажа дефектов (Режим 2B `kb-bug` со Stop & Yield) от их устранения, унификация исполнения дефектов в Режиме 3 (`kb-implement BUG-XXX` по циклу TDD), строгий релизный контракт дефектов (`target_release`, `target_phase`, `release_blocker`, `fixed_in`) и префлайт-фильтрация блокеров в `scripts/kb_release.py`.
