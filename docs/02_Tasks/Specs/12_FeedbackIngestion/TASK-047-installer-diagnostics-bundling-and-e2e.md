@@ -1,7 +1,7 @@
 ---
 id: TASK-047
 title: "Диагностический модуль install.py --report, синхронизация сборщика и E2E тесты"
-status: in-progress
+status: done
 type: task
 phase: 12
 component:
@@ -26,7 +26,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 # 🛠️ Спецификация задачи: TASK-047 — Диагностический модуль install.py --report, синхронизация сборщика и E2E тесты
 
 > **ID:** TASK-047  
-> **Статус:** В работе (Режим 2)  
+> **Статус:** Выполнено (Режим 3)  
 > **Теги:** #task/spec #phase12 #installer #bundling #diagnostics #e2e #documentation  
 > **Родительский план:** [[../../Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]]  
 > **Связанные исследования и ADR:** [[../../../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../../../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]  
@@ -78,19 +78,19 @@ def generate_diagnostic_report(project_dir: Path) -> str:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Генерация монолита инсталлятора:
+- [x] Генерация монолита инсталлятора:
   ```bash
   python scripts/build_installer.py
   ```
-- [ ] Верификация флага `--report`:
+- [x] Верификация флага `--report`:
   ```bash
   python install.py --report
   ```
-- [ ] Запуск сквозного E2E тестирования:
+- [x] Запуск сквозного E2E тестирования:
   ```bash
   python -m unittest tests/test_installer.py
   ```
-- [ ] Финальный аудит ссылок базы знаний:
+- [x] Финальный аудит ссылок базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -99,7 +99,7 @@ def generate_diagnostic_report(project_dir: Path) -> str:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `install.py --report` безопасно генерирует диагностический отчет окружения.
-- [ ] Инсталлятор `install.py` успешно пересобран через `build_installer.py` и все ресурсы актуализированы.
-- [ ] Все модульные и E2E тесты завершаются со 100% успехом.
-- [ ] Документация (`SPEC.md`, `README.md`, `docs/Onboarding.md`) полностью синхронизирована.
+- [x] `install.py --report` безопасно генерирует диагностический отчет окружения.
+- [x] Инсталлятор `install.py` успешно пересобран через `build_installer.py` и все ресурсы актуализированы.
+- [x] Все модульные и E2E тесты завершаются со 100% успехом.
+- [x] Документация (`SPEC.md`, `README.md`, `docs/Onboarding.md`) полностью синхронизирована.

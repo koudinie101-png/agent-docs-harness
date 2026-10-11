@@ -43,9 +43,9 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 
 ### 2.1. База знаний Docs-as-Code (`docs/`)
 Структурированное хранилище (Obsidian Vault) внутри репозитория:
-* `00_Templates/` — 13 эталонных шаблонов (ADR, Research, Task, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release) с поддержкой YAML frontmatter.
+* `00_Templates/` — 14 эталонных шаблонов (ADR, Research, Task, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release, Feedback) с поддержкой YAML frontmatter.
 * `01_Architecture/` — схемы, архитектурные контракты и протоколы.
-* `02_Tasks/` — Канбан-доска (`Kanban.md`), Дорожная карта (`Roadmap.md`), планы (`Plans/`), спецификации задач (`Specs/`), баг-трекер (`Bugs/`) и релизы (`Releases/`).
+* `02_Tasks/` — Канбан-доска (`Kanban.md`), Дорожная карта (`Roadmap.md`), планы (`Plans/`), спецификации задач (`Specs/`), баг-трекер (`Bugs/`), релизы (`Releases/`) и буфер входящей обратной связи (`Inbox/` с `.inbox_state.json`).
 * `03_Decisions_ADR/` — Архитектурные решения (`ADR-XXXX`) с фиксацией контекста и отклоненных альтернатив.
 * `04_Research/` — Исследования платформенных ограничений, памяти и гипотез (`RESEARCH-XXX`).
 * `05_Testing/` — Сценарии приемочного тестирования (E2E UX) с интерактивными чек-боксами.
@@ -67,7 +67,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **`scripts/kb_lint.py`:**
   * Zero dependencies (только Python 3 stdlib: `pathlib`, `re`, `argparse`).
   * Валидация всех вики-ссылок `[[...]]`, регистра имен и структуры путей.
-  * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах и ADR.
+  * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах, ADR и элементах обратной связи (`FB-XXX`).
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
@@ -76,6 +76,11 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.
   * Релизный таргетинг дефектов (`collect_fixed_bugs`): включение в чейнджлог только устраненных багов целевой версии (`fixed_in` или `target_release`).
   * Префлайт-контроль релиз-блокеров (`check_release_blockers`): аварийная остановка сборки релиза (Exit code 1) при наличии открытых багов с флагом `release_blocker: true`.
+* **`scripts/kb_ingest.py`:**
+  * Zero dependencies (только стандартные модули `urllib`, `email`, `hashlib`, `pathlib`, `argparse`).
+  * Инжест внешних сигналов обратной связи из трех каналов: GitHub Issues API, Email/EML/Mbox и ручного буфера вставки (Raw Clipboard Paste).
+  * Автоматическая дедупликация сигналов на основе персистентного состояния `docs/02_Tasks/Inbox/.inbox_state.json`.
+  * Нормализация сигналов в компактные атомарные артефакты `FB-XXX-<slug>.md` по каноническому шаблону `TEMPLATE_FEEDBACK.md`.
 
 ### 2.4. Дисциплина 4 этапов (Modes 0–3) и конфигурация агентов
 * Единый канонический файл правил **`AGENTS.md`** и адаптеры (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`).
@@ -84,12 +89,14 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * **Режим 1: Планирование (Planning / RFC, `/kb-plan`)** — только концептуальное обсуждение, критика, архитектурный план. Запрет на редактирование кода!
   * **Режим 2: Формирование ТЗ (Task Spec, `/kb-task`)** — точные контракты `[NEW]`/`[MODIFY]`, сигнатуры, DoD, план верификации. Запрет на редактирование кода!
   * **Режим 2B: Заведение и триаж дефектов (`/kb-bug`)** — изолированная фиксация дефекта, RCA, назначение `target_release`, `target_phase`, `release_blocker` и падающего теста `regression_test`. Запрет на правку кода! Терминальный шаг Stop & Yield.
+  * **Режим 2C: Триаж и маршрутизация обратной связи (`/kb-triage`)** — изоляция внешних сигналов в буфере `docs/02_Tasks/Inbox/`, двухэтапный скрининг, интерактивная маршрутизация в `/kb-bug`, Дорожную карту (Icebox) или FAQ. Запрет на правку кода! Терминальный шаг Stop & Yield.
   * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода задач (`TASK-XXX`) строго по ТЗ, исправление багов (`BUG-XXX`) строго по циклу TDD (**RED** failing test -> **GREEN** fix -> **REFACTOR** full test suite), Living Spec Sync, автоматическое закрытие карточки в Канбане, Дорожной карте и Devlog.
 * **Протокол Living Spec (Anti-Drift):** обязательная синхронизация `SPEC.md` и `README.md` при изменении публичных контрактов и префлайт-проверка перед релизом.
 * **Spec Genesis Protocol & Zero-State Guardrails (Anti-Hallucination):** трехстадийная модель зрелости спецификации (`Missing` -> `Discovery` -> `Active`). Категорический запрет на директивное выдумывание требований агентом в Zero-State; кристаллизация через диалог, Режим 0 (`/kb-research`) и `ADR-0001`. Префлайт Soft Nudge в `/kb-plan` и `/kb-task`.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
 * **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX | BUG-XXX>` авторизует работу строго над одной задачей или багом; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
-* **Permalinks Principle:** файлы ТЗ и багов не перемещаются в архивы при закрытии.
+* **Feedback Ingestion & Triage Buffer Invariant:** внешние сигналы никогда не попадают в код или ТЗ в обход буфера `Inbox/`; триаж выполняется исключительно через `/kb-triage` с соблюдением принципа пермалинков (in-place обновление frontmatter `FB-XXX`).
+* **Permalinks Principle:** файлы ТЗ, багов и обратной связи не перемещаются в архивы при закрытии.
 * **Regression-First:** баги закрываются только после создания падающего воспроизводящего автотеста и успешного прохождения TDD-цикла через `/kb-implement BUG-XXX`.
 
 ---
@@ -99,7 +106,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 ### 3.1. Требования к рантайму
 * Только стандартная библиотека Python 3 (Python 3.8+).
 * Никаких внешних пакетов (`no requests`, `no pyyaml`, `no rich`).
-* Полная автономность (Self-Contained) — скрипт содержит упакованные base64-ресурсы (шаблоны, скиллы, утилиты).
+* Полная автономность (Self-Contained) — скрипт содержит упакованные base64-ресурсы (шаблоны, скиллы, утилиты, issue templates).
 * Кроссплатформенная работа (macOS, Linux, Windows).
 
 ### 3.2. Режимы запуска и флаги
@@ -116,7 +123,8 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
    * `--agent {all,cline,claude,cursor,copilot,generic}` — конфигурации агентов.
    * `--lang {ru,en}` — язык документации.
    * `--git {github,local,none}` — стратегия контроля версий.
-   * `--update` — бережное обновление шаблонов, скиллов и скриптов без перезаписи пользовательских заметок.
+   * `--update` — бережное обновление шаблонов, скиллов, утилит и создание буфера Inbox без перезаписи пользовательских заметок.
+   * `--report` — генерация анонимизированного диагностического Markdown-отчета окружения (ОС, Python, Git, статус kb_lint, найденные конфиги агентов).
    * `-y`, `--yes`, `--non-interactive` — авто-подтверждение дефолтов.
    * `--target-dir <path>` — путь назначения (по умолчанию `.`).
 
@@ -135,3 +143,5 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 9: Барьер единичной задачи и протокол гарантированной остановки (Single-Task Execution Barrier & Stop-on-Complete)** — трехуровневая защита от Eager Task Chaining: норматив в `AGENTS.md`, терминальный шаг `Stop & Yield` в скиллах, семантический маркер в `Devlog.md` и аудит в `kb_lint.py`.
 * **Фаза 10: Рождение Мастер-Спецификации (Spec Genesis) и High-SNR релизные заметки** — протокол кристаллизации спецификации из идеи (`Missing` -> `Discovery` -> `Active`), префлайт-чеки в `kb-init`/`kb-plan`/`kb-task`, исключение кумулятивных ADR из публичных релизов (`dist/RELEASE_NOTES.md`) и фазовая изоляция ADR в `scripts/kb_release.py`.
 * **Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting)** — изоляция триажа дефектов (Режим 2B `kb-bug` со Stop & Yield) от их устранения, унификация исполнения дефектов в Режиме 3 (`kb-implement BUG-XXX` по циклу TDD), строгий релизный контракт дефектов (`target_release`, `target_phase`, `release_blocker`, `fixed_in`) и префлайт-фильтрация блокеров в `scripts/kb_release.py`.
+* **Фаза 12: Инжест внешней обратной связи, буфер триажа и оффлайн-диагностика (Feedback Ingestion, Triage Buffer & Diagnostic Diagnostics)** — канонический шаблон `TEMPLATE_FEEDBACK.md`, утилита инжеста `scripts/kb_ingest.py` (GitHub/Email/Paste с дедупликацией), буфер `docs/02_Tasks/Inbox/` с состоянием `.inbox_state.json`, Режим 2C (`/kb-triage` со Stop & Yield), формы GitHub Issue Forms (`bug_report.yml`, `feature_request.yml`), диагностический отчет `install.py --report` и E2E верификация.
+

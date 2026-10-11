@@ -16,7 +16,42 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
-### [2026-10-11] — Реализация TASK-046: Исполняемый скилл /kb-triage и интеграция в правила агентов
+### [2026-10-11] — Реализация TASK-047: Диагностический модуль install.py --report, синхронизация сборщика и E2E тесты (Завершение Фазы 12)
+- **Что сделано:**
+  - Реализован диагностический CLI-модуль `install.py --report`: генерирует анонимизированный Markdown-отчет о локальном окружении (ОС, рантайм Python, статус Git, проверка базы знаний `kb_lint.py`, обнаруженные конфиги AI-агентов) с маскированием персональных путей `<user>`.
+  - Обновлен сборщик `scripts/build_installer.py`: упакованы утилита `scripts/kb_ingest.py`, шаблон `TEMPLATE_FEEDBACK.md`, формы `.github/ISSUE_TEMPLATE/*.yml` и скилл `.agents/skills/kb-triage/SKILL.md` в монолит `install.py` (115.4 KB).
+  - Обновлены процедуры `install_harness` и `update_harness`: обеспечено автоматическое создание буфера `docs/02_Tasks/Inbox/` и `.inbox_state.json`, а также распаковка `.github/ISSUE_TEMPLATE/` при установке и бережном обновлении без затирания пользовательских файлов.
+  - Разработан сквозной E2E тест `test_23_feedback_ingestion_and_diagnostic_report` в `tests/test_installer.py`, проверяющий работу флага `--report`, деплой буфера Inbox, шаблонов, скриптов и сохранение пользовательских данных при обновлении.
+  - Актуализированы `SPEC.md`, `README.md` и `docs/Onboarding.md` согласно Living Spec Invariant.
+  - Завершена спецификация [[02_Tasks/Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]], Канбан-доска [[02_Tasks/Kanban|Kanban.md]] и Дорожная карта [[02_Tasks/Roadmap|Roadmap.md]] (Фаза 12 официально завершена).
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> успешно собран монолит `install.py` (115.4 KB).
+  - `python install.py --report` -> сгенерирован валидный анонимизированный отчет окружения.
+  - `python -m unittest tests/test_installer.py` -> 23/23 тестов пройдено (OK, 18.2s).
+  - `python -m unittest discover -s tests` -> 63/63 теста успешно пройдено (100% Pass, Exit code 0, 25.2s).
+  - `python scripts/kb_lint.py --path docs` -> 126 файлов проверено, 1126 связей валидны (0 broken links, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Оформить кумулятивный релиз Фазы 12 (`/kb-release --version v0.12.0 --phase 12`) либо перейти к декомпозиции и реализации Фазы 13 (`/kb-implement TASK-048`).
+
+---
+
+### [2026-10-11] — Аудит архитектуры правил (RESEARCH-016), утверждение ADR-0021 и фиксация плана Фазы 13 (PLAN-013)
+- **Что сделано:**
+  - Проведен комплексный аудит кодовой базы и исследования [[04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]] в сопоставлении с мировыми стандартами агентской разработки (Anthropic Claude Code, Cursor Rules, Context Engineering).
+  - Сформирован подробный аналитический артефакт с разбором плюсов, узких мест и дорожной картой оптимизации.
+  - Оформлен формальный план Фазы 13 [[02_Tasks/Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]]:
+    - Перевод адаптеров IDE (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`) на паттерн **Thin Forwarders** (до 30 строк, ссылки на `AGENTS.md`, команды верификации стека) с устранением Rule Drift и экономией 80–85% объема файлов.
+    - Декуплинг визуальной палитры Obsidian Graph: удаление таблицы цветов из `AGENTS.md` и локализация настроек строго в `docs/.obsidian/graph.json` (экономия ~150 токенов на каждом запросе).
+    - Консолидация онбординга: объединение функций `docs-as-code` и `kb-onboard`.
+    - Двухуровневая таксономия шаблонов в `docs/Onboarding.md` (Core Essentials vs Advanced Governance).
+  - Актуализированы Канбан-доска [[02_Tasks/Kanban|Kanban.md]] (карточки добавлены в Бэклог) и Дорожная карта [[02_Tasks/Roadmap|Roadmap.md]].
+  - Исправлены битые ссылки в `docs/Onboarding.md` на ADR-0020 и RESEARCH-015.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs -v` -> 126 файлов проверено, 1122 связи валидны (0 broken links, 100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Завершить текущую задачу Фазы 12 (`/kb-implement TASK-047`) либо приступить к спецификации задач Фазы 13 (`/kb-task TASK-048`).
+
+---
 - **Что сделано:**
   - Создан исполняемый скилл `.agents/skills/kb-triage/SKILL.md` (Режим 2C: Feedback Triage & Dispatch) согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]:
     - Реализована процедура двухстадийного скрининга обращений в `docs/02_Tasks/Inbox/`.

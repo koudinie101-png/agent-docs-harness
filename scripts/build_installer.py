@@ -50,8 +50,8 @@ def bundle_assets() -> dict:
         assets[".obsidian/graph.json"] = graph_json.read_text(encoding="utf-8")
         print(f"  • Bundled: .obsidian/graph.json")
 
-    # 3. Collect scripts (kb_lint.py, kb_release.py)
-    for sname in ["kb_lint.py", "kb_release.py"]:
+    # 3. Collect scripts (kb_lint.py, kb_release.py, kb_ingest.py)
+    for sname in ["kb_lint.py", "kb_release.py", "kb_ingest.py"]:
         sfile = SCRIPTS_DIR / sname
         if sfile.is_file():
             assets[f"scripts/{sname}"] = sfile.read_text(encoding="utf-8")
@@ -67,13 +67,20 @@ def bundle_assets() -> dict:
                 assets[rel_key] = skill_md.read_text(encoding="utf-8")
                 print(f"  • Bundled skill: {sdir.name}/SKILL.md ({len(assets[rel_key])} chars)")
 
-    # 5. Collect CI workflows
+    # 5. Collect CI workflows and issue templates
     workflows_dir = REPO_ROOT / ".github" / "workflows"
     if workflows_dir.is_dir():
         for wf in sorted(list(workflows_dir.glob("*.yml"))):
             rel_key = f".github/workflows/{wf.name}"
             assets[rel_key] = wf.read_text(encoding="utf-8")
             print(f"  • Bundled workflow: {wf.name} ({len(assets[rel_key])} chars)")
+
+    issue_tpl_dir = REPO_ROOT / ".github" / "ISSUE_TEMPLATE"
+    if issue_tpl_dir.is_dir():
+        for itf in sorted(list(issue_tpl_dir.glob("*.yml"))):
+            rel_key = f".github/ISSUE_TEMPLATE/{itf.name}"
+            assets[rel_key] = itf.read_text(encoding="utf-8")
+            print(f"  • Bundled issue template: {itf.name} ({len(assets[rel_key])} chars)")
 
     return assets
 

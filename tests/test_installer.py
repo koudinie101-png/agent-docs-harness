@@ -913,9 +913,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle)
-            self.assertLessEqual(total_skills_size, 25500, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 25500)")
-            self.assertLessEqual(total_templates_size, 22500, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 22500)")
+            # Benchmark assertions (ADR-0009 constraints for 13 skills + 14 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion)
+            self.assertLessEqual(total_skills_size, 28000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 28000)")
+            self.assertLessEqual(total_templates_size, 25000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 25000)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
@@ -926,7 +926,7 @@ class TestAgentDocsHarness(unittest.TestCase):
 
             # Installer size check
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 110000, f"install.py exceeded budget: {installer_size} bytes (budget <= 110 KB)")
+            self.assertLessEqual(installer_size, 125000, f"install.py exceeded budget: {installer_size} bytes (budget <= 125 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -1086,11 +1086,11 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("status: discovery", spec_content2)
             self.assertIn("Offline Local-First Encrypted Vault", spec_content2)
 
-            # Check all 12 skills deployed
+            # Check all 13 skills deployed
             skills_dir2 = target2 / ".agents" / "skills"
             self.assertTrue(skills_dir2.is_dir())
             skill_subdirs = [d for d in skills_dir2.iterdir() if d.is_dir()]
-            self.assertEqual(len(skill_subdirs), 12)
+            self.assertEqual(len(skill_subdirs), 13)
 
             # Run kb_lint on installed project
             kb_lint_res = subprocess.run(
@@ -1471,6 +1471,134 @@ class TestAgentDocsHarness(unittest.TestCase):
                 encoding="utf-8",
             )
             self.assertEqual(lint_res.returncode, 0, f"kb_lint failed: {lint_res.stdout}\n{lint_res.stderr}")
+
+    def test_23_feedback_ingestion_and_diagnostic_report(self):
+        """Phase 12: Verify feedback buffer, templates, ingest script, and diagnostic report."""
+        import getpass
+        current_user = getpass.getuser()
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            base = Path(tmp_dir)
+
+            # 1. Test diagnostic report on REPO_ROOT via subprocess
+            res_report = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--report"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_report.returncode, 0, f"--report failed:\n{res_report.stderr}")
+            report_text = res_report.stdout
+            self.assertIn("# 🩺 Diagnostic Report: Agent Docs-as-Code Harness", report_text)
+            self.assertIn("## 1. System & Runtime Environment", report_text)
+            self.assertIn("## 2. Git Repository Status", report_text)
+            self.assertIn("## 3. Knowledge Base Health (kb_lint)", report_text)
+            self.assertIn("## 4. Detected AI Agent Configurations", report_text)
+            if current_user:
+                self.assertNotIn(f"\\Users\\{current_user}\\", report_text)
+                self.assertNotIn(f"/home/{current_user}/", report_text)
+
+            # 2. Test fresh harness installation
+            target = base / "FeedbackApp"
+            target.mkdir()
+            install.install_harness(
+                target_dir=target,
+                project_name="FeedbackApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="ru",
+                force=True,
+            )
+
+            # Verify Phase 12 artifacts exist
+            inbox_dir = target / "docs" / "02_Tasks" / "Inbox"
+            self.assertTrue(inbox_dir.is_dir(), "Inbox/ directory missing")
+            inbox_state = inbox_dir / ".inbox_state.json"
+            self.assertTrue(inbox_state.is_file(), ".inbox_state.json missing")
+            self.assertIn('"last_issue_number": 0', inbox_state.read_text(encoding="utf-8"))
+
+            feedback_tpl = target / "docs" / "00_Templates" / "TEMPLATE_FEEDBACK.md"
+            self.assertTrue(feedback_tpl.is_file(), "TEMPLATE_FEEDBACK.md missing")
+            self.assertIn("FB-XXX", feedback_tpl.read_text(encoding="utf-8"))
+
+            kb_ingest_script = target / "scripts" / "kb_ingest.py"
+            self.assertTrue(kb_ingest_script.is_file(), "scripts/kb_ingest.py missing")
+
+            triage_skill = target / ".agents" / "skills" / "kb-triage" / "SKILL.md"
+            self.assertTrue(triage_skill.is_file(), ".agents/skills/kb-triage/SKILL.md missing")
+
+            bug_issue_tpl = target / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml"
+            self.assertTrue(bug_issue_tpl.is_file(), ".github/ISSUE_TEMPLATE/bug_report.yml missing")
+            feature_issue_tpl = target / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml"
+            self.assertTrue(feature_issue_tpl.is_file(), ".github/ISSUE_TEMPLATE/feature_request.yml missing")
+
+            # 3. Test update on legacy structure (missing Inbox)
+            legacy = base / "LegacyApp"
+            legacy.mkdir()
+            install.install_harness(
+                target_dir=legacy,
+                project_name="LegacyApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                doc_lang="ru",
+                force=True,
+            )
+            # Remove Inbox to simulate legacy project
+            import shutil
+            shutil.rmtree(legacy / "docs" / "02_Tasks" / "Inbox")
+            self.assertFalse((legacy / "docs" / "02_Tasks" / "Inbox").exists())
+
+            # Run update
+            res_up = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(legacy)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_up.returncode, 0, f"Update legacy failed: {res_up.stderr}")
+            self.assertTrue((legacy / "docs" / "02_Tasks" / "Inbox").is_dir())
+            self.assertTrue((legacy / "docs" / "02_Tasks" / "Inbox" / ".inbox_state.json").is_file())
+
+            # 4. Verify existing inbox items and state are preserved during update
+            custom_fb = legacy / "docs" / "02_Tasks" / "Inbox" / "FB-001-custom.md"
+            custom_fb.write_text("---\nid: FB-001\ntitle: Custom Feedback\nstatus: new\n---\n# FB-001", encoding="utf-8")
+            legacy_state = legacy / "docs" / "02_Tasks" / "Inbox" / ".inbox_state.json"
+            legacy_state.write_text('{"version": 1, "github": {"last_issue_number": 42}}', encoding="utf-8")
+
+            res_up2 = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(legacy)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_up2.returncode, 0)
+            self.assertTrue(custom_fb.is_file())
+            self.assertIn('"last_issue_number": 42', legacy_state.read_text(encoding="utf-8"))
+
+            # 5. Verify diagnostic report on target directory
+            res_rep_target = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--report", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_rep_target.returncode, 0)
+            self.assertIn("FeedbackApp", res_rep_target.stdout)
+
+            # 6. Verify kb_lint audit passes on fresh installation
+            kb_lint_res = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_lint.py"), "--path", str(target / "docs")],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(kb_lint_res.returncode, 0, f"kb_lint failed on fresh target:\n{kb_lint_res.stdout}\n{kb_lint_res.stderr}")
 
 
 if __name__ == "__main__":

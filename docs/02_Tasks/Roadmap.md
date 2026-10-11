@@ -150,7 +150,7 @@ tags:
 
 ---
 
-## Фаза 12: Воронка каналов обратной связи, автоматизация импорта и буфер триажа (Feedback Ingestion & Triage Buffer)
+## Фаза 12: Воронка каналов обратной связи, автоматизация импорта и буфер триажа (Feedback Ingestion & Triage Buffer) — ✅ Завершена
 **Цель:** Создать безопасный контур приема внешних обращений без риска засорения базы знаний и нарушения Permalinks Principle: буфер `docs/02_Tasks/Inbox/` с шаблоном `TEMPLATE_FEEDBACK.md`, дедупликацию `.inbox_state.json`, автономную Zero-Deps утилиту `scripts/kb_ingest.py` (GitHub Issues, Email IMAP, Quick Paste), декларативные формы `.github/ISSUE_TEMPLATE/`, кросс-агентный Cloud Cron workflow `.github/workflows/feedback-sync.yml`, исполняемый скилл `/kb-triage` с двухстадийной эвристикой и оффлайн-диагностику `install.py --report`.  
 **Первоисточник плана:** [[Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]]  
 **Нормативная база:** [[../04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]], [[../03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]]
@@ -159,7 +159,19 @@ tags:
 - [x] Zero-Dependencies модуль импорта обратной связи (`scripts/kb_ingest.py`) и тесты — [[Specs/12_FeedbackIngestion/TASK-044-zero-deps-kb-ingest-script-and-tests|TASK-044]].
 - [x] GitHub Issue Forms и облачный workflow кросс-агентной синхронизации — [[Specs/12_FeedbackIngestion/TASK-045-github-issue-forms-and-cloud-sync-workflow|TASK-045]].
 - [x] Исполняемый скилл `/kb-triage` и интеграция в правила агентов — [[Specs/12_FeedbackIngestion/TASK-046-kb-triage-skill-and-agent-rules|TASK-046]].
-- [ ] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]].
+- [x] Диагностический модуль `install.py --report`, синхронизация сборщика и E2E тесты — [[Specs/12_FeedbackIngestion/TASK-047-installer-diagnostics-bundling-and-e2e|TASK-047]].
+
+---
+
+## Фаза 13: Слоистая архитектура правил (Thin Forwarders), декуплинг графа Obsidian и таксономия базы знаний
+**Цель:** Оптимизировать распределение правил по слоям L0–L3, устранить двойную инжекцию инструкций (Double Prompt Injection) и Rule Drift через внедрение паттерна Thin Forwarders в адаптерах IDE (`install.py`), вынести цветовую таблицу Obsidian Graph из `AGENTS.md` в `.obsidian/graph.json` (экономия ~150 токенов на шаг диалога), консолидировать навигацию и онбординг (`docs-as-code` $\to$ `kb-onboard`) и зафиксировать двухуровневую таксономию шаблонов (Core Essentials vs Advanced Governance) в руководстве `docs/Onboarding.md`.  
+**Первоисточник плана:** [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]]  
+**Нормативная база:** [[../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]], [[../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]
+
+- [ ] **TASK-048**: Очистка `AGENTS.md` от графового шума и изоляция таксономии Obsidian Graph в `.obsidian/graph.json`.
+- [ ] **TASK-049**: Реализация паттерна Thin Forwarders в генераторах адаптеров `install.py`.
+- [ ] **TASK-050**: Консолидация `docs-as-code` и `kb-onboard`, двухуровневая таксономия шаблонов в `Onboarding.md`.
+- [ ] **TASK-051**: Сборка инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec.
 
 ---
 
@@ -171,7 +183,9 @@ tags:
 * 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 * 💡 **Гайд для начинающих в агентном программировании (Zero-to-Hero Onboarding):** пошаговый туториал с концепцией «RAM vs SSD», шпаргалкой по средам (Antigravity, Cursor, Windsurf, Obsidian), 3 сценариями первых 15 минут (Greenfield, Brownfield, Hotfix), поваренной книгой промптов и галереей антипаттернов — [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]].
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
-* 💡 **Слоистая архитектура правил агентов (Thin Forwarders), декуплинг графа Obsidian и таксономия базы знаний:** оптимизация распределения правил по слоям L0–L3, устранение двойной инжекции правил (Double Prompt Injection) через тонкие адаптеры IDE, вынос визуальной таблицы цветов графа из AGENTS.md в `graph.json` (-150 токенов на шаг) и структурирование шаблонов — [[../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]], [[../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]].
+* 💡 **Протокол Fast-Track для микро-задач (Agile Docs-as-Code):** облегченный регламент согласования и исполнения задач со сложностью $\le 30$ строк кода или локальных фиксов без отдельного RFC в `Plans/` (инлайн-DoD, сокращение диалогового трения на 60% при сохранении карточки в Канбане и проверки тестами).
+* 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
+* 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
 
 ---

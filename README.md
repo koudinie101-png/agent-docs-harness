@@ -82,7 +82,7 @@ docs/
 ├── .obsidian/
 │   └── graph.json            # 7-color category palette for Obsidian Graph
 ├── 00_Index.md               # Map of Content (MOC) entry point
-├── 00_Templates/             # 13 canonical templates with YAML frontmatter
+├── 00_Templates/             # 14 canonical templates with YAML frontmatter
 │   ├── TEMPLATE_TASK.md      # Engineering task spec with file contracts
 │   ├── TEMPLATE_PLAN.md      # RFC & conceptual feature plan (Mode 1)
 │   ├── TEMPLATE_BUG.md       # Defect report with RCA & Regression-First test
@@ -90,6 +90,7 @@ docs/
 │   ├── TEMPLATE_RESEARCH.md  # OS quirks, battery/memory limits, trade-off matrix
 │   ├── TEMPLATE_TEST.md      # E2E UX acceptance test checklist
 │   ├── TEMPLATE_RELEASE.md   # Phased release note with SHA-256 artifact table
+│   ├── TEMPLATE_FEEDBACK.md  # Raw feedback item (FB-XXX) with signal metadata
 │   ├── TEMPLATE_ARCHITECTURE.md
 │   ├── TEMPLATE_ONBOARDING.md
 │   ├── TEMPLATE_KANBAN.md
@@ -102,6 +103,7 @@ docs/
 ├── 02_Tasks/
 │   ├── Kanban.md             # Operational board (Backlog, In Progress, Done, Ideas)
 │   ├── Roadmap.md            # Strategic milestones and phased goals
+│   ├── Inbox/                # External feedback triage buffer (.inbox_state.json)
 │   ├── Plans/                # RFCs (Mode 1)
 │   ├── Specs/01_MVP/         # Detailed task specifications (Mode 2)
 │   ├── Bugs/                 # Bug tracker with RCA
@@ -111,8 +113,8 @@ docs/
 └── 05_Testing/               # E2E acceptance test scenarios
 ```
 
-### 2. 12 Executable AI Agent Skills (`.agents/skills/`)
-The harness bundles and automatically deploys 12 canonical AI agent skills into `.agents/skills/`:
+### 2. 13 Executable AI Agent Skills (`.agents/skills/`)
+The harness bundles and automatically deploys 13 canonical AI agent skills into `.agents/skills/`:
 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
@@ -122,6 +124,7 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 | **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
 | **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, defect release targeting, blocker validation, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
 | **`/kb-bug`** | 🐞 Mode 2B (Triage) | Isolated defect logging, root cause analysis (RCA), release targeting & blocker triage. **🚨 STRICTLY NO CODE EDITS!** Enforces Stop & Yield Control. |
+| **`/kb-triage`** | 📥 Mode 2C (Triage) | Two-stage screening of `docs/02_Tasks/Inbox/` items, dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with in-place status updates. **🚨 STRICTLY NO CODE EDITS!** Enforces Stop & Yield Control. |
 | **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
 | **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
 | **`/kb-lint`** | Health Audit | Scans internal wikilinks, YAML frontmatter, detects link rot, and ensures knowledge base consistency. |
@@ -129,15 +132,19 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 | **`/kb-init`** | Initialization | Deploys the standard Docs-as-Code folder tree, template suite, and colored Obsidian graph into a new repo. |
 | **`docs-as-code`** | Master Standard | Complete reference and standard specification for autonomous agent operations. |
 
-### 3. Autonomous Knowledge Base Linter & Release Utilities (`scripts/`)
+### 3. Autonomous Knowledge Base Linter, Release & Ingest Utilities (`scripts/`)
 * **Zero external dependencies** (standard Python 3 stdlib only).
-* **Linter (`scripts/kb_lint.py`):** Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter, and detects link rot instantly:
+* **Linter (`scripts/kb_lint.py`):** Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter (tasks, bugs, ADRs, feedback items), and detects link rot instantly:
   ```bash
   python3 scripts/kb_lint.py --path docs
   ```
 * **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1
+  ```
+* **Feedback Ingest Utility (`scripts/kb_ingest.py`):** Ingests signals from GitHub Issues, Email/EML/Mbox, or raw clipboard paste into `docs/02_Tasks/Inbox/FB-*.md` with automatic state tracking and deduplication:
+  ```bash
+  python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
   ```
 
 ### 4. Agent Configuration & Rule Files
@@ -212,6 +219,9 @@ python3 install.py --non-interactive --name "MySwiftApp" --stack auto --agent al
 # Safe update of harness components (templates, linter, skills, graph) in existing project:
 python3 install.py --update
 
+# Generate anonymized environment diagnostic report:
+python3 install.py --report
+
 # CLI Options summary:
 python3 install.py --help
   --name, -n        Project name (default: directory name)
@@ -225,7 +235,16 @@ python3 install.py --help
   --non-interactive Run without interactive prompts (-y, --yes)
   --force, -f       Overwrite configurations if present
   --update, -u      Safely update harness infrastructure preserving user tasks & notes
+  --report, -r      Generate anonymized Markdown diagnostic report of local environment
 ```
+
+### 🩺 Offline Diagnostic Report (`install.py --report`)
+Generates an anonymized diagnostic report covering OS/Platform, Python runtime, Git status, knowledge base health (`kb_lint.py`), and detected AI agent configs. Sensitive user home directory paths are sanitized to `<user>`.
+
+### 📥 Feedback Ingestion & Triage Buffer (`/kb-triage`, `scripts/kb_ingest.py`)
+Isolates external feedback in `docs/02_Tasks/Inbox/` before converting to tasks or code:
+* **`scripts/kb_ingest.py`**: Fetches issues via GitHub API, parses `.eml` / `.mbox` files, or ingests pasted text with state tracking in `.inbox_state.json`.
+* **`/kb-triage` (Mode 2C)**: Interactive two-stage screening (Noise vs Signal) and dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with strict Stop & Yield control.
 
 ### 🔄 Safe Lifecycle Updates (`install.py --update`)
 Upgrades templates, `kb_lint.py`, `.agents/skills/*`, and Obsidian graph settings to latest releases while guaranteeing **100% preservation** of user data (`02_Tasks/*`, `03_Decisions_ADR/*`, `04_Research/*`, `05_Testing/*`, `SPEC.md`, `README.md`). User-customized agent rules are automatically backed up as `*.bak`.
