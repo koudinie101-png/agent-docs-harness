@@ -78,6 +78,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling|ADR-0018: Протокол рождения Мастер-Спецификации (Spec Genesis) и контроль Zero-State]]
 * [[03_Decisions_ADR/ADR-0019-bug-lifecycle-triage-and-release-targeting|ADR-0019: Архитектура жизненного цикла дефектов, изолированный триаж и релизный таргетинг]]
 * [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020: Архитектура сбора обратной связи (Feedback Ingestion), каналы, периодичность и двухстадийный триаж]]
+* [[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021: Архитектура распределения правил (Thin Forwarders), декуплинг графа Obsidian и консолидация онбординга]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
