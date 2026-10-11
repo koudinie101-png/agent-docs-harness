@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-10-11
+
+### Added
+- Layered Rules Architecture & Thin Forwarders standard based on ADR-0021 and RESEARCH-016.
+- Compact Thin Forwarders pattern in all 6 IDE adapter generators (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`) shrinking rules by 80% ($\le 25$ lines) and eliminating Double Prompt Injection.
+- Decoupled Obsidian Graph taxonomy: interface color configuration isolated inside `.obsidian/graph.json`, saving ~150 prompt tokens per conversation turn.
+- Consolidated Onboarding Hub (`kb-onboard`): absorbed command router, directory layout, and 4-stage lifecycle; decommissioned redundant `docs-as-code` meta-skill to free an Always-On slot in the system prompt registry (12 active skills).
+- Two-Tier Template Taxonomy (Core Essentials [4] vs Advanced Governance [10]) in `docs/Onboarding.md` and `docs/00_Templates/TEMPLATE_ONBOARDING.md`.
+- Automated build hook mirroring compiled standalone monolith into `dist/install.py` with full E2E regression coverage.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (114.1 KB) with updated templates, skills, and thin forwarders.
+- Synchronized `SPEC.md`, `README.md`, and `docs/Onboarding.md` with the 12-skill architecture and Thin Forwarders pattern.
+
 ## [0.11.0] - 2026-10-11
 
 ### Added
