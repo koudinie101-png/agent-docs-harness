@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-044: Zero-Dependencies модуль импорта обратной связи (scripts/kb_ingest.py) и тесты
+- **Что сделано:**
+  - Разработан автономный модуль импорта `scripts/kb_ingest.py` на стандартной библиотеке Python 3 (Zero Dependencies) согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]].
+  - Реализованы драйверы трех каналов доставки:
+    - **GitHub Issues:** сбор issues с меткой `needs-triage` через REST API v3 (`urllib.request`) с фильтрацией PR и генерацией `FB-GH-{num}.md`.
+    - **Email (IMAP):** опрос почтового ящика через `imaplib` и парсинг тела/заголовков через `email` с генерацией `FB-MAIL-{YYYYMMDD}-{hash}.md`.
+    - **Quick Paste:** мгновенная вставка из CLI-аргументов или stdin (`FB-PASTE-{YYYYMMDD}-{hash}.md`).
+  - Реализован класс `InboxStateManager` для детерминированной дедупликации и управления курсорами в `.inbox_state.json`.
+  - В корневом `.gitignore` зафиксировано игнорирование `.env.local` и локальных файлов секретов.
+  - Написан комплексный набор модульных тестов в `tests/test_kb_ingest.py` с моками сетевых протоколов (GitHub REST API, IMAP).
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_ingest.py` -> 5/5 тестов успешно пройдено.
+  - `python scripts/kb_ingest.py --paste --title "Test" --text "Sample" --dry-run` -> Exit code 0.
+  - `python scripts/kb_lint.py --path docs` -> 123 файла проверено, 1085 связей валидны (0 broken links).
+  - `python -m unittest discover -s tests` -> 62/62 теста успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать GitHub формы и облачный cron workflow: `/kb-implement TASK-045`.
+
+---  
+
 ### [2026-10-11] — Реализация TASK-043: Буфер триажа, шаблон TEMPLATE_FEEDBACK и аудит в kb_lint.py
 - **Что сделано:**
   - Реализован изолированный буфер триажа `docs/02_Tasks/Inbox/` и созданы эталонные шаблоны `docs/00_Templates/TEMPLATE_FEEDBACK.md` и `templates/TEMPLATE_FEEDBACK.md` согласно [[02_Tasks/Plans/PLAN-012-feedback-ingestion-and-triage-buffer|PLAN-012]] и [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]].

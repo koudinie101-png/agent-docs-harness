@@ -33,3 +33,8 @@ desktop.ini
 # Obsidian Workspace (keep graph config, ignore local UI state)
 .obsidian/*
 !.obsidian/graph.json
+
+# Local secrets & env overrides
+.env.local
+*.secret
+

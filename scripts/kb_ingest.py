@@ -1,0 +1,531 @@
+#!/usr/bin/env python3
+"""
+scripts/kb_ingest.py — Multi-Channel Feedback Ingestion Engine for Docs-as-Code.
+Imports external feedback (GitHub Issues, Email IMAP, Quick Paste) into docs/02_Tasks/Inbox/.
+Zero external dependencies (uses standard Python 3 library only).
+"""
+
+import sys
+import os
+import re
+import json
+import hashlib
+import datetime
+import argparse
+import urllib.request
+import urllib.error
+import imaplib
+import email
+from email.header import decode_header
+from pathlib import Path
+
+# Ensure UTF-8 output on Windows consoles
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
+def find_inbox_dir(start_dir: Path) -> Path:
+    """Finds or resolves the docs/02_Tasks/Inbox directory."""
+    cur = start_dir.resolve()
+    while cur != cur.parent:
+        candidate = cur / "docs" / "02_Tasks" / "Inbox"
+        if candidate.is_dir():
+            return candidate
+        candidate2 = cur / "02_Tasks" / "Inbox"
+        if candidate2.is_dir():
+            return candidate2
+        cur = cur.parent
+    # Fallback to local relative
+    return (start_dir / "docs" / "02_Tasks" / "Inbox").resolve()
+
+
+def load_env_local(repo_root: Path):
+    """Loads key-value pairs from .env.local if present, without overwriting existing env."""
+    env_file = repo_root / ".env.local"
+    if not env_file.is_file():
+        return
+    try:
+        lines = env_file.read_text(encoding="utf-8").splitlines()
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            k = k.strip()
+            v = v.strip().strip("'\"")
+            if k and k not in os.environ:
+                os.environ[k] = v
+    except Exception:
+        pass
+
+
+class InboxStateManager:
+    """Manages offset cursor and deduplication in .inbox_state.json."""
+
+    def __init__(self, state_file: Path):
+        self.state_file = state_file
+        self.data = {
+            "version": 1,
+            "github": {"last_issue_number": 0, "processed_ids": []},
+            "email": {"last_uid": 0, "processed_message_ids": []},
+            "paste": {"processed_hashes": []}
+        }
+        self.load()
+
+    def load(self):
+        if self.state_file.is_file():
+            try:
+                loaded = json.loads(self.state_file.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    self.data.update(loaded)
+            except Exception:
+                pass
+
+    def save(self):
+        self.state_file.parent.mkdir(parents=True, exist_ok=True)
+        self.state_file.write_text(json.dumps(self.data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    def is_github_processed(self, issue_num: int) -> bool:
+        gh_data = self.data.setdefault("github", {})
+        processed_ids = gh_data.setdefault("processed_ids", [])
+        return issue_num in processed_ids
+
+    def mark_github_processed(self, issue_num: int):
+        gh_data = self.data.setdefault("github", {})
+        processed_ids = gh_data.setdefault("processed_ids", [])
+        if issue_num not in processed_ids:
+            processed_ids.append(issue_num)
+        if issue_num > gh_data.get("last_issue_number", 0):
+            gh_data["last_issue_number"] = issue_num
+
+    def is_email_processed(self, message_id: str, uid: int = 0) -> bool:
+        em_data = self.data.setdefault("email", {})
+        processed_mids = em_data.setdefault("processed_message_ids", [])
+        if message_id and message_id in processed_mids:
+            return True
+        last_uid = em_data.get("last_uid", 0)
+        if uid > 0 and uid <= last_uid:
+            return True
+        return False
+
+    def mark_email_processed(self, message_id: str, uid: int = 0):
+        em_data = self.data.setdefault("email", {})
+        processed_mids = em_data.setdefault("processed_message_ids", [])
+        if message_id and message_id not in processed_mids:
+            processed_mids.append(message_id)
+        if uid > em_data.get("last_uid", 0):
+            em_data["last_uid"] = uid
+
+    def is_content_processed(self, content_hash: str) -> bool:
+        p_data = self.data.setdefault("paste", {})
+        hashes = p_data.setdefault("processed_hashes", [])
+        return content_hash in hashes
+
+    def mark_content_processed(self, content_hash: str):
+        p_data = self.data.setdefault("paste", {})
+        hashes = p_data.setdefault("processed_hashes", [])
+        if content_hash not in hashes:
+            hashes.append(content_hash)
+
+
+def clean_markdown_text(text: str) -> str:
+    """Sanitizes text for markdown inclusion."""
+    if not text:
+        return ""
+    # Normalize line endings
+    return text.replace("\r\n", "\n").replace("\r", "\n").strip()
+
+
+def build_feedback_markdown(
+    fb_id: str,
+    title: str,
+    channel: str,
+    body: str,
+    author: str = "",
+    source_ref: str = "",
+    created_date: str = "",
+    perceived_severity: str = "s2"
+) -> str:
+    today = created_date or datetime.date.today().isoformat()
+    return f"""---
+id: {fb_id}
+title: "{title}"
+status: new
+type: feedback
+channel: {channel}
+perceived_severity: {perceived_severity}
+target: ""
+created: {today}
+updated: {today}
+author: "{author}"
+source_ref: "{source_ref}"
+tags:
+  - feedback
+  - inbox
+---
+
+# 📥 Обращение: {fb_id} — {title}
+
+> **Источник:** {channel.capitalize()} ({source_ref or 'Direct'}) | **Статус:** new  
+> **Целевой артефакт:**   
+
+---
+
+## 1. Исходное сообщение
+{body}
+
+## 2. Анализ и предварительный скрининг
+<!-- Тип: Дефект / Идея / Вопрос / Спам -->
+<!-- Воспринимаемая тяжесть и контекст окружения -->
+
+## 3. Решение по триажу
+<!-- Итог разбора: Конвертировано в BUG-XXX / Добавлено в Roadmap Icebox / Ответ пользователю / Отклонено -->
+"""
+
+
+class GitHubIngestDriver:
+    """Fetches GitHub Issues via REST API v3 using urllib.request."""
+
+    def __init__(self, repo: str = None, token: str = None):
+        self.repo = repo or os.environ.get("GITHUB_REPOSITORY", "")
+        self.token = token or os.environ.get("GITHUB_TOKEN", "")
+
+    def fetch_issues(self, label: str = "needs-triage") -> list:
+        if not self.repo:
+            return []
+        url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={label}"
+        req = urllib.request.Request(url)
+        req.add_header("User-Agent", "agent-docs-harness/kb_ingest")
+        req.add_header("Accept", "application/vnd.github.v3+json")
+        if self.token:
+            req.add_header("Authorization", f"Bearer {self.token}")
+
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                # Filter out PRs if returned by issues API
+                return [i for i in data if "pull_request" not in i]
+        except Exception as e:
+            print(f"⚠️ GitHub Ingest Error ({self.repo}): {e}", file=sys.stderr)
+            return []
+
+
+class EmailIngestDriver:
+    """Fetches incoming feedback emails over IMAP SSL using imaplib & email."""
+
+    def __init__(self, host: str, user: str, password: str, folder: str = "INBOX"):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.folder = folder
+
+    def decode_mime_header(self, val: str) -> str:
+        if not val:
+            return ""
+        decoded_parts = decode_header(val)
+        res = []
+        for part, enc in decoded_parts:
+            if isinstance(part, bytes):
+                res.append(part.decode(enc or "utf-8", errors="replace"))
+            else:
+                res.append(str(part))
+        return "".join(res)
+
+    def extract_body(self, msg) -> str:
+        if msg.is_multipart():
+            for part in msg.walk():
+                ctype = part.get_content_type()
+                cdisp = str(part.get("Content-Disposition", ""))
+                if ctype == "text/plain" and "attachment" not in cdisp:
+                    payload = part.get_payload(decode=True)
+                    if payload:
+                        charset = part.get_content_charset() or "utf-8"
+                        return payload.decode(charset, errors="replace")
+            # Fallback to any text part
+            for part in msg.walk():
+                if part.get_content_type() == "text/html":
+                    payload = part.get_payload(decode=True)
+                    if payload:
+                        charset = part.get_content_charset() or "utf-8"
+                        return payload.decode(charset, errors="replace")
+        else:
+            payload = msg.get_payload(decode=True)
+            if payload:
+                charset = msg.get_content_charset() or "utf-8"
+                return payload.decode(charset, errors="replace")
+        return ""
+
+    def fetch_emails(self) -> list:
+        if not self.host or not self.user or not self.password:
+            return []
+
+        results = []
+        try:
+            client = imaplib.IMAP4_SSL(self.host, timeout=10)
+            client.login(self.user, self.password)
+            client.select(self.folder)
+
+            typ, data = client.search(None, "UNSEEN")
+            if typ != "OK" or not data or not data[0]:
+                client.logout()
+                return []
+
+            msg_ids = data[0].split()
+            for mid in msg_ids:
+                typ, fetch_data = client.fetch(mid, "(RFC822)")
+                if typ != "OK":
+                    continue
+                raw_email = fetch_data[0][1]
+                msg = email.message_from_bytes(raw_email)
+
+                subject = self.decode_mime_header(msg.get("Subject", "No Subject"))
+                sender = self.decode_mime_header(msg.get("From", "Unknown"))
+                date_str = msg.get("Date", "")
+                message_id = msg.get("Message-ID", f"{mid.decode()}-{hashlib.sha256(raw_email).hexdigest()[:8]}")
+                body = self.extract_body(msg)
+
+                try:
+                    uid_val = int(mid)
+                except Exception:
+                    uid_val = 0
+
+                results.append({
+                    "uid": uid_val,
+                    "message_id": message_id.strip(),
+                    "subject": subject.strip(),
+                    "sender": sender.strip(),
+                    "date": date_str,
+                    "body": clean_markdown_text(body)
+                })
+
+            client.logout()
+        except Exception as e:
+            print(f"⚠️ Email Ingest Error ({self.host}): {e}", file=sys.stderr)
+
+        return results
+
+
+def ingest_quick_paste(
+    text: str,
+    title: str,
+    author: str,
+    inbox_dir: Path,
+    state: InboxStateManager,
+    dry_run: bool = False
+) -> tuple:
+    """Ingests a direct snippet/paste with hash deduplication."""
+    clean_body = clean_markdown_text(text)
+    if not clean_body:
+        return False, "Empty content, skipping."
+
+    content_hash = hashlib.sha256(f"{title}\n{clean_body}".encode("utf-8")).hexdigest()
+    if state.is_content_processed(content_hash):
+        return False, f"Duplicate content detected (hash: {content_hash[:8]}), skipped."
+
+    today_str = datetime.date.today().strftime("%Y%m%d")
+    short_hash = content_hash[:8]
+    filename = f"FB-PASTE-{today_str}-{short_hash}.md"
+    file_path = inbox_dir / filename
+
+    content = build_feedback_markdown(
+        fb_id=f"FB-PASTE-{today_str}-{short_hash}",
+        title=title or f"Snippet {short_hash}",
+        channel="paste",
+        body=clean_body,
+        author=author or "User",
+        source_ref=f"hash:{short_hash}"
+    )
+
+    if not dry_run:
+        file_path.write_text(content, encoding="utf-8")
+        state.mark_content_processed(content_hash)
+        state.save()
+
+    return True, filename
+
+
+def run_ingest(
+    inbox_dir: Path,
+    github: bool = False,
+    email_mode: bool = False,
+    paste_data: dict = None,
+    dry_run: bool = False,
+    verbose: bool = False,
+    github_repo: str = None,
+    github_token: str = None
+) -> int:
+    """Main orchestration entry point."""
+    inbox_dir.mkdir(parents=True, exist_ok=True)
+    state_file = inbox_dir / ".inbox_state.json"
+    state = InboxStateManager(state_file)
+
+    created_count = 0
+    skipped_count = 0
+
+    # 1. Quick Paste
+    if paste_data and paste_data.get("text"):
+        ok, msg = ingest_quick_paste(
+            text=paste_data.get("text"),
+            title=paste_data.get("title", "Quick Feedback"),
+            author=paste_data.get("author", "User"),
+            inbox_dir=inbox_dir,
+            state=state,
+            dry_run=dry_run
+        )
+        if ok:
+            created_count += 1
+            if verbose:
+                print(f"✅ Ingested Paste: {msg}")
+        else:
+            skipped_count += 1
+            if verbose:
+                print(f"ℹ️ {msg}")
+
+    # 2. GitHub Issues
+    if github:
+        driver = GitHubIngestDriver(repo=github_repo, token=github_token)
+        issues = driver.fetch_issues()
+        for issue in issues:
+            num = issue.get("number")
+            if not num:
+                continue
+            if state.is_github_processed(num):
+                skipped_count += 1
+                continue
+
+            title = issue.get("title", f"Issue #{num}")
+            body = issue.get("body", "")
+            user = issue.get("user", {}).get("login", "")
+            html_url = issue.get("html_url", "")
+            created_at = issue.get("created_at", "")[:10]
+
+            fb_id = f"FB-GH-{num}"
+            filename = f"{fb_id}.md"
+            file_path = inbox_dir / filename
+
+            md_content = build_feedback_markdown(
+                fb_id=fb_id,
+                title=title,
+                channel="github",
+                body=clean_markdown_text(body),
+                author=user,
+                source_ref=html_url or f"#{num}",
+                created_date=created_at
+            )
+
+            if not dry_run:
+                file_path.write_text(md_content, encoding="utf-8")
+                state.mark_github_processed(num)
+                state.save()
+
+            created_count += 1
+            if verbose:
+                print(f"✅ Ingested GitHub Issue: {filename}")
+
+    # 3. Email (IMAP)
+    if email_mode:
+        imap_host = os.environ.get("FEEDBACK_IMAP_HOST", "")
+        imap_user = os.environ.get("FEEDBACK_IMAP_USER", "")
+        imap_pass = os.environ.get("FEEDBACK_IMAP_PASS", "")
+        if imap_host and imap_user and imap_pass:
+            driver = EmailIngestDriver(host=imap_host, user=imap_user, password=imap_pass)
+            messages = driver.fetch_emails()
+            for msg in messages:
+                mid = msg.get("message_id")
+                uid = msg.get("uid", 0)
+                if state.is_email_processed(mid, uid):
+                    skipped_count += 1
+                    continue
+
+                today_str = datetime.date.today().strftime("%Y%m%d")
+                short_hash = hashlib.sha256(mid.encode("utf-8")).hexdigest()[:8]
+                fb_id = f"FB-MAIL-{today_str}-{short_hash}"
+                filename = f"{fb_id}.md"
+                file_path = inbox_dir / filename
+
+                md_content = build_feedback_markdown(
+                    fb_id=fb_id,
+                    title=msg.get("subject") or "Feedback Email",
+                    channel="email",
+                    body=msg.get("body") or "",
+                    author=msg.get("sender") or "",
+                    source_ref=mid
+                )
+
+                if not dry_run:
+                    file_path.write_text(md_content, encoding="utf-8")
+                    state.mark_email_processed(mid, uid)
+                    state.save()
+
+                created_count += 1
+                if verbose:
+                    print(f"✅ Ingested Email: {filename}")
+
+    if not dry_run:
+        state.save()
+
+    if verbose or created_count > 0:
+        print(f"OK: Ingest completed. Created: {created_count}, Skipped (deduplicated): {skipped_count}.")
+    else:
+        print(f"OK: Ingest checked (0 new items, {skipped_count} skipped).")
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Multi-Channel Feedback Ingestion Engine (Zero-Dependencies)")
+    parser.add_argument("--github", action="store_true", help="Ingest issues from GitHub repository")
+    parser.add_argument("--email", action="store_true", help="Ingest incoming feedback via IMAP")
+    parser.add_argument("--paste", action="store_true", help="Ingest quick snippet/paste from arguments or stdin")
+    parser.add_argument("--all", action="store_true", help="Run all available channels (GitHub + Email)")
+    parser.add_argument("--title", type=str, default="", help="Title for pasted feedback")
+    parser.add_argument("--text", type=str, default="", help="Text content for pasted feedback")
+    parser.add_argument("--author", type=str, default="", help="Author identifier for feedback")
+    parser.add_argument("--inbox-dir", type=str, default="", help="Explicit path to Inbox directory")
+    parser.add_argument("--dry-run", action="store_true", help="Simulate ingestion without writing files")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose logging output")
+
+    args = parser.parse_args()
+
+    # Load local env if present
+    repo_root = Path.cwd()
+    load_env_local(repo_root)
+
+    inbox_dir = Path(args.inbox_dir) if args.inbox_dir else find_inbox_dir(repo_root)
+
+    paste_data = None
+    if args.paste or args.text:
+        text_content = args.text
+        if not text_content and not sys.stdin.isatty():
+            try:
+                text_content = sys.stdin.read()
+            except Exception:
+                pass
+        paste_data = {
+            "text": text_content,
+            "title": args.title,
+            "author": args.author
+        }
+
+    do_github = args.github or args.all
+    do_email = args.email or args.all
+
+    if not do_github and not do_email and not paste_data:
+        # Default behavior: run quick check or report status
+        do_github = bool(os.environ.get("GITHUB_REPOSITORY"))
+        do_email = bool(os.environ.get("FEEDBACK_IMAP_HOST"))
+
+    sys.exit(run_ingest(
+        inbox_dir=inbox_dir,
+        github=do_github,
+        email_mode=do_email,
+        paste_data=paste_data,
+        dry_run=args.dry_run,
+        verbose=args.verbose
+    ))
+
+
+if __name__ == "__main__":
+    main()
