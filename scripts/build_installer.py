@@ -28,13 +28,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = REPO_ROOT / "templates"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 INSTALL_PY = REPO_ROOT / "install.py"
+DIST_DIR = REPO_ROOT / "dist"
+DIST_INSTALL_PY = DIST_DIR / "install.py"
 SKILLS_DIR = REPO_ROOT / ".agents" / "skills"
 
 
 def bundle_assets() -> dict:
     assets = {}
 
-    # 1. Collect all 13 templates
+    # 1. Collect all 14 templates
     template_files = sorted(list(TEMPLATES_DIR.glob("*.md")))
     if not template_files:
         raise RuntimeError(f"No templates found in {TEMPLATES_DIR}")
@@ -94,7 +96,7 @@ def compress_bundle(assets: dict) -> str:
 
 
 def build():
-    print("🚀 Compiling agent-docs-harness assets into install.py...")
+    print("🚀 Compiling agent-docs-harness assets into install.py and dist/install.py...")
     assets = bundle_assets()
     bundle_b64 = compress_bundle(assets)
 
@@ -114,6 +116,13 @@ def build():
             f.write(new_content)
         size_kb = INSTALL_PY.stat().st_size / 1024
         print(f"✅ Successfully updated embedded payload in {INSTALL_PY.name}! (Size: {size_kb:.1f} KB / {INSTALL_PY.stat().st_size} bytes)")
+
+        # Also emit to dist/install.py
+        DIST_DIR.mkdir(parents=True, exist_ok=True)
+        with open(DIST_INSTALL_PY, "w", encoding="utf-8", newline="\n") as f:
+            f.write(new_content)
+        dist_size_kb = DIST_INSTALL_PY.stat().st_size / 1024
+        print(f"✅ Successfully mirrored compiled installer into {DIST_INSTALL_PY.relative_to(REPO_ROOT)}! (Size: {dist_size_kb:.1f} KB / {DIST_INSTALL_PY.stat().st_size} bytes)")
     else:
         print("⚠️ Markers not found in install.py. Please insert markers or re-run generator.")
 

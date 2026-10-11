@@ -10,18 +10,14 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
-  - [ ] [[Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]]: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec #task #phase13 #installer #e2e #spec
-
 
 ## ⏳ В работе (In Progress)
-
-- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
 
 
 ## ✅ Готово (Done)
 
-- [ ] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] #plan #phase13 #rules #adapters #obsidian-graph
+- [x] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] (2026-10-11) #plan #phase13 #rules #adapters #obsidian-graph
+  - [x] [[Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]]: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec (2026-10-11) #task #phase13 #installer #e2e #spec
   - [x] [[Specs/13_RulesLayering/TASK-050-consolidate-onboard-and-template-taxonomy|TASK-050]]: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md (2026-10-11) #task #phase13 #skills #onboarding #templates
   - [x] [[Specs/13_RulesLayering/TASK-049-thin-forwarders-adapters-generator|TASK-049]]: Реализация паттерна Thin Forwarders в генераторах адаптеров install.py (2026-10-11) #task #phase13 #installer #adapters #thin-forwarders
   - [x] [[Specs/13_RulesLayering/TASK-048-clean-agents-md-and-obsidian-taxonomy|TASK-048]]: Очистка AGENTS.md от графового шума и изоляция таксономии Obsidian Graph в .obsidian/graph.json (2026-10-11) #task #phase13 #agents #obsidian-graph

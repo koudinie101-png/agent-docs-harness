@@ -1756,6 +1756,70 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Core Essentials — 4 шаблона", repo_content)
             self.assertIn("Advanced Governance — 10 шаблонов", repo_content)
 
+    def test_27_dist_monolith_e2e_fresh_install_and_update(self):
+        """E2E test: Verify dist/install.py compiled monolith behavior on fresh install and safe update."""
+        dist_installer = REPO_ROOT / "dist" / "install.py"
+        self.assertTrue(dist_installer.is_file(), "dist/install.py must exist")
+
+        # 1. Fresh install using dist/install.py via subprocess
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "MonolithApp"
+            target.mkdir()
+
+            res = subprocess.run(
+                [
+                    sys.executable,
+                    str(dist_installer),
+                    "--non-interactive",
+                    "--name",
+                    "MonolithApp",
+                    "--stack",
+                    "python",
+                    "--agent",
+                    "all",
+                    "--git",
+                    "none",
+                    "--target-dir",
+                    str(target),
+                ],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res.returncode, 0, f"dist/install.py failed: {res.stdout}\n{res.stderr}")
+            self.assertIn("Agent Docs-as-Code Harness installed successfully", res.stdout)
+
+            # Check deployed skills = 12
+            skills_dir = target / ".agents" / "skills"
+            self.assertTrue(skills_dir.is_dir())
+            skill_subdirs = [d for d in skills_dir.iterdir() if d.is_dir()]
+            self.assertEqual(len(skill_subdirs), 12)
+            self.assertFalse((skills_dir / "docs-as-code").exists())
+            self.assertTrue((skills_dir / "kb-onboard").exists())
+
+            # Check adapters are thin forwarders
+            gemini_md = target / "GEMINI.md"
+            self.assertTrue(gemini_md.is_file())
+            gemini_lines = gemini_md.read_text(encoding="utf-8").strip().splitlines()
+            self.assertLessEqual(len(gemini_lines), 35)
+            self.assertIn("[[AGENTS.md]]", "\n".join(gemini_lines))
+
+            # 2. Safe update test via dist/install.py --update
+            res_up = subprocess.run(
+                [
+                    sys.executable,
+                    str(dist_installer),
+                    "--update",
+                    "--target-dir",
+                    str(target),
+                ],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_up.returncode, 0, f"dist/install.py --update failed: {res_up.stdout}\n{res_up.stderr}")
+            self.assertIn("Refreshed 12 skills", res_up.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

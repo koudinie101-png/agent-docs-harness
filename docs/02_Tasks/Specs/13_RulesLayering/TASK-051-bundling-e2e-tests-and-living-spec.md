@@ -1,7 +1,7 @@
 ---
 id: TASK-051
 title: "Сборка монолитного инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec"
-status: planned
+status: done
 type: task
 phase: 13
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-051 — Сборка монолитного инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec
 
-> **ID:** TASK-051 | **Статус:** К реализации  
+> **ID:** TASK-051 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-016-agent-rules-hierarchy-and-knowledge-base-structure|RESEARCH-016]] | **Решение:** [[../../../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]
 
@@ -70,18 +70,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Синтаксическая проверка: `python -m py_compile dist/install.py` (Exit code 0).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
-- [ ] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
-- [ ] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
+- [x] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0).
+- [x] Синтаксическая проверка: `python -m py_compile dist/install.py` (Exit code 0).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, Exit code 0).
+- [x] Тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0).
+- [x] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Монолит `dist/install.py` успешно собран и верифицирован.
-- [ ] Все E2E и регрессионные тесты завершились с кодом 0.
-- [ ] `SPEC.md` и `README.md` полностью синхронизированы с кодовой базой.
-- [ ] Все задачи Фазы 13 отмечены выполненными в Канбане и Дорожной карте.
-- [ ] Результаты зафиксированы в `Devlog.md`.
+- [x] Монолит `dist/install.py` успешно собран и верифицирован.
+- [x] Все E2E и регрессионные тесты завершились с кодом 0.
+- [x] `SPEC.md` и `README.md` полностью синхронизированы с кодовой базой.
+- [x] Все задачи Фазы 13 отмечены выполненными в Канбане и Дорожной карте.
+- [x] Результаты зафиксированы в `Devlog.md`.

@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-11] — Реализация TASK-051: Сборка монолитного инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec (Завершение Фазы 13)
+- **Что сделано:**
+  - Модернизирован сборщик `scripts/build_installer.py`: теперь он одновременно упаковывает embedded payload в `install.py` и автоматически компилирует готовый монолитный дистрибутив `dist/install.py` со всеми 14 шаблонами, конфигурацией Obsidian Graph, утилитами и 12 скиллами.
+  - Реализован комплексный E2E тест `test_27_dist_monolith_e2e_fresh_install_and_update` в `tests/test_installer.py`, тестирующий установку и бережное обновление (`--update`) через `dist/install.py` в изолированном каталоге с проверкой 12 скиллов и тонких адаптеров.
+  - Актуализированы Master Specification (`SPEC.md`) и витрина проекта (`README.md`): зафиксирован переход на паттерн Thin Forwarders, 12 специализированных скиллов (`kb-onboard` как единая точка входа) и двухуровневая таксономия шаблонов базы знаний.
+  - Успешно завершена **Фаза 13** («Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний»): закрыты все задачи в ТЗ [[02_Tasks/Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]], Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|PLAN-013]].
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> сборка успешна, обновлены `install.py` и `dist/install.py` (Exit code 0).
+  - `python -m py_compile dist/install.py` -> синтаксис монолита корректен (Exit code 0).
+  - `python scripts/kb_lint.py --path docs -v` -> 134 файла проверено, 1210 связей валидны (0 broken links, Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 27/27 тестов успешно пройдено (100% Pass, OK, 45.4s).
+  - `python -m unittest discover -s tests` -> 67/67 тестов успешно пройдено (100% Pass, Exit code 0, 37.4s).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовить и выпустить релиз Фазы 13: `/kb-release --version v0.13.0 --phase 13` (или запланировать исследование следующей инициативы из Icebox через `/kb-research`).
+
+---
+
 ### [2026-10-11] — Реализация TASK-050: Консолидация docs-as-code и kb-onboard, двухуровневая таксономия шаблонов в Onboarding.md
 - **Что сделано:**
   - Упразднен избыточный мета-скилл `.agents/skills/docs-as-code/`, высвободивший постоянный слот в Always-On системном промпте модели (реестр скиллов сокращен с 13 до 12 специализированных инструментов).

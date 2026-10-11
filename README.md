@@ -113,8 +113,8 @@ docs/
 └── 05_Testing/               # E2E acceptance test scenarios
 ```
 
-### 2. 13 Executable AI Agent Skills (`.agents/skills/`)
-The harness bundles and automatically deploys 13 canonical AI agent skills into `.agents/skills/`:
+### 2. 12 Executable AI Agent Skills (`.agents/skills/`)
+The harness bundles and automatically deploys 12 canonical AI agent skills into `.agents/skills/`:
 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
@@ -128,9 +128,8 @@ The harness bundles and automatically deploys 13 canonical AI agent skills into 
 | **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
 | **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
 | **`/kb-lint`** | Health Audit | Scans internal wikilinks, YAML frontmatter, detects link rot, and ensures knowledge base consistency. |
-| **`/kb-onboard`** | Developer Guide | Displays the onboarding guide, 3-mode rules, and quick cheat sheet for new team members and agents. |
-| **`/kb-init`** | Initialization | Deploys the standard Docs-as-Code folder tree, template suite, and colored Obsidian graph into a new repo. |
-| **`docs-as-code`** | Master Standard | Complete reference and standard specification for autonomous agent operations. |
+| **`/kb-onboard`** | Developer Guide & Hub | Displays onboarding cheatsheet, 4-stage lifecycle, command router, directory layout, and core disciplines. |
+| **`/kb-init`** | Initialization | Deploys standard Docs-as-Code folder tree, template suite (Core Essentials vs Advanced Governance), and Obsidian graph. |
 
 ### 3. Autonomous Knowledge Base Linter, Release & Ingest Utilities (`scripts/`)
 * **Zero external dependencies** (standard Python 3 stdlib only).
@@ -147,15 +146,17 @@ The harness bundles and automatically deploys 13 canonical AI agent skills into 
   python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
   ```
 
-### 4. Agent Configuration & Rule Files
+### 4. Agent Configuration & Rule Files (Thin Forwarders Pattern)
 Depending on your preference, the installer configures:
-* **`AGENTS.md`** — Universal root standard for modern agents.
-* **`GEMINI.md`** — Google Antigravity & Gemini CLI integration.
-* **`.windsurfrules`** — Windsurf Cascade IDE rules.
-* **`.clinerules`** — VS Code Cline & Roo Code integration.
-* **`CLAUDE.md`** — Claude Code CLI in terminal.
-* **`.cursorrules`** — Cursor IDE rules.
-* **`.github/copilot-instructions.md`** — GitHub Copilot chat & completions.
+* **`AGENTS.md`** — Universal root standard (Single Source of Truth) governing all 4 operating modes, skills, and disciplines.
+* **Thin Forwarder Adapters ($\le 25$ lines, -80% token bloat):**
+  * **`GEMINI.md`** — Google Antigravity & Gemini CLI integration.
+  * **`.windsurfrules`** — Windsurf Cascade IDE rules.
+  * **`.clinerules`** — VS Code Cline & Roo Code integration.
+  * **`CLAUDE.md`** — Claude Code CLI in terminal.
+  * **`.cursorrules`** — Cursor IDE rules.
+  * **`.github/copilot-instructions.md`** — GitHub Copilot chat & completions.
+  * *Each adapter links directly to `AGENTS.md` as SSOT, specifies stack verification commands (`Build`, `Test`, `Lint`), and enforces core Read-Only & TDD invariants without double prompt injection.*
 
 ---
 
