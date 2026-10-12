@@ -159,6 +159,72 @@ def check_devlog_semantic_guard(docs_dir: Path) -> list:
     return warnings
 
 
+def check_fast_track_specs(docs_dir: Path) -> list:
+    """
+    Audits Fast-Track task specifications (type: fast-track) for adherence to scope limits:
+    - Maximum 2 files touched in file contracts ([NEW], [MODIFY], [DELETE]).
+    - Mandatory Verification Plan section or automated verification command.
+    Returns a list of warning strings.
+    """
+    warnings = []
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
+        specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir():
+        return warnings
+
+    for spec_file in specs_dir.rglob("*.md"):
+        if spec_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            content = spec_file.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        if not content.startswith("---"):
+            continue
+
+        parts = content.split("---", 2)
+        if len(parts) < 3:
+            continue
+
+        fm = parts[1]
+        type_match = re.search(r"^type:\s*([^\s#]+)", fm, re.MULTILINE)
+        if not type_match or type_match.group(1).strip().lower() != "fast-track":
+            continue
+
+        rel_name = spec_file.name
+
+        # 1. Count files in file contract
+        contract_section = ""
+        m_contract = re.search(r"##\s+2\.\s+Контракт файлов([\s\S]*?)(?=\n##|\n---|$)", content, re.IGNORECASE)
+        if m_contract:
+            contract_section = m_contract.group(1)
+        else:
+            # Fallback to general section 2
+            m_sec2 = re.search(r"##\s+(?:2\.|Затрагиваемые файлы)([\s\S]*?)(?=\n##|\n---|$)", content, re.IGNORECASE)
+            if m_sec2:
+                contract_section = m_sec2.group(1)
+
+        file_items = re.findall(r"^\s*[\*\-]\s*`?\[(?:NEW|MODIFY|DELETE)\]`?", contract_section, re.MULTILINE | re.IGNORECASE)
+        if len(file_items) > 2:
+            warnings.append(
+                f"Fast-Track spec '{rel_name}' touches {len(file_items)} files (limit: <= 2). Consider full RFC."
+            )
+
+        # 2. Check Verification Plan
+        has_verif = bool(
+            re.search(r"##\s+.*(?:План верификации|Verification Plan)", content, re.IGNORECASE) or
+            re.search(r"(?:python|pytest|dotnet|npm|cargo)\s+.*", content, re.IGNORECASE)
+        )
+        if not has_verif:
+            warnings.append(
+                f"Fast-Track spec '{rel_name}' is missing a Verification Plan."
+            )
+
+    return warnings
+
+
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
@@ -260,6 +326,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
 
     drift_warnings = check_spec_drift(docs_dir)
     devlog_warnings = check_devlog_semantic_guard(docs_dir)
+    fast_track_warnings = check_fast_track_specs(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings)
 
     if verbose:
@@ -294,6 +361,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {dw}")
             print()
 
+        if fast_track_warnings:
+            print(f"⚠️ Fast-Track Guard Warnings ({len(fast_track_warnings)}):")
+            for ftw in fast_track_warnings:
+                print(f"   • {ftw}")
+            print()
+
         if has_errors:
             print("❌ Linter failed: please resolve broken links.")
             return 1
@@ -306,6 +379,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {dw}")
         for dw in devlog_warnings:
             print(f"⚠️  WARN: {dw}")
+        for ftw in fast_track_warnings:
+            print(f"⚠️  WARN: {ftw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0

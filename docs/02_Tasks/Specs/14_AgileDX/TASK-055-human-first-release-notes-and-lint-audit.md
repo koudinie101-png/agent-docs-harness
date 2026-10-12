@@ -1,7 +1,7 @@
 ---
 id: TASK-055
 title: "Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py"
-status: planned
+status: done
 type: task
 phase: 14
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-055 — Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py
 
-> **ID:** TASK-055 | **Статус:** К реализации  
+> **ID:** TASK-055 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|PLAN-014]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]], [[../../../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]]
 

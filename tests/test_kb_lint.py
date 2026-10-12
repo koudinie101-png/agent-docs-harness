@@ -313,6 +313,71 @@ class TestKbLint(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("Invalid status", msg)
 
+    def test_fast_track_specs_validation(self):
+        """Validates scope limits (<= 2 files) and Verification Plan for Fast-Track specs."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "14_Fast"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+
+        valid_micro = specs_dir / "TASK-090.md"
+        valid_micro.write_text("""---
+id: TASK-090
+title: "Micro fix"
+status: done
+type: fast-track
+---
+# TASK-090
+## 1. Цель
+Quick fix.
+## 2. Контракт файлов
+* `[MODIFY]` `file1.py` — fix logic
+* `[MODIFY]` `file2.py` — fix test
+## 3. План верификации
+- [ ] python -m unittest
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_fast_track_specs(self.docs_dir)
+        self.assertEqual(len(warnings), 0)
+
+        # Exceeds file limit (touches 3 files)
+        bloated_micro = specs_dir / "TASK-091.md"
+        bloated_micro.write_text("""---
+id: TASK-091
+title: "Bloated fix"
+status: done
+type: fast-track
+---
+# TASK-091
+## 1. Цель
+Too big.
+## 2. Контракт файлов
+* `[MODIFY]` `file1.py` — fix 1
+* `[MODIFY]` `file2.py` — fix 2
+* `[MODIFY]` `file3.py` — fix 3
+## 3. План верификации
+- [ ] pytest
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_fast_track_specs(self.docs_dir)
+        self.assertTrue(any("touches 3 files (limit: <= 2)" in w for w in warnings))
+
+        # Missing verification plan
+        untested_micro = specs_dir / "TASK-092.md"
+        untested_micro.write_text("""---
+id: TASK-092
+title: "Untested fix"
+status: done
+type: fast-track
+---
+# TASK-092
+## 1. Цель
+No tests.
+## 2. Контракт файлов
+* `[MODIFY]` `file1.py` — fix 1
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_fast_track_specs(self.docs_dir)
+        self.assertTrue(any("TASK-092.md' is missing a Verification Plan" in w for w in warnings))
+
 
 if __name__ == "__main__":
     unittest.main()

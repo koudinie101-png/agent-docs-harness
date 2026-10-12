@@ -558,6 +558,7 @@ def find_phase_artifacts(
                         "title": title,
                         "link": link,
                         "status": fm.get("status", "done"),
+                        "type": fm.get("type", "task"),
                     })
             except Exception:
                 pass
@@ -886,12 +887,21 @@ def generate_public_release_notes(
 
     doc_summary = summary.strip() or default_summary
 
-    # Features
+    # Features / Highlights
     features_md: List[str] = []
+    highlights_md: List[str] = []
     if phase_data.get("tasks"):
         for t in phase_data["tasks"]:
-            raw_item = f"- [[{t['link']}|{t['id']}]]: {t['title']}."
-            features_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
+            t_type = t.get("type", "task")
+            if t_type == "fast-track":
+                marker = "⚡ Fast-Track:"
+            else:
+                marker = "✨ Фича:"
+            raw_item = f"- {marker} [[{t['link']}|{t['id']}]]: {t['title']}."
+            converted = convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch)
+            features_md.append(converted)
+            # Add top features to highlights
+            highlights_md.append(f"- **{t['title']}** ({t['id']})")
     else:
         features_md.append("- Плановые задачи фазы выполнены.")
 
@@ -899,10 +909,20 @@ def generate_public_release_notes(
     bugs_md: List[str] = []
     if phase_data.get("bugs"):
         for b in phase_data["bugs"]:
-            raw_item = f"- [[{b['link']}|{b['id']}]]: {b['title']}."
+            raw_item = f"- 🐛 Исправление: [[{b['link']}|{b['id']}]]: {b['title']}."
             bugs_md.append(convert_wikilinks_to_github_markdown(raw_item, clean_repo_url, branch))
     else:
         bugs_md.append("- Критических дефектов и регрессий за период фазы не зафиксировано.")
+
+    highlights_block = ""
+    if highlights_md:
+        highlights_preview = "\n".join(highlights_md[:4])
+        highlights_block = f"""### 🌟 Главное в этом релизе (Highlights)
+{highlights_preview}
+
+---
+
+"""
 
     artifacts_table = format_artifacts_markdown_table(artifacts)
     first_art_name = artifacts[0]["name"] if artifacts else "install.py"
@@ -917,7 +937,7 @@ def generate_public_release_notes(
 
 ---
 
-### ⚡ Быстрый старт / Обновление (Quick Install)
+{highlights_block}### ⚡ Быстрый старт / Обновление (Quick Install)
 ```bash
 # Новая установка Docs-as-Code
 curl -fsSL {raw_install_url} | python3
