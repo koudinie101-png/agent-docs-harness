@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-061: Инфраструктура процедурной памяти (docs/06_Memory/, шаблон TEMPLATE_INCIDENT.md и агрегированный индекс patterns.md)
+- **Что сделано:**
+  - Развернута подсистема процедурной памяти агента `docs/06_Memory/` с каталогом архива инцидентов `Incidents/` (`.gitkeep`).
+  - Создан эталонный шаблон инцидента `docs/00_Templates/TEMPLATE_INCIDENT.md` с валидным YAML frontmatter (`id: INC-XXX`, `status`, `severity`, `tag`, `root_cause`, `target_pattern`, `tags: [memory, incident]`).
+  - Сформирован High-SNR компактный индекс систематических ошибок `docs/06_Memory/patterns.md` со строгим инвариантом токеномики ($\le 15$ активных записей, ~350 токенов) и стартовыми паттернами (`TRG-01`, `TRG-02`).
+  - Обновлена карта базы знаний `docs/00_Index.md`: добавлен раздел «6. Процедурная память (`06_Memory/`)» со ссылкой на `06_Memory/patterns`, обновлен Mermaid flowchart.
+  - Спецификация `TASK-061` переведена в статус `done`, карточка перемещена в Done на `Kanban.md`, отмечен чекбокс в `Roadmap.md`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 170 files scanned, 1553 wikilinks verified (0 broken), Exit code 0.
+  - `python -m unittest discover -s tests` -> 82/82 тестов успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация следующей задачи Фазы 16: `/kb-implement TASK-062` (Точки чтения памяти в жизненном цикле и протокол двухосевого промоушена).
+
+---
+
 ### [2026-10-12] — Исправление BUG-003: Устранение бесшумного отката в локальный режим при отсутствии GitHub CLI (gh)
 - **Что сделано:**
   - В `scripts/kb_release.py` реализован протокол `No Silent Fallback`: при публикации в GitHub-репозитории отсутствие `gh` CLI больше не замалчивается. Скрипт выдает явное предупреждение с платформенными инструкциями по установке (`winget install GitHub.cli` / `brew install gh`).

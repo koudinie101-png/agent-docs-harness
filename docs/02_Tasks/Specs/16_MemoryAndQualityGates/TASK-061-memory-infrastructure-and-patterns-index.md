@@ -1,7 +1,7 @@
 ---
 id: TASK-061
 title: "Инфраструктура процедурной памяти (docs/06_Memory/, шаблон TEMPLATE_INCIDENT.md и агрегированный индекс patterns.md)"
-status: planned
+status: done
 type: task
 phase: 16
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-061 — Инфраструктура процедурной памяти (docs/06_Memory/, шаблон TEMPLATE_INCIDENT.md и агрегированный индекс patterns.md)
 
-> **ID:** TASK-061 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-061 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-016-self-improving-harness-and-defect-memory|PLAN-016]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]  
 > **Первоисточник фидбека:** [[../../Inbox/FB-GH-3|Обращение FB-GH-3 (madpanther)]]
@@ -122,15 +122,16 @@ tags:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Наличие файлов: проверка создания `TEMPLATE_INCIDENT.md`, `patterns.md` и `docs/06_Memory/Incidents/.gitkeep`.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` завершается с `0 broken links` и валидным YAML frontmatter.
-- [ ] Аудит связности: ссылка на `patterns.md` открывается из `00_Index.md`.
+- [x] Наличие файлов: проверка создания `TEMPLATE_INCIDENT.md`, `patterns.md` и `docs/06_Memory/Incidents/.gitkeep`.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` завершается с `0 broken links` и валидным YAML frontmatter.
+- [x] Аудит связности: ссылка на `patterns.md` открывается из `00_Index.md`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Каталог `docs/06_Memory/` развернут с `patterns.md` и подкаталогом `Incidents/`.
-- [ ] Шаблон `TEMPLATE_INCIDENT.md` создан и соответствует стандарту.
-- [ ] `docs/00_Index.md` обновлен.
-- [ ] `python scripts/kb_lint.py --path docs` возвращает Exit code 0.
+- [x] Каталог `docs/06_Memory/` развернут с `patterns.md` и подкаталогом `Incidents/`.
+- [x] Шаблон `TEMPLATE_INCIDENT.md` создан и соответствует стандарту.
+- [x] `docs/00_Index.md` обновлен.
+- [x] `python scripts/kb_lint.py --path docs` возвращает Exit code 0.
+
