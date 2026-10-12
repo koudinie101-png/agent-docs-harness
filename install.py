@@ -195,7 +195,8 @@ _RULES_BODY = ("## Docs-as-Code (17 Disciplines)\n"
     "15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).\n"
     "16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.\n"
     "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n"
-    "18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.\n")
+    "18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.\n"
+    "19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -224,6 +225,7 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"3. **Fast-Track Protocol:** Micro-tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` using Micro-Spec.\n"
         f"4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
         f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
+        f"6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.\n"
         f"{tail}"
     )
 

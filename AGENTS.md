@@ -45,6 +45,12 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - For standard lifecycle modes (Modes 0, 1, 2, 2B, 2C, 3) and direct agent slash-commands, agents are explicitly authorized to execute directly in the first turn from the Always-On prefix (`AGENTS.md`) without an intermediary `view_file` call to `.agents/skills/<skill>/SKILL.md`.
    - **Pipelined Co-fetching:** when an operation genuinely requires reading a template or reference note, the agent must bundle all necessary context read requests into that same first tool-call turn rather than chaining sequential read steps.
    - Specialized procedural skills (`/kb-release`, `/kb-lint`, `/kb-init`) remain strictly On-Demand via Progressive Disclosure.
+11. **Quality Gates & Reliability Tiers Invariant:**
+   - Все проектные правила и требования надежности классифицируются по 3 слоям исполнения:
+     * **Tier 1 (Enforcement / Принуждение):** Механические барьеры (линтеры `kb_lint.py`, компилятор, юнит/регресс-тесты, CI). Ошибка физически блокирует сборку (Exit code 1).
+     * **Tier 2 (Always-On Prompt):** Нормативные инварианты в `AGENTS.md` и системных промптах IDE (100% видимость в каждом диалоговом такте).
+     * **Tier 3 (Playbook / On-Demand):** Инструкции скиллов, шаблонов и справочников (вероятностное следование).
+   - **Инвариант надежности:** Критическое правило надежности или выявленный систематический дефект категорически запрещено оставлять исключительно в вероятностном слое Tier 3. Правило обязано быть автоматизировано в тесте/линтере (Tier 1) либо вынесено в Always-On префикс (Tier 2).
 
 ---
 

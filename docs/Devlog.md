@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-063: Слои надежности Quality Gates (Tier 1–3) в AGENTS.md и руководстве Onboarding.md
+- **Что сделано:**
+  - В канонический файл правил `AGENTS.md` добавлено правило 11 (`Quality Gates & Reliability Tiers Invariant`): декомпозиция всех требований надежности на 3 слоя (Tier 1: Enforcement / линтеры, компиляторы, тесты; Tier 2: Always-On промпты IDE; Tier 3: справочные плейбуки и скиллы). Зафиксирован инвариант недопустимости оставления критических правил исключительно в вероятностном слое Tier 3.
+  - В руководство разработчика и агента `docs/Onboarding.md` добавлен раздел «13. Слои надежности Quality Gates (Tier 1–3) и процедурная память» с наглядной матрицей надежности и описанием контура памяти `docs/06_Memory/`.
+  - Синхронизированы генераторы `install.py` (`_RULES_BODY`, `_gen_rule`) и все тонкие адаптеры в корне (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`) с гарантированным соблюдением лимита $\le 35$ строк.
+  - Спецификация `TASK-063` переведена в статус `done`, карточка перемещена в Done на `Kanban.md`, отмечен чекбокс в `Roadmap.md`.
+- **Результаты верификации:**
+  - Проверка объема адаптеров: все файлы адаптеров в пределах 14–15 строк (лимит: $\le 35$).
+  - `python scripts/kb_lint.py --path docs` -> 170 files scanned, 1554 wikilinks verified (0 broken), Exit code 0.
+  - `python -m unittest tests/test_installer.py` -> 29/29 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 82/82 тестов успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация завершающей задачи Фазы 16: `/kb-implement TASK-064` (Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync).
+
+---
+
 ### [2026-10-12] — Реализация TASK-062: Точки чтения памяти в жизненном цикле (kb-implement, kb-complete) и протокол двухосевого промоушена
 - **Что сделано:**
   - В скилл `.agents/skills/kb-implement/SKILL.md` (Режим 3) интегрирована обязательная префлайт-проверка `0. Memory-First Check`: чтение индекса `docs/06_Memory/patterns.md`, проверка рисков типовых граблей (Windows paths, ложные моки, сбои версий) и применение превентивных мер до генерации кода.

@@ -1,7 +1,7 @@
 ---
 id: TASK-063
 title: "Слои надежности Quality Gates (Tier 1–3) в AGENTS.md и руководстве Onboarding.md"
-status: planned
+status: done
 type: task
 phase: 16
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-063 — Слои надежности Quality Gates (Tier 1–3) в AGENTS.md и руководстве Onboarding.md
 
-> **ID:** TASK-063 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-063 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-016-self-improving-harness-and-defect-memory|PLAN-016]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]  
 > **Первоисточник фидбека:** [[../../Inbox/FB-GH-3|Обращение FB-GH-3 (madpanther)]]
@@ -86,15 +86,15 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Проверка объема адаптеров: ни один файл правил в корне репозитория не превышает 35 строк.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` возвращает 0 ошибок.
-- [ ] Юнит-тесты: `python -m unittest tests/test_installer.py` подтверждает корректность генерации адаптеров.
+- [x] Проверка объема адаптеров: ни один файл правил в корне репозитория не превышает 35 строк.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` возвращает 0 ошибок.
+- [x] Юнит-тесты: `python -m unittest tests/test_installer.py` подтверждает корректность генерации адаптеров.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Правило 11 зафиксировано в `AGENTS.md`.
-- [ ] Таблица Quality Gates добавлена в `Onboarding.md`.
-- [ ] Адаптеры IDE синхронизированы в пределах лимита $\le 35$ строк.
-- [ ] Все проверки верификации успешно пройдены.
+- [x] Правило 11 зафиксировано в `AGENTS.md`.
+- [x] Таблица Quality Gates добавлена в `Onboarding.md`.
+- [x] Адаптеры IDE синхронизированы в пределах лимита $\le 35$ строк.
+- [x] Все проверки верификации успешно пройдены.
