@@ -6,8 +6,8 @@ phase: 14
 status: completed
 date: 2026-10-12
 git_tag: "v0.14.0"
-github_release_url: ""
-mode: "local-only"
+github_release_url: "https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.14.0"
+mode: "github"
 artifacts:
   - name: "install.py"
     path: "dist/install.py"
