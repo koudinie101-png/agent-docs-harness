@@ -27,6 +27,8 @@ tags:
 curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3
 ```
 
+> 💡 **Для новичков и вайбкодеров:** Если вы хотите быстро разобраться без сложного технического жаргона и понять, как безопасно создавать проекты через AI-агентов, начните с руководства [[Zero_To_Hero_Guide|Zero to Hero: «Вайбкодинг со страховкой»]].
+
 Сам проект полностью следует этой же методологии (**Dogfooding**).
 
 ---

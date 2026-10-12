@@ -36,5 +36,6 @@ Use when the user runs `/kb-onboard` or asks how to interact with the project an
 
 ## Procedure
 1. **Present Onboarding Cheatsheet:** Display `/kb-*` command router and 4-stage lifecycle (Discovery $\to$ Planning $\to$ Spec $\to$ Verification/TDD $\to$ Release $\to$ Ingestion).
-2. **Review Core Invariants:** Permalinks, Regression-First, Anti-Echo, Single-Task Barrier, Living Spec.
-3. **Reference Full Guide:** Direct developer to `docs/Onboarding.md` and `docs/00_Index.md`.
+2. **Review Core Invariants:** Permalinks, Regression-First, Anti-Echo, Single-Task Barrier, Living Spec, Human Guardrails.
+3. **Mentor Mode (Beginners & Vibe Coders):** If user requests plain-language guidance or is new to coding, explain steps via everyday analogies and suggest reading `docs/Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой»).
+4. **Reference Full Guides:** Direct developer to `docs/Zero_To_Hero_Guide.md`, `docs/Onboarding.md`, and `docs/00_Index.md`.
