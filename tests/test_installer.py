@@ -919,9 +919,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + 15 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track)
-            self.assertLessEqual(total_skills_size, 28000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 28000)")
-            self.assertLessEqual(total_templates_size, 27000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 27000)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints)
+            self.assertLessEqual(total_skills_size, 30000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 30000)")
+            self.assertLessEqual(total_templates_size, 28000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 28000)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
@@ -930,9 +930,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 135 KB for Phase 15 with 15 templates, 12 skills, 3 standalone scripts)
+            # Installer size check (budget <= 140 KB for Phase 16 with 16 templates, 12 skills, 3 standalone scripts, memory patterns)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 135000, f"install.py exceeded budget: {installer_size} bytes (budget <= 135 KB)")
+            self.assertLessEqual(installer_size, 140000, f"install.py exceeded budget: {installer_size} bytes (budget <= 140 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -1863,9 +1863,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Zero to Hero", guide_content)
             self.assertIn("Fast-Track", guide_content)
 
-            # Check 15 templates total in docs/00_Templates/
+            # Check 16 templates total in docs/00_Templates/ (Phase 16 added TEMPLATE_INCIDENT.md)
             templates = list((target / "docs" / "00_Templates").glob("*.md"))
-            self.assertEqual(len(templates), 15, f"Expected 15 templates, found {len(templates)}")
+            self.assertEqual(len(templates), 16, f"Expected 16 templates, found {len(templates)}")
 
             # 2. Modify files to verify update behavior
             # Zero_To_Hero_Guide.md is core documentation refreshed on --update
@@ -1961,8 +1961,65 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("check_phase_consistency", refreshed_lint)
             self.assertNotIn("# OUTDATED_LINT_SCRIPT", refreshed_lint)
 
+    def test_30_memory_infrastructure_and_safe_update(self):
+        """E2E test: Deployment of docs/06_Memory/ and safe retention of patterns.md across updates."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "MemoryApp"
+            target.mkdir()
+
+            # 1. Clean installation
+            install.install_harness(
+                target_dir=target,
+                project_name="MemoryApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                force=True,
+            )
+
+            mem_dir = target / "docs" / "06_Memory"
+            incidents_dir = mem_dir / "Incidents"
+            patterns_file = mem_dir / "patterns.md"
+            tpl_incident = target / "docs" / "00_Templates" / "TEMPLATE_INCIDENT.md"
+
+            self.assertTrue(mem_dir.is_dir(), "docs/06_Memory/ should exist after install")
+            self.assertTrue(incidents_dir.is_dir(), "docs/06_Memory/Incidents/ should exist after install")
+            self.assertTrue(patterns_file.is_file(), "patterns.md should exist after install")
+            self.assertTrue(tpl_incident.is_file(), "TEMPLATE_INCIDENT.md should exist after install")
+
+            # Verify initial content of patterns.md
+            content = patterns_file.read_text(encoding="utf-8")
+            self.assertIn("Память процедурных ошибок: Активные паттерны", content)
+            self.assertIn("[TRG-01]", content)
+
+            # 2. Modify patterns.md with user-accumulated pattern
+            custom_pattern = "- [TRG-99] Custom Error | Description | Fix | (Count: 5, Sev: High) -> INC-099\n"
+            patterns_file.write_text(content + custom_pattern, encoding="utf-8")
+
+            # 3. Run safe update
+            install.update_harness(target)
+
+            # Verify patterns.md was NOT overwritten
+            updated_content = patterns_file.read_text(encoding="utf-8")
+            self.assertIn("[TRG-99]", updated_content, "Custom patterns must be preserved across updates!")
+
+            # Verify kb_lint passes on the updated repository
+            lint_script = target / "scripts" / "kb_lint.py"
+            res_lint = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs")],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=10,
+            )
+            self.assertEqual(res_lint.returncode, 0, f"kb_lint failed on MemoryApp:\n{res_lint.stdout}\n{res_lint.stderr}")
+            self.assertIn("0 broken", res_lint.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
 

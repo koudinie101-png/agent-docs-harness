@@ -90,6 +90,12 @@ def bundle_assets() -> dict:
         assets["docs/Zero_To_Hero_Guide.md"] = zth_guide.read_text(encoding="utf-8")
         print(f"  • Bundled guide: Zero_To_Hero_Guide.md ({len(assets['docs/Zero_To_Hero_Guide.md'])} chars)")
 
+    # 7. Collect procedural memory patterns.md
+    memory_patterns = REPO_ROOT / "docs" / "06_Memory" / "patterns.md"
+    if memory_patterns.is_file():
+        assets["docs/06_Memory/patterns.md"] = memory_patterns.read_text(encoding="utf-8")
+        print(f"  • Bundled memory patterns: patterns.md ({len(assets['docs/06_Memory/patterns.md'])} chars)")
+
     return assets
 
 

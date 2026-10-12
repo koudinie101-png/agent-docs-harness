@@ -100,6 +100,7 @@ docs/
 │   ├── TEMPLATE_TEST.md      # E2E UX acceptance test checklist
 │   ├── TEMPLATE_RELEASE.md   # Phased release note with SHA-256 artifact table
 │   ├── TEMPLATE_FEEDBACK.md  # Raw feedback item (FB-XXX) with signal metadata
+│   ├── TEMPLATE_INCIDENT.md  # Incident report for procedural memory (INC-XXX)
 │   ├── TEMPLATE_ARCHITECTURE.md
 │   ├── TEMPLATE_ONBOARDING.md
 │   ├── TEMPLATE_KANBAN.md
@@ -119,7 +120,8 @@ docs/
 │   └── Releases/             # Phased release notes & checksum tables
 ├── 03_Decisions_ADR/         # Accepted & Rejected Architectural Decisions
 ├── 04_Research/              # Platform quirks and investigation notes
-└── 05_Testing/               # E2E acceptance test scenarios
+├── 05_Testing/               # E2E acceptance test scenarios
+└── 06_Memory/                # Agent procedural memory: patterns.md & Incidents/
 ```
 
 ### 2. 12 Executable AI Agent Skills (`.agents/skills/`)

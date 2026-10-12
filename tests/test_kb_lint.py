@@ -468,7 +468,46 @@ tags:
         self.assertEqual(exit_code, 0)
         self.assertIn("⚠️ Phase Consistency Warnings (1):", captured_verbose.getvalue())
 
+    def test_check_memory_limits_passes_within_limit(self):
+        """check_memory_limits passes when patterns <= 15."""
+        mem_dir = self.docs_dir / "06_Memory"
+        mem_dir.mkdir(parents=True, exist_ok=True)
+        patterns_file = mem_dir / "patterns.md"
+        patterns_content = "# Memory Patterns\n\n"
+        for i in range(1, 16):
+            patterns_content += f"- [TRG-{i:02d}] Pattern {i} | Error description | Fix | (Count: 2, Sev: High) -> INC-{i:03d}\n"
+        patterns_file.write_text(patterns_content, encoding="utf-8")
+
+        errors = kb_lint.check_memory_limits(self.docs_dir)
+        self.assertEqual(len(errors), 0)
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+
+    def test_check_memory_limits_blocks_when_exceeding_15(self):
+        """check_memory_limits returns error and blocks linter (Exit code 1) when patterns > 15."""
+        mem_dir = self.docs_dir / "06_Memory"
+        mem_dir.mkdir(parents=True, exist_ok=True)
+        patterns_file = mem_dir / "patterns.md"
+        patterns_content = "# Memory Patterns\n\n"
+        for i in range(1, 17):  # 16 patterns (exceeds limit 15)
+            patterns_content += f"- [TRG-{i:02d}] Pattern {i} | Error description | Fix | (Count: 2, Sev: High) -> INC-{i:03d}\n"
+        patterns_file.write_text(patterns_content, encoding="utf-8")
+
+        errors = kb_lint.check_memory_limits(self.docs_dir)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Memory patterns limit exceeded: 16 active patterns", errors[0])
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 1)
+        self.assertIn("Memory patterns limit exceeded", captured.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

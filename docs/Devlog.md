@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-064: Контроль лимита памяти в scripts/kb_lint.py, бандлинг install.py, E2E тесты и Living Spec sync
+- **Что сделано:**
+  - В `scripts/kb_lint.py` внедрена механическая проверка Tier 1 `check_memory_limits`: парсинг активных записей в `docs/06_Memory/patterns.md` с блокировкой (Exit code 1) при превышении жесткого лимита в 15 паттернов, а также валидация frontmatter архива инцидентов `docs/06_Memory/Incidents/`.
+  - В `install.py` добавлены короткие флаги `-i` (для `--idea`) и `-r` (для `--report`), реализован деплой подсистемы памяти `docs/06_Memory/` с безопасным сохранением `patterns.md` при вызове `--update` (без перезаписи пользовательских инцидентов).
+  - В `scripts/kb_ingest.py` поддержана передача строкового значения напрямую в аргумент `--paste` (`nargs="?"`).
+  - В сборщик `scripts/build_installer.py` добавлена упаковка шаблона `TEMPLATE_INCIDENT.md` и стартового индекса `patterns.md` в монолитные `install.py` и `dist/install.py`.
+  - В `tests/test_kb_lint.py` и `tests/test_installer.py` добавлены юнит- и E2E тесты контроля лимита памяти, флагов инсталлятора и безопасного сохранения данных.
+  - Синхронизированы `SPEC.md` и `README.md`: устранены ссылки `file:///`, обновлена структура каталогов (16 шаблонов, `06_Memory/`), терминология и дисциплины надежности.
+  - Спецификация `TASK-064` и план `PLAN-016` переведены в статус `done`, Фаза 16 успешно завершена в `Kanban.md` и `Roadmap.md`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 171 files scanned, 1558 wikilinks verified (0 broken), Exit code 0.
+  - `python -m unittest tests/test_kb_lint.py` -> 22/22 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 30/30 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 85/85 тестов успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовка и выпуск официального релиза Фазы 16: `/kb-release v0.16.0` ("Self-Improving Harness & Defect Memory").
+
+---
+
 ### [2026-10-12] — Реализация TASK-063: Слои надежности Quality Gates (Tier 1–3) в AGENTS.md и руководстве Onboarding.md
 - **Что сделано:**
   - В канонический файл правил `AGENTS.md` добавлено правило 11 (`Quality Gates & Reliability Tiers Invariant`): декомпозиция всех требований надежности на 3 слоя (Tier 1: Enforcement / линтеры, компиляторы, тесты; Tier 2: Always-On промпты IDE; Tier 3: справочные плейбуки и скиллы). Зафиксирован инвариант недопустимости оставления критических правил исключительно в вероятностном слое Tier 3.

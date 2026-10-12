@@ -43,12 +43,13 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 
 ### 2.1. База знаний Docs-as-Code (`docs/`)
 Структурированное хранилище (Obsidian Vault) внутри репозитория:
-* `00_Templates/` — 15 эталонных шаблонов (ADR, Research, Task, Micro-Task Fast-Track, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release, Feedback) с поддержкой YAML frontmatter.
+* `00_Templates/` — 16 эталонных шаблонов (ADR, Research, Task, Micro-Task Fast-Track, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release, Feedback, Incident) с поддержкой YAML frontmatter.
 * `01_Architecture/` — схемы, архитектурные контракты и протоколы.
 * `02_Tasks/` — Канбан-доска (`Kanban.md`), Дорожная карта (`Roadmap.md`), планы (`Plans/`), спецификации задач (`Specs/`), баг-трекер (`Bugs/`), релизы (`Releases/`) и буфер входящей обратной связи (`Inbox/` с `.inbox_state.json`).
 * `03_Decisions_ADR/` — Архитектурные решения (`ADR-XXXX`) с фиксацией контекста и отклоненных альтернатив.
 * `04_Research/` — Исследования платформенных ограничений, памяти и гипотез (`RESEARCH-XXX`).
 * `05_Testing/` — Сценарии приемочного тестирования (E2E UX) с интерактивными чек-боксами.
+* `06_Memory/` — Процедурная память агента: High-SNR компактный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей, лимит ~350 токенов) и архив детальных отчетов об инцидентах `Incidents/` (`INC-XXX`).
 * `Devlog.md` — Хронологический журнал сессий разработки.
 * `Onboarding.md` — Единое руководство разработчика и агента.
 * `Zero_To_Hero_Guide.md` — Интерактивное руководство для начинающих разработчиков и вайбкодеров.
@@ -68,7 +69,8 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **`scripts/kb_lint.py`:**
   * Zero dependencies (только Python 3 stdlib: `pathlib`, `re`, `argparse`).
   * Валидация всех вики-ссылок `[[...]]`, регистра имен и структуры путей.
-  * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах, ADR и элементах обратной связи (`FB-XXX`).
+  * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах, ADR, элементах обратной связи (`FB-XXX`) и отчетах об инцидентах (`INC-XXX`).
+  * Механический Tier 1 контроль лимита процедурной памяти (`check_memory_limits`): строгая проверка лимита активных записей ($\le 15$) в `docs/06_Memory/patterns.md` с блокировкой сборки (Exit code 1).
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.

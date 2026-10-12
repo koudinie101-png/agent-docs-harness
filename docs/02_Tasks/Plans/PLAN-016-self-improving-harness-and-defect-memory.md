@@ -112,7 +112,7 @@ related_research:
   - Бандлинг всех компонентов памяти в `scripts/build_installer.py` и генерация монолитного `install.py`.
   - Поддержка безопасного развертывания каталога `docs/06_Memory/` в режимах чистой установки и обновления (`--update`).
   - Сквозные E2E тесты в `tests/test_installer.py`.
-  - Синхронизация Living Spec (`SPEC.md`) и `README.md`.
+  - Синхронизация Living Spec (`SPEC.md`), устранение нестыковок и багов CLI в `README.md` (флаги `-i`/`-r`, `--paste`, утечка путей, 16 шаблонов, `06_Memory/`).
 
 ---
 

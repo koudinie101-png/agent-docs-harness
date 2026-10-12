@@ -294,6 +294,41 @@ def check_phase_consistency(docs_dir: Path) -> list:
     return warnings
 
 
+def check_memory_limits(docs_dir: Path) -> list:
+    """
+    Tier 1 Quality Gate: validates procedural memory limits and formats in docs/06_Memory/:
+    1. Maximum 15 active patterns in docs/06_Memory/patterns.md (- [TRG-XX] ...)
+    Returns a list of error strings that block the linter (Exit code 1).
+    """
+    errors = []
+    memory_dir = docs_dir / "06_Memory"
+    if not memory_dir.is_dir() and (docs_dir / "docs" / "06_Memory").is_dir():
+        memory_dir = docs_dir / "docs" / "06_Memory"
+    if not memory_dir.is_dir():
+        return errors
+
+    patterns_file = memory_dir / "patterns.md"
+    if patterns_file.is_file():
+        try:
+            content = patterns_file.read_text(encoding="utf-8")
+            pattern_matches = re.findall(r"^\s*-\s*\[TRG-\d+\].*", content, flags=re.MULTILINE)
+            if len(pattern_matches) > 15:
+                try:
+                    rel_p = patterns_file.relative_to(docs_dir).as_posix()
+                except ValueError:
+                    rel_p = patterns_file.name
+                errors.append(
+                    f"Memory patterns limit exceeded: {len(pattern_matches)} active patterns found in "
+                    f"'{rel_p}' (maximum allowed: 15). "
+                    f"Archive or consolidate patterns to preserve token economy!"
+                )
+        except Exception:
+            pass
+
+    return errors
+
+
+
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
@@ -337,8 +372,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         else:
             rel = f.name
 
-        # Check frontmatter for task/spec/bug/adr/plan/inbox
-        if any(prefix in rel for prefix in ["02_Tasks/Specs", "02_Tasks/Plans", "02_Tasks/Bugs", "03_Decisions_ADR", "02_Tasks/Inbox"]):
+        # Check frontmatter for task/spec/bug/adr/plan/inbox/incident
+        if any(prefix in rel for prefix in ["02_Tasks/Specs", "02_Tasks/Plans", "02_Tasks/Bugs", "03_Decisions_ADR", "02_Tasks/Inbox", "06_Memory/Incidents"]):
             if not f.name.startswith("TEMPLATE_"):
                 has_fm, msg = check_file_frontmatter(f)
                 if not has_fm:
@@ -397,7 +432,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     devlog_warnings = check_devlog_semantic_guard(docs_dir)
     fast_track_warnings = check_fast_track_specs(docs_dir)
     phase_warnings = check_phase_consistency(docs_dir)
-    has_errors = bool(broken_links or frontmatter_warnings)
+    memory_errors = check_memory_limits(docs_dir)
+    has_errors = bool(broken_links or frontmatter_warnings or memory_errors)
 
     if verbose:
         print(f"📊 Total Markdown Files Scanned: {len(all_md_files)}")
@@ -418,6 +454,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print()
         else:
             print("✅ All inspected task/spec/plan files have valid YAML frontmatter!\n")
+
+        if memory_errors:
+            print(f"❌ Memory Limit Errors ({len(memory_errors)}):")
+            for me in memory_errors:
+                print(f"   • {me}")
+            print()
 
         if drift_warnings:
             print(f"⚠️ Spec Drift Warnings ({len(drift_warnings)}):")
@@ -463,13 +505,17 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0
         else:
-            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings.")
+            error_count = len(broken_links) + len(frontmatter_warnings) + len(memory_errors)
+            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings, {len(memory_errors)} memory errors.")
             if broken_links:
                 for src, target in broken_links:
                     print(f"   • In '{src}' -> target not found: [[{target}]]")
             if frontmatter_warnings:
                 for src, msg in frontmatter_warnings:
                     print(f"   • {src}: {msg}")
+            if memory_errors:
+                for me in memory_errors:
+                    print(f"   • {me}")
             return 1
 
 
