@@ -9,9 +9,12 @@ kanban-plugin: basic
 > *Примечание: этот файл открывается в Obsidian через плагин "Kanban" в виде интерактивной доски.*
 
 ## 📥 Бэклог (Backlog)
- 
- 
-## ⏳ В работе (In Progress)
+
+- [ ] [[Plans/PLAN-016-self-improving-harness-and-defect-memory|План: Фаза 16 — Самообучающийся харнесс и память дефектов]] #plan #phase16 #memory #defect-loop #quality-gates
+  - [ ] `TASK-061`: Инфраструктура процедурной памяти (`docs/06_Memory/`, шаблон `TEMPLATE_INCIDENT.md` и агрегированный индекс `patterns.md`) #task #phase16 #memory #templates
+  - [ ] `TASK-062`: Точки чтения памяти в жизненном цикле (`kb-implement`, `kb-complete`) и протокол двухосевого промоушена #task #phase16 #memory #lifecycle #skills
+  - [ ] `TASK-063`: Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md` #task #phase16 #quality-gates #agents #rules
+  - [ ] `TASK-064`: Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync #task #phase16 #lint #installer #e2e
  
  
 ## ✅ Готово (Done)

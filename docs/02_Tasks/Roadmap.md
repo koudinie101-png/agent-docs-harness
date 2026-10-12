@@ -202,15 +202,27 @@ tags:
 
 ---
 
+## Фаза 16: Самообучающийся харнесс и память дефектов (Self-Improving Harness & Defect Memory)
+**Цель:** Превратить статический харнесс в самообучающуюся систему: устранить амнезию процедурных ошибок агента через двухуровневую память (`docs/06_Memory/`), внедрить жестко лимитированный индекс `patterns.md` ($\le 15$ записей), формализовать слои надежности Quality Gates (Tier 1–3), закрепить точки проверки памяти в жизненном цикле и интегрировать автоматический аудит лимитов в `scripts/kb_lint.py`.  
+**Первоисточник плана:** [[Plans/PLAN-016-self-improving-harness-and-defect-memory|PLAN-016]]  
+**Нормативная база:** [[../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
+
+- [ ] `TASK-061`: Инфраструктура процедурной памяти (`docs/06_Memory/`, шаблон `TEMPLATE_INCIDENT.md` и агрегированный индекс `patterns.md`).
+- [ ] `TASK-062`: Точки чтения памяти в жизненном цикле (`kb-implement`, `kb-complete`) и протокол двухосевого промоушена.
+- [ ] `TASK-063`: Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md`.
+- [ ] `TASK-064`: Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
+* 💡 **Фаза 17: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Самообучающийся процесс и архитектура памяти об ошибках (Defect Loop & Memory-First Architecture):** интеграция опыта боевой эксплуатации (обращение [[Inbox/FB-GH-3|FB-GH-3]]): механизм памяти дефектов (`docs/06_Memory/`, инциденты $\to$ компактный индекс `patterns.md`), слои надежности Quality Gates (Tier 1–3), барьер Prior-Art Gate, реестр техдолга `TechDebt.md`, точки расширения `// ROADMAP-<ID>` и замеры $\ge 3$ прогонов — исследовано в [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]] и утверждено в [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]. Кандидат на Фазу 16.
 
 
 ---
