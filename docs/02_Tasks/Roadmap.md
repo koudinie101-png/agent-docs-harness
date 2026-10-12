@@ -189,17 +189,26 @@ tags:
 
 ---
 
+## Фаза 15: Устранение задержек отклика и прозрачность каналов (Response Latency Elimination & Channel Transparency) — ⏳ В работе
+**Цель:** Сократить задержку отклика агента в 2.5–3 раза за счет архитектуры Zero Round-Trip Dispatch (Hot Invariants в Always-On `AGENTS.md` без обязательного `view_file(SKILL.md)` для Режимов 0–3), внедрить User-Centric Ingestion & Channel Transparency в `scripts/kb_ingest.py` (Zero-Deps автодетект репозитория из `git remote origin`, флаг `--status`, гибкая фильтрация `--label` / `--all-open`, запрет немых пропусков), актуализировать скилл `/kb-triage`, реализовать семантический контроль фаз в `scripts/kb_lint.py` и упаковать монолитный дистрибутив `install.py` с E2E тестами.  
+**Первоисточник плана:** [[Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]]  
+**Нормативная база:** [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]], [[../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]], [[../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]]
+
+- [ ] `TASK-057`: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов (Hot Invariants & Direct Dispatch).
+- [ ] `TASK-058`: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в `scripts/kb_ingest.py`.
+- [ ] `TASK-059`: Прозрачный фидбек источников в `/kb-triage` и семантический контроль фаз в `scripts/kb_lint.py`.
+- [ ] `TASK-060`: Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и актуализация Living Spec.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Архитектура Zero Round-Trip Dispatch и устранение латентности скиллов (Hot Invariants):** оптимизация задержки отклика в Antigravity при сохранении High-SNR токеномики: прямое исполнение типовых режимов (0–3) из Always-On кэша `AGENTS.md` без промежуточного tool call `view_file(SKILL.md)`, пайплайнинг I/O и защита префиксного KV-кэша — [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]].
-* 💡 **Прозрачный UX инжеста и статус источников (User-Centric Ingestion & Channel Transparency):** устранение неявных соглашений в `kb_ingest.py` и `/kb-triage`: автоопределение репозитория из `git remote origin`, явные предупреждения об отсутствии конфигурации каналов (вместо тихого пропуска), гибкая фильтрация по меткам (`--label` / `--all-open`) и диагностический отчет о доступности источников при пустом Inbox — [[../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]], [[../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]] (Оценка ценности: Высокая / Быстрый выигрыш).
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Семантический контроль фаз в kb_lint.py:** валидация соответствия номеров фаз в ТЗ (`phase: N`), структуры папок (`0N_...`) и тегов (`#phaseN`) в виде неблокирующих предупреждений (warnings).
 
 ---
 

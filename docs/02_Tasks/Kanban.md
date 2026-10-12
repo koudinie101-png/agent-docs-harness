@@ -10,7 +10,11 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-*Бэклог пуст.*
+- [ ] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] #plan #phase15 #latency #dispatch #channel-transparency #kb-lint
+  - [ ] `TASK-057`: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов #task #phase15 #latency #dispatch #rules
+  - [ ] `TASK-058`: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py #task #phase15 #ingestion #git-remote #transparency
+  - [ ] `TASK-059`: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py #task #phase15 #triage #lint #semantics
+  - [ ] `TASK-060`: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec #task #phase15 #installer #e2e #spec
 
 
 ## ✅ Готово (Done)
