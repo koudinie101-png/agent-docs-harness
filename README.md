@@ -72,6 +72,13 @@ Initializes with the `undecided` preset, generates `SPEC.md` in `status: discove
 
 The installer features an **interactive terminal wizard** that asks for your project name, stack, and agent environment, or can be run completely hands-free with CLI flags!
 
+### 💬 Быстрый старт прямо из чата (One-Prompt Quickstart)
+Вам даже не нужно открывать терминал! Если вы используете AI-редактор или чат-агент (VS Code Cline/Roo, Cursor, Windsurf, Claude Code, Antigravity), скопируйте и отправьте этот один промпт в окно чата:
+
+> *«Инициализируй в этом проекте harness Docs-as-Code и покажи мне гайд по безопасной разработке».*
+
+Агент самостоятельно скачает установщик, развернет базу знаний и откроет интерактивное руководство `docs/Zero_To_Hero_Guide.md`.
+
 ---
 
 ## 📦 What Gets Installed in Your Project?
@@ -82,8 +89,10 @@ docs/
 ├── .obsidian/
 │   └── graph.json            # 7-color category palette for Obsidian Graph
 ├── 00_Index.md               # Map of Content (MOC) entry point
-├── 00_Templates/             # 14 canonical templates with YAML frontmatter
+├── Zero_To_Hero_Guide.md     # Interactive visual guide for developers and vibe coders
+├── 00_Templates/             # 15 canonical templates with YAML frontmatter
 │   ├── TEMPLATE_TASK.md      # Engineering task spec with file contracts
+│   ├── TEMPLATE_TASK_MICRO.md# Fast-Track micro-task spec (≤ 30 LOC, ≤ 2 files)
 │   ├── TEMPLATE_PLAN.md      # RFC & conceptual feature plan (Mode 1)
 │   ├── TEMPLATE_BUG.md       # Defect report with RCA & Regression-First test
 │   ├── TEMPLATE_ADR.md       # Architecture Decision Record (+ rejected alternatives)
@@ -303,6 +312,10 @@ Once installed, your workflow is seamless:
 5. **Spec Genesis & Zero-State Anti-Hallucination Guardrails:**
    * When `SPEC.md` is in `status: discovery` or missing, AI agents are strictly barred from hallucinating arbitrary product architectures or inventing features ([ADR-0018](docs/03_Decisions_ADR/ADR-0018-spec-genesis-protocol-and-zero-state-handling.md)). Requirements must crystallize through interactive dialogue or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before `SPEC.md` transitions to `status: active`.
    * Planning (`/kb-plan`) and task specification (`/kb-task`) automatically issue a Soft Nudge if the specification is not yet validated.
+6. **Human Guardrails Protocol («Направляй, а не блокируй»):**
+   * В режимах только для чтения (Modes 0, 1, 2, 2B, 2C) агенты не выдают сухих роботизированных ошибок (`🚨 NO CODE EDITS ALLOWED`), а выступают чуткими техническими партнерами ([ADR-0022](docs/03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails.md)): кратко объясняют назначение стадии, задают 1–2 направляющих вопроса и подсказывают точную готовую команду для продолжения.
+7. **Fast-Track Protocol (Micro-Task Bypass):**
+   * Для очевидных микро-изменений ($\le 30$ строк кода, $\le 2$ файлов, без изменения архитектуры и публичных API) доступен быстрый трек в обход фазы планирования: команда `/kb-task --fast <описание>` сразу генерирует компактное ТЗ `TEMPLATE_TASK_MICRO.md` ([ADR-0023](docs/03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks.md)).
 
 ---
 

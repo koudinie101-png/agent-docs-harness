@@ -43,7 +43,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 
 ### 2.1. База знаний Docs-as-Code (`docs/`)
 Структурированное хранилище (Obsidian Vault) внутри репозитория:
-* `00_Templates/` — 14 эталонных шаблонов (ADR, Research, Task, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release, Feedback) с поддержкой YAML frontmatter.
+* `00_Templates/` — 15 эталонных шаблонов (ADR, Research, Task, Micro-Task Fast-Track, Plan, Bug, Test, Onboarding, Index, Kanban, Roadmap, Devlog, Architecture, Release, Feedback) с поддержкой YAML frontmatter.
 * `01_Architecture/` — схемы, архитектурные контракты и протоколы.
 * `02_Tasks/` — Канбан-доска (`Kanban.md`), Дорожная карта (`Roadmap.md`), планы (`Plans/`), спецификации задач (`Specs/`), баг-трекер (`Bugs/`), релизы (`Releases/`) и буфер входящей обратной связи (`Inbox/` с `.inbox_state.json`).
 * `03_Decisions_ADR/` — Архитектурные решения (`ADR-XXXX`) с фиксацией контекста и отклоненных альтернатив.
@@ -51,6 +51,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * `05_Testing/` — Сценарии приемочного тестирования (E2E UX) с интерактивными чек-боксами.
 * `Devlog.md` — Хронологический журнал сессий разработки.
 * `Onboarding.md` — Единое руководство разработчика и агента.
+* `Zero_To_Hero_Guide.md` — Интерактивное руководство для начинающих разработчиков и вайбкодеров.
 * `00_Index.md` — Карта заметок (Map of Content).
 
 ### 2.2. Цветовая дифференциация Obsidian Graph (`.obsidian/graph.json`)
@@ -93,6 +94,8 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * **Режим 3: Реализация (Implementation, `/kb-implement` & `/kb-complete`)** — написание кода задач (`TASK-XXX`) строго по ТЗ, исправление багов (`BUG-XXX`) строго по циклу TDD (**RED** failing test -> **GREEN** fix -> **REFACTOR** full test suite), Living Spec Sync, автоматическое закрытие карточки в Канбане, Дорожной карте и Devlog.
 * **Протокол Living Spec (Anti-Drift):** обязательная синхронизация `SPEC.md` и `README.md` при изменении публичных контрактов и префлайт-проверка перед релизом.
 * **Spec Genesis Protocol & Zero-State Guardrails (Anti-Hallucination):** трехстадийная модель зрелости спецификации (`Missing` -> `Discovery` -> `Active`). Категорический запрет на директивное выдумывание требований агентом в Zero-State; кристаллизация через диалог, Режим 0 (`/kb-research`) и `ADR-0001`. Префлайт Soft Nudge в `/kb-plan` и `/kb-task`.
+* **Human Guardrails Protocol («Направляй, а не блокируй»):** запрет на грубые роботизированные ошибки в read-only режимах; вежливое партнерское объяснение сути этапа, 1–2 направляющих вопроса и подсказка точной команды для продолжения.
+* **Fast-Track Protocol (Micro-Task Bypass):** обход этапа планирования для микро-задач ($\le 30$ LOC, $\le 2$ файлов, без рисков) через `/kb-task --fast <описание>` с использованием компактного шаблона `TEMPLATE_TASK_MICRO.md`.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
 * **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX | BUG-XXX>` авторизует работу строго над одной задачей или багом; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
 * **Feedback Ingestion & Triage Buffer Invariant:** внешние сигналы никогда не попадают в код или ТЗ в обход буфера `Inbox/`; триаж выполняется исключительно через `/kb-triage` с соблюдением принципа пермалинков (in-place обновление frontmatter `FB-XXX`).

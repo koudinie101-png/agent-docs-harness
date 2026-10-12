@@ -10,13 +10,13 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] #plan #phase14 #dx #fast-track #vibe-coding
-  - [ ] [[Specs/14_AgileDX/TASK-056-installer-bundling-e2e-and-living-spec|TASK-056]]: Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec #task #phase14 #installer #e2e
+*Бэклог пуст.*
 
 
 ## ✅ Готово (Done)
 
-- [ ] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] #plan #phase14 #dx #fast-track #vibe-coding
+- [x] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] (2026-10-12) #plan #phase14 #dx #fast-track #vibe-coding
+  - [x] [[Specs/14_AgileDX/TASK-056-installer-bundling-e2e-and-living-spec|TASK-056]]: Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec (2026-10-12) #task #phase14 #installer #e2e
   - [x] [[Specs/14_AgileDX/TASK-055-human-first-release-notes-and-lint-audit|TASK-055]]: Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py (2026-10-12) #task #phase14 #release #lint
   - [x] [[Specs/14_AgileDX/TASK-054-zero-to-hero-guide-and-mentor-onboarding|TASK-054]]: Практический гайд Zero_To_Hero_Guide.md («Вайбкодинг со страховкой») и менторский онбординг в kb-onboard (2026-10-12) #task #phase14 #onboarding #vibe-coding
   - [x] [[Specs/14_AgileDX/TASK-053-human-guardrails-and-agent-rules|TASK-053]]: Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах (2026-10-12) #task #phase14 #agents #guardrails

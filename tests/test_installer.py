@@ -45,6 +45,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             "TEMPLATE_ARCHITECTURE.md",
             "TEMPLATE_BUG.md",
             "TEMPLATE_DEVLOG.md",
+            "TEMPLATE_FEEDBACK.md",
             "TEMPLATE_INDEX.md",
             "TEMPLATE_KANBAN.md",
             "TEMPLATE_ONBOARDING.md",
@@ -53,10 +54,12 @@ class TestAgentDocsHarness(unittest.TestCase):
             "TEMPLATE_RESEARCH.md",
             "TEMPLATE_ROADMAP.md",
             "TEMPLATE_TASK.md",
+            "TEMPLATE_TASK_MICRO.md",
             "TEMPLATE_TEST.md",
         ]
         for tpl in expected_templates:
             self.assertIn(f"00_Templates/{tpl}", assets, f"Missing template in bundle: {tpl}")
+        self.assertIn("docs/Zero_To_Hero_Guide.md", assets)
 
     def test_02_swift_stack_installation(self):
         """E2E test: Install Swift stack with all agent configs and verify with kb_lint."""
@@ -915,9 +918,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 13 skills + 14 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion)
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 15 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track)
             self.assertLessEqual(total_skills_size, 28000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 28000)")
-            self.assertLessEqual(total_templates_size, 25000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 25000)")
+            self.assertLessEqual(total_templates_size, 27000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 27000)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
@@ -1825,6 +1828,57 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(res_up.returncode, 0, f"dist/install.py --update failed: {res_up.stdout}\n{res_up.stderr}")
             self.assertIn("Refreshed 12 skills", res_up.stdout)
+
+
+    def test_28_fast_track_template_and_zero_to_hero_guide_deployment(self):
+        """E2E test: Verify TEMPLATE_TASK_MICRO.md and Zero_To_Hero_Guide.md deployment in fresh install and --update."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "FastTrackApp"
+            target.mkdir()
+
+            # 1. Fresh installation
+            install.install_harness(
+                target_dir=target,
+                project_name="FastTrackApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # Check fresh deployment
+            micro_template = target / "docs" / "00_Templates" / "TEMPLATE_TASK_MICRO.md"
+            self.assertTrue(micro_template.is_file(), "TEMPLATE_TASK_MICRO.md should be deployed in fresh install")
+            micro_content = micro_template.read_text(encoding="utf-8")
+            self.assertIn("type: fast-track", micro_content)
+            self.assertIn("Fast-Track (≤ 30 LOC)", micro_content)
+
+            zero_to_hero = target / "docs" / "Zero_To_Hero_Guide.md"
+            self.assertTrue(zero_to_hero.is_file(), "Zero_To_Hero_Guide.md should be deployed in fresh install")
+            guide_content = zero_to_hero.read_text(encoding="utf-8")
+            self.assertIn("Zero to Hero", guide_content)
+            self.assertIn("Fast-Track", guide_content)
+
+            # Check 15 templates total in docs/00_Templates/
+            templates = list((target / "docs" / "00_Templates").glob("*.md"))
+            self.assertEqual(len(templates), 15, f"Expected 15 templates, found {len(templates)}")
+
+            # 2. Modify files to verify update behavior
+            # Zero_To_Hero_Guide.md is core documentation refreshed on --update
+            zero_to_hero.write_text("# Outdated Guide\n", encoding="utf-8")
+            # TEMPLATE_TASK_MICRO.md is refreshed on --update
+            micro_template.write_text("# Outdated Template\n", encoding="utf-8")
+
+            # Run safe update
+            install.update_harness(target)
+
+            refreshed_guide = zero_to_hero.read_text(encoding="utf-8")
+            self.assertIn("Zero to Hero", refreshed_guide)
+            self.assertNotIn("# Outdated Guide", refreshed_guide)
+
+            refreshed_template = micro_template.read_text(encoding="utf-8")
+            self.assertIn("type: fast-track", refreshed_template)
+            self.assertNotIn("# Outdated Template", refreshed_template)
 
 
 if __name__ == "__main__":

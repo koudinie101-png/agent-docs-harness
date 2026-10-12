@@ -1,7 +1,7 @@
 ---
 id: TASK-056
 title: "Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec"
-status: planned
+status: done
 type: task
 phase: 14
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-056 — Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec
 
-> **ID:** TASK-056 | **Статус:** К реализации  
+> **ID:** TASK-056 | **Статус:** Выполнено  
 > **План:** [[../../Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|PLAN-014]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0014-greenfield-idea-first-initialization-and-living-spec-protocol|ADR-0014]], [[../../../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]], [[../../../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]]
 
@@ -69,16 +69,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ---
 
 ## 4. План верификации (Verification Plan)
-- [ ] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0, обновлены `install.py` и `dist/install.py`).
-- [ ] Синтаксис дистрибутива: `python -m py_compile dist/install.py` (Exit code 0).
-- [ ] Сквозные тесты: `python -m unittest tests/test_installer.py` (100% Pass).
-- [ ] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass).
-- [ ] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Сборка дистрибутива: `python scripts/build_installer.py` (Exit code 0, обновлены `install.py` и `dist/install.py`).
+- [x] Синтаксис дистрибутива: `python -m py_compile dist/install.py` (Exit code 0).
+- [x] Сквозные тесты: `python -m unittest tests/test_installer.py` (100% Pass).
+- [x] Полный тестовый сьют: `python -m unittest discover -s tests` (100% Pass).
+- [x] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
-- [ ] Инсталлятор и сборщик обновлены и синхронизированы.
-- [ ] E2E тест проверяет доставку `TEMPLATE_TASK_MICRO.md` и `Zero_To_Hero_Guide.md`.
-- [ ] Витрина `README.md` и Master Spec `SPEC.md` актуализированы.
-- [ ] Все пункты Плана верификации пройдены без ошибок.
+- [x] Инсталлятор и сборщик обновлены и синхронизированы.
+- [x] E2E тест проверяет доставку `TEMPLATE_TASK_MICRO.md` и `Zero_To_Hero_Guide.md`.
+- [x] Витрина `README.md` и Master Spec `SPEC.md` актуализированы.
+- [x] Все пункты Плана верификации пройдены без ошибок.

@@ -84,6 +84,12 @@ def bundle_assets() -> dict:
             assets[rel_key] = itf.read_text(encoding="utf-8")
             print(f"  • Bundled issue template: {itf.name} ({len(assets[rel_key])} chars)")
 
+    # 6. Collect Zero_To_Hero_Guide.md
+    zth_guide = REPO_ROOT / "docs" / "Zero_To_Hero_Guide.md"
+    if zth_guide.is_file():
+        assets["docs/Zero_To_Hero_Guide.md"] = zth_guide.read_text(encoding="utf-8")
+        print(f"  • Bundled guide: Zero_To_Hero_Guide.md ({len(assets['docs/Zero_To_Hero_Guide.md'])} chars)")
+
     return assets
 
 
