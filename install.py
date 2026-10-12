@@ -194,7 +194,8 @@ _RULES_BODY = ("## Docs-as-Code (17 Disciplines)\n"
     "14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.\n"
     "15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).\n"
     "16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.\n"
-    "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n")
+    "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n"
+    "18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -218,7 +219,7 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"- **Test:** `{st['test_cmd']}`\n"
         f"- **Lint:** `python3 scripts/kb_lint.py --path docs`\n\n"
         f"## 🛡️ Operating Rules & Routing\n"
-        f"1. **Single Source of Truth:** Read `AGENTS.md` at session start. All 4 operating modes, skills, and disciplines are governed strictly by `AGENTS.md`.\n"
+        f"1. **Single Source of Truth & Zero Round-Trip:** Read `AGENTS.md` at session start. For Modes 0-3, execute directly from hot prefix without reading SKILL.md; co-fetch context in parallel.\n"
         f"2. **Read-Only Invariant & Human Guardrails:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES. Guide user with friendly next steps rather than blocking errors.\n"
         f"3. **Fast-Track Protocol:** Micro-tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` using Micro-Spec.\n"
         f"4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"

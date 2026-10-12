@@ -1,7 +1,7 @@
 ---
 id: TASK-057
 title: "Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов"
-status: in-progress
+status: done
 type: task
 phase: 15
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-057 — Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов
 
-> **ID:** TASK-057 | **Статус:** В работе  
+> **ID:** TASK-057 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../../../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]]  
 

@@ -41,6 +41,10 @@ All project knowledge, task tracking, and architectural decisions are maintained
 9. **Fast-Track Protocol (Micro-Task Bypass):**
    - For trivial tasks (≤ 30 LOC, ≤ 2 files, 0 architectural risk, no external dependencies), users may bypass Mode 1 planning and generate a lightweight Micro-Spec via `/kb-task --fast <description>` using `docs/00_Templates/TEMPLATE_TASK_MICRO.md`.
    - Micro-tasks still require **Stop & Yield** before implementation. Changes to `SPEC.md`, `AGENTS.md`, or architecture are strictly barred from Fast-Track.
+10. **Zero Round-Trip Dispatch & Hot Invariants Protocol:**
+   - For standard lifecycle modes (Modes 0, 1, 2, 2B, 2C, 3) and direct agent slash-commands, agents are explicitly authorized to execute directly in the first turn from the Always-On prefix (`AGENTS.md`) without an intermediary `view_file` call to `.agents/skills/<skill>/SKILL.md`.
+   - **Pipelined Co-fetching:** when an operation genuinely requires reading a template or reference note, the agent must bundle all necessary context read requests into that same first tool-call turn rather than chaining sequential read steps.
+   - Specialized procedural skills (`/kb-release`, `/kb-lint`, `/kb-init`) remain strictly On-Demand via Progressive Disclosure.
 
 ---
 

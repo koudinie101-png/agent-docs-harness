@@ -1664,6 +1664,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("STRICTLY NO CODE CHANGES", out)
             self.assertIn("Human Guardrails", out)
             self.assertIn("Fast-Track Protocol", out)
+            self.assertIn("Zero Round-Trip", out)
             self.assertIn("Anti-Echo & Single-Task Barrier", out)
             self.assertNotIn("## Docs-as-Code (17 Disciplines)", out)
             self.assertNotIn("1. Read `SPEC.md`", out)
@@ -1687,6 +1688,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("STRICTLY NO CODE CHANGES", content)
             self.assertIn("Human Guardrails", content)
             self.assertIn("Fast-Track Protocol", content)
+            self.assertIn("Zero Round-Trip", content)
             self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
 
         # 3. Fresh installation with all adapters check
@@ -1719,6 +1721,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 self.assertIn("npm test", content)
                 self.assertIn("Human Guardrails", content)
                 self.assertIn("Fast-Track Protocol", content)
+                self.assertIn("Zero Round-Trip", content)
                 self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
 
     def test_26_skills_consolidation_and_template_taxonomy(self):

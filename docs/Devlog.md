@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-057: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов
+- **Что сделано:**
+  - Внедрено Правило 10 (Zero Round-Trip Dispatch & Hot Invariants Protocol) в мастер-свод `AGENTS.md`: прямая авторизация агентов на исполнение стандартных жизненных циклов (Режимы 0, 1, 2, 2B, 2C, 3) в первом раунде без предварительного чтения `SKILL.md`.
+  - Введен регламент **Pipelined Co-fetching** (параллельное чтение контекста и шаблонов в первом же раунде вызова инструментов) для устранения задержки 6–12 секунд.
+  - Обновлен монолитный скрипт установки `install.py` (правило 18 в `_RULES_BODY`, генератор `_gen_rule` и компактные адаптеры для 6 IDE).
+  - Актуализированы тонкие адаптеры правил (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`) с сохранением лимита $\le 35$ строк.
+  - Расширены E2E-тесты в `tests/test_installer.py` (`test_25_thin_forwarders_rules_layering`), подтверждающие генерацию директив Zero Round-Trip Dispatch и целостность слоев правил.
+  - Обновлены статусы задачи в ТЗ [[02_Tasks/Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]] и Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 28/28 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 69/69 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 150 файлов проверено, 1388 связей валидны (0 broken links, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Разработать детальную спецификацию следующей задачи Фазы 15: `/kb-task TASK-058 "Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py"`.
+
+---
+
 ### [2026-10-12] — Официальный релиз v0.14.0 (Фаза 14: Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров)
 - **Что сделано:**
   - Успешно подготовлен и зафиксирован официальный релиз [[02_Tasks/Releases/RELEASE-v0.14.0|RELEASE-v0.14.0]] по итогам завершения Фазы 14.

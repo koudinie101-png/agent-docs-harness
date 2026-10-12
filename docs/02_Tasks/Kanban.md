@@ -18,11 +18,12 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]]: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов #task #phase15 #latency #dispatch #rules
+*В работе нет задач.*
 
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]]: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов (2026-10-12) #task #phase15 #latency #dispatch #rules
 - [x] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] (2026-10-12) #plan #phase14 #dx #fast-track #vibe-coding
   - [x] [[Specs/14_AgileDX/TASK-056-installer-bundling-e2e-and-living-spec|TASK-056]]: Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec (2026-10-12) #task #phase14 #installer #e2e
   - [x] [[Specs/14_AgileDX/TASK-055-human-first-release-notes-and-lint-audit|TASK-055]]: Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py (2026-10-12) #task #phase14 #release #lint
