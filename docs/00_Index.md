@@ -83,6 +83,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022: Архитектура Chat-First DX, адаптация для начинающих и превентивные подсказки]]
 * [[03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023: Архитектура протокола Fast-Track для микро-задач и легковесные спецификации]]
 * [[03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024: Архитектура прозрачности каналов обратной связи, автоопределения репозитория и диагностического статуса]]
+* [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025: Архитектура самообучающегося контура дефектов (Defect Loop), слои надежности Quality Gates и фильтрация инициатив FB-GH-3]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -104,6 +105,7 @@ flowchart TD
 * [[04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017: Chat-First DX и адаптация Docs-as-Code для начинающих и вайбкодеров]]
 * [[04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018: Протокол Fast-Track для микро-задач (Agile Docs-as-Code)]]
 * [[04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019: Прозрачный UX инжеста обратной связи и статус источников (User-Centric Ingestion & Channel Transparency)]]
+* [[04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020: Самообучающийся контур дефектов, память об ошибках (Defect Loop) и слои качества Quality Gates (по мотивам FB-GH-3)]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.

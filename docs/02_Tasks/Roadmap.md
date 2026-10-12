@@ -210,7 +210,7 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Самообучающийся процесс и архитектура памяти об ошибках (Defect Loop & Memory-First Architecture):** интеграция опыта реальной эксплуатации (обращение [[Inbox/FB-GH-3|FB-GH-3]]): механизм памяти дефектов (инциденты $\to$ паттерны $\to$ правила/тесты), слои надёжности Quality Gates (Tier 1–3), барьер Prior-Art Gate и формализованный реестр техдолга. Требует проработки через Mode 0 (`/kb-research`).
+* 💡 **Самообучающийся процесс и архитектура памяти об ошибках (Defect Loop & Memory-First Architecture):** интеграция опыта боевой эксплуатации (обращение [[Inbox/FB-GH-3|FB-GH-3]]): механизм памяти дефектов (`docs/06_Memory/`, инциденты $\to$ компактный индекс `patterns.md`), слои надежности Quality Gates (Tier 1–3), барьер Prior-Art Gate, реестр техдолга `TechDebt.md`, точки расширения `// ROADMAP-<ID>` и замеры $\ge 3$ прогонов — исследовано в [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]] и утверждено в [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]. Кандидат на Фазу 16.
 
 
 ---
@@ -220,3 +220,5 @@ tags:
 
 * ❌ **Встроенный локальный web-визуализатор базы знаний (`install.py --serve`):** отклонен в пользу нативного Obsidian — [[../../03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer|ADR-0005]].
 * ❌ **Встроенный генератор PDF-отчетов для руководства:** отклонен в пользу нативных возможностей агентов и экспорта Markdown — [[../../03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]].
+* ❌ **Монолитный umbrella-скилл вместо модульных скиллов:** отклонен во избежание деградации слэш-команд в IDE и раздувания контекста — [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
+* ❌ **Отказ от автономного инсталлятора install.py и линтера kb_lint.py:** отклонен для сохранения Zero-Dependencies распространения и Tier 1 контроля — [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].

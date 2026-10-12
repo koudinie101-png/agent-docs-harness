@@ -5,7 +5,7 @@ status: processed
 type: feedback
 channel: github
 perceived_severity: s2
-target: "[[../Roadmap#Icebox]]"
+target: "[[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]]"
 created: 2026-10-05
 updated: 2026-10-12
 author: "madpanther"
@@ -18,7 +18,7 @@ tags:
 # 📥 Обращение: FB-GH-3 — Нет единых правил для нейминга
 
 > **Источник:** Github (https://github.com/koudinie101-png/agent-docs-harness/issues/3) | **Статус:** processed  
-> **Целевой артефакт:** [[../Roadmap#Icebox|Roadmap Icebox]]  
+> **Целевой артефакт:** [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]] | [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]  
 
 ---
 
@@ -104,4 +104,4 @@ tags:
 - **Контекст:** Опыт боевой эксплуатации форка: внедрение механизмов самообучения процесса разработки (Defect Loop, память об ошибках, Quality Gates Tier 1–3, Prior-Art Gate, реестр техдолга).
 
 ## 3. Решение по триажу
-Зарегистрировано в [[../Roadmap#Icebox|Roadmap Icebox]] под заголовком `Defect Loop & Memory-First Architecture (Feedback madpanther)`. Реализация/валидация запланирована через режим Discovery (`/kb-research`).
+Исследовано в [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]] и утверждено в [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]. Инициативы разделены на ядро для Фазы 16 (Defect Loop, Quality Gates Tier 1–3, Prior-Art Gate, TechDebt.md) и отклоненные альтернативы (Umbrella-скилл, удаление install.py/kb_lint). Зарегистрировано в [[../Roadmap#Icebox|Roadmap Icebox]].
