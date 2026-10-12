@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-10-12
+
+### Added
+- **Self-Improving Harness & Procedural Memory Subsystem** (ADR-0025, RESEARCH-020):
+  - Procedural memory structure `docs/06_Memory/` with incident archive `Incidents/`.
+  - Canonical incident template `TEMPLATE_INCIDENT.md` (`INC-XXX`).
+  - High-SNR aggregated memory index `docs/06_Memory/patterns.md` strictly limited to $\le 15$ active patterns (~350 tokens) to guard agent context economy.
+- **Quality Gates & Reliability Tiers (Tier 1–3)**:
+  - Formally codified Quality Gates invariant (Rule 11) in `AGENTS.md` and synced into thin IDE adapters: Tier 1 (Enforcement: linters/tests), Tier 2 (Always-On prompt invariants), Tier 3 (Playbook skills).
+  - Detailed reliability tier matrix in `docs/Onboarding.md`.
+- **Lifecycle Memory Integration & Dual-Axis Promotion**:
+  - `0. Memory-First Check` preflight in `/kb-implement` (Mode 3).
+  - `6. Defect Loop Reflection` and incident promotion protocol in `/kb-complete`.
+- **Mechanical Quality Gate in `scripts/kb_lint.py`**:
+  - `check_memory_limits`: audits `docs/06_Memory/patterns.md` ensuring $\le 15$ active patterns (Exit code 1 on breach) and validates frontmatter in `docs/06_Memory/Incidents/`.
+- **CLI Enhancements & Fast-Track**:
+  - Added `-i` (for `--idea`) and `-r` (for `--report`) short CLI flags in `install.py` (TASK-065).
+  - Added support for inline text parameter in `scripts/kb_ingest.py --paste "<text>"`.
+
+### Fixed
+- **BUG-002**: Eliminated hardcoded `install.py` deployment instructions in public release notes (`scripts/kb_release.py`) for third-party consumers.
+- **BUG-003**: Replaced silent local fallback with actionable warnings and installation instructions when GitHub CLI (`gh`) is missing or unauthenticated.
+- **BUG-004**: Fixed changelog self-link in release notes generator to construct proper comparison diff URL (`compare/vPREV...vCURR`).
+- Fixed documentation discrepancies, updated 16-template registry, and eliminated developer absolute paths (`file:///`) from `README.md`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (131.5 KB) packaging 16 templates and procedural memory assets with safe-retention update logic.
+
 ## [0.15.0] - 2026-10-12
 
 ### Added

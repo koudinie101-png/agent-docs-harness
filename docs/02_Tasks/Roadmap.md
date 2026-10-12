@@ -205,6 +205,7 @@ tags:
 ## Фаза 16: Самообучающийся харнесс и память дефектов (Self-Improving Harness & Defect Memory) — ✅ Завершена
 **Цель:** Превратить статический харнесс в самообучающуюся систему: устранить амнезию процедурных ошибок агента через двухуровневую память (`docs/06_Memory/`), внедрить жестко лимитированный индекс `patterns.md` ($\le 15$ записей), формализовать слои надежности Quality Gates (Tier 1–3), закрепить точки проверки памяти в жизненном цикле и интегрировать автоматический аудит лимитов в `scripts/kb_lint.py`.  
 **Первоисточник плана:** [[Plans/PLAN-016-self-improving-harness-and-defect-memory|PLAN-016]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.16.0|RELEASE-v0.16.0]]  
 **Нормативная база:** [[../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
 
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-061-memory-infrastructure-and-patterns-index|TASK-061]]: Инфраструктура процедурной памяти (`docs/06_Memory/`, шаблон `TEMPLATE_INCIDENT.md` и агрегированный индекс `patterns.md`).

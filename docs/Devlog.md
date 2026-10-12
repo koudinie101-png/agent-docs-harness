@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Официальный выпуск релиза v0.16.0: Самообучающийся харнесс и память дефектов (Фаза 16)
+- **Что сделано:**
+  - Подготовлен и собран релиз `v0.16.0` (Фаза 16: [[02_Tasks/Releases/RELEASE-v0.16.0|RELEASE-v0.16.0]]).
+  - В релиз вошли 4 ключевые фичи Фазы 16 (`TASK-061`, `TASK-062`, `TASK-063`, `TASK-064`), Fast-Track задача выравнивания CLI (`TASK-065`) и 3 исправленных дефекта (`BUG-002`, `BUG-003`, `BUG-004`).
+  - Сгенерированы релизные документы `docs/02_Tasks/Releases/RELEASE-v0.16.0.md` и публичные релизные заметки `dist/RELEASE_NOTES.md`.
+  - Сформированы релизные артефакты и рассчитаны контрольные суммы SHA-256:
+    * `dist/install.py` (131.5 KB) — `c7aa191358f21f7c8096f564e0f68758df4f8e482d590c641bde20679af1eae8`
+    * `dist/RELEASE_NOTES.md` (3.6 KB) — `2d89a853d8485cf4349f9f97c82d2e4e2356d49c227e8de050d43dc208351a0f`
+  - Обновлен `CHANGELOG.md` и зафиксирована ссылка на релиз в `Roadmap.md`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 172 files scanned, 1563 wikilinks verified (0 broken), Exit code 0.
+  - `python -m unittest discover -s tests` -> 85/85 тестов успешно пройдено (Exit code 0).
+
+---
+
 ### [2026-10-12] — Реализация TASK-065: Выравнивание CLI-флагов (-i, -r) и синхронизация README.md (Fast-Track)
 - **Что сделано:**
   - В `install.py` объявлены короткие флаги `-i` (для `--idea`) и `-r` (для `--report`) в `parser.add_argument` для полного соответствия документации.
