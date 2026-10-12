@@ -9,15 +9,14 @@ kanban-plugin: basic
 > *Примечание: этот файл открывается в Obsidian через плагин "Kanban" в виде интерактивной доски.*
 
 ## 📥 Бэклог (Backlog)
-
-- [ ] [[Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]]: Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release #bug #release #cli
-
-
+ 
+ 
 ## ⏳ В работе (In Progress)
-
-
+ 
+ 
 ## ✅ Готово (Done)
 
+- [x] [[Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]]: Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release (2026-10-12) #bug #release #cli
 - [x] [[Bugs/BUG-004-release-notes-changelog-self-link|BUG-004]]: Циклическая ссылка на саму себя в блоке Full Changelog релизных записок (2026-10-12) #bug #release
 - [x] [[Bugs/BUG-002-release-notes-hardcoded-install-script|BUG-002]]: Хардкод установки harness-а (install.py) в публичных релизных записках scripts/kb_release.py (2026-10-12) #bug #release
 - [x] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] (2026-10-12) #plan #phase15 #latency #dispatch #channel-transparency #kb-lint

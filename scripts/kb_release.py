@@ -30,7 +30,27 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 
-def detect_release_environment(repo_root: Optional[Path] = None) -> Dict[str, Any]:
+def load_env_local(repo_root: Optional[Path] = None):
+    """Loads key-value pairs from .env.local if present, without overwriting existing env."""
+    root = repo_root or Path.cwd()
+    env_file = root / ".env.local"
+    if not env_file.is_file():
+        return
+    try:
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            k = k.strip()
+            v = v.strip().strip("'\"")
+            if k and k not in os.environ:
+                os.environ[k] = v
+    except Exception:
+        pass
+
+
+def detect_release_environment(repo_root: Optional[Path] = None, explicit_mode: str = "auto") -> Dict[str, Any]:
     """
     Detects repository and environment capabilities:
     - has_git: bool
@@ -41,10 +61,16 @@ def detect_release_environment(repo_root: Optional[Path] = None) -> Dict[str, An
     - is_github: bool
     - has_gh_cli: bool
     - gh_authenticated: bool
+    - has_github_token: bool
+    - publish_provider: "gh_cli" | "rest_api" | "none"
     - mode: "github" | "local-only"
+    - warning: Optional[str]
     """
     if repo_root is None:
         repo_root = Path.cwd()
+
+    load_env_local(repo_root)
+    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
 
     status: Dict[str, Any] = {
         "has_git": False,
@@ -55,6 +81,8 @@ def detect_release_environment(repo_root: Optional[Path] = None) -> Dict[str, An
         "is_github": False,
         "has_gh_cli": False,
         "gh_authenticated": False,
+        "has_github_token": bool(github_token),
+        "publish_provider": "none",
         "mode": "local-only",
     }
 
@@ -126,10 +154,46 @@ def detect_release_environment(repo_root: Optional[Path] = None) -> Dict[str, An
             pass
 
     # Dual-Mode resolution
-    if status["is_github"] and (status["has_gh_cli"] and status["gh_authenticated"]):
-        status["mode"] = "github"
-    else:
+    if explicit_mode == "local-only":
         status["mode"] = "local-only"
+        status["publish_provider"] = "none"
+    elif explicit_mode == "github":
+        if status["has_gh_cli"] and status["gh_authenticated"]:
+            status["mode"] = "github"
+            status["publish_provider"] = "gh_cli"
+        elif status["has_github_token"]:
+            status["mode"] = "github"
+            status["publish_provider"] = "rest_api"
+        else:
+            status["mode"] = "local-only"
+            status["publish_provider"] = "none"
+            reason = "gh_cli_not_installed" if not status["has_gh_cli"] else "gh_not_authenticated"
+            status["gh_missing_reason"] = reason
+            status["warning"] = (
+                "Запрошен режим GitHub, но GitHub CLI ('gh') не установлен/не авторизован, и GITHUB_TOKEN не задан. "
+                "Релиз переведен в режим Local-Only. Для публикации на GitHub Releases установите gh "
+                "('winget install GitHub.cli' на Windows, 'brew install gh' на macOS) или укажите GITHUB_TOKEN."
+            )
+    else:  # "auto"
+        if status["is_github"]:
+            if status["has_gh_cli"] and status["gh_authenticated"]:
+                status["mode"] = "github"
+                status["publish_provider"] = "gh_cli"
+            elif status["has_github_token"]:
+                status["mode"] = "github"
+                status["publish_provider"] = "rest_api"
+            else:
+                status["mode"] = "local-only"
+                status["publish_provider"] = "none"
+                reason = "gh_cli_not_installed" if not status["has_gh_cli"] else "gh_not_authenticated"
+                status["gh_missing_reason"] = reason
+                status["warning"] = (
+                    "Репозиторий размещен на GitHub, но GitHub CLI ('gh') не найден/не авторизован, и GITHUB_TOKEN не задан. "
+                    "Релиз переведен в режим Local-Only. Для публикации на GitHub Releases установите gh "
+                    "('winget install GitHub.cli' на Windows, 'brew install gh' на macOS) или задайте GITHUB_TOKEN."
+                )
+        else:
+            status["mode"] = "local-only"
 
     return status
 
@@ -1096,6 +1160,8 @@ def main() -> int:
     parser.add_argument("--summary", type=str, default="", help="Executive summary text")
     parser.add_argument("--quick-install", type=str, default=None, help="Custom instructions or command for Quick Install block")
     parser.add_argument("--prev-tag", type=str, default=None, help="Previous release tag for Full Changelog diff URL (default: auto-detected)")
+    parser.add_argument("--mode", choices=["auto", "github", "local-only"], default="auto", help="Release publication mode (default: auto)")
+    parser.add_argument("--require-github", action="store_true", help="Fail if GitHub Release mode cannot be used for a GitHub-hosted repository")
     parser.add_argument("--dry-run", action="store_true", help="Print release markdown to stdout without writing")
     parser.add_argument("--detect-only", action="store_true", help="Only detect environment and print JSON")
     parser.add_argument("--ci-mode", action="store_true", help="Run in CI mode for GitHub Actions")
@@ -1104,11 +1170,19 @@ def main() -> int:
     args = parser.parse_args()
 
     repo_root = Path.cwd()
-    env_info = detect_release_environment(repo_root)
+    env_info = detect_release_environment(repo_root, explicit_mode=args.mode)
 
     if args.detect_only:
         print(json.dumps(env_info, indent=2, ensure_ascii=False))
         return 0
+
+    if args.require_github and env_info["is_github"] and env_info["mode"] != "github":
+        warning_msg = env_info.get("warning", "GitHub Release mode is required, but unavailable.")
+        print(f"❌ ERROR: {warning_msg}", file=sys.stderr)
+        return 1
+
+    if env_info.get("warning") and not args.ci_mode and args.mode != "local-only":
+        print(f"⚠️ Warning: {env_info['warning']}", file=sys.stderr)
 
     if not args.version:
         print("❌ Error: --version is required (e.g. --version 0.4.0 or --version v0.4.0)", file=sys.stderr)

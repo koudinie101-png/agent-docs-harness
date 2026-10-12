@@ -1,16 +1,17 @@
 ---
 id: BUG-003
 title: "Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release"
-status: open
+status: fixed
 severity: medium
 type: bug
-target_release: "backlog"
+target_release: "v0.12.0"
 target_phase: null
 release_blocker: false
-fixed_in: null
+fixed_in: "v0.12.0"
 regression_test: "tests/test_kb_release.py"
 created: 2026-10-12
 updated: 2026-10-12
+resolved: 2026-10-12
 tags:
   - bug
   - defect
@@ -22,8 +23,8 @@ feedback_source: "[[../Inbox/FB-GH-2|FB-GH-2]]"
 
 # 🐞 Дефект: BUG-003 — Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в `kb-release`
 
-> **ID:** BUG-003 | **Критичность:** Medium | **Статус:** open  
-> **Релиз:** backlog | **Блокер:** Нет  
+> **ID:** BUG-003 | **Критичность:** Medium | **Статус:** fixed  
+> **Релиз:** v0.12.0 | **Блокер:** Нет  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 > **Источник фидбека:** [[../Inbox/FB-GH-2|FB-GH-2 (GitHub Issue #2)]]  
 
@@ -52,7 +53,7 @@ feedback_source: "[[../Inbox/FB-GH-2|FB-GH-2]]"
 * `[NEW]` `tests/test_kb_release.py` — регрессионный тест на явную ошибку / предупреждение при отсутствии `gh` в GitHub-репозитории.
 
 ## 6. Верификация (Regression-First)
-- [ ] Падающий регрессионный тест воспроизводит дефект (RED).
-- [ ] Исправление применено в коде (GREEN).
-- [ ] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
-- [ ] Дефект закрыт через `/kb-implement BUG-003`.
+- [x] Падающий регрессионный тест воспроизводит дефект (RED).
+- [x] Исправление применено в коде (GREEN).
+- [x] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
+- [x] Дефект закрыт через `/kb-implement BUG-003`.

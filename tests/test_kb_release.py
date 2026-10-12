@@ -179,6 +179,47 @@ status: done
         self.assertIn("mode", status)
         self.assertIn(status["mode"], ["github", "local-only"])
 
+    def test_detect_release_environment_regression_bug_003(self):
+        """BUG-003: Verifies that missing gh CLI in a GitHub repo is explicitly reported with warning and guidance."""
+        def mock_which(cmd):
+            if cmd == "git":
+                return "/usr/bin/git"
+            if cmd == "gh":
+                return None
+            return None
+
+        def mock_run(cmd, *args, **kwargs):
+            m = MagicMock()
+            m.returncode = 0
+            if "rev-parse" in cmd and "--is-inside-work-tree" in cmd:
+                m.stdout = "true\n"
+            elif "rev-parse" in cmd and "--abbrev-ref" in cmd:
+                m.stdout = "main\n"
+            elif "status" in cmd:
+                m.stdout = ""
+            elif "remote" in cmd:
+                m.stdout = "git@github.com:myorg/myproject.git\n"
+            else:
+                m.stdout = ""
+            return m
+
+        with patch("shutil.which", side_effect=mock_which), \
+             patch("subprocess.run", side_effect=mock_run), \
+             patch.dict(os.environ, {}, clear=True):
+            status = kb_release.detect_release_environment(self.test_root)
+            self.assertTrue(status["is_github"])
+            self.assertFalse(status["has_gh_cli"])
+            self.assertEqual(status["mode"], "local-only")
+            self.assertIn("warning", status)
+            self.assertIn("winget install GitHub.cli", status["warning"])
+            self.assertEqual(status.get("gh_missing_reason"), "gh_cli_not_installed")
+
+            # With GITHUB_TOKEN set: should resolve to github mode via REST API
+            with patch.dict(os.environ, {"GITHUB_TOKEN": "ghp_secret_token_123"}):
+                status_token = kb_release.detect_release_environment(self.test_root)
+                self.assertEqual(status_token["mode"], "github")
+                self.assertEqual(status_token.get("publish_provider"), "rest_api")
+
     def test_cli_execution_with_dry_run_and_output(self):
         dist_dir = self.test_root / "dist"
         dist_dir.mkdir()

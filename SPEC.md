@@ -80,6 +80,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Префлайт-контроль релиз-блокеров (`check_release_blockers`): аварийная остановка сборки релиза (Exit code 1) при наличии открытых багов с флагом `release_blocker: true`.
   * Адаптивный блок установки (Adaptive Quick Install): контекстная генерация инструкций в `dist/RELEASE_NOTES.md` (Docs-as-Code инсталлятор только для репозитория самого harness-а, скачивание скомпилированных артефактов `dist/` для сторонних проектов, либо кастомные команды через аргумент `--quick-install`).
   * Ссылки на полный диф изменений (Full Changelog Compare URL): автоопределение предшествующего релиза через Git-теги или файлы `docs/02_Tasks/Releases/` с формированием ссылки сравнения (`compare/{prev_tag}...{tag}`) без циклического зацикливания на саму себя, с поддержкой ручного переопределения `--prev-tag`.
+  * Протокол No Silent Fallback и детекция окружения публикации: явные предупреждения с инструкциями установки (`winget install GitHub.cli` / `brew install gh`) и поддержка REST API токена (`GITHUB_TOKEN`), флаг принудительной валидации `--require-github` и управление режимом через `--mode {auto,github,local}`.
 * **`scripts/kb_ingest.py`:**
   * Zero dependencies (только стандартные модули `urllib`, `email`, `hashlib`, `pathlib`, `argparse`, `subprocess`).
   * Инжест внешних сигналов обратной связи из трех каналов: GitHub Issues API, Email/EML/Mbox и ручного буфера вставки (Raw Clipboard Paste).

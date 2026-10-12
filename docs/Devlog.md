@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Исправление BUG-003: Устранение бесшумного отката в локальный режим при отсутствии GitHub CLI (gh)
+- **Что сделано:**
+  - В `scripts/kb_release.py` реализован протокол `No Silent Fallback`: при публикации в GitHub-репозитории отсутствие `gh` CLI больше не замалчивается. Скрипт выдает явное предупреждение с платформенными инструкциями по установке (`winget install GitHub.cli` / `brew install gh`).
+  - Добавлена поддержка аутентификации через переменную `GITHUB_TOKEN` (или файл `.env.local`), определяющая `publish_provider` ("gh_cli" | "rest_api" | "none").
+  - Добавлены CLI-аргументы `--mode {auto,github,local}` и `--require-github` для строгого прерывания процесса при отсутствии инструментов удаленной публикации.
+  - Обновлен навык `.agents/skills/kb-release/SKILL.md` (Шаг 2: Правило No Silent Fallback).
+  - По TDD-циклу разработан регрессионный тест `test_detect_release_environment_regression_bug_003` в `tests/test_kb_release.py`.
+  - Пересобран монолитный инсталлятор `install.py` и `dist/install.py` через `scripts/build_installer.py`.
+  - Дефект [[02_Tasks/Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]] переведен в статус `fixed`, карточка перенесена в Done на [[02_Tasks/Kanban|Kanban.md]], Living Spec [[SPEC.md]] актуализирована.
+- **Результаты верификации:**
+  - `python -m unittest tests.test_kb_release` -> 23/23 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest tests.test_installer` -> 29/29 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 82/82 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Все дефекты из бэклога (BUG-002, BUG-003, BUG-004) успешно устранены. Запросить у пользователя выбор следующего приоритета: реализация идеи из Icebox (`Roadmap.md`) или подготовка инкрементального релиза.
+
+---
+
 ### [2026-10-12] — Исправление BUG-004: Устранение циклической ссылки на саму себя в блоке Full Changelog релизных записок
 - **Что сделано:**
   - В `scripts/kb_release.py` устранено зацикливание ссылки «Полный список изменений (Full Changelog)», которая ранее вела на ту же страницу релиза `releases/tag/{tag}`.
