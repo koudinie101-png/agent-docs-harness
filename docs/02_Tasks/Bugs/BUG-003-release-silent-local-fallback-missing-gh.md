@@ -4,10 +4,10 @@ title: "Бесшумный откат в локальный режим при о
 status: fixed
 severity: medium
 type: bug
-target_release: "v0.12.0"
-target_phase: null
+target_release: "v0.16.0"
+target_phase: 16
 release_blocker: false
-fixed_in: "v0.12.0"
+fixed_in: "v0.16.0"
 regression_test: "tests/test_kb_release.py"
 created: 2026-10-12
 updated: 2026-10-12
