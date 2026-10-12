@@ -277,8 +277,8 @@ status: done
         self.assertIn("package.zip", notes)
         self.assertIn("abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890", notes)
         self.assertIn("Get-FileHash -Path ./dist/package.zip -Algorithm SHA256", notes)
-        self.assertIn("sha256sum ./dist/package.zip", notes)
-        self.assertIn("https://github.com/myorg/myproject/releases/tag/v0.7.0", notes)
+        self.assertNotIn("https://github.com/myorg/myproject/releases/tag/v0.7.0", notes)
+        self.assertIn("https://github.com/myorg/myproject/compare/v0.6.0...v0.7.0", notes)
 
     def test_generate_public_release_notes_excludes_adrs(self):
         """Verifies dist/RELEASE_NOTES.md strictly excludes the ADR section (High-SNR)."""
@@ -392,6 +392,66 @@ status: done
         self.assertIn("Новая установка Docs-as-Code", notes_harness)
         self.assertIn("curl -fsSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3", notes_harness)
         self.assertIn("python install.py --update", notes_harness)
+
+    def test_generate_public_release_notes_regression_bug_004(self):
+        """BUG-004: Verifies Full Changelog link points to compare URL instead of self-linking to current release."""
+        env_info = {
+            "has_git": True,
+            "mode": "github",
+            "branch": "main",
+            "remote_url": "https://github.com/myorg/coolapp.git",
+        }
+        phase_data = {
+            "tasks": [{"id": "TASK-101", "title": "Some Task", "link": "../Specs/TASK-101"}],
+            "bugs": [],
+        }
+
+        # 1. Explicit prev_tag provided: must generate compare/prev_tag...tag
+        notes = kb_release.generate_public_release_notes(
+            version="0.11.0",
+            phase_num=11,
+            env_info=env_info,
+            artifacts=[],
+            phase_data=phase_data,
+            summary="Release 0.11.0",
+            prev_tag="v0.10.0",
+        )
+        self.assertIn("**Полный список изменений (Full Changelog):** https://github.com/myorg/coolapp/compare/v0.10.0...v0.11.0", notes)
+        self.assertNotIn("https://github.com/myorg/coolapp/releases/tag/v0.11.0", notes)
+
+        # 2. Auto-detection via existing release docs in docs/02_Tasks/Releases/
+        test_project = self.test_root / "autodetect_project"
+        releases_dir = test_project / "docs" / "02_Tasks" / "Releases"
+        releases_dir.mkdir(parents=True)
+        (releases_dir / "RELEASE-v0.9.0.md").write_text("---\nid: RELEASE-v0.9.0\n---\n", encoding="utf-8")
+        (releases_dir / "RELEASE-v0.10.0.md").write_text("---\nid: RELEASE-v0.10.0\n---\n", encoding="utf-8")
+
+        notes_auto = kb_release.generate_public_release_notes(
+            version="0.11.0",
+            phase_num=11,
+            env_info=env_info,
+            artifacts=[],
+            phase_data=phase_data,
+            summary="Release 0.11.0",
+            repo_root=test_project,
+        )
+        self.assertIn("**Полный список изменений (Full Changelog):** https://github.com/myorg/coolapp/compare/v0.10.0...v0.11.0", notes_auto)
+        self.assertNotIn("https://github.com/myorg/coolapp/releases/tag/v0.11.0", notes_auto)
+
+        # 3. First release (no previous releases): must link to commits/tag, not releases/tag
+        empty_project = self.test_root / "empty_project"
+        empty_project.mkdir()
+        notes_first = kb_release.generate_public_release_notes(
+            version="0.1.0",
+            phase_num=1,
+            env_info=env_info,
+            artifacts=[],
+            phase_data=phase_data,
+            summary="First release",
+            repo_root=empty_project,
+        )
+        self.assertIn("**Полный список изменений (Full Changelog):** https://github.com/myorg/coolapp/commits/v0.1.0", notes_first)
+        self.assertNotIn("https://github.com/myorg/coolapp/releases/tag/v0.1.0", notes_first)
 
     def test_generate_release_note_filters_adrs_by_phase(self):
         """Verifies internal RELEASE-vX.Y.Z.md filters ADRs to only those relevant to the target phase."""

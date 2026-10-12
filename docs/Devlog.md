@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Исправление BUG-004: Устранение циклической ссылки на саму себя в блоке Full Changelog релизных записок
+- **Что сделано:**
+  - В `scripts/kb_release.py` устранено зацикливание ссылки «Полный список изменений (Full Changelog)», которая ранее вела на ту же страницу релиза `releases/tag/{tag}`.
+  - Разработана функция `detect_previous_tag(target_version, repo_root, docs_path)`, определяющая предшествующий релизный тег через Git (`git tag --list "v*"`) или артефакты `docs/02_Tasks/Releases/RELEASE-v*.md`.
+  - При наличии предшествующего релиза строка Full Changelog формирует ссылку сравнения веток/тегов (`https://github.com/{owner}/{repo}/compare/{prev_tag}...{tag}`), а для первого релиза ссылается на историю коммитов (`commits/{tag}`).
+  - Добавлен CLI-аргумент `--prev-tag` для ручного указания базовой версии сравнения.
+  - Пересобран монолитный инсталлятор `install.py` и `dist/install.py` через `scripts/build_installer.py`.
+  - По TDD-циклу реализован регрессионный тест `test_generate_public_release_notes_regression_bug_004` в `tests/test_kb_release.py`.
+  - Дефект [[02_Tasks/Bugs/BUG-004-release-notes-changelog-self-link|BUG-004]] переведен в статус `fixed`, карточка перемещена в Done на [[02_Tasks/Kanban|Kanban.md]], Living Spec [[SPEC.md]] актуализирована.
+- **Результаты верификации:**
+  - `python -m unittest tests.test_kb_release` -> 22/22 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest tests.test_installer` -> 29/29 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 81/81 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Перейти к исправлению последнего дефекта из бэклога: `/kb-implement BUG-003` (устранение тихого отката в локальный режим при отсутствии gh CLI).
+
+---
+
 ### [2026-10-12] — Исправление BUG-002: Устранение хардкода install.py в публичных релизных записках scripts/kb_release.py
 - **Что сделано:**
   - В `scripts/kb_release.py` реализован адаптивный блок установки (`Adaptive Quick Install`): инструкции скачивания Docs-as-Code через `curl .../install.py` выводятся только для репозитория самого harness-а (`agent-docs-harness`); для внешних проектов при наличии артефактов генерируются команды загрузки артефактов из GitHub Releases, а при их отсутствии блок опускается.

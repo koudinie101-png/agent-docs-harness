@@ -849,6 +849,69 @@ def convert_wikilinks_to_github_markdown(text: str, repo_url: str = "", branch: 
     return re.sub(pattern, replace_wikilink, text)
 
 
+def parse_version_tuple(v_str: str) -> Tuple[int, ...]:
+    """Extracts integer components from version string for semantic sorting."""
+    nums = re.findall(r"\d+", v_str)
+    return tuple(int(n) for n in nums) if nums else (0,)
+
+
+def detect_previous_tag(
+    target_version: str,
+    repo_root: Optional[Path] = None,
+    docs_path: Optional[Path] = None,
+) -> Optional[str]:
+    """
+    Detects the immediately preceding release tag via Git tags or docs/02_Tasks/Releases.
+    Returns tag string like 'v0.10.0' or None if no prior release exists.
+    """
+    target_clean = target_version.lstrip("v")
+    target_tuple = parse_version_tuple(target_clean)
+
+    found_tags: List[str] = []
+
+    # 1. Inspect git tags if inside git worktree
+    root = repo_root or Path.cwd()
+    if shutil.which("git"):
+        try:
+            res = subprocess.run(
+                ["git", "tag", "--list", "v*"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if res.returncode == 0 and res.stdout.strip():
+                for line in res.stdout.splitlines():
+                    t = line.strip()
+                    if t:
+                        found_tags.append(t)
+        except Exception:
+            pass
+
+    # 2. Inspect docs/02_Tasks/Releases/ if docs_path is available or can be inferred
+    d_path = docs_path or (root / "docs")
+    releases_dir = d_path / "02_Tasks" / "Releases"
+    if releases_dir.is_dir():
+        for f in releases_dir.glob("RELEASE-v*.md"):
+            m = re.search(r"RELEASE-(v[\d\.]+)\.md", f.name)
+            if m:
+                found_tags.append(m.group(1))
+
+    unique_tags = set(found_tags)
+    older_candidates = []
+    for t in unique_tags:
+        clean_t = t.lstrip("v")
+        t_tuple = parse_version_tuple(clean_t)
+        if t_tuple < target_tuple:
+            older_candidates.append((t_tuple, f"v{clean_t}"))
+
+    if older_candidates:
+        older_candidates.sort(key=lambda x: x[0], reverse=True)
+        return older_candidates[0][1]
+
+    return None
+
+
 def generate_public_release_notes(
     version: str,
     phase_num: int,
@@ -859,6 +922,7 @@ def generate_public_release_notes(
     phases: Optional[List[int]] = None,
     quick_install: Optional[str] = None,
     repo_root: Optional[Path] = None,
+    prev_tag: Optional[str] = None,
 ) -> str:
     """Generates public dist/RELEASE_NOTES.md in clean GitHub Flavored Markdown (GFM)."""
     ver_clean = version.lstrip("v")
@@ -876,7 +940,14 @@ def generate_public_release_notes(
         if "github.com/" in clean_repo_url:
             repo_path = clean_repo_url.split("github.com/", 1)[1]
             raw_install_url = f"https://raw.githubusercontent.com/{repo_path}/{branch}/install.py"
-            diff_url = f"{clean_repo_url}/releases/tag/{tag}"
+            resolved_prev = prev_tag
+            if not resolved_prev:
+                effective_root_for_tag = repo_root or Path.cwd()
+                resolved_prev = detect_previous_tag(target_version=ver_clean, repo_root=effective_root_for_tag)
+            if resolved_prev:
+                diff_url = f"{clean_repo_url}/compare/{resolved_prev}...{tag}"
+            else:
+                diff_url = f"{clean_repo_url}/commits/{tag}"
 
     is_cumulative = phases is not None and len(phases) > 1
     if is_cumulative:
@@ -1024,6 +1095,7 @@ def main() -> int:
     parser.add_argument("--notes-output", type=str, default="", help="Path to public release notes (default: <dist-dir>/RELEASE_NOTES.md)")
     parser.add_argument("--summary", type=str, default="", help="Executive summary text")
     parser.add_argument("--quick-install", type=str, default=None, help="Custom instructions or command for Quick Install block")
+    parser.add_argument("--prev-tag", type=str, default=None, help="Previous release tag for Full Changelog diff URL (default: auto-detected)")
     parser.add_argument("--dry-run", action="store_true", help="Print release markdown to stdout without writing")
     parser.add_argument("--detect-only", action="store_true", help="Only detect environment and print JSON")
     parser.add_argument("--ci-mode", action="store_true", help="Run in CI mode for GitHub Actions")
@@ -1123,6 +1195,7 @@ def main() -> int:
         phases=phases_list,
         quick_install=args.quick_install,
         repo_root=repo_root,
+        prev_tag=args.prev_tag,
     )
 
     if args.dry_run:

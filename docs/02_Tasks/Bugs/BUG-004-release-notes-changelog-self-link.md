@@ -1,13 +1,14 @@
 ---
 id: BUG-004
 title: "Циклическая ссылка на саму себя в блоке Full Changelog релизных записок"
-status: open
+status: fixed
 severity: medium
 type: bug
-target_release: "backlog"
+target_release: "v0.12.0"
 target_phase: null
 release_blocker: false
-fixed_in: null
+fixed_in: "v0.12.0"
+resolved: 2026-10-12
 regression_test: "tests/test_kb_release.py"
 created: 2026-10-12
 updated: 2026-10-12
@@ -22,8 +23,8 @@ feedback_source: "[[../Inbox/FB-GH-4|FB-GH-4]]"
 
 # 🐞 Дефект: BUG-004 — Циклическая ссылка на саму себя в блоке Full Changelog релизных записок
 
-> **ID:** BUG-004 | **Критичность:** Medium | **Статус:** open  
-> **Релиз:** backlog | **Блокер:** Нет  
+> **ID:** BUG-004 | **Критичность:** Medium | **Статус:** fixed  
+> **Релиз:** v0.12.0 | **Блокер:** Нет  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 > **Источник фидбека:** [[../Inbox/FB-GH-4|FB-GH-4 (GitHub Issue #4)]]  
 
@@ -56,7 +57,7 @@ feedback_source: "[[../Inbox/FB-GH-4|FB-GH-4]]"
 * `[NEW]` `tests/test_kb_release.py` — добавить тест проверки корректности URL в строке `Full Changelog`.
 
 ## 6. Верификация (Regression-First)
-- [ ] Падающий регрессионный тест воспроизводит дефект (RED).
-- [ ] Исправление применено в коде (GREEN).
-- [ ] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
-- [ ] Дефект закрыт через `/kb-implement BUG-004`.
+- [x] Падающий регрессионный тест воспроизводит дефект (RED).
+- [x] Исправление применено в коде (GREEN).
+- [x] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
+- [x] Дефект закрыт через `/kb-implement BUG-004`.
