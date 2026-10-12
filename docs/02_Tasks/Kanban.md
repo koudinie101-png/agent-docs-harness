@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] #plan #phase14 #dx #fast-track #vibe-coding
-  - [ ] [[Specs/14_AgileDX/TASK-052-micro-spec-template-and-fast-track-skills|TASK-052]]: Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan #task #phase14 #templates #fast-track
   - [ ] [[Specs/14_AgileDX/TASK-053-human-guardrails-and-agent-rules|TASK-053]]: Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах #task #phase14 #agents #guardrails
   - [ ] [[Specs/14_AgileDX/TASK-054-zero-to-hero-guide-and-mentor-onboarding|TASK-054]]: Практический гайд Zero_To_Hero_Guide.md («Вайбкодинг со страховкой») и менторский онбординг в kb-onboard #task #phase14 #onboarding #vibe-coding
   - [ ] [[Specs/14_AgileDX/TASK-055-human-first-release-notes-and-lint-audit|TASK-055]]: Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py #task #phase14 #release #lint
@@ -19,6 +18,9 @@ kanban-plugin: basic
 
 
 ## ✅ Готово (Done)
+
+- [ ] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] #plan #phase14 #dx #fast-track #vibe-coding
+  - [x] [[Specs/14_AgileDX/TASK-052-micro-spec-template-and-fast-track-skills|TASK-052]]: Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan (2026-10-12) #task #phase14 #templates #fast-track
 
 - [x] [[Plans/PLAN-013-rules-layering-thin-forwarders-and-obsidian-taxonomy|План: Фаза 13 — Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний]] (2026-10-11) #plan #phase13 #rules #adapters #obsidian-graph
   - [x] [[Specs/13_RulesLayering/TASK-051-bundling-e2e-tests-and-living-spec|TASK-051]]: Сборка инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec (2026-10-11) #task #phase13 #installer #e2e #spec

@@ -1,7 +1,7 @@
 ---
 id: TASK-052
 title: "Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan"
-status: planned
+status: done
 type: task
 phase: 14
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-052 — Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan
 
-> **ID:** TASK-052 | **Статус:** К реализации  
+> **ID:** TASK-052 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|PLAN-014]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]], [[../../../04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018]]
 

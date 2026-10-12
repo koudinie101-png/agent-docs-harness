@@ -19,7 +19,8 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
 3. **Identify Target Phase:**
    - Locate or create the target phase directory `docs/02_Tasks/Specs/<Phase_Folder>/`.
 4. **Draft Specification:**
-   - Create `docs/02_Tasks/Specs/<Phase_Folder>/TASK-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_TASK.md`.
+   - **Fast-Track Mode (`--fast` / micro-scope ≤ 30 LOC):** If called with `--fast` or targeting a trivial micro-task, use `docs/00_Templates/TEMPLATE_TASK_MICRO.md`. Guardrails: if scope exceeds 30 LOC or 2 files, warn user and fallback to standard spec.
+   - **Standard Mode:** Create `docs/02_Tasks/Specs/<Phase_Folder>/TASK-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_TASK.md`.
    - Specify file contracts (`[NEW]`, `[MODIFY]`, `[DELETE]`), data structures, API signatures, and exception handling.
    - Define explicit **Verification Plan** (compilation commands, automated test suites, manual verification).
    - Define **Definition of Done (DoD)**.
