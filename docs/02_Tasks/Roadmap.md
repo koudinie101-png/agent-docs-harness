@@ -192,6 +192,7 @@ tags:
 ## Фаза 15: Устранение задержек отклика и прозрачность каналов (Response Latency Elimination & Channel Transparency) — ✅ Завершена
 **Цель:** Сократить задержку отклика агента в 2.5–3 раза за счет архитектуры Zero Round-Trip Dispatch (Hot Invariants в Always-On `AGENTS.md` без обязательного `view_file(SKILL.md)` для Режимов 0–3), внедрить User-Centric Ingestion & Channel Transparency в `scripts/kb_ingest.py` (Zero-Deps автодетект репозитория из `git remote origin`, флаг `--status`, гибкая фильтрация `--label` / `--all-open`, запрет немых пропусков), актуализировать скилл `/kb-triage`, реализовать семантический контроль фаз в `scripts/kb_lint.py` и упаковать монолитный дистрибутив `install.py` с E2E тестами.  
 **Первоисточник плана:** [[Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.15.0|RELEASE-v0.15.0]]  
 **Нормативная база:** [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]], [[../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]], [[../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]]
 
 - [x] [[Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]]: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов (Hot Invariants & Direct Dispatch).

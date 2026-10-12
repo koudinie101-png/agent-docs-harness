@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-10-12
+
+### Added
+- Zero Round-Trip Dispatch & Hot Invariants architecture (ADR-0013, RESEARCH-008): eliminates `view_file` latency on standard lifecycle modes (0, 1, 2, 2B, 2C, 3) and slash commands, speeding up first-turn response by 2.5–3x.
+- Pipelined Co-fetching Protocol for bundled reference reading during initialization turns.
+- User-Centric Ingestion & Channel Transparency in `scripts/kb_ingest.py` (ADR-0024, RESEARCH-019):
+  - Zero-Dependencies git remote autodetection (`detect_github_repo`) from `remote.origin.url`.
+  - Channel Transparency Invariant: explicit warnings for unconfigured or skipped sources and GitHub API rate-limit guidance.
+  - Flexible ingestion filtering: CLI flags `--label <NAME>` and `--all-open`.
+  - Diagnostics status dashboard: `scripts/kb_ingest.py --status` showing channel health, rate limit quota, and inbox ticket distribution.
+- Source transparency and diagnostics in `/kb-triage`: actionable diagnostics report via `kb_ingest.py --status` when inbox buffer is empty.
+- Phase consistency audit in `scripts/kb_lint.py`: semantic validation (`check_phase_consistency`) matching frontmatter `phase: N` with folder structure (`Specs/NN_<Slug>/`) and tags (`phaseN`).
+- Comprehensive E2E installer test `test_29_channel_transparency_and_phase_consistency_deployment` in `tests/test_installer.py`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (124.8 KB) packaging updated ingestion, linter, and triage skills with migration support.
+- Synchronized `SPEC.md`, `README.md`, and `docs/Onboarding.md` with Zero Round-Trip Dispatch, phase consistency rules, and channel transparency commands.
+
 ## [0.14.0] - 2026-10-12
 
 ### Added
