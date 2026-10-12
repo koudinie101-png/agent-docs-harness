@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Исправление BUG-002: Устранение хардкода install.py в публичных релизных записках scripts/kb_release.py
+- **Что сделано:**
+  - В `scripts/kb_release.py` реализован адаптивный блок установки (`Adaptive Quick Install`): инструкции скачивания Docs-as-Code через `curl .../install.py` выводятся только для репозитория самого harness-а (`agent-docs-harness`); для внешних проектов при наличии артефактов генерируются команды загрузки артефактов из GitHub Releases, а при их отсутствии блок опускается.
+  - Добавлен CLI-аргумент `--quick-install` для возможности передачи кастомных команд развертывания/установки релиза.
+  - Устранена генерация проверочных команд контрольных сумм SHA-256 для несуществующего `./dist/install.py`, если в каталоге `dist/` нет артефактов.
+  - Пересобран монолитный инсталлятор `install.py` и `dist/install.py` через `scripts/build_installer.py`.
+  - По TDD-циклу разработан регрессионный тест `test_generate_public_release_notes_regression_bug_002` в `tests/test_kb_release.py`.
+  - Дефект [[02_Tasks/Bugs/BUG-002-release-notes-hardcoded-install-script|BUG-002]] переведен в статус `fixed`, карточка перенесена в категорию Done на [[02_Tasks/Kanban|Kanban.md]], Living Spec [[SPEC.md]] синхронизирована.
+- **Результаты верификации:**
+  - `python -m unittest tests.test_kb_release` -> 21/21 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest tests.test_installer` -> 29/29 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 80/80 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Перейти к исправлению следующего дефекта из бэклога: `/kb-implement BUG-004` (устранение циклической ссылки в Full Changelog).
+
+---
+
 ### [2026-10-12] — Официальный релиз v0.15.0 (Фаза 15: Устранение задержек отклика и прозрачность каналов)
 - **Что сделано:**
   - Успешно подготовлен и зафиксирован официальный релиз [[02_Tasks/Releases/RELEASE-v0.15.0|RELEASE-v0.15.0]] по итогам завершения Фазы 15.

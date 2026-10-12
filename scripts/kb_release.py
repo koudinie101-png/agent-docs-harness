@@ -857,6 +857,8 @@ def generate_public_release_notes(
     phase_data: Dict[str, List[Dict[str, str]]],
     summary: str = "",
     phases: Optional[List[int]] = None,
+    quick_install: Optional[str] = None,
+    repo_root: Optional[Path] = None,
 ) -> str:
     """Generates public dist/RELEASE_NOTES.md in clean GitHub Flavored Markdown (GFM)."""
     ver_clean = version.lstrip("v")
@@ -924,8 +926,65 @@ def generate_public_release_notes(
 
 """
 
+    # Adaptive Quick Install / Start block
+    effective_root = repo_root or Path.cwd()
+    is_harness_repo = False
+    if clean_repo_url:
+        is_harness_repo = "agent-docs-harness" in clean_repo_url
+    elif effective_root:
+        is_harness_repo = (effective_root / "install.py").is_file() and (effective_root / "build_installer.py").is_file()
+
+
+    quick_install_block = ""
+    if quick_install and quick_install.strip():
+        quick_install_block = f"""### ⚡ Быстрый старт / Установка (Quick Install)
+```bash
+{quick_install.strip()}
+```
+
+---
+
+"""
+    elif is_harness_repo:
+        quick_install_block = f"""### ⚡ Быстрый старт / Обновление (Quick Install)
+```bash
+# Новая установка Docs-as-Code
+curl -fsSL {raw_install_url} | python3
+
+# Обновление существующего проекта
+python install.py --update
+```
+
+---
+
+"""
+    elif artifacts and clean_repo_url:
+        first_art = artifacts[0]["name"]
+        quick_install_block = f"""### ⚡ Быстрый старт (Quick Start)
+```bash
+# Скачать {first_art}
+curl -LO {clean_repo_url}/releases/download/{tag}/{first_art}
+```
+
+---
+
+"""
+
     artifacts_table = format_artifacts_markdown_table(artifacts)
-    first_art_name = artifacts[0]["name"] if artifacts else "install.py"
+    verification_block = ""
+    if artifacts:
+        first_art_name = artifacts[0]["name"]
+        verification_block = f"""
+
+**Верификация в PowerShell:**
+```powershell
+Get-FileHash -Path ./dist/{first_art_name} -Algorithm SHA256
+```
+
+**Верификация в Bash:**
+```bash
+sha256sum ./dist/{first_art_name}
+```"""
 
     full_changelog_md = ""
     if diff_url:
@@ -937,18 +996,7 @@ def generate_public_release_notes(
 
 ---
 
-{highlights_block}### ⚡ Быстрый старт / Обновление (Quick Install)
-```bash
-# Новая установка Docs-as-Code
-curl -fsSL {raw_install_url} | python3
-
-# Обновление существующего проекта
-python install.py --update
-```
-
----
-
-### ✨ Новые возможности (Features)
+{highlights_block}{quick_install_block}### ✨ Новые возможности (Features)
 {chr(10).join(features_md)}
 
 ### 🐛 Исправленные дефекты (Bug Fixes)
@@ -958,17 +1006,7 @@ python install.py --update
 
 ### 📦 Релизные артефакты и контрольные суммы (SHA-256 Checksums)
 
-{artifacts_table}
-
-**Верификация в PowerShell:**
-```powershell
-Get-FileHash -Path ./dist/{first_art_name} -Algorithm SHA256
-```
-
-**Верификация в Bash:**
-```bash
-sha256sum ./dist/{first_art_name}
-```{full_changelog_md}
+{artifacts_table}{verification_block}{full_changelog_md}
 """
     return notes
 
@@ -985,6 +1023,7 @@ def main() -> int:
     parser.add_argument("--output", type=str, default="", help="Target release markdown path")
     parser.add_argument("--notes-output", type=str, default="", help="Path to public release notes (default: <dist-dir>/RELEASE_NOTES.md)")
     parser.add_argument("--summary", type=str, default="", help="Executive summary text")
+    parser.add_argument("--quick-install", type=str, default=None, help="Custom instructions or command for Quick Install block")
     parser.add_argument("--dry-run", action="store_true", help="Print release markdown to stdout without writing")
     parser.add_argument("--detect-only", action="store_true", help="Only detect environment and print JSON")
     parser.add_argument("--ci-mode", action="store_true", help="Run in CI mode for GitHub Actions")
@@ -1082,6 +1121,8 @@ def main() -> int:
         phase_data=phase_data,
         summary=summary_text,
         phases=phases_list,
+        quick_install=args.quick_install,
+        repo_root=repo_root,
     )
 
     if args.dry_run:

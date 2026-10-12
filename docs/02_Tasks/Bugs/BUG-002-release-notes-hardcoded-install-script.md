@@ -1,13 +1,14 @@
 ---
 id: BUG-002
 title: "Хардкод установки harness-а (install.py) в публичных релизных записках scripts/kb_release.py"
-status: open
+status: fixed
 severity: medium
 type: bug
-target_release: "backlog"
+target_release: "v0.12.0"
 target_phase: null
 release_blocker: false
-fixed_in: null
+fixed_in: "v0.12.0"
+resolved: 2026-10-12
 regression_test: "tests/test_kb_release.py"
 created: 2026-10-12
 updated: 2026-10-12
@@ -22,8 +23,8 @@ feedback_source: "[[../Inbox/FB-GH-1|FB-GH-1]]"
 
 # 🐞 Дефект: BUG-002 — Хардкод установки harness-а (`install.py`) в публичных релизных записках `scripts/kb_release.py`
 
-> **ID:** BUG-002 | **Критичность:** Medium | **Статус:** open  
-> **Релиз:** backlog | **Блокер:** Нет  
+> **ID:** BUG-002 | **Критичность:** Medium | **Статус:** fixed  
+> **Релиз:** v0.12.0 | **Блокер:** Нет  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 > **Источник фидбека:** [[../Inbox/FB-GH-1|FB-GH-1 (GitHub Issue #1)]]  
 
@@ -64,7 +65,7 @@ python install.py --update
 * `[NEW]` `tests/test_kb_release.py` — добавить тест, проверяющий, что для проекта без `install.py` не генерируется ссылка на 404 `install.py`.
 
 ## 6. Верификация (Regression-First)
-- [ ] Падающий регрессионный тест воспроизводит дефект (RED).
-- [ ] Исправление применено в коде (GREEN).
-- [ ] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
-- [ ] Дефект закрыт через `/kb-implement BUG-002`.
+- [x] Падающий регрессионный тест воспроизводит дефект (RED).
+- [x] Исправление применено в коде (GREEN).
+- [x] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
+- [x] Дефект закрыт через `/kb-implement BUG-002`.

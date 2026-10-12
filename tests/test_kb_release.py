@@ -269,8 +269,9 @@ status: done
         self.assertIn("### 🌟 Главное в этом релизе (Highlights)", notes)
         self.assertIn("✨ Фича: [TASK-025](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Specs/07_Distribution/TASK-025.md)", notes)
         self.assertIn("🐛 Исправление: [BUG-002](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/Bugs/BUG-002.md)", notes)
-        self.assertIn("curl -fsSL https://raw.githubusercontent.com/myorg/myproject/main/install.py | python3", notes)
-        self.assertIn("python install.py --update", notes)
+        self.assertNotIn("install.py", notes)
+        self.assertIn("curl -LO https://github.com/myorg/myproject/releases/download/v0.7.0/package.zip", notes)
+        self.assertNotIn("Новая установка Docs-as-Code", notes)
         self.assertNotIn("Архитектурные решения", notes)
         self.assertNotIn("ADR-0010", notes)
         self.assertIn("package.zip", notes)
@@ -304,6 +305,93 @@ status: done
         self.assertNotIn("Архитектурные решения", notes)
         self.assertNotIn("ADR-0017", notes)
         self.assertIn("TASK-037", notes)
+
+    def test_generate_public_release_notes_regression_bug_002(self):
+        """BUG-002: Verifies that public release notes in external projects do not hardcode Docs-as-Code install.py."""
+        env_info = {
+            "has_git": True,
+            "mode": "github",
+            "branch": "main",
+            "remote_url": "https://github.com/someuser/coolproject.git",
+        }
+        artifacts = [{
+            "name": "coolapp.tar.gz",
+            "path": "dist/coolapp.tar.gz",
+            "size": "500 KB",
+            "sha256": "112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00",
+        }]
+        phase_data = {
+            "tasks": [{"id": "TASK-100", "title": "Cool Feature", "link": "../Specs/TASK-100"}],
+            "bugs": [],
+        }
+
+        # 1. External project with artifacts: should offer artifact download, not install.py
+        external_root = self.test_root / "external_project"
+        external_root.mkdir()
+        notes = kb_release.generate_public_release_notes(
+            version="1.0.0",
+            phase_num=1,
+            env_info=env_info,
+            artifacts=artifacts,
+            phase_data=phase_data,
+            summary="Release 1.0.0",
+            repo_root=external_root,
+        )
+        self.assertNotIn("install.py", notes)
+        self.assertNotIn("Новая установка Docs-as-Code", notes)
+        self.assertIn("curl -LO https://github.com/someuser/coolproject/releases/download/v1.0.0/coolapp.tar.gz", notes)
+
+        # 2. External project with custom quick_install
+        notes_custom = kb_release.generate_public_release_notes(
+            version="1.0.0",
+            phase_num=1,
+            env_info=env_info,
+            artifacts=artifacts,
+            phase_data=phase_data,
+            summary="Release 1.0.0",
+            quick_install="pip install coolproject",
+            repo_root=external_root,
+        )
+        self.assertIn("pip install coolproject", notes_custom)
+        self.assertNotIn("install.py", notes_custom)
+
+        # 3. External project with no artifacts: should not have Quick Install or dummy install.py checksum
+        notes_empty = kb_release.generate_public_release_notes(
+            version="1.0.0",
+            phase_num=1,
+            env_info=env_info,
+            artifacts=[],
+            phase_data=phase_data,
+            summary="Release 1.0.0",
+            repo_root=external_root,
+        )
+        self.assertNotIn("install.py", notes_empty)
+        self.assertNotIn("Quick Install", notes_empty)
+        self.assertNotIn("Get-FileHash", notes_empty)
+
+        # 4. Harness repo (has install.py and build_installer.py): should keep harness install instructions
+        harness_root = self.test_root / "harness_repo"
+        harness_root.mkdir()
+        (harness_root / "install.py").write_text("# install script", encoding="utf-8")
+        (harness_root / "build_installer.py").write_text("# build installer", encoding="utf-8")
+        harness_env = {
+            "has_git": True,
+            "mode": "github",
+            "branch": "main",
+            "remote_url": "https://github.com/koudinie101-png/agent-docs-harness.git",
+        }
+        notes_harness = kb_release.generate_public_release_notes(
+            version="0.12.0",
+            phase_num=15,
+            env_info=harness_env,
+            artifacts=[],
+            phase_data=phase_data,
+            summary="Harness release",
+            repo_root=harness_root,
+        )
+        self.assertIn("Новая установка Docs-as-Code", notes_harness)
+        self.assertIn("curl -fsSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/main/install.py | python3", notes_harness)
+        self.assertIn("python install.py --update", notes_harness)
 
     def test_generate_release_note_filters_adrs_by_phase(self):
         """Verifies internal RELEASE-vX.Y.Z.md filters ADRs to only those relevant to the target phase."""

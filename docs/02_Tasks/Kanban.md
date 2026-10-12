@@ -10,7 +10,6 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Bugs/BUG-002-release-notes-hardcoded-install-script|BUG-002]]: Хардкод установки harness-а (install.py) в публичных релизных записках scripts/kb_release.py #bug #release
 - [ ] [[Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]]: Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release #bug #release #cli
 - [ ] [[Bugs/BUG-004-release-notes-changelog-self-link|BUG-004]]: Циклическая ссылка на саму себя в блоке Full Changelog релизных записок #bug #release
 
@@ -20,6 +19,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Bugs/BUG-002-release-notes-hardcoded-install-script|BUG-002]]: Хардкод установки harness-а (install.py) в публичных релизных записках scripts/kb_release.py (2026-10-12) #bug #release
 - [x] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] (2026-10-12) #plan #phase15 #latency #dispatch #channel-transparency #kb-lint
   - [x] [[Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]]: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec (2026-10-12) #task #phase15 #installer #e2e #spec
 
