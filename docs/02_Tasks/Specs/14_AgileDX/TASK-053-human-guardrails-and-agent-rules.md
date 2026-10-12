@@ -1,7 +1,7 @@
 ---
 id: TASK-053
 title: "Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах"
-status: planned
+status: done
 type: task
 phase: 14
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-053 — Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах
 
-> **ID:** TASK-053 | **Статус:** К реализации  
+> **ID:** TASK-053 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|PLAN-014]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]], [[../../../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]]
 

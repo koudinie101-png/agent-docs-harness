@@ -181,7 +181,7 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018]], [[../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]], [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]], [[../04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017]], [[../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]]
 
 - [x] [[Specs/14_AgileDX/TASK-052-micro-spec-template-and-fast-track-skills|TASK-052]]: Шаблон Micro-Spec `TEMPLATE_TASK_MICRO.md` и поддержка Fast-Track в `kb-task` / `kb-plan`.
-- [ ] [[Specs/14_AgileDX/TASK-053-human-guardrails-and-agent-rules|TASK-053]]: Принцип «Направляй, а не блокируй» (Human Guardrails) в `AGENTS.md` и адаптерах.
+- [x] [[Specs/14_AgileDX/TASK-053-human-guardrails-and-agent-rules|TASK-053]]: Принцип «Направляй, а не блокируй» (Human Guardrails) в `AGENTS.md` и адаптерах.
 - [ ] [[Specs/14_AgileDX/TASK-054-zero-to-hero-guide-and-mentor-onboarding|TASK-054]]: Практический гайд `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой») и менторский онбординг в `kb-onboard`.
 - [ ] [[Specs/14_AgileDX/TASK-055-human-first-release-notes-and-lint-audit|TASK-055]]: Human-First чейнджлоги в `scripts/kb_release.py` и аудит Fast-Track в `scripts/kb_lint.py`.
 - [ ] [[Specs/14_AgileDX/TASK-056-installer-bundling-e2e-and-living-spec|TASK-056]]: Синхронизация инсталлятора `install.py` / `build_installer.py`, E2E тесты и актуализация Living Spec.

@@ -35,6 +35,12 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - Raw external inputs (GitHub issues, emails, chat pastes) must never bypass the triage buffer `docs/02_Tasks/Inbox/` directly into task specs or codebase modifications.
    - Triage is performed via Mode 2C (`/kb-triage`) with **Stop & Yield**.
    - Feedback items `FB-*.md` are subject to the **Permalinks Principle**: never move or delete them upon triage; update `status: processed` (or `rejected`) with `target: "[[...]]"` in-place.
+8. **Human Guardrails Protocol («Направляй, а не блокируй»):**
+   - In read-only modes (Modes 0, 1, 2, 2B, 2C), agents are **strictly prohibited** from issuing raw, robotic blocking errors (e.g. `🚨 NO CODE EDITS ALLOWED`).
+   - Act as a friendly Senior Engineering Partner: explain the stage's purpose in simple terms, ask 1–2 guiding questions or offer choices (A/B), and provide the exact next command (e.g. *"If approved, say `/kb-implement TASK-XXX` to begin"*).
+9. **Fast-Track Protocol (Micro-Task Bypass):**
+   - For trivial tasks (≤ 30 LOC, ≤ 2 files, 0 architectural risk, no external dependencies), users may bypass Mode 1 planning and generate a lightweight Micro-Spec via `/kb-task --fast <description>` using `docs/00_Templates/TEMPLATE_TASK_MICRO.md`.
+   - Micro-tasks still require **Stop & Yield** before implementation. Changes to `SPEC.md`, `AGENTS.md`, or architecture are strictly barred from Fast-Track.
 
 ---
 
@@ -81,9 +87,8 @@ Every feature or architectural initiative follows structured stages:
 ### 🟠 Mode 2: Task Specification (`/kb-task` or "Режим 2")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
 - **Action:** Detailed technical specification with exact file contracts:
-  - `[NEW] path/to/file`
-  - `[MODIFY] path/to/file`
-  - `[DELETE] path/to/file`
+  - Standard Spec: `docs/00_Templates/TEMPLATE_TASK.md` for standard features.
+  - Fast-Track Spec (`--fast`): `docs/00_Templates/TEMPLATE_TASK_MICRO.md` for micro-changes (≤ 30 LOC, ≤ 2 files).
   - Class/function signatures, error handling, and Definition of Done (DoD).
   - Explicit **Verification Plan** with commands and expected outputs.
 - **Output:** Specification file `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`.

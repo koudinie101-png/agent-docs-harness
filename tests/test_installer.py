@@ -1659,8 +1659,10 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("## ⚡ Stack Verification Commands", out)
             self.assertIn("## 🛡️ Operating Rules & Routing", out)
             self.assertIn("STRICTLY NO CODE CHANGES", out)
+            self.assertIn("Human Guardrails", out)
+            self.assertIn("Fast-Track Protocol", out)
             self.assertIn("Anti-Echo & Single-Task Barrier", out)
-            self.assertNotIn("## Docs-as-Code (15 Disciplines)", out)
+            self.assertNotIn("## Docs-as-Code (17 Disciplines)", out)
             self.assertNotIn("1. Read `SPEC.md`", out)
 
         # 2. Project root adapter files check
@@ -1680,7 +1682,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("[[AGENTS.md]]", content)
             self.assertIn("## ⚡ Stack Verification Commands", content)
             self.assertIn("STRICTLY NO CODE CHANGES", content)
-            self.assertNotIn("## Docs-as-Code (15 Disciplines)", content)
+            self.assertIn("Human Guardrails", content)
+            self.assertIn("Fast-Track Protocol", content)
+            self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
 
         # 3. Fresh installation with all adapters check
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1710,7 +1714,9 @@ class TestAgentDocsHarness(unittest.TestCase):
                 self.assertLessEqual(len(lines), 35, f"{path.name} exceeds 35 lines")
                 self.assertIn("[[AGENTS.md]]", content)
                 self.assertIn("npm test", content)
-                self.assertNotIn("## Docs-as-Code (15 Disciplines)", content)
+                self.assertIn("Human Guardrails", content)
+                self.assertIn("Fast-Track Protocol", content)
+                self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
 
     def test_26_skills_consolidation_and_template_taxonomy(self):
         """E2E test: Verify consolidation of docs-as-code into kb-onboard (12 skills total) and two-tier template taxonomy."""

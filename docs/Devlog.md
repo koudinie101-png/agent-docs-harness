@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-053: Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах
+- **Что сделано:**
+  - В базовый стандарт [[AGENTS.md]] внедрены нормативные правила 8 («Human Guardrails Protocol») и 9 («Fast-Track Protocol»). В режимах, запрещающих редактирование кода (Режимы 0, 1, 2, 2B, 2C), агенту предписано действовать как дружелюбный Senior Partner: объяснять назначение шага понятным языком, задавать направляющие вопросы с вариантами выбора и предлагать готовую команду для продолжения (`/kb-implement ...`), исключая сухие роботизированные отказы.
+  - В генераторах правил `install.py` (`_RULES_BODY`, `_gen_rule`) и корневых адаптерах IDE (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`) закреплены директивы Human Guardrails и Fast-Track при строгом сохранении лимита $\le 35$ строк для тонких адаптеров.
+  - Адаптирован и расширен E2E тест `test_25_thin_forwarders_rules_layering` в `tests/test_installer.py` для верификации присутствия Human Guardrails и Fast-Track директив.
+  - Обновлены статусы задачи в ТЗ [[02_Tasks/Specs/14_AgileDX/TASK-053-human-guardrails-and-agent-rules|TASK-053]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]] и Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 27/27 тестов успешно пройдено (100% Pass, Exit code 0, 46.8s).
+  - `python scripts/kb_lint.py --path docs` -> 144 файла проверено, 1305 связей валидны (0 broken links, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать следующую задачу фазы 14: `/kb-implement TASK-054` («Практический гайд Zero_To_Hero_Guide.md («Вайбкодинг со страховкой») и менторский онбординг в kb-onboard»).
+
+---
+
 ### [2026-10-12] — Реализация TASK-052: Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan
 - **Что сделано:**
   - Создан ультра-компактный шаблон микро-спецификации `TEMPLATE_TASK_MICRO.md` в канонической базе знаний (`docs/00_Templates/TEMPLATE_TASK_MICRO.md`) и в дистрибутивном каталоге шаблонов (`templates/TEMPLATE_TASK_MICRO.md`). Шаблон оптимизирован для Fast-Track задач (≤ 30 LOC, ≤ 2 файлов) и занимает всего ~35 строк с четкими контрактами DoD и Verification Plan.

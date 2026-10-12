@@ -173,7 +173,7 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
 
 # --- GENERATORS FOR AGENTS & REPO RULES ---
 
-_RULES_BODY = ("## Docs-as-Code (15 Disciplines)\n"
+_RULES_BODY = ("## Docs-as-Code (17 Disciplines)\n"
     "Language: {lang}\n"
     "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).\n"
     "2. Kanban: move cards with date `(YYYY-MM-DD)`.\n"
@@ -189,7 +189,9 @@ _RULES_BODY = ("## Docs-as-Code (15 Disciplines)\n"
     "12. Git: Remote/Local/None + Trunk-Based docs + Feature Branching.\n"
     "13. Single-Task Barrier: `/kb-implement <TASK-XXX | BUG-XXX>` executes ONE task/bug; stop tool calls on complete, never auto-chain.\n"
     "14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.\n"
-    "15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).\n")
+    "15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).\n"
+    "16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.\n"
+    "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -214,9 +216,10 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"- **Lint:** `python3 scripts/kb_lint.py --path docs`\n\n"
         f"## 🛡️ Operating Rules & Routing\n"
         f"1. **Single Source of Truth:** Read `AGENTS.md` at session start. All 4 operating modes, skills, and disciplines are governed strictly by `AGENTS.md`.\n"
-        f"2. **Read-Only Invariant:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES (strictly prohibit modifying or creating project code).\n"
-        f"3. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
-        f"4. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
+        f"2. **Read-Only Invariant & Human Guardrails:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES. Guide user with friendly next steps rather than blocking errors.\n"
+        f"3. **Fast-Track Protocol:** Micro-tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` using Micro-Spec.\n"
+        f"4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
+        f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
         f"{tail}"
     )
 
