@@ -10,8 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-
-## ⏳ В работе (In Progress)
+- [ ] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] #plan #phase14 #dx #fast-track #vibe-coding
+  - [ ] `TASK-052`: Шаблон Micro-Spec TEMPLATE_TASK_MICRO.md и поддержка Fast-Track в kb-task / kb-plan #task #phase14 #templates #fast-track
+  - [ ] `TASK-053`: Принцип «Направляй, а не блокируй» (Human Guardrails) в AGENTS.md и адаптерах #task #phase14 #agents #guardrails
+  - [ ] `TASK-054`: Практический гайд Zero_To_Hero_Guide.md («Вайбкодинг со страховкой») и менторский онбординг в kb-onboard #task #phase14 #onboarding #vibe-coding
+  - [ ] `TASK-055`: Human-First чейнджлоги в scripts/kb_release.py и аудит Fast-Track в scripts/kb_lint.py #task #phase14 #release #lint
+  - [ ] `TASK-056`: Синхронизация инсталлятора install.py / build_installer.py, E2E тесты и актуализация Living Spec #task #phase14 #installer #e2e
 
 
 ## ✅ Готово (Done)

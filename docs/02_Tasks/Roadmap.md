@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-11
+updated: 2026-10-12
 tags:
   - roadmap
   - planning
@@ -175,12 +175,23 @@ tags:
 
 ---
 
+## Фаза 14: Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров (Agile Docs-as-Code & Chat-First DX)
+**Цель:** Снизить когнитивное и процедурное трение Docs-as-Code: внедрить протокол Fast-Track для микро-задач (пропуск Режима 1, компактная Micro-Spec `TEMPLATE_TASK_MICRO.md`, экономия 70% токенов), принцип «Направляй, а не блокируй» (Human Guardrails) в правилах агентов, Chat-First Bootstrapping в README (запуск без терминала), практическое руководство `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой»), понятные чейнджлоги в `kb_release.py` и аудит лимитов в `kb_lint.py`.  
+**Первоисточник плана:** [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|PLAN-014]]  
+**Нормативная база:** [[../04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018]], [[../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]], [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]], [[../04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017]], [[../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]]
+
+- [ ] Шаблон Micro-Spec `TEMPLATE_TASK_MICRO.md` и поддержка Fast-Track в `kb-task` / `kb-plan` — `TASK-052`.
+- [ ] Принцип «Направляй, а не блокируй» (Human Guardrails) в `AGENTS.md` и адаптерах — `TASK-053`.
+- [ ] Практический гайд `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой») и менторский онбординг в `kb-onboard` — `TASK-054`.
+- [ ] Human-First чейнджлоги в `scripts/kb_release.py` и аудит Fast-Track в `scripts/kb_lint.py` — `TASK-055`.
+- [ ] Синхронизация инсталлятора `install.py` / `build_installer.py`, E2E тесты и актуализация Living Spec — `TASK-056`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Протокол Fast-Track для микро-задач (Agile Docs-as-Code):** облегченный регламент согласования и исполнения задач со сложностью $\le 30$ строк кода или локальных фиксов без отдельного RFC в `Plans/` (инлайн-DoD, сокращение диалогового трения на 60% при сохранении карточки в Канбане и проверки тестами) — [[../04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018]], [[../03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023]].
-* 💡 **Адаптация для вайбкодеров и новичков (Chat-First DX & Protected Vibe Coding):** устранение барьеров отпугивания пользователей: One-Prompt Quickstart в README без терминала, human-first форматирование чейнджлогов в `kb_release.py`, диалоговый режим ментора в `/kb-onboard`, принцип «Направляй, а не блокируй» в правилах агентов, практический гайд `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой») и шпаргалка по средам — [[../04_Research/RESEARCH-010-zero-to-hero-onboarding-guide-and-developer-mental-models|RESEARCH-010]], [[../03_Decisions_ADR/ADR-0015-zero-to-hero-onboarding-guide-architecture|ADR-0015]], [[../04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017]], [[../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]].
 * 💡 **Архитектура Zero Round-Trip Dispatch и устранение латентности скиллов (Hot Invariants):** оптимизация задержки отклика в Antigravity при сохранении High-SNR токеномики: прямое исполнение типовых режимов (0–3) из Always-On кэша `AGENTS.md` без промежуточного tool call `view_file(SKILL.md)`, пайплайнинг I/O и защита префиксного KV-кэша — [[../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]].
 * 💡 **Прозрачный UX инжеста и статус источников (User-Centric Ingestion & Channel Transparency):** устранение неявных соглашений в `kb_ingest.py` и `/kb-triage`: автоопределение репозитория из `git remote origin`, явные предупреждения об отсутствии конфигурации каналов (вместо тихого пропуска), гибкая фильтрация по меткам (`--label` / `--all-open`) и диагностический отчет о доступности источников при пустом Inbox.
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
