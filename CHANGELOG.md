@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-10-12
+
+### Added
+- Agile Docs-as-Code & Chat-First DX standard based on ADR-0022, ADR-0023, ADR-0015, and RESEARCH-018, RESEARCH-017, RESEARCH-010.
+- Ultra-compact Micro-Spec template `TEMPLATE_TASK_MICRO.md` (~35 lines) and Fast-Track protocol (`kb-task --fast`, preflight nudge in `kb-plan`) for trivial changes ($\le 30$ LOC, $\le 2$ files) saving ~70% tokens.
+- Human Guardrails protocol («Направляй, а не блокируй») in `AGENTS.md` and all 6 thin IDE adapters (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`).
+- Practical developer guide `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой») introducing the "Autopilot with sensors" mental model and One-Prompt Chat-First bootstrapping.
+- Mentor dialogue mode in `kb-onboard` skill with adaptive explanations for beginner vibe coders.
+- Human-First release notes formatting (`Highlights`, emoji feature tags `⚡ Fast-Track:`, `✨ Фича:`, `🐛 Исправление:`) in `scripts/kb_release.py`.
+- Automated Fast-Track complexity limits and Verification Plan audit (`check_fast_track_specs`) in `scripts/kb_lint.py`.
+- Comprehensive E2E installer test `test_28_fast_track_template_and_zero_to_hero_guide_deployment` in `tests/test_installer.py`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (120.9 KB) packaging 15 templates and `Zero_To_Hero_Guide.md` with full `--update` migration support.
+- Synchronized `SPEC.md`, `README.md`, `docs/Onboarding.md`, and `docs/00_Index.md` with the 15-template registry, Fast-Track, and Human Guardrails protocols.
+
 ## [0.13.0] - 2026-10-11
 
 ### Added
