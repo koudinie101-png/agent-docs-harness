@@ -11,13 +11,13 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-016-self-improving-harness-and-defect-memory|План: Фаза 16 — Самообучающийся харнесс и память дефектов]] #plan #phase16 #memory #defect-loop #quality-gates
-  - [ ] [[Specs/16_MemoryAndQualityGates/TASK-062-lifecycle-memory-checkpoints-and-promotion|TASK-062]]: Точки чтения памяти в жизненном цикле (`kb-implement`, `kb-complete`) и протокол двухосевого промоушена #task #phase16 #memory #lifecycle #skills
   - [ ] [[Specs/16_MemoryAndQualityGates/TASK-063-quality-gates-tier-matrix-and-agent-rules|TASK-063]]: Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md` #task #phase16 #quality-gates #agents #rules
   - [ ] [[Specs/16_MemoryAndQualityGates/TASK-064-kb-lint-memory-audit-bundler-and-e2e|TASK-064]]: Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync #task #phase16 #lint #installer #e2e
  
  
 ## ✅ Готово (Done)
 
+- [x] [[Specs/16_MemoryAndQualityGates/TASK-062-lifecycle-memory-checkpoints-and-promotion|TASK-062]]: Точки чтения памяти в жизненном цикле (`kb-implement`, `kb-complete`) и протокол двухосевого промоушена (2026-10-12) #task #phase16 #memory #lifecycle #skills
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-061-memory-infrastructure-and-patterns-index|TASK-061]]: Инфраструктура процедурной памяти (`docs/06_Memory/`, шаблон `TEMPLATE_INCIDENT.md` и агрегированный индекс `patterns.md`) (2026-10-12) #task #phase16 #memory #templates
 - [x] [[Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]]: Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release (2026-10-12) #bug #release #cli
 - [x] [[Bugs/BUG-004-release-notes-changelog-self-link|BUG-004]]: Циклическая ссылка на саму себя в блоке Full Changelog релизных записок (2026-10-12) #bug #release

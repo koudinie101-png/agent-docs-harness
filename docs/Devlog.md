@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-062: Точки чтения памяти в жизненном цикле (kb-implement, kb-complete) и протокол двухосевого промоушена
+- **Что сделано:**
+  - В скилл `.agents/skills/kb-implement/SKILL.md` (Режим 3) интегрирована обязательная префлайт-проверка `0. Memory-First Check`: чтение индекса `docs/06_Memory/patterns.md`, проверка рисков типовых граблей (Windows paths, ложные моки, сбои версий) и применение превентивных мер до генерации кода.
+  - В скилл `.agents/skills/kb-complete/SKILL.md` добавлен шаг `6. Defect Loop Reflection` (контур самообучения): обязательная рефлексия сессии разработки, оформление инцидентов `docs/06_Memory/Incidents/INC-XXX-<slug>.md` по шаблону `TEMPLATE_INCIDENT.md` и протокол двухосевого промоушена (Ось 1: Частота/Тяжесть $\to$ `patterns.md` $\le 15$; Ось 2: Охват применения $\to$ Tier 1 автотесты или Tier 2 `AGENTS.md`).
+  - Спецификация `TASK-062` переведена в статус `done`, карточка перемещена в Done на `Kanban.md`, отмечен чекбокс в `Roadmap.md`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 170 files scanned, 1553 wikilinks verified (0 broken), Exit code 0.
+  - `python -m unittest tests/test_installer.py` -> 29/29 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 82/82 тестов успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация следующей задачи Фазы 16: `/kb-implement TASK-063` (Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md`).
+
+---
+
 ### [2026-10-12] — Реализация TASK-061: Инфраструктура процедурной памяти (docs/06_Memory/, шаблон TEMPLATE_INCIDENT.md и агрегированный индекс patterns.md)
 - **Что сделано:**
   - Развернута подсистема процедурной памяти агента `docs/06_Memory/` с каталогом архива инцидентов `Incidents/` (`.gitkeep`).

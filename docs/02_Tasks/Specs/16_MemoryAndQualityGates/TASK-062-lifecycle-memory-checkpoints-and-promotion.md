@@ -1,7 +1,7 @@
 ---
 id: TASK-062
 title: "Точки чтения памяти в жизненном цикле (kb-implement, kb-complete) и протокол двухосевого промоушена"
-status: planned
+status: done
 type: task
 phase: 16
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-062 — Точки чтения памяти в жизненном цикле (kb-implement, kb-complete) и протокол двухосевого промоушена
 
-> **ID:** TASK-062 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-062 | **Статус:** Выполнено (Режим 3)  
 > **План:** [[../../Plans/PLAN-016-self-improving-harness-and-defect-memory|PLAN-016]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]  
 > **Первоисточник фидбека:** [[../../Inbox/FB-GH-3|Обращение FB-GH-3 (madpanther)]]
@@ -84,14 +84,14 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Проверка контрактов скиллов: в `kb-implement` присутствует шаг `Memory-First Check`, в `kb-complete` — шаг `Defect Loop Reflection`.
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` возвращает 0 ошибок.
-- [ ] Отсутствие регрессий в существующих E2E тестах скиллов.
+- [x] Проверка контрактов скиллов: в `kb-implement` присутствует шаг `Memory-First Check`, в `kb-complete` — шаг `Defect Loop Reflection`.
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` возвращает 0 ошибок.
+- [x] Отсутствие регрессий в существующих E2E тестах скиллов.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Шаги Memory-First и Defect Loop Reflection интегрированы в скиллы `kb-implement` и `kb-complete`.
-- [ ] Протокол двухосевого промоушена специфицирован.
-- [ ] Все проверки верификации завершены успешно.
+- [x] Шаги Memory-First и Defect Loop Reflection интегрированы в скиллы `kb-implement` и `kb-complete`.
+- [x] Протокол двухосевого промоушена специфицирован.
+- [x] Все проверки верификации завершены успешно.

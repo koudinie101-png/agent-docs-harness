@@ -27,15 +27,23 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
      * For bugs: note resolution via TDD with link to regression test.
 5. **Living Spec Sync:**
    - If task or fix modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same session.
-6. **Lint Verification:**
+6. **Defect Loop Reflection (Контур самообучения и двухосевой промоушен):**
+   - Проанализировать ход сессии: были ли допущены процедурные ошибки, падения тестов по непредвиденным причинам, ложные предположения или платформенные сбои?
+   - Если ошибка выявлена:
+     * Оформить краткий инцидент `docs/06_Memory/Incidents/INC-XXX-<slug>.md` по шаблону `TEMPLATE_INCIDENT.md`.
+     * **Двухосевой промоушен:**
+       1. *Ось 1 (Частота/Тяжесть):* при $\text{count} \ge 2$ или $\text{severity} = \text{high}$ обновить `docs/06_Memory/patterns.md` (с соблюдением лимита $\le 15$ записей; наименее частотные архивируются).
+       2. *Ось 2 (Охват применения):* если сбой специфичен для всей платформы/стека — вынести защитное правило в автотест (Tier 1) или норматив `AGENTS.md` (Tier 2).
+   - Если сессия прошла чисто: зафиксировать отсутствие инцидентов.
+7. **Lint Verification:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
-7. **Git Commit & Sync:**
+8. **Git Commit & Sync:**
    - **Task Commit:** `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`.
    - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.
    - Push to remote if origin exists.
-8. **Phase Completion Nudge:**
+9. **Phase Completion Nudge:**
    - If all tasks in the current phase are now `[x]`, recommend running acceptance testing in `docs/05_Testing/` and executing `/kb-release <vX.Y.Z>`.
-9. **Terminal Step: Stop & Yield Control:**
+10. **Terminal Step: Stop & Yield Control:**
    - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets).
    - Propose next command to user (e.g. `/kb-implement <NEXT>` or `/kb-release`).
    - STRICTLY STOP calling tools. Yield control to user and wait for explicit prompt.
