@@ -1,7 +1,7 @@
 ---
 id: TASK-059
 title: "Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py"
-status: planned
+status: completed
 type: task
 phase: 15
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-059 — Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py
 
-> **ID:** TASK-059 | **Статус:** К реализации  
+> **ID:** TASK-059 | **Статус:** Выполнено  
 > **План:** [[../../Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]], [[../../../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]]  
 
@@ -99,18 +99,18 @@ def check_phase_consistency(docs_dir: Path) -> list:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая корректность: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` (Exit code 0)
-- [ ] Модульные тесты линтера: `python -m unittest tests/test_kb_lint.py` (100% Pass, Exit code 0)
-- [ ] Запуск линтера базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, 0 warnings)
-- [ ] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
+- [x] Синтаксическая корректность: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` (Exit code 0)
+- [x] Модульные тесты линтера: `python -m unittest tests/test_kb_lint.py` (100% Pass, Exit code 0)
+- [x] Запуск линтера базы знаний: `python scripts/kb_lint.py --path docs -v` (0 broken links, 0 warnings)
+- [x] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скилл `/kb-triage` обновлен и требует диагностического отчета при чистом инбоксе.
-- [ ] В `scripts/kb_lint.py` внедрена функция `check_phase_consistency`.
-- [ ] Модульные тесты в `tests/test_kb_lint.py` успешно проверяют семантический аудит фаз.
-- [ ] Все пункты Плана верификации пройдены (Exit code 0).
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Скилл `/kb-triage` обновлен и требует диагностического отчета при чистом инбоксе.
+- [x] В `scripts/kb_lint.py` внедрена функция `check_phase_consistency`.
+- [x] Модульные тесты в `tests/test_kb_lint.py` успешно проверяют семантический аудит фаз.
+- [x] Все пункты Плана верификации пройдены (Exit code 0).
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

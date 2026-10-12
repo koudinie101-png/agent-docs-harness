@@ -13,10 +13,13 @@ Use when the user runs `/kb-triage`, wants to screen incoming feedback, or proce
 * **Stop & Yield Control:** Once triage decisions are committed to Git, immediately STOP tool calls and yield control.
 
 ## Procedure
-1. **Ingest / Synchronize:**
-   - Run `python scripts/kb_ingest.py` (or parse user pasted text/message).
+1. **Ingest / Synchronize & Source Verification:**
+   - Run `python scripts/kb_ingest.py` (supports optional arguments such as `--all-open` or `--label <NAME>`).
    - Scan `docs/02_Tasks/Inbox/` for files with `status: new`.
-   - If no items with `status: new` exist, report clean inbox and yield control.
+   - **Diagnostic Source Feedback:** If no items with `status: new` exist:
+     * Execute: `python scripts/kb_ingest.py --status`.
+     * Present user with a compact diagnostic summary: probed GitHub repository, channel status, and number of previously processed tickets.
+     * Confirm clean inbox and terminate under Stop & Yield protocol.
 2. **Interactive Screening (per item):**
    - Present item summary to user: title, source channel, perceived severity, and content.
    - Categorize signal:

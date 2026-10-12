@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-059: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py
+- **Что сделано:**
+  - Обновлен исполняемый скилл `.agents/skills/kb-triage/SKILL.md`: при пустом инбоксе агент запрашивает диагностический статус источников (`python scripts/kb_ingest.py --status`) и формирует понятный отчет (опрошенный репозиторий, статус каналов, число обработанных тикетов) перед завершением по Stop & Yield.
+  - В утилиту аудита `scripts/kb_lint.py` внедрена функция `check_phase_consistency(docs_dir: Path) -> list`, сопоставляющая декларируемый номер фазы в frontmatter (`phase: N`) с папкой размещения (`Specs/NN_<Slug>/`) и тегами (`phaseN`).
+  - Обеспечен неблокирующий вывод семантических предупреждений о фазах (`⚠️ Phase Consistency Warnings`) в Verbose и Silent-on-Success режимах.
+  - Разработаны 4 модульных теста в `tests/test_kb_lint.py` (`test_phase_consistency_*`), проверяющие соответствие папок, тегов и неблокирующий статус.
+  - Актуализированы статусы задачи в ТЗ [[02_Tasks/Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]] и Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` -> синтаксис корректен (Exit code 0).
+  - `python -m unittest tests/test_kb_lint.py` -> 20/20 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs -v` -> 153 файла и 1420 связей проверено, 0 broken links, 0 warnings (Exit code 0).
+  - `python -m unittest discover -s tests` -> 78/78 тестов успешно пройдено (100% Pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать следующую задачу Фазы 15: `/kb-implement TASK-060` («Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec»).
+
+---
+
 ### [2026-10-12] — Реализация TASK-058: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py
 - **Что сделано:**
   - Реализована функция `detect_github_repo` (Zero-Dependencies): автоопределение `owner/repo` из `git config --get remote.origin.url` (HTTPS, SSH, token auth) с приоритетом переменной среды `GITHUB_REPOSITORY`.

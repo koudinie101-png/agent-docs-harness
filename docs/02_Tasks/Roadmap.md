@@ -196,7 +196,7 @@ tags:
 
 - [x] [[Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]]: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов (Hot Invariants & Direct Dispatch).
 - [x] [[Specs/15_LatencyAndChannels/TASK-058-channel-transparency-git-remote-and-status-dashboard|TASK-058]]: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в `scripts/kb_ingest.py`.
-- [ ] [[Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]]: Прозрачный фидбек источников в `/kb-triage` и семантический контроль фаз в `scripts/kb_lint.py`.
+- [x] [[Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]]: Прозрачный фидбек источников в `/kb-triage` и семантический контроль фаз в `scripts/kb_lint.py`.
 - [ ] [[Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]]: Синхронизация инсталлятора `install.py` / `build_installer.py`, регрессионные E2E тесты и актуализация Living Spec.
 
 ---

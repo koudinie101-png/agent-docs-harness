@@ -225,6 +225,75 @@ def check_fast_track_specs(docs_dir: Path) -> list:
     return warnings
 
 
+def check_phase_consistency(docs_dir: Path) -> list:
+    """
+    Scans docs/02_Tasks/Specs/ for task specifications and validates:
+    1. Folder Phase vs Frontmatter Phase:
+       e.g., Specs/15_LatencyAndChannels/TASK-*.md must have phase: 15.
+    2. Frontmatter Phase vs Tags:
+       if tags contains 'phase15', frontmatter phase must be 15.
+    Returns a list of non-blocking warning strings.
+    """
+    warnings = []
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
+        specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir():
+        return warnings
+
+    for folder in sorted(specs_dir.iterdir()):
+        if not folder.is_dir():
+            continue
+        m_folder = re.match(r"^(\d+)_", folder.name)
+        if not m_folder:
+            continue
+        folder_phase = int(m_folder.group(1))
+
+        for spec_file in sorted(folder.glob("*.md")):
+            if spec_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                content = spec_file.read_text(encoding="utf-8")
+            except Exception:
+                continue
+
+            if not content.startswith("---"):
+                continue
+
+            parts = content.split("---", 2)
+            if len(parts) < 3:
+                continue
+
+            fm = parts[1]
+            m_phase = re.search(r"^phase:\s*(\d+)", fm, re.MULTILINE)
+            if not m_phase:
+                continue
+
+            fm_phase = int(m_phase.group(1))
+            rel_path = spec_file.name
+
+            # 1. Folder Phase vs Frontmatter Phase
+            if fm_phase != folder_phase:
+                warnings.append(
+                    f"Spec '{rel_path}' declares phase {fm_phase}, but is located in folder '{folder.name}' (expected phase {folder_phase})."
+                )
+
+            # 2. Frontmatter Phase vs Tags
+            tags_block = ""
+            m_tags = re.search(r"^tags:\s*([\s\S]*?)(?=\n[a-zA-Z_-]+:|\n---|$)", fm, re.MULTILINE)
+            if m_tags:
+                tags_block = m_tags.group(1)
+            tag_matches = re.findall(r"\bphase(\d+)\b", tags_block, re.IGNORECASE)
+            for tag_phase_str in tag_matches:
+                tag_phase = int(tag_phase_str)
+                if tag_phase != fm_phase:
+                    warnings.append(
+                        f"Spec '{rel_path}' declares phase {fm_phase}, but contains mismatched tag 'phase{tag_phase}'."
+                    )
+
+    return warnings
+
+
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
@@ -327,6 +396,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     drift_warnings = check_spec_drift(docs_dir)
     devlog_warnings = check_devlog_semantic_guard(docs_dir)
     fast_track_warnings = check_fast_track_specs(docs_dir)
+    phase_warnings = check_phase_consistency(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings)
 
     if verbose:
@@ -367,6 +437,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {ftw}")
             print()
 
+        if phase_warnings:
+            print(f"⚠️ Phase Consistency Warnings ({len(phase_warnings)}):")
+            for pw in phase_warnings:
+                print(f"   • {pw}")
+            print()
+
         if has_errors:
             print("❌ Linter failed: please resolve broken links.")
             return 1
@@ -381,6 +457,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {dw}")
         for ftw in fast_track_warnings:
             print(f"⚠️  WARN: {ftw}")
+        for pw in phase_warnings:
+            print(f"⚠️  WARN: {pw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0

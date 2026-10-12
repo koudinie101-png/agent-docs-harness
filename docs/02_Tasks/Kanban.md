@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] #plan #phase15 #latency #dispatch #channel-transparency #kb-lint
-  - [ ] [[Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]]: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py #task #phase15 #triage #lint #semantics
   - [ ] [[Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]]: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec #task #phase15 #installer #e2e #spec
 
 
@@ -20,6 +19,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]]: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py (2026-10-12) #task #phase15 #triage #lint #semantics
 - [x] [[Specs/15_LatencyAndChannels/TASK-058-channel-transparency-git-remote-and-status-dashboard|TASK-058]]: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py (2026-10-12) #task #phase15 #ingestion #git-remote #transparency
 - [x] [[Specs/15_LatencyAndChannels/TASK-057-zero-roundtrip-dispatch-and-hot-invariants|TASK-057]]: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов (2026-10-12) #task #phase15 #latency #dispatch #rules
 - [x] [[Plans/PLAN-014-agile-docs-as-code-and-chat-first-dx|План: Фаза 14 — Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров]] (2026-10-12) #plan #phase14 #dx #fast-track #vibe-coding

@@ -378,6 +378,96 @@ No tests.
         warnings = kb_lint.check_fast_track_specs(self.docs_dir)
         self.assertTrue(any("TASK-092.md' is missing a Verification Plan" in w for w in warnings))
 
+    def test_phase_consistency_matching(self):
+        """Matching phase folder, frontmatter phase, and phase tag should produce 0 warnings."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "15_Latency"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        valid_spec = specs_dir / "TASK-058.md"
+        valid_spec.write_text("""---
+id: TASK-058
+title: "Test Task"
+phase: 15
+tags:
+  - task/spec
+  - phase15
+---
+# TASK-058
+[[../../../00_Index]]
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_phase_consistency(self.docs_dir)
+        self.assertEqual(warnings, [])
+
+    def test_phase_consistency_mismatched_folder(self):
+        """Mismatched folder number and frontmatter phase should produce a warning."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "15_Latency"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        bad_folder_spec = specs_dir / "TASK-059.md"
+        bad_folder_spec.write_text("""---
+id: TASK-059
+title: "Mismatched folder"
+phase: 14
+tags:
+  - phase14
+---
+# TASK-059
+[[../../../00_Index]]
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_phase_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("declares phase 14, but is located in folder '15_Latency' (expected phase 15)", warnings[0])
+
+    def test_phase_consistency_mismatched_tag(self):
+        """Mismatched phase tag should produce a warning."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "15_Latency"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        bad_tag_spec = specs_dir / "TASK-060.md"
+        bad_tag_spec.write_text("""---
+id: TASK-060
+title: "Mismatched tag"
+phase: 15
+tags:
+  - phase13
+---
+# TASK-060
+[[../../../00_Index]]
+""", encoding="utf-8")
+
+        warnings = kb_lint.check_phase_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("declares phase 15, but contains mismatched tag 'phase13'", warnings[0])
+
+    def test_phase_consistency_non_blocking_in_linter(self):
+        """Phase consistency warnings must be non-blocking (exit code 0) in both silent and verbose modes."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "15_Latency"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        bad_spec = specs_dir / "TASK-061.md"
+        bad_spec.write_text("""---
+id: TASK-061
+title: "Mismatched"
+phase: 12
+tags:
+  - phase12
+---
+# TASK-061
+[[../../../00_Index]]
+""", encoding="utf-8")
+
+        # Silent mode
+        captured_silent = io.StringIO()
+        with patch("sys.stdout", captured_silent):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("⚠️  WARN: Spec 'TASK-061.md' declares phase 12", captured_silent.getvalue())
+
+        # Verbose mode
+        captured_verbose = io.StringIO()
+        with patch("sys.stdout", captured_verbose):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("⚠️ Phase Consistency Warnings (1):", captured_verbose.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
