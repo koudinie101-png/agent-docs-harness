@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-065: Выравнивание CLI-флагов (-i, -r) и синхронизация README.md (Fast-Track)
+- **Что сделано:**
+  - В `install.py` объявлены короткие флаги `-i` (для `--idea`) и `-r` (для `--report`) в `parser.add_argument` для полного соответствия документации.
+  - В `scripts/build_installer.py` выполнен пересбор монолитного инсталлятора `install.py` и зеркала `dist/install.py` с обновленными флагами и 16 шаблонами.
+  - В `README.md` устранены выявленные расхождения: обновлен пример вызова `kb_ingest.py` на `--paste --text "..."`, заменена абсолютная ссылка `file:///` на относительную `[RESEARCH-001](docs/04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix.md)`, обновлена структура каталогов (16 шаблонов, `docs/06_Memory/`), актуализирован роутер `kb-onboard` и осуществлен переход от термина «3-mode» к 4-этапному циклу разработки с новыми дисциплинами (Quality Gates Tier 1–3, процедурная память, Zero Round-Trip).
+  - Спецификация `TASK-065` переведена в статус `done`, карточка перемещена в `Done` на `Kanban.md`, отмечена веха в `Roadmap.md`.
+- **Результаты верификации:**
+  - `python install.py -r` -> Диагностический отчет сгенерирован без ошибок (Exit code 0).
+  - `python install.py -i "TestIdea" -y -n FastApp -d temp_fast` -> Успешная установка с пресетом `undecided` (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 30/30 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 171 files scanned, 1558 wikilinks verified (0 broken), Exit code 0.
+  - Поиск `file:///` в `README.md` -> 0 совпадений.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовка и выпуск официального релиза Фазы 16: `/kb-release v0.16.0` ("Self-Improving Harness & Defect Memory").
+
+---
+
 ### [2026-10-12] — Реализация TASK-064: Контроль лимита памяти в scripts/kb_lint.py, бандлинг install.py, E2E тесты и Living Spec sync
 - **Что сделано:**
   - В `scripts/kb_lint.py` внедрена механическая проверка Tier 1 `check_memory_limits`: парсинг активных записей в `docs/06_Memory/patterns.md` с блокировкой (Exit code 1) при превышении жесткого лимита в 15 паттернов, а также валидация frontmatter архива инцидентов `docs/06_Memory/Incidents/`.

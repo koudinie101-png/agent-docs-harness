@@ -1334,7 +1334,7 @@ def main():
 
     parser.add_argument("--name", "-n", type=str, help="Project name (default: current directory name)")
     parser.add_argument(
-        "--idea",
+        "--idea", "-i",
         type=str,
         default=None,
         help="Краткое описание продуктовой идеи для Greenfield-инициализации (автоматически активирует пресет undecided, если --stack не указан)",
@@ -1391,7 +1391,7 @@ def main():
         help="Update harness infrastructure (templates, linter, skills, graph) safely in existing project",
     )
     parser.add_argument(
-        "--report",
+        "--report", "-r",
         action="store_true",
         help="Generate an anonymized diagnostic report of project environment and knowledge base health",
     )

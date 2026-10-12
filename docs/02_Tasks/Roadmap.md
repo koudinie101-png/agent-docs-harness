@@ -211,6 +211,7 @@ tags:
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-062-lifecycle-memory-checkpoints-and-promotion|TASK-062]]: Точки чтения памяти в жизненном цикле (`kb-implement`, `kb-complete`) и протокол двухосевого промоушена.
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-063-quality-gates-tier-matrix-and-agent-rules|TASK-063]]: Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md`.
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-064-kb-lint-memory-audit-bundler-and-e2e|TASK-064]]: Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync.
+- [x] [[Specs/16_MemoryAndQualityGates/TASK-065-align-cli-flags-and-sync-readme|TASK-065]]: Выравнивание CLI-флагов (`-i`, `-r`) и синхронизация `README.md`.
 
 ---
 

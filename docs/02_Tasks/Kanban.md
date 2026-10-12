@@ -13,6 +13,7 @@ kanban-plugin: basic
  
 ## ✅ Готово (Done)
 
+- [x] [[Specs/16_MemoryAndQualityGates/TASK-065-align-cli-flags-and-sync-readme|TASK-065]]: Выравнивание CLI-флагов (`-i`, `-r`) и синхронизация `README.md` (2026-10-12) #task #fast-track #phase16 #installer #docs
 - [x] [[Plans/PLAN-016-self-improving-harness-and-defect-memory|План: Фаза 16 — Самообучающийся харнесс и память дефектов]] (2026-10-12) #plan #phase16 #memory #defect-loop #quality-gates
   - [x] [[Specs/16_MemoryAndQualityGates/TASK-064-kb-lint-memory-audit-bundler-and-e2e|TASK-064]]: Контроль лимита памяти в `scripts/kb_lint.py`, бандлинг `install.py`, E2E тесты и Living Spec sync (2026-10-12) #task #phase16 #lint #installer #e2e
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-063-quality-gates-tier-matrix-and-agent-rules|TASK-063]]: Слои надежности Quality Gates (Tier 1–3) в `AGENTS.md` и руководстве `Onboarding.md` (2026-10-12) #task #phase16 #quality-gates #agents #rules

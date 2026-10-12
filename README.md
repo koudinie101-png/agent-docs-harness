@@ -1,6 +1,6 @@
 # 🚀 Agent Docs-as-Code Harness
 
-> **Autonomous, zero-dependency toolkit for bringing engineering discipline, Docs-as-Code knowledge vaults, and strict 3-mode AI agent guardrails to any software project.**
+> **Autonomous, zero-dependency toolkit for bringing engineering discipline, Docs-as-Code knowledge vaults, and strict 4-stage AI agent guardrails to any software project.**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,11 +11,12 @@
 
 ## 🎯 The Problem: Why AI Agents Fail in Real Projects
 
-When developing with modern AI coding agents (**VS Code Cline, Roo Code, Claude Code, Cursor, GitHub Copilot**), developers consistently hit three roadblocks:
+When developing with modern AI coding agents (**Google Antigravity, VS Code Cline, Roo Code, Claude Code, Cursor, GitHub Copilot, Windsurf**), developers consistently hit four roadblocks:
 
 1. 🧠 **"Context Amnesia":** After 15–20 chat turns, the model forgets constraints, platform quirks, and previous architectural decisions.
 2. 🔨 **"Wild Code Breaking":** Without strict guardrails, agents immediately rush to edit existing files, inventing suboptimal patterns, breaking public interfaces, and introducing subtle regressions.
 3. 🕸️ **"Architecture Drift & Link Rot":** Project notes, plans, and task lists get scattered, outdated, and broken, leading to lost time and confusion.
+4. 💸 **"Token Bloat & Echo Chatter":** Agents wastefully dump full code dumps and verbatim file copies into the prompt, exhausting context windows and driving up costs.
 
 ---
 
@@ -90,7 +91,7 @@ docs/
 │   └── graph.json            # 7-color category palette for Obsidian Graph
 ├── 00_Index.md               # Map of Content (MOC) entry point
 ├── Zero_To_Hero_Guide.md     # Interactive visual guide for developers and vibe coders
-├── 00_Templates/             # 15 canonical templates with YAML frontmatter
+├── 00_Templates/             # 16 canonical templates with YAML frontmatter
 │   ├── TEMPLATE_TASK.md      # Engineering task spec with file contracts
 │   ├── TEMPLATE_TASK_MICRO.md# Fast-Track micro-task spec (≤ 30 LOC, ≤ 2 files)
 │   ├── TEMPLATE_PLAN.md      # RFC & conceptual feature plan (Mode 1)
@@ -159,7 +160,7 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 
   # Ingest issues with auto-detected remote or custom filters
   python3 scripts/kb_ingest.py --github --label needs-triage
-  python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
+  python3 scripts/kb_ingest.py --paste --text "App crashes when clicking save"
   ```
 
 ### 4. Agent Configuration & Rule Files (Thin Forwarders Pattern)
@@ -187,8 +188,8 @@ The harness supports bilingual development environments out of the box:
 
 ## 🧠 Open Models & Enterprise Privacy (Qwen 2.5 Coder & DeepSeek)
 
-Through platform research ([`RESEARCH-001`](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/docs/04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix.md)), this harness is proven to be exceptionally effective with open-weights models:
-* **Qwen 2.5 Coder (32B / 14B / 7B):** Run completely offline via Ollama, LM Studio, or vLLM. The strict 3-mode boundaries and structured templates eliminate context hallucinations and keep open models focused on clean, modular code.
+Through platform research ([RESEARCH-001](docs/04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix.md)), this harness is proven to be exceptionally effective with open-weights models:
+* **Qwen 2.5 Coder (32B / 14B / 7B):** Run completely offline via Ollama, LM Studio, or vLLM. The strict 4-stage boundaries and structured templates eliminate context hallucinations and keep open models focused on clean, modular code.
 * **DeepSeek R1 / V3:** Ideal for Mode 1 conceptual planning, mathematical verification, and architectural trade-off analysis.
 
 ---
@@ -281,8 +282,8 @@ The harness provides a built-in release automation lifecycle:
 ### ⚡ High-SNR Token Architecture & Context Compression (55–65% Savings)
 To prevent LLM context exhaustion across long pair-programming sessions, the harness implements the **High-SNR Token Architecture** ([ADR-0009](docs/03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency.md), [RESEARCH-004](docs/04_Research/RESEARCH-004-token-efficiency-and-context-compression.md)):
 * **Micro-Descriptions (-53% System Overhead):** All 12 AI skills use compact 10–13 word YAML descriptions, dramatically shrinking the always-on system prompt penalty.
-* **Progressive Disclosure Router:** `docs-as-code` acts as an ultra-lightweight index (~2.2 KB), loading deep instructions on demand.
-* **Skeleton Templates (-49% Template Overhead):** 13 canonical templates refactored into compact skeletal scaffolds with single-line `<!-- prompt -->` directives.
+* **Progressive Disclosure Router:** `kb-onboard` acts as a consolidated onboarding hub and lightweight router (~2.2 KB), loading deep instructions on demand.
+* **Skeleton Templates (-49% Template Overhead):** 16 canonical templates refactored into compact skeletal scaffolds with single-line `<!-- prompt -->` directives.
 * **Anti-Echo Protocol:** Prohibits dumping modified file contents into chat; mandates concise 3–5 bullet summaries with direct file permalinks.
 * **Silent-on-Success CLI:** `scripts/kb_lint.py` and `scripts/kb_release.py` output a single status line on success (`OK: ...`), saving up to 80% tokens in terminal output history.
 
@@ -323,12 +324,18 @@ Once installed, your workflow is seamless:
    * В режимах только для чтения (Modes 0, 1, 2, 2B, 2C) агенты не выдают сухих роботизированных ошибок (`🚨 NO CODE EDITS ALLOWED`), а выступают чуткими техническими партнерами ([ADR-0022](docs/03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails.md)): кратко объясняют назначение стадии, задают 1–2 направляющих вопроса и подсказывают точную готовую команду для продолжения.
 7. **Fast-Track Protocol (Micro-Task Bypass):**
    * Для очевидных микро-изменений ($\le 30$ строк кода, $\le 2$ файлов, без изменения архитектуры и публичных API) доступен быстрый трек в обход фазы планирования: команда `/kb-task --fast <описание>` сразу генерирует компактное ТЗ `TEMPLATE_TASK_MICRO.md` ([ADR-0023](docs/03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks.md)).
+8. **Zero Round-Trip Dispatch & Hot Invariants Protocol:**
+   * В стандартных режимах (0, 1, 2, 2B, 2C, 3) агент исполняет команды напрямую из Always-On префикса (`AGENTS.md`) в первом же такте без предварительного вызова `view_file` для `SKILL.md` ([ADR-0013](docs/03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture.md)), ускоряя отклик в 2.5–3 раза.
+9. **Quality Gates & Reliability Tiers Invariant:**
+   * Трехуровневая матрица надежности ([ADR-0025](docs/03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates.md)): Tier 1 (Enforcement: тесты/линтеры блокируют билд) > Tier 2 (Always-On: `AGENTS.md`) > Tier 3 (Playbook: скиллы). Критические правила запрещено оставлять в вероятностном слое Tier 3.
+10. **Procedural Defect Memory & Patterns Loop:**
+    * Двухуровневый контур процедурной памяти (`docs/06_Memory/`): жестко лимитированный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей) и архив инцидентов `Incidents/` с обязательной проверкой `Memory-First` перед реализацией.
 
 ---
 
 ## 🤝 Dogfooding
 
-This repository (`agent-docs-harness`) is built and maintained strictly using the exact same Docs-as-Code harness and 3-mode workflow. Inspect the `docs/` folder to see an active, healthy knowledge base in practice!
+This repository (`agent-docs-harness`) is built and maintained strictly using the exact same Docs-as-Code harness and 4-stage lifecycle. Inspect the `docs/` folder to see an active, healthy knowledge base in practice!
 
 ---
 
