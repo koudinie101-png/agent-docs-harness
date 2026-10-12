@@ -10,6 +10,10 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Bugs/BUG-002-release-notes-hardcoded-install-script|BUG-002]]: Хардкод установки harness-а (install.py) в публичных релизных записках scripts/kb_release.py #bug #release
+- [ ] [[Bugs/BUG-003-release-silent-local-fallback-missing-gh|BUG-003]]: Бесшумный откат в локальный режим при отсутствии GitHub CLI (gh) в kb-release #bug #release #cli
+- [ ] [[Bugs/BUG-004-release-notes-changelog-self-link|BUG-004]]: Циклическая ссылка на саму себя в блоке Full Changelog релизных записок #bug #release
+
 
 ## ⏳ В работе (In Progress)
 

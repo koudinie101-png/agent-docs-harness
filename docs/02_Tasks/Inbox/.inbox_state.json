@@ -1,8 +1,13 @@
 {
   "version": 1,
   "github": {
-    "last_issue_number": 0,
-    "processed_ids": []
+    "last_issue_number": 4,
+    "processed_ids": [
+      4,
+      3,
+      2,
+      1
+    ]
   },
   "email": {
     "last_uid": 0,
