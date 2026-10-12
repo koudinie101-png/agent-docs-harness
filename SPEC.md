@@ -78,8 +78,11 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Релизный таргетинг дефектов (`collect_fixed_bugs`): включение в чейнджлог только устраненных багов целевой версии (`fixed_in` или `target_release`).
   * Префлайт-контроль релиз-блокеров (`check_release_blockers`): аварийная остановка сборки релиза (Exit code 1) при наличии открытых багов с флагом `release_blocker: true`.
 * **`scripts/kb_ingest.py`:**
-  * Zero dependencies (только стандартные модули `urllib`, `email`, `hashlib`, `pathlib`, `argparse`).
+  * Zero dependencies (только стандартные модули `urllib`, `email`, `hashlib`, `pathlib`, `argparse`, `subprocess`).
   * Инжест внешних сигналов обратной связи из трех каналов: GitHub Issues API, Email/EML/Mbox и ручного буфера вставки (Raw Clipboard Paste).
+  * Zero-deps автоопределение GitHub репозитория (`detect_github_repo`) из `git config --get remote.origin.url` (HTTPS, SSH, token auth) с приоритетом переменной `GITHUB_REPOSITORY`.
+  * Инвариант прозрачности каналов (Channel Transparency Invariant): запрет немых пропусков (предупреждения о пропущенных источниках, подсказка по лимитам API 60 req/h -> 5000 req/h).
+  * Гибкие фильтры инжеста (`--label <NAME>`, `--all-open`) и диагностический дашборд статуса источников (`--status`).
   * Автоматическая дедупликация сигналов на основе персистентного состояния `docs/02_Tasks/Inbox/.inbox_state.json`.
   * Нормализация сигналов в компактные атомарные артефакты `FB-XXX-<slug>.md` по каноническому шаблону `TEMPLATE_FEEDBACK.md`.
 

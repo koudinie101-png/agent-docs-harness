@@ -16,6 +16,28 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-058: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py
+- **Что сделано:**
+  - Реализована функция `detect_github_repo` (Zero-Dependencies): автоопределение `owner/repo` из `git config --get remote.origin.url` (HTTPS, SSH, token auth) с приоритетом переменной среды `GITHUB_REPOSITORY`.
+  - Внедрен инвариант прозрачности каналов (Channel Transparency Invariant): явные предупреждения при отсутствии конфигурации источников (`⚠️ Warning: Канал GitHub/Email пропущен...`) и информационная плашка о лимитах анонимных обращений к GitHub API (60 req/h vs 5000 req/h).
+  - Реализованы гибкие фильтры инжеста: CLI-флаги `--label <NAME>` (по умолчанию `needs-triage`) и `--all-open` (сбор всех открытых issues за исключением Pull Requests).
+  - Реализован диагностический дашборд статуса источников (`scripts/kb_ingest.py --status`): мгновенное отображение состояния каналов GitHub и Email, проверка остатка квоты GitHub API и статистика буфера `docs/02_Tasks/Inbox/` по статусам (`new`, `processed`, `rejected`).
+  - Добавлена детальная обработка HTTP-ошибок GitHub API (коды 401, 403, 404, 500) с понятными рекомендациями.
+  - Написаны 10 модульных тестов в `tests/test_kb_ingest.py` (100% Pass).
+  - Актуализированы Мастер-Спецификация `SPEC.md` и витрина проекта `README.md` в соответствии с Living Spec Invariant.
+  - Обновлены статусы задачи в ТЗ [[02_Tasks/Specs/15_LatencyAndChannels/TASK-058-channel-transparency-git-remote-and-status-dashboard|TASK-058]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]] и Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m py_compile scripts/kb_ingest.py tests/test_kb_ingest.py` -> синтаксис корректен (Exit code 0).
+  - `python -m unittest tests/test_kb_ingest.py` -> 10/10 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_ingest.py --status` -> дашборд отображен корректно (Exit code 0).
+  - `python scripts/kb_ingest.py --github --dry-run` -> dry-run успешно выполнен (Exit code 0).
+  - `python -m unittest discover -s tests` -> 74/74 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 150 файлов проверено, 1389 связей валидны (0 broken links, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализовать следующую задачу Фазы 15: `/kb-implement TASK-059` («Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py»).
+
+---
+
 ### [2026-10-12] — Реализация TASK-057: Архитектура Zero Round-Trip Dispatch и горячие инварианты в правилах агентов
 - **Что сделано:**
   - Внедрено Правило 10 (Zero Round-Trip Dispatch & Hot Invariants Protocol) в мастер-свод `AGENTS.md`: прямая авторизация агентов на исполнение стандартных жизненных циклов (Режимы 0, 1, 2, 2B, 2C, 3) в первом раунде без предварительного чтения `SKILL.md`.

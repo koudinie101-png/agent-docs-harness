@@ -12,12 +12,14 @@ import json
 import hashlib
 import datetime
 import argparse
+import subprocess
 import urllib.request
 import urllib.error
 import imaplib
 import email
 from email.header import decode_header
 from pathlib import Path
+from typing import Optional
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -25,6 +27,41 @@ if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
+
+def detect_github_repo(repo_root: Optional[Path] = None) -> Optional[str]:
+    """
+    Zero-dependencies detection of GitHub owner/repo from git config remote.origin.url.
+    Supports HTTPS, SSH, and personal access token URL schemes:
+      - https://github.com/owner/repo.git
+      - https://github.com/owner/repo
+      - git@github.com:owner/repo.git
+      - https://x-access-token:...@github.com/owner/repo.git
+    Returns 'owner/repo' or None.
+    """
+    env_repo = os.environ.get("GITHUB_REPOSITORY")
+    if env_repo:
+        return env_repo.strip()
+
+    try:
+        cmd = ["git", "config", "--get", "remote.origin.url"]
+        res = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            check=False,
+            cwd=str(repo_root) if repo_root else None
+        )
+        if res.returncode != 0 or not res.stdout:
+            return None
+        url = res.stdout.strip()
+        pattern = r'(?:git@github\.com:|https://(?:[^@]+@)?github\.com/)([\w.-]+)/([\w.-]+?)(?:\.git)?$'
+        m = re.search(pattern, url)
+        if m:
+            return f"{m.group(1)}/{m.group(2)}"
+        return None
+    except Exception:
+        return None
 
 
 def find_inbox_dir(start_dir: Path) -> Path:
@@ -189,14 +226,17 @@ tags:
 class GitHubIngestDriver:
     """Fetches GitHub Issues via REST API v3 using urllib.request."""
 
-    def __init__(self, repo: str = None, token: str = None):
-        self.repo = repo or os.environ.get("GITHUB_REPOSITORY", "")
+    def __init__(self, repo: str = None, token: str = None, repo_root: Path = None):
+        self.repo = repo or os.environ.get("GITHUB_REPOSITORY", "") or (detect_github_repo(repo_root) or "")
         self.token = token or os.environ.get("GITHUB_TOKEN", "")
 
-    def fetch_issues(self, label: str = "needs-triage") -> list:
+    def fetch_issues(self, label: str = "needs-triage", all_open: bool = False) -> list:
         if not self.repo:
             return []
-        url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={label}"
+        if all_open:
+            url = f"https://api.github.com/repos/{self.repo}/issues?state=open&per_page=100"
+        else:
+            url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={label}&per_page=100"
         req = urllib.request.Request(url)
         req.add_header("User-Agent", "agent-docs-harness/kb_ingest")
         req.add_header("Accept", "application/vnd.github.v3+json")
@@ -208,9 +248,128 @@ class GitHubIngestDriver:
                 data = json.loads(resp.read().decode("utf-8"))
                 # Filter out PRs if returned by issues API
                 return [i for i in data if "pull_request" not in i]
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                print("❌ Ошибка GitHub API: Неверный или просроченный GITHUB_TOKEN (HTTP 401 Unauthorized).", file=sys.stderr)
+            elif e.code == 403:
+                print("❌ Ошибка GitHub API: Превышен лимит запросов API (HTTP 403 Forbidden). Используйте GITHUB_TOKEN или дождитесь сброса лимита.", file=sys.stderr)
+            elif e.code == 404:
+                print(f"❌ Ошибка GitHub API: Репозиторий '{self.repo}' не найден или является приватным (HTTP 404 Not Found).", file=sys.stderr)
+            else:
+                print(f"❌ Ошибка GitHub API: HTTP {e.code} ({e.reason}).", file=sys.stderr)
+            return []
         except Exception as e:
             print(f"⚠️ GitHub Ingest Error ({self.repo}): {e}", file=sys.stderr)
             return []
+
+
+def render_status_dashboard(inbox_dir: Path, repo_root: Path) -> int:
+    """Renders the diagnostic status dashboard for feedback ingestion channels."""
+    state_file = inbox_dir / ".inbox_state.json"
+    state = InboxStateManager(state_file)
+
+    # 1. GitHub
+    env_repo = os.environ.get("GITHUB_REPOSITORY")
+    if env_repo:
+        repo_val = env_repo.strip()
+        source_val = "env"
+    else:
+        detected = detect_github_repo(repo_root)
+        if detected:
+            repo_val = detected
+            source_val = "auto-detect"
+        else:
+            repo_val = "None"
+            source_val = "not-found"
+
+    token = os.environ.get("GITHUB_TOKEN", "")
+    auth_val = "Token configured" if token else "Anonymous (rate-limited)"
+
+    # Rate limit check
+    quota_str = "unknown/unknown req/h (Сброс: N/A)"
+    try:
+        req = urllib.request.Request("https://api.github.com/rate_limit")
+        req.add_header("User-Agent", "agent-docs-harness/kb_ingest")
+        req.add_header("Accept", "application/vnd.github.v3+json")
+        if token:
+            req.add_header("Authorization", f"Bearer {token}")
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            rl_data = json.loads(resp.read().decode("utf-8"))
+            rate = rl_data.get("rate") or rl_data.get("resources", {}).get("core", {})
+            rem = rate.get("remaining", "unknown")
+            lim = rate.get("limit", "unknown")
+            reset_ts = rate.get("reset")
+            if reset_ts:
+                reset_time = datetime.datetime.fromtimestamp(reset_ts).strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                reset_time = "N/A"
+            quota_str = f"{rem}/{lim} req/h (Сброс: {reset_time})"
+    except Exception:
+        pass
+
+    default_label = "needs-triage"
+    gh_state = state.data.get("github", {})
+    last_issue = gh_state.get("last_issue_number", 0)
+    gh_count = len(gh_state.get("processed_ids", []))
+
+    # 2. Email
+    imap_host = os.environ.get("FEEDBACK_IMAP_HOST", "")
+    imap_user = os.environ.get("FEEDBACK_IMAP_USER", "")
+    if imap_host and imap_user:
+        email_cfg = "configured"
+        host_val = imap_host
+        user_val = imap_user
+    else:
+        email_cfg = "not-configured"
+        host_val = imap_host or "None"
+        user_val = imap_user or "None"
+
+    email_state = state.data.get("email", {})
+    last_uid = email_state.get("last_uid", 0)
+    email_count = len(email_state.get("processed_message_ids", []))
+
+    # 3. Inbox
+    total_tickets = 0
+    new_count = 0
+    proc_count = 0
+    rej_count = 0
+
+    if inbox_dir.is_dir():
+        for f in inbox_dir.glob("FB-*.md"):
+            total_tickets += 1
+            try:
+                text = f.read_text(encoding="utf-8")
+                m = re.search(r"^status:\s*([a-zA-Z_-]+)", text, re.MULTILINE)
+                if m:
+                    st = m.group(1).lower()
+                    if st == "new":
+                        new_count += 1
+                    elif st == "processed":
+                        proc_count += 1
+                    elif st == "rejected":
+                        rej_count += 1
+            except Exception:
+                pass
+
+    print("======================================================================")
+    print("📊 Docs-as-Code Feedback Ingestion Status Dashboard")
+    print("======================================================================")
+    print("[Канал: GitHub Issues]")
+    print(f"  • Репозиторий:        {repo_val} ({source_val})")
+    print(f"  • Авторизация:        {auth_val}")
+    print(f"  • Квота API:          {quota_str}")
+    print(f"  • Фильтр по умолчанию: --label {default_label}")
+    print(f"  • Курсор смещения:    last_issue_number={last_issue}, processed={gh_count}")
+    print()
+    print("[Канал: Email (IMAP)]")
+    print(f"  • Хост / Пользователь: {host_val} / {user_val} ({email_cfg})")
+    print(f"  • Курсор смещения:    last_uid={last_uid}, processed={email_count}")
+    print()
+    print("[Буфер обращений: docs/02_Tasks/Inbox/]")
+    print(f"  • Всего тикетов:      {total_tickets}")
+    print(f"  • Статусы:            new: {new_count} | processed: {proc_count} | rejected: {rej_count}")
+    print("======================================================================")
+    return 0
 
 
 class EmailIngestDriver:
@@ -355,7 +514,10 @@ def run_ingest(
     dry_run: bool = False,
     verbose: bool = False,
     github_repo: str = None,
-    github_token: str = None
+    github_token: str = None,
+    label: str = "needs-triage",
+    all_open: bool = False,
+    repo_root: Path = None
 ) -> int:
     """Main orchestration entry point."""
     inbox_dir.mkdir(parents=True, exist_ok=True)
@@ -386,51 +548,62 @@ def run_ingest(
 
     # 2. GitHub Issues
     if github:
-        driver = GitHubIngestDriver(repo=github_repo, token=github_token)
-        issues = driver.fetch_issues()
-        for issue in issues:
-            num = issue.get("number")
-            if not num:
-                continue
-            if state.is_github_processed(num):
-                skipped_count += 1
-                continue
+        repo = github_repo or os.environ.get("GITHUB_REPOSITORY") or detect_github_repo(repo_root)
+        if not repo:
+            print("⚠️ Warning: Канал GitHub пропущен: репозиторий не найден. Убедитесь, что настроен git remote origin или задана переменная GITHUB_REPOSITORY.")
+        else:
+            token = github_token or os.environ.get("GITHUB_TOKEN", "")
+            if not token:
+                print("ℹ️ Info: GitHub опрашивается анонимно (лимит 60 req/h). Для лимита 5000 req/h настройте GITHUB_TOKEN в .env.local или переменных среды.")
+            driver = GitHubIngestDriver(repo=repo, token=token)
+            issues = driver.fetch_issues(label=label, all_open=all_open)
+            for issue in issues:
+                num = issue.get("number")
+                if not num:
+                    continue
+                if state.is_github_processed(num):
+                    skipped_count += 1
+                    continue
 
-            title = issue.get("title", f"Issue #{num}")
-            body = issue.get("body", "")
-            user = issue.get("user", {}).get("login", "")
-            html_url = issue.get("html_url", "")
-            created_at = issue.get("created_at", "")[:10]
+                title = issue.get("title", f"Issue #{num}")
+                body = issue.get("body", "")
+                user = issue.get("user", {}).get("login", "")
+                html_url = issue.get("html_url", "")
+                created_at = issue.get("created_at", "")[:10]
 
-            fb_id = f"FB-GH-{num}"
-            filename = f"{fb_id}.md"
-            file_path = inbox_dir / filename
+                fb_id = f"FB-GH-{num}"
+                filename = f"{fb_id}.md"
+                file_path = inbox_dir / filename
 
-            md_content = build_feedback_markdown(
-                fb_id=fb_id,
-                title=title,
-                channel="github",
-                body=clean_markdown_text(body),
-                author=user,
-                source_ref=html_url or f"#{num}",
-                created_date=created_at
-            )
+                md_content = build_feedback_markdown(
+                    fb_id=fb_id,
+                    title=title,
+                    channel="github",
+                    body=clean_markdown_text(body),
+                    author=user,
+                    source_ref=html_url or f"#{num}",
+                    created_date=created_at
+                )
 
-            if not dry_run:
-                file_path.write_text(md_content, encoding="utf-8")
-                state.mark_github_processed(num)
-                state.save()
+                if not dry_run:
+                    file_path.write_text(md_content, encoding="utf-8")
+                    state.mark_github_processed(num)
+                    state.save()
 
-            created_count += 1
-            if verbose:
-                print(f"✅ Ingested GitHub Issue: {filename}")
+                created_count += 1
+                if verbose:
+                    print(f"✅ Ingested GitHub Issue: {filename}")
 
     # 3. Email (IMAP)
     if email_mode:
         imap_host = os.environ.get("FEEDBACK_IMAP_HOST", "")
         imap_user = os.environ.get("FEEDBACK_IMAP_USER", "")
         imap_pass = os.environ.get("FEEDBACK_IMAP_PASS", "")
-        if imap_host and imap_user and imap_pass:
+        if not imap_host or not imap_user:
+            print("⚠️ Warning: Канал Email пропущен: не настроены переменные FEEDBACK_IMAP_HOST / FEEDBACK_IMAP_USER.")
+        elif not imap_pass:
+            print("⚠️ Warning: Канал Email пропущен: не настроена переменная FEEDBACK_IMAP_PASS.")
+        else:
             driver = EmailIngestDriver(host=imap_host, user=imap_user, password=imap_pass)
             messages = driver.fetch_emails()
             for msg in messages:
@@ -486,6 +659,9 @@ def main():
     parser.add_argument("--inbox-dir", type=str, default="", help="Explicit path to Inbox directory")
     parser.add_argument("--dry-run", action="store_true", help="Simulate ingestion without writing files")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose logging output")
+    parser.add_argument("--status", action="store_true", help="Display feedback ingestion status dashboard")
+    parser.add_argument("--label", type=str, default="needs-triage", help="GitHub label filter (default: needs-triage)")
+    parser.add_argument("--all-open", action="store_true", help="Fetch all open GitHub issues (ignoring labels)")
 
     args = parser.parse_args()
 
@@ -494,6 +670,9 @@ def main():
     load_env_local(repo_root)
 
     inbox_dir = Path(args.inbox_dir) if args.inbox_dir else find_inbox_dir(repo_root)
+
+    if args.status:
+        sys.exit(render_status_dashboard(inbox_dir=inbox_dir, repo_root=repo_root))
 
     paste_data = None
     if args.paste or args.text:
@@ -514,7 +693,7 @@ def main():
 
     if not do_github and not do_email and not paste_data:
         # Default behavior: run quick check or report status
-        do_github = bool(os.environ.get("GITHUB_REPOSITORY"))
+        do_github = bool(os.environ.get("GITHUB_REPOSITORY") or detect_github_repo(repo_root))
         do_email = bool(os.environ.get("FEEDBACK_IMAP_HOST"))
 
     sys.exit(run_ingest(
@@ -523,7 +702,10 @@ def main():
         email_mode=do_email,
         paste_data=paste_data,
         dry_run=args.dry_run,
-        verbose=args.verbose
+        verbose=args.verbose,
+        label=args.label,
+        all_open=args.all_open,
+        repo_root=repo_root
     ))
 
 

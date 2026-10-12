@@ -178,6 +178,144 @@ class TestKbIngest(unittest.TestCase):
         self.assertEqual(emails[0]["subject"], "Feedback on CLI")
         self.assertIn("dark mode support", emails[0]["body"])
 
+    def test_detect_github_repo(self):
+        """Test zero-deps git remote URL parsing and env override."""
+        # 1. Environment variable override
+        with patch.dict("os.environ", {"GITHUB_REPOSITORY": "override-org/override-repo"}):
+            self.assertEqual(kb_ingest.detect_github_repo(), "override-org/override-repo")
+
+        # 2. Subprocess git URL schemes
+        cases = [
+            ("https://github.com/alice/cool-app.git", "alice/cool-app"),
+            ("https://github.com/bob/other-tool", "bob/other-tool"),
+            ("git@github.com:team/project.git", "team/project"),
+            ("git@github.com:team/project", "team/project"),
+            ("https://x-access-token:ghp_secret@github.com/org/secured.git", "org/secured"),
+            ("https://gitlab.com/external/repo.git", None),
+            ("invalid-url", None),
+        ]
+
+        with patch.dict("os.environ", {}, clear=True):
+            for remote_url, expected in cases:
+                mock_proc = MagicMock()
+                mock_proc.returncode = 0
+                mock_proc.stdout = f"{remote_url}\n"
+                with patch("subprocess.run", return_value=mock_proc):
+                    res = kb_ingest.detect_github_repo()
+                    self.assertEqual(res, expected, f"Failed for {remote_url}")
+
+            # Git command failure
+            mock_proc_fail = MagicMock()
+            mock_proc_fail.returncode = 1
+            mock_proc_fail.stdout = ""
+            with patch("subprocess.run", return_value=mock_proc_fail):
+                self.assertIsNone(kb_ingest.detect_github_repo())
+
+            # Git not installed (FileNotFoundError)
+            with patch("subprocess.run", side_effect=FileNotFoundError):
+                self.assertIsNone(kb_ingest.detect_github_repo())
+
+    @patch("urllib.request.urlopen")
+    def test_github_driver_filters(self, mock_urlopen):
+        """Test GitHub issues filtering with custom label and --all-open."""
+        mock_cm = MagicMock()
+        mock_cm.read.return_value = json.dumps([
+            {"number": 1, "title": "Regular Issue"},
+            {"number": 2, "title": "PR", "pull_request": {}}
+        ]).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_cm
+
+        driver = kb_ingest.GitHubIngestDriver(repo="test/repo", token="dummy")
+
+        # 1. Default label
+        issues = driver.fetch_issues(label="needs-triage", all_open=False)
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0]["number"], 1)
+        req1 = mock_urlopen.call_args[0][0]
+        self.assertIn("labels=needs-triage", req1.full_url)
+        self.assertIn("per_page=100", req1.full_url)
+
+        # 2. Custom label
+        driver.fetch_issues(label="user-feedback", all_open=False)
+        req2 = mock_urlopen.call_args[0][0]
+        self.assertIn("labels=user-feedback", req2.full_url)
+
+        # 3. All open
+        driver.fetch_issues(all_open=True)
+        req3 = mock_urlopen.call_args[0][0]
+        self.assertNotIn("labels=", req3.full_url)
+        self.assertIn("state=open&per_page=100", req3.full_url)
+
+    @patch("urllib.request.urlopen")
+    def test_github_driver_http_errors(self, mock_urlopen):
+        """Test HTTP error handling (401, 403, 404, 500)."""
+        import urllib.error
+
+        driver = kb_ingest.GitHubIngestDriver(repo="test/repo", token="dummy")
+
+        error_cases = [
+            (401, "Неверный или просроченный GITHUB_TOKEN"),
+            (403, "Превышен лимит запросов API"),
+            (404, "Репозиторий 'test/repo' не найден или является приватным"),
+            (500, "HTTP 500"),
+        ]
+
+        for code, expected_text in error_cases:
+            err = urllib.error.HTTPError(
+                url="https://api.github.com",
+                code=code,
+                msg="Error",
+                hdrs={},
+                fp=io.BytesIO(b"")
+            )
+            mock_urlopen.side_effect = err
+            stderr_cap = io.StringIO()
+            with patch("sys.stderr", stderr_cap):
+                res = driver.fetch_issues()
+                self.assertEqual(res, [])
+                self.assertIn(expected_text, stderr_cap.getvalue())
+
+    def test_channel_transparency_warnings(self):
+        """Test warning outputs when channels are unconfigured or anonymous."""
+        # 1. GitHub without repository
+        stdout_cap = io.StringIO()
+        with patch.dict("os.environ", {}, clear=True), patch("sys.stdout", stdout_cap), patch("kb_ingest.detect_github_repo", return_value=None):
+            kb_ingest.run_ingest(inbox_dir=self.inbox_dir, github=True)
+            self.assertIn("⚠️ Warning: Канал GitHub пропущен: репозиторий не найден", stdout_cap.getvalue())
+
+        # 2. GitHub anonymous warning
+        stdout_cap2 = io.StringIO()
+        with patch.dict("os.environ", {}, clear=True), patch("sys.stdout", stdout_cap2), patch("kb_ingest.detect_github_repo", return_value="org/repo"), patch.object(kb_ingest.GitHubIngestDriver, "fetch_issues", return_value=[]):
+            kb_ingest.run_ingest(inbox_dir=self.inbox_dir, github=True)
+            self.assertIn("ℹ️ Info: GitHub опрашивается анонимно", stdout_cap2.getvalue())
+
+        # 3. Email without configuration
+        stdout_cap3 = io.StringIO()
+        with patch.dict("os.environ", {}, clear=True), patch("sys.stdout", stdout_cap3):
+            kb_ingest.run_ingest(inbox_dir=self.inbox_dir, email_mode=True)
+            self.assertIn("⚠️ Warning: Канал Email пропущен: не настроены переменные FEEDBACK_IMAP_HOST", stdout_cap3.getvalue())
+
+    def test_render_status_dashboard(self):
+        """Test status dashboard rendering with Inbox state."""
+        # Create some sample inbox items
+        (self.inbox_dir / "FB-001.md").write_text("---\nstatus: new\n---\nBody", encoding="utf-8")
+        (self.inbox_dir / "FB-002.md").write_text("---\nstatus: processed\n---\nBody", encoding="utf-8")
+        (self.inbox_dir / "FB-003.md").write_text("---\nstatus: rejected\n---\nBody", encoding="utf-8")
+
+        stdout_cap = io.StringIO()
+        with patch("sys.stdout", stdout_cap), patch("kb_ingest.detect_github_repo", return_value="my-org/my-project"):
+            code = kb_ingest.render_status_dashboard(self.inbox_dir, self.temp_dir)
+            self.assertEqual(code, 0)
+
+        output = stdout_cap.getvalue()
+        self.assertIn("📊 Docs-as-Code Feedback Ingestion Status Dashboard", output)
+        self.assertIn("[Канал: GitHub Issues]", output)
+        self.assertIn("my-org/my-project (auto-detect)", output)
+        self.assertIn("[Канал: Email (IMAP)]", output)
+        self.assertIn("[Буфер обращений: docs/02_Tasks/Inbox/]", output)
+        self.assertIn("Всего тикетов:      3", output)
+        self.assertIn("new: 1 | processed: 1 | rejected: 1", output)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -150,8 +150,13 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1
   ```
-* **Feedback Ingest Utility (`scripts/kb_ingest.py`):** Ingests signals from GitHub Issues, Email/EML/Mbox, or raw clipboard paste into `docs/02_Tasks/Inbox/FB-*.md` with automatic state tracking and deduplication:
+* **Feedback Ingest Utility (`scripts/kb_ingest.py`):** Ingests signals from GitHub Issues, Email/IMAP, or raw clipboard paste into `docs/02_Tasks/Inbox/FB-*.md` with zero-deps Git remote auto-detection, channel status dashboard, and state deduplication:
   ```bash
+  # Diagnostic status dashboard & API quota check
+  python3 scripts/kb_ingest.py --status
+
+  # Ingest issues with auto-detected remote or custom filters
+  python3 scripts/kb_ingest.py --github --label needs-triage
   python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
   ```
 
@@ -253,7 +258,7 @@ Generates an anonymized diagnostic report covering OS/Platform, Python runtime, 
 
 ### 📥 Feedback Ingestion & Triage Buffer (`/kb-triage`, `scripts/kb_ingest.py`)
 Isolates external feedback in `docs/02_Tasks/Inbox/` before converting to tasks or code:
-* **`scripts/kb_ingest.py`**: Fetches issues via GitHub API, parses `.eml` / `.mbox` files, or ingests pasted text with state tracking in `.inbox_state.json`.
+* **`scripts/kb_ingest.py`**: Auto-detects GitHub repository remote from `git config`, fetches issues via GitHub API (with `--status` dashboard, `--label`, and `--all-open` filters), parses IMAP feedback, or ingests pasted text with state tracking in `.inbox_state.json`.
 * **`/kb-triage` (Mode 2C)**: Interactive two-stage screening (Noise vs Signal) and dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with strict Stop & Yield control.
 
 ### 🔄 Safe Lifecycle Updates (`install.py --update`)

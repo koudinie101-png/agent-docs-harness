@@ -1,7 +1,7 @@
 ---
 id: TASK-058
 title: "Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py"
-status: planned
+status: completed
 type: task
 phase: 15
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-058 — Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py
 
-> **ID:** TASK-058 | **Статус:** К реализации  
+> **ID:** TASK-058 | **Статус:** Выполнено  
 > **План:** [[../../Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]], [[../../../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]]  
 
@@ -124,22 +124,22 @@ def detect_github_repo(repo_root: Optional[Path] = None) -> Optional[str]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая корректность: `python -m py_compile scripts/kb_ingest.py tests/test_kb_ingest.py` (Exit code 0)
-- [ ] Модульные тесты инжеста: `python -m unittest tests/test_kb_ingest.py` (100% Pass, Exit code 0)
-- [ ] Тестирование CLI дашборда: `python scripts/kb_ingest.py --status` (Exit code 0)
-- [ ] Тестирование CLI с флагом `--dry-run`: `python scripts/kb_ingest.py --github --dry-run` (Exit code 0)
-- [ ] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
-- [ ] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links)
+- [x] Синтаксическая корректность: `python -m py_compile scripts/kb_ingest.py tests/test_kb_ingest.py` (Exit code 0)
+- [x] Модульные тесты инжеста: `python -m unittest tests/test_kb_ingest.py` (100% Pass, Exit code 0)
+- [x] Тестирование CLI дашборда: `python scripts/kb_ingest.py --status` (Exit code 0)
+- [x] Тестирование CLI с флагом `--dry-run`: `python scripts/kb_ingest.py --github --dry-run` (Exit code 0)
+- [x] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
+- [x] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links)
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Реализован автодетект `detect_github_repo` для HTTPS, SSH и токенизированных URL.
-- [ ] Внедрены предупреждения при пропуске каналов (Channel Transparency Invariant).
-- [ ] Добавлены флаги `--status`, `--label <NAME>` и `--all-open`.
-- [ ] Реализован текстовый дашборд статуса источников с проверкой лимитов API и состояния `Inbox/`.
-- [ ] Разработаны исчерпывающие модульные тесты в `tests/test_kb_ingest.py`.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Реализован автодетект `detect_github_repo` для HTTPS, SSH и токенизированных URL.
+- [x] Внедрены предупреждения при пропуске каналов (Channel Transparency Invariant).
+- [x] Добавлены флаги `--status`, `--label <NAME>` и `--all-open`.
+- [x] Реализован текстовый дашборд статуса источников с проверкой лимитов API и состояния `Inbox/`.
+- [x] Разработаны исчерпывающие модульные тесты в `tests/test_kb_ingest.py`.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.
