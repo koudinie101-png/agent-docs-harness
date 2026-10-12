@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-12] — Реализация TASK-060: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec
+- **Что сделано:**
+  - Пересобраны монолитные дистрибутивы `install.py` и `dist/install.py` через `scripts/build_installer.py` с упаковкой обновленных `scripts/kb_ingest.py`, `scripts/kb_lint.py`, скилла `kb-triage` и сопутствующих ресурсов.
+  - Разработан и интегрирован сквозной интеграционный E2E тест `test_29_channel_transparency_and_phase_consistency_deployment` в `tests/test_installer.py` (проверка чистой установки, работоспособности `kb_ingest.py --status`, семантического аудита фаз `kb_lint.py`, и корректности режима обновления `install.py --update`).
+  - Скорректирован эталонный бюджет размера монолитного инсталлятора в `tests/test_installer.py` (`test_16`) до 130 000 байт с сохранением строгого контроля статического оверхеда.
+  - Синхронизирована Living Spec: в `SPEC.md` зафиксированы семантический контроль фаз `check_phase_consistency`, Zero Round-Trip Dispatch и фазы 14–15; обновлены `README.md` и `docs/Onboarding.md` примерами команд прозрачности каналов.
+  - Полностью завершена Фаза 15: обновлены статусы задачи в ТЗ [[02_Tasks/Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]], Канбан-доске [[02_Tasks/Kanban|Kanban.md]] и Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> `install.py` и `dist/install.py` успешно сгенерированы (Exit code 0).
+  - `python -m unittest tests/test_installer.py` -> 29/29 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs -v` -> 0 broken links, 0 warnings (Exit code 0).
+  - `python -m unittest discover -s tests` -> все тесты успешно пройдены (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовить и выпустить официальный релиз Фазы 15: `/kb-release --version v0.15.0 --phase 15`.
+
+---
+
 ### [2026-10-12] — Реализация TASK-059: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py
 - **Что сделано:**
   - Обновлен исполняемый скилл `.agents/skills/kb-triage/SKILL.md`: при пустом инбоксе агент запрашивает диагностический статус источников (`python scripts/kb_ingest.py --status`) и формирует понятный отчет (опрошенный репозиторий, статус каналов, число обработанных тикетов) перед завершением по Stop & Yield.

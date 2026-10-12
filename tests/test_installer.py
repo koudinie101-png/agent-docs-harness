@@ -37,6 +37,7 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn(".obsidian/graph.json", assets)
         self.assertIn("scripts/kb_lint.py", assets)
         self.assertIn("scripts/kb_release.py", assets)
+        self.assertIn("scripts/kb_ingest.py", assets)
         self.assertIn(".agents/skills/kb-release/SKILL.md", assets)
         self.assertIn(".github/workflows/release.yml", assets)
 
@@ -929,9 +930,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check
+            # Installer size check (budget <= 130 KB for Phase 15 with 15 templates, 12 skills, 3 standalone scripts)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 125000, f"install.py exceeded budget: {installer_size} bytes (budget <= 125 KB)")
+            self.assertLessEqual(installer_size, 130000, f"install.py exceeded budget: {installer_size} bytes (budget <= 130 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -1882,6 +1883,83 @@ class TestAgentDocsHarness(unittest.TestCase):
             refreshed_template = micro_template.read_text(encoding="utf-8")
             self.assertIn("type: fast-track", refreshed_template)
             self.assertNotIn("# Outdated Template", refreshed_template)
+
+    def test_29_channel_transparency_and_phase_consistency_deployment(self):
+        """E2E test verifying deployment and --update for channel transparency and phase consistency."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "ChannelApp"
+            target.mkdir()
+
+            # 1. Fresh installation
+            install.install_harness(
+                target_dir=target,
+                project_name="ChannelApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                ci_choice="none",
+            )
+
+            # 2. Check deployed scripts
+            ingest_script = target / "scripts" / "kb_ingest.py"
+            self.assertTrue(ingest_script.is_file(), "kb_ingest.py should be deployed in fresh install")
+            ingest_content = ingest_script.read_text(encoding="utf-8")
+            self.assertIn("detect_github_repo", ingest_content)
+            self.assertIn("render_status_dashboard", ingest_content)
+            self.assertIn("--status", ingest_content)
+
+            lint_script = target / "scripts" / "kb_lint.py"
+            self.assertTrue(lint_script.is_file(), "kb_lint.py should be deployed in fresh install")
+            lint_content = lint_script.read_text(encoding="utf-8")
+            self.assertIn("check_phase_consistency", lint_content)
+
+            triage_skill = target / ".agents" / "skills" / "kb-triage" / "SKILL.md"
+            self.assertTrue(triage_skill.is_file(), "kb-triage skill should be deployed")
+            triage_content = triage_skill.read_text(encoding="utf-8")
+            self.assertIn("Diagnostic Source Feedback", triage_content)
+            self.assertIn("kb_ingest.py --status", triage_content)
+
+            # 3. Test running kb_ingest.py --status
+            res_ingest = subprocess.run(
+                [sys.executable, str(ingest_script), "--status"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=10,
+            )
+            self.assertEqual(res_ingest.returncode, 0, f"kb_ingest.py --status failed:\n{res_ingest.stdout}\n{res_ingest.stderr}")
+            self.assertIn("Feedback Ingestion Status Dashboard", res_ingest.stdout)
+            self.assertIn("[Канал: GitHub Issues]", res_ingest.stdout)
+            self.assertIn("[Буфер обращений: docs/02_Tasks/Inbox/]", res_ingest.stdout)
+
+            # 4. Test running kb_lint.py on fresh docs
+            res_lint = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs")],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=10,
+            )
+            self.assertEqual(res_lint.returncode, 0, f"kb_lint.py failed:\n{res_lint.stdout}\n{res_lint.stderr}")
+            self.assertIn("0 broken", res_lint.stdout)
+
+            # 5. Test update behavior: corrupt scripts and run update_harness
+            ingest_script.write_text("# OUTDATED_INGEST_SCRIPT\n", encoding="utf-8")
+            lint_script.write_text("# OUTDATED_LINT_SCRIPT\n", encoding="utf-8")
+
+            install.update_harness(target)
+
+            refreshed_ingest = ingest_script.read_text(encoding="utf-8")
+            self.assertIn("detect_github_repo", refreshed_ingest)
+            self.assertNotIn("# OUTDATED_INGEST_SCRIPT", refreshed_ingest)
+
+            refreshed_lint = lint_script.read_text(encoding="utf-8")
+            self.assertIn("check_phase_consistency", refreshed_lint)
+            self.assertNotIn("# OUTDATED_LINT_SCRIPT", refreshed_lint)
 
 
 if __name__ == "__main__":

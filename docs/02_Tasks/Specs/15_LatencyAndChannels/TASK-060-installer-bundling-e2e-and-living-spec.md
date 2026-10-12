@@ -1,7 +1,7 @@
 ---
 id: TASK-060
 title: "Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec"
-status: planned
+status: completed
 type: task
 phase: 15
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-060 — Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec
 
-> **ID:** TASK-060 | **Статус:** К реализации  
+> **ID:** TASK-060 | **Статус:** Выполнено  
 > **План:** [[../../Plans/PLAN-015-response-latency-and-channel-transparency|PLAN-015]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Обоснование:** [[../../../04_Research/RESEARCH-008-latency-prompt-caching-and-skill-chaining|RESEARCH-008]], [[../../../04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019]]  
 > **Решения (ADR):** [[../../../03_Decisions_ADR/ADR-0013-zero-roundtrip-dispatch-and-hot-invariants-architecture|ADR-0013]], [[../../../03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024]]  
@@ -92,19 +92,19 @@ def test_29_channel_transparency_and_phase_consistency_deployment(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0)
-- [ ] Синтаксическая корректность: `python -m py_compile install.py dist/install.py` (Exit code 0)
-- [ ] E2E тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0)
-- [ ] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
-- [ ] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links, 0 warnings)
+- [x] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0)
+- [x] Синтаксическая корректность: `python -m py_compile install.py dist/install.py` (Exit code 0)
+- [x] E2E тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% Pass, Exit code 0)
+- [x] Полный регрессионный сьют проекта: `python -m unittest discover -s tests` (100% Pass, Exit code 0)
+- [x] Аудит базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links, 0 warnings)
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Артефакты `install.py` и `dist/install.py` пересобраны и содержат весь функционал Фазы 15.
-- [ ] Разработан и успешно проходит сквозной тест `test_29`.
-- [ ] Файлы `SPEC.md`, `README.md` и `docs/Onboarding.md` полностью синхронизированы без документационного дрифта.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`). Завершена Фаза 15!
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Артефакты `install.py` и `dist/install.py` пересобраны и содержат весь функционал Фазы 15.
+- [x] Разработан и успешно проходит сквозной тест `test_29`.
+- [x] Файлы `SPEC.md`, `README.md` и `docs/Onboarding.md` полностью синхронизированы без документационного дрифта.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`). Завершена Фаза 15!
+- [x] Запись добавлена в `Devlog.md`.

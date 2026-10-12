@@ -155,8 +155,15 @@ flowchart LR
   ```bash
   python scripts/kb_release.py --version vX.Y.Z --phase N
   ```
-* **Инжест обратной связи:**
+* **Инжест и статус каналов обратной связи:**
   ```bash
+  # Дашборд статуса источников и квоты API
+  python scripts/kb_ingest.py --status
+
+  # Инжест GitHub issues с автодетектом репозитория
+  python scripts/kb_ingest.py --github --label needs-triage
+
+  # Ручная вставка фидбека
   python scripts/kb_ingest.py --paste "<текст сигнала>"
   ```
 * **Диагностический отчет окружения:**
@@ -239,7 +246,7 @@ flowchart LR
 ## 11. Буфер обратной связи (Inbox) и оффлайн-диагностика
 
 Для предотвращения засорения бэклога внешним шумом и надежного оффлайн-траблшутинга действует регламент [[03_Decisions_ADR/ADR-0020-feedback-ingestion-channels-and-triage-automation|ADR-0020]] и [[04_Research/RESEARCH-015-feedback-ingestion-channels-and-triage-heuristics|RESEARCH-015]]:
-1. **Буферная изоляция (Inbox Buffer Invariant):** Любые сигналы из внешних каналов (GitHub Issues, Email, буфер обмена) никогда не конвертируются в задачи напрямую. Они оседают в `docs/02_Tasks/Inbox/FB-*.md` через утилиту `scripts/kb_ingest.py` со сквозной дедупликацией по `.inbox_state.json`.
+1. **Буферная изоляция и прозрачность каналов (Inbox Buffer & Channel Transparency):** Любые сигналы из внешних каналов (GitHub Issues, Email, буфер обмена) никогда не конвертируются в задачи напрямую. Они оседают в `docs/02_Tasks/Inbox/FB-*.md` через утилиту `scripts/kb_ingest.py` (с автодетектом Git remote, дашбордом `--status` и запретом немых пропусков) со сквозной дедупликацией по `.inbox_state.json`. При чистом инбоксе Режим 2C (`/kb-triage`) подтверждает факт проверки диагностической сводкой источников.
 2. **Двухэтапный триаж (Режим 2C `/kb-triage`):** Агент классифицирует сигналы (Noise vs Signal) и маршрутизирует их в дефекты (`/kb-bug`), идеи Дорожной карты (`Roadmap.md` Icebox) или документацию. Статус `FB-XXX` обновляется in-place (`status: processed | rejected`) с обязательной ссылкой на целевой артефакт (принцип Permalinks) и завершается шагом **Stop & Yield Control**.
 3. **Оффлайн-диагностика (`install.py --report`):** Команда генерирует самодостаточный анонимизированный Markdown-отчет об окружении (ОС, Python, Git, статус kb_lint, найденные конфиги агентов), маскируя персональные пути пользователей (`<user>`), для быстрой локализации инцидентов без доступа в интернет.
 

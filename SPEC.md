@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-11
+updated: 2026-10-12
 tags:
   - spec
   - master
@@ -72,6 +72,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
+  * Семантический контроль структуры фаз (`check_phase_consistency`): сопоставление номера фазы в frontmatter (`phase: N`) с папкой размещения (`Specs/NN_<Slug>/`) и тегами (`phaseN`).
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
   * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.
@@ -100,6 +101,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Human Guardrails Protocol («Направляй, а не блокируй»):** запрет на грубые роботизированные ошибки в read-only режимах; вежливое партнерское объяснение сути этапа, 1–2 направляющих вопроса и подсказка точной команды для продолжения.
 * **Fast-Track Protocol (Micro-Task Bypass):** обход этапа планирования для микро-задач ($\le 30$ LOC, $\le 2$ файлов, без рисков) через `/kb-task --fast <описание>` с использованием компактного шаблона `TEMPLATE_TASK_MICRO.md`.
 * **Anti-Echo Protocol:** запрет на вывод полных листингов файлов в чат — только кликабельные ссылки `[File](file:///...)` и 3–5 пунктов резюме.
+* **Zero Round-Trip Dispatch & Hot Invariants Protocol:** прямая авторизация агентов на исполнение стандартных жизненных циклов (Режимы 0, 1, 2, 2B, 2C, 3) из Always-On префикса без предварительного раунда чтения `SKILL.md`; параллельное чтение контекста (Pipelined Co-fetching) в первом же раунде вызова инструментов.
 * **Single-Task Execution Barrier (Stop & Yield):** команда `/kb-implement <TASK-XXX | BUG-XXX>` авторизует работу строго над одной задачей или багом; после завершения коммита агент обязан прекратить вызовы инструментов (Tool Calls) и передать управление разработчику, предотвращая неконтролируемый авто-чейнинг задач при сжатии контекста.
 * **Feedback Ingestion & Triage Buffer Invariant:** внешние сигналы никогда не попадают в код или ТЗ в обход буфера `Inbox/`; триаж выполняется исключительно через `/kb-triage` с соблюдением принципа пермалинков (in-place обновление frontmatter `FB-XXX`).
 * **Permalinks Principle:** файлы ТЗ, багов и обратной связи не перемещаются в архивы при закрытии.
@@ -151,4 +153,6 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 11: Жизненный цикл дефектов, прозрачный триаж и релизный таргетинг (Bug Lifecycle & Release Targeting)** — изоляция триажа дефектов (Режим 2B `kb-bug` со Stop & Yield) от их устранения, унификация исполнения дефектов в Режиме 3 (`kb-implement BUG-XXX` по циклу TDD), строгий релизный контракт дефектов (`target_release`, `target_phase`, `release_blocker`, `fixed_in`) и префлайт-фильтрация блокеров в `scripts/kb_release.py`.
 * **Фаза 12: Инжест внешней обратной связи, буфер триажа и оффлайн-диагностика (Feedback Ingestion, Triage Buffer & Diagnostic Diagnostics)** — канонический шаблон `TEMPLATE_FEEDBACK.md`, утилита инжеста `scripts/kb_ingest.py` (GitHub/Email/Paste с дедупликацией), буфер `docs/02_Tasks/Inbox/` с состоянием `.inbox_state.json`, Режим 2C (`/kb-triage` со Stop & Yield), формы GitHub Issue Forms (`bug_report.yml`, `feature_request.yml`), диагностический отчет `install.py --report` и E2E верификация.
 * **Фаза 13: Слоистая архитектура правил (Thin Forwarders), декуплинг графа Obsidian и таксономия базы знаний** — переход адаптеров IDE на паттерн Thin Forwarders ($\le 25$ строк, -80% контекста) со ссылкой на `AGENTS.md` как SSOT, декуплинг таблицы цветов Obsidian Graph в `.obsidian/graph.json` (-150 токенов на шаг), консолидация навигации и онбординга (`docs-as-code` $\to$ `kb-onboard`, 12 скиллов), двухуровневая таксономия шаблонов (Core Essentials [4] vs Advanced Governance [10]), сборка автономного инсталлятора `dist/install.py` и сквозные E2E тесты.
+* **Фаза 14: Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров (Agile Docs-as-Code & Chat-First DX)** — протокол Fast-Track для микро-задач (пропуск Режима 1, компактная Micro-Spec `TEMPLATE_TASK_MICRO.md`, экономия 70% токенов), принцип «Направляй, а не блокируй» (Human Guardrails) в правилах агентов, Chat-First Bootstrapping в README (запуск без терминала), практическое руководство `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой»), понятные чейнджлоги в `kb_release.py` и аудит лимитов в `kb_lint.py`.
+* **Фаза 15: Устранение задержек отклика и прозрачность каналов (Response Latency Elimination & Channel Transparency)** — архитектура Zero Round-Trip Dispatch (Hot Invariants в Always-On префиксе без предварительного чтения `SKILL.md`), User-Centric Ingestion & Channel Transparency в `scripts/kb_ingest.py` (Zero-Deps автодетект репозитория из `git remote origin`, флаг `--status`, гибкая фильтрация `--label` / `--all-open`, запрет немых пропусков), актуализация скилла `/kb-triage`, семантический контроль фаз в `scripts/kb_lint.py` (`check_phase_consistency`), монолитный дистрибутив `install.py` и сквозные E2E тесты.
 

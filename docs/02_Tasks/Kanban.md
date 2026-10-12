@@ -10,14 +10,14 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] #plan #phase15 #latency #dispatch #channel-transparency #kb-lint
-  - [ ] [[Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]]: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec #task #phase15 #installer #e2e #spec
-
 
 ## ⏳ В работе (In Progress)
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Plans/PLAN-015-response-latency-and-channel-transparency|План: Фаза 15 — Устранение задержек отклика и прозрачность каналов]] (2026-10-12) #plan #phase15 #latency #dispatch #channel-transparency #kb-lint
+  - [x] [[Specs/15_LatencyAndChannels/TASK-060-installer-bundling-e2e-and-living-spec|TASK-060]]: Синхронизация инсталлятора install.py / build_installer.py, регрессионные E2E тесты и актуализация Living Spec (2026-10-12) #task #phase15 #installer #e2e #spec
 
 - [x] [[Specs/15_LatencyAndChannels/TASK-059-channel-triage-feedback-and-phase-consistency-lint|TASK-059]]: Прозрачный фидбек источников в /kb-triage и семантический контроль фаз в scripts/kb_lint.py (2026-10-12) #task #phase15 #triage #lint #semantics
 - [x] [[Specs/15_LatencyAndChannels/TASK-058-channel-transparency-git-remote-and-status-dashboard|TASK-058]]: Прозрачный UX инжеста, автодетект Git Remote и дашборд статуса источников в scripts/kb_ingest.py (2026-10-12) #task #phase15 #ingestion #git-remote #transparency
