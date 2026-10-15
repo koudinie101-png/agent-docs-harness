@@ -58,6 +58,34 @@ class TestKbRelease(unittest.TestCase):
         self.assertEqual(art["sha256"], expected_sha256)
         self.assertTrue("KB" in art["size"] or "MB" in art["size"])
 
+    def test_bug_006_inspect_release_artifacts_excludes_release_notes(self):
+        """Verifies that RELEASE_NOTES.md is excluded from release artifacts table (BUG-006)."""
+        dist_dir = self.test_root / "dist"
+        dist_dir.mkdir(parents=True, exist_ok=True)
+
+        app_bin = dist_dir / "app-v1.0.0.zip"
+        app_bin.write_bytes(b"binary content")
+
+        notes_file = dist_dir / "RELEASE_NOTES.md"
+        notes_file.write_text("# Release Notes\n\nContent", encoding="utf-8")
+
+        custom_notes = dist_dir / "CUSTOM_NOTES.md"
+        custom_notes.write_text("# Custom Notes\n\nContent", encoding="utf-8")
+
+        # By default, RELEASE_NOTES.md must be ignored
+        artifacts = kb_release.inspect_release_artifacts(dist_dir)
+        artifact_names = [a["name"] for a in artifacts]
+        self.assertNotIn("RELEASE_NOTES.md", artifact_names)
+        self.assertIn("app-v1.0.0.zip", artifact_names)
+        self.assertIn("CUSTOM_NOTES.md", artifact_names)
+
+        # When custom excluded_names are passed, both should be ignored
+        artifacts_custom = kb_release.inspect_release_artifacts(dist_dir, excluded_names={"CUSTOM_NOTES.md"})
+        custom_artifact_names = [a["name"] for a in artifacts_custom]
+        self.assertNotIn("RELEASE_NOTES.md", custom_artifact_names)
+        self.assertNotIn("CUSTOM_NOTES.md", custom_artifact_names)
+        self.assertEqual(custom_artifact_names, ["app-v1.0.0.zip"])
+
     def test_format_artifacts_markdown_table(self):
         # Empty
         table_empty = kb_release.format_artifacts_markdown_table([])

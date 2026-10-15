@@ -20,7 +20,7 @@ import subprocess
 import argparse
 import posixpath
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Set, Iterable
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -198,18 +198,22 @@ def detect_release_environment(repo_root: Optional[Path] = None, explicit_mode: 
     return status
 
 
-def inspect_release_artifacts(dist_dir: Path) -> List[Dict[str, str]]:
+def inspect_release_artifacts(dist_dir: Path, excluded_names: Optional[Iterable[str]] = None) -> List[Dict[str, str]]:
     """
-    Scans dist_dir, ignoring hidden files.
+    Scans dist_dir, ignoring hidden files and release notes documents.
     Calculates file size (KB / MB) and SHA-256 hash using 64 KB streaming chunks.
     Returns list of dicts: [{"name": str, "path": str, "size": str, "sha256": str}].
     """
     if not dist_dir.exists() or not dist_dir.is_dir():
         return []
 
+    ignore_set: Set[str] = {"RELEASE_NOTES.md"}
+    if excluded_names:
+        ignore_set.update(excluded_names)
+
     artifacts: List[Dict[str, str]] = []
     for item in sorted(dist_dir.iterdir()):
-        if not item.is_file() or item.name.startswith("."):
+        if not item.is_file() or item.name.startswith(".") or item.name in ignore_set:
             continue
 
         hasher = hashlib.sha256()
@@ -1241,7 +1245,9 @@ def main() -> int:
             print(f"❌ ERROR: {b_msg}", file=sys.stderr)
         return 1
 
-    artifacts = inspect_release_artifacts(dist_path)
+    custom_notes_name = Path(args.notes_output).name if args.notes_output else None
+    excluded = {custom_notes_name} if custom_notes_name else None
+    artifacts = inspect_release_artifacts(dist_path, excluded_names=excluded)
     phase_data = find_phase_artifacts(
         docs_path,
         phase_num,

@@ -222,7 +222,7 @@ tags:
 
 ### 🐞 Исправление дефектов (Mode 2B -> Mode 3 TDD)
 - [x] [[Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: Замена `Path.is_relative_to()` в `scripts/kb_lint.py` для совместимости с Python 3.8.
-- [ ] [[Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: Исключение `dist/RELEASE_NOTES.md` из таблицы SHA-256 артефактов при повторном запуске `scripts/kb_release.py`.
+- [x] [[Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: Исключение `dist/RELEASE_NOTES.md` из таблицы SHA-256 артефактов при повторном запуске `scripts/kb_release.py`.
 - [ ] [[Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: Поддержка позиционного текста в `scripts/kb_ingest.py --paste "<text>"` и синхронизация с `--text`.
 - [ ] [[Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]: Добавление `docs/06_Memory/patterns.md` в локальный fallback `unpack_assets()` (`install.py`) и фикс маски фаз `f"{p:02d}_"` в `scripts/kb_release.py`.
 

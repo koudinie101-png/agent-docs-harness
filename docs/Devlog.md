@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Устранение дефекта BUG-006: Исключение RELEASE_NOTES.md из таблицы артефактов SHA-256
+- **Что сделано:**
+  - Устранен дефект [[02_Tasks/Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: при повторном запуске `scripts/kb_release.py` файл заметок релиза `dist/RELEASE_NOTES.md` каталогизировался как скачиваемый артефакт релиза и попадал в таблицу SHA-256.
+  - В функцию `inspect_release_artifacts(dist_dir, excluded_names=None)` добавлен дефолтный список исключений `{"RELEASE_NOTES.md"}`, а также передача пользовательского имени из `--notes-output`, исключающая рекурсивное самоцитирование заметок.
+  - В `tests/test_kb_release.py` добавлен регрессионный тест `test_bug_006_inspect_release_artifacts_excludes_release_notes` (TDD: RED -> GREEN -> REFACTOR).
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус дефекта обновлен на `fixed`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_release.py` -> 24/24 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 181 files scanned, 1639 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующего дефекта или задачи (например, `/kb-implement BUG-007` или `/kb-implement TASK-066`).
+
+---
+
 ### [2026-10-15] — Устранение дефекта BUG-005: Совместимость kb_lint.py с Python 3.8 (Path.is_relative_to)
 - **Что сделано:**
   - Устранен дефект [[02_Tasks/Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: аварийное завершение `scripts/kb_lint.py` на Python 3.8 из-за вызова метода `Path.is_relative_to()`, появившегося только в Python 3.9+.
