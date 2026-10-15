@@ -29,6 +29,8 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+MEDIA_EXTENSIONS: Set[str] = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
+
 
 def load_env_local(repo_root: Optional[Path] = None):
     """Loads key-value pairs from .env.local if present, without overwriting existing env."""
@@ -878,10 +880,11 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
 
 def convert_wikilinks_to_github_markdown(text: str, repo_url: str = "", branch: str = "main") -> str:
     """
-    Converts internal Obsidian wikilinks to clean GitHub Flavored Markdown:
+    Converts internal Obsidian wikilinks and media embeds to clean GitHub Flavored Markdown:
     - [[path/to/spec|Title]] -> [Title](repo_url/blob/branch/docs/path/to/spec.md) (if repo_url provided)
     - [[path/to/spec|Title]] -> **Title** (if repo_url is empty)
     - [[Title]] -> **Title**
+    - ![[image.png|600x400]] -> ![image.png](repo_url/blob/branch/docs/image.png) (without .md and size params)
     """
     clean_repo_url = ""
     if repo_url:
@@ -890,30 +893,59 @@ def convert_wikilinks_to_github_markdown(text: str, repo_url: str = "", branch: 
             clean_repo_url = clean_repo_url[:-4]
 
     def replace_wikilink(match):
-        target = match.group(1).strip()
-        alias = match.group(2).strip() if match.group(2) else target
+        is_embed = bool(match.group(1))
+        target = match.group(2).strip()
+        raw_alias = match.group(3).strip() if match.group(3) else None
 
         # External URLs inside wikilinks
         if target.startswith("http://") or target.startswith("https://"):
+            alias = raw_alias if raw_alias else target
             return f"[{alias}]({target})"
 
-        if clean_repo_url:
-            # Resolve relative link from docs/02_Tasks/Releases/
-            if target.startswith("../") or target.startswith("./"):
-                resolved = posixpath.normpath(posixpath.join("02_Tasks/Releases", target))
+        ext = posixpath.splitext(target)[1].lower()
+        is_media = ext in MEDIA_EXTENSIONS
+
+        # Resolve relative link from docs/02_Tasks/Releases/
+        if target.startswith("../") or target.startswith("./"):
+            resolved = posixpath.normpath(posixpath.join("02_Tasks/Releases", target))
+        else:
+            resolved = target.lstrip("/")
+
+        if resolved.startswith("docs/"):
+            resolved = resolved[5:]
+
+        clean_target = resolved
+
+        # Handling of media files vs markdown files
+        if is_media:
+            # Clean size parameters (e.g. 600, 600x400)
+            if raw_alias and re.match(r"^\d+(?:x\d+)?$", raw_alias):
+                alt = posixpath.basename(target)
             else:
-                resolved = target.lstrip("/")
+                alt = raw_alias if raw_alias else posixpath.basename(target)
 
-            clean_target = resolved
-            if not clean_target.endswith(".md"):
-                clean_target += ".md"
+            if clean_repo_url:
+                full_url = f"{clean_repo_url}/blob/{branch}/docs/{clean_target}"
+                if is_embed:
+                    return f"![{alt}]({full_url})"
+                return f"[{alt}]({full_url})"
+            else:
+                if is_embed:
+                    return f"![{alt}]({clean_target})"
+                return f"[{alt}]({clean_target})"
 
+        # Non-media files (.md notes)
+        alias = raw_alias if raw_alias else target
+        if not clean_target.endswith(".md"):
+            clean_target += ".md"
+
+        if clean_repo_url:
             full_url = f"{clean_repo_url}/blob/{branch}/docs/{clean_target}"
             return f"[{alias}]({full_url})"
 
         return f"**{alias}**"
 
-    pattern = r"\[\[([^\|\]]+)(?:\|([^\]]+))?\]\]"
+    pattern = r"(!)?\[\[([^\|\]]+)(?:\|([^\]]+))?\]\]"
     return re.sub(pattern, replace_wikilink, text)
 
 

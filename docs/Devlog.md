@@ -16,6 +16,28 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-072: Механический контроль медиа-ассетов в scripts/kb_lint.py и scripts/kb_release.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]:
+    1. В `scripts/kb_lint.py` и `scripts/kb_release.py` добавлена константа `MEDIA_EXTENSIONS` (`.png`, `.jpg`, `.jpeg`, `.webp`, `.svg`, `.gif`, `.canvas`, `.excalidraw`).
+    2. В `scripts/kb_lint.py` функция `build_file_map()` изолированно индексирует медиафайлы строго с расширением, предотвращая затенение `.md` спецификаций одноименными изображениями (например, `TASK-001.png` vs `TASK-001.md`).
+    3. Функция `parse_wikilinks()` дополнена поддержкой синтаксиса эмбеддингов Obsidian (`![[image.png|600x400]]`) с корректным отсечением параметров размера.
+    4. Добавлена функция `parse_markdown_images()` для валидации локальных markdown-картинок вида `![alt](relative/path.png)` с URL-декодированием и фильтрацией внешних ссылок.
+    5. Реализован `check_asset_weights()` (Tier 1 Non-blocking Gate) для предупреждения о файлах $> 2.0\text{ MB}$ в `docs/assets/`.
+    6. В `scripts/kb_release.py` функция `convert_wikilinks_to_github_markdown()` адаптирована для медиа-ассетов: генерирует `![alt](url)` без ошибочного аппенда `.md` и с очисткой параметров размера Obsidian.
+    7. Написаны 4 новых юнит-теста в `tests/test_kb_lint.py` и юнит-тест в `tests/test_kb_release.py`.
+  - Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - `python -m py_compile scripts/kb_lint.py scripts/kb_release.py` -> синтаксис корректен (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 191 файл проверен, 1731 ссылка валидирована (0 битых).
+  - `python -m unittest tests/test_kb_lint.py` -> 31/31 тестов пройдено.
+  - `python -m unittest tests/test_kb_release.py` -> 26/26 тестов пройдено.
+  - `python -m unittest discover -s tests` -> 104/104 теста пройдено.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации следующей задачи — запустить Режим 3: `/kb-implement TASK-073`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-071: Архитектура хранения ассетов, композитный --ui и Obsidian DX в install.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]:

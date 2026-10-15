@@ -242,7 +242,7 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]
 
 - [x] [[Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` (2026-10-15).
-- [ ] [[Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py`.
+- [x] [[Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py` (2026-10-15).
 - [ ] [[Specs/18_VisualHarness/TASK-073-the-4-state-matrix-visual-dod-and-templates|TASK-073]]: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в `AGENTS.md`.
 - [ ] [[Specs/18_VisualHarness/TASK-074-bundling-e2e-tests-and-living-spec|TASK-074]]: Бандлинг инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec.
 

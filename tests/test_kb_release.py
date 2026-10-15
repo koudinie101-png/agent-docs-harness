@@ -318,6 +318,24 @@ status: done
         self.assertIn("**TASK-025**", converted)
         self.assertNotIn("[[", converted)
 
+    def test_convert_wikilinks_media_assets_and_embeds(self):
+        repo_url = "https://github.com/myorg/myproject.git"
+        text = (
+            "Embed: ![[image.png|600x400]]\n"
+            "Asset link: [[assets/schema.svg|Архитектура]]\n"
+            "Relative asset: ![[../assets/ui.webp|300]]"
+        )
+        converted = kb_release.convert_wikilinks_to_github_markdown(text, repo_url=repo_url, branch="main")
+        self.assertIn("![image.png](https://github.com/myorg/myproject/blob/main/docs/image.png)", converted)
+        self.assertIn("[Архитектура](https://github.com/myorg/myproject/blob/main/docs/assets/schema.svg)", converted)
+        self.assertIn("![ui.webp](https://github.com/myorg/myproject/blob/main/docs/02_Tasks/assets/ui.webp)", converted)
+        self.assertNotIn(".md", converted)
+
+        # Local mode without repo_url
+        local_text = "![[screenshot.png|800]]"
+        local_conv = kb_release.convert_wikilinks_to_github_markdown(local_text, repo_url="", branch="main")
+        self.assertEqual("![screenshot.png](screenshot.png)", local_conv)
+
     def test_generate_public_release_notes(self):
         env_info = {
             "has_git": True,

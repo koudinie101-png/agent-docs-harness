@@ -9,7 +9,9 @@ import sys
 import os
 import re
 import argparse
+import urllib.parse
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple, Set
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -17,6 +19,8 @@ if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
+MEDIA_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
 
 
 def find_vault_root(start_dir: Path) -> Path:
@@ -48,21 +52,48 @@ def _relative_to(p: Path, base: Path) -> Path:
         return Path(os.path.relpath(p.resolve(), base.resolve()))
 
 
-def parse_wikilinks(content: str):
+def parse_wikilinks(content: str) -> List[str]:
     # 1. Strip code blocks ```...``` and inline code `...`
     stripped = re.sub(r'```[\s\S]*?```', '', content)
     stripped = re.sub(r'`[^`\n]*`', '', stripped)
 
     # 2. Match wikilinks: [[target|label]], [[target#heading|label]], [[target]] with optional escaped pipes \|
-    pattern = re.compile(r'\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\\?\|[^\]]*)?\]\]')
+    # and embed prefix: ![[target|size]], ![[target]]
+    pattern = re.compile(r'!?\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\\?\|[^\]]*)?\]\]')
     matches = pattern.findall(stripped)
 
-    # 3. Clean up escaping backslashes from targets
+    # 3. Clean up escaping backslashes from targets and strip size/alias parameters
     cleaned = []
     for m in matches:
         target = m.rstrip("\\").strip()
+        if target.startswith("!"):
+            target = target[1:].strip()
+        if "|" in target:
+            target = target.split("|", 1)[0].strip()
         if target:
             cleaned.append(target)
+    return cleaned
+
+
+def parse_markdown_images(content: str) -> List[str]:
+    # 1. Strip code blocks ```...``` and inline code `...`
+    stripped = re.sub(r'```[\s\S]*?```', '', content)
+    stripped = re.sub(r'`[^`\n]*`', '', stripped)
+
+    # 2. Match standard markdown images: ![alt](path)
+    pattern = re.compile(r'!\[([^\]]*)\]\(([^)]+)\)')
+    matches = pattern.findall(stripped)
+
+    cleaned = []
+    for _alt, path_str in matches:
+        target = path_str.strip()
+        if " " in target:
+            target = target.split()[0].strip()
+        if target.startswith(("http://", "https://", "mailto:", "#", "data:")):
+            continue
+        cleaned_target = urllib.parse.unquote(target)
+        if cleaned_target:
+            cleaned.append(cleaned_target)
     return cleaned
 
 
@@ -371,6 +402,69 @@ def check_memory_limits(docs_dir: Path) -> list:
     return errors
 
 
+def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[str]:
+    """
+    Tier 1 Quality Gate (Non-blocking):
+    Audits docs/assets/ for media files exceeding size threshold (default 2 MB).
+    Returns a list of warning strings.
+    """
+    warnings = []
+    assets_dir = docs_dir / "assets"
+    if not assets_dir.is_dir() and (docs_dir / "docs" / "assets").is_dir():
+        assets_dir = docs_dir / "docs" / "assets"
+    if not assets_dir.is_dir():
+        return warnings
+
+    for p in sorted(assets_dir.rglob("*")):
+        if p.is_file() and p.suffix.lower() in MEDIA_EXTENSIONS:
+            try:
+                size = p.stat().st_size
+                if size > max_bytes:
+                    mb = size / (1024 * 1024)
+                    rel_p = p.relative_to(docs_dir).as_posix() if _is_relative_to(p, docs_dir) else p.name
+                    warnings.append(f"WARN: Asset '{rel_p}' exceeds size limit ({mb:.1f} MB > 2.0 MB)")
+            except Exception:
+                pass
+    return warnings
+
+
+def build_file_map(docs_dir: Path, repo_root: Optional[Path] = None) -> Dict[str, Path]:
+    if repo_root is None:
+        repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
+    file_map: Dict[str, Path] = {}
+
+    all_md_files = list(docs_dir.rglob("*.md"))
+    for root_doc in ["SPEC.md", "README.md", "AGENTS.md", "CLAUDE.md", "GEMINI.md"]:
+        r_file = repo_root / root_doc
+        if r_file.is_file():
+            all_md_files.append(r_file)
+
+    for f in all_md_files:
+        if _is_relative_to(f, docs_dir):
+            rel_posix = _relative_to(f, docs_dir).as_posix()
+            file_map[rel_posix] = f
+            file_map[rel_posix.lower()] = f
+        name_no_ext = f.stem
+        file_map[name_no_ext] = f
+        file_map[name_no_ext.lower()] = f
+        file_map[f.name] = f
+        file_map[f.name.lower()] = f
+
+    # Register media files from docs_dir (strictly with extension, NEVER by stem!)
+    for p in docs_dir.rglob("*"):
+        if not p.is_file() or p.name.startswith("."):
+            continue
+        ext = p.suffix.lower()
+        if ext in MEDIA_EXTENSIONS:
+            file_map[p.name] = p
+            file_map[p.name.lower()] = p
+            if _is_relative_to(p, docs_dir):
+                rel_posix = _relative_to(p, docs_dir).as_posix()
+                file_map[rel_posix] = p
+                file_map[rel_posix.lower()] = p
+
+    return file_map
+
 
 def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     if verbose:
@@ -387,16 +481,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         if (repo_root / root_doc).is_file():
             all_md_files.append(repo_root / root_doc)
 
-    # Collect map of base names without extension and relative paths
-    file_map = {}
-    for f in all_md_files:
-        if _is_relative_to(f, docs_dir):
-            rel_posix = _relative_to(f, docs_dir).as_posix()
-            file_map[rel_posix] = f
-            file_map[rel_posix.lower()] = f
-        name_no_ext = f.stem
-        file_map[name_no_ext] = f
-        file_map[name_no_ext.lower()] = f
+    # Collect map of base names and relative paths
+    file_map = build_file_map(docs_dir, repo_root)
 
     broken_links = []
     frontmatter_warnings = []
@@ -422,12 +508,15 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 if not has_fm:
                     frontmatter_warnings.append((rel, msg))
 
-        # Check wikilinks (skip template files containing placeholder links)
+        # Check wikilinks & markdown images (skip template files containing placeholder links)
         if "TEMPLATE" in f.name or "00_Templates" in rel:
             continue
 
         links = parse_wikilinks(content)
-        for link in links:
+        md_images = parse_markdown_images(content)
+        all_targets = links + [img for img in md_images if img not in links]
+
+        for link in all_targets:
             link = link.strip()
             # Ignore placeholder links in documentation
             if not link or "XXX" in link or "Название" in link or "Имя" in link or link.lower() in ["wikilinks", "...", "target", "заметка", "документ", "файл", "slug"]:
@@ -458,8 +547,11 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             stripped_repo_target = (repo_root / stripped_link).resolve()
             stripped_repo_target_md = (repo_root / f"{stripped_link}.md").resolve()
 
-            link_name_no_ext = Path(link).name
-            link_name_lower = link_name_no_ext.lower()
+            link_name = Path(link).name
+            link_name_lower = link_name.lower()
+            link_stem = Path(link).stem
+            link_stem_lower = link_stem.lower()
+            link_ext = Path(link).suffix.lower()
 
             found = False
             candidates = [
@@ -484,8 +576,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                     pass
 
             if not found:
-                if "/" not in link and "\\" not in link and (link_name_no_ext in file_map or link_name_lower in file_map):
-                    found = True
+                if link_ext in MEDIA_EXTENSIONS or "." in link_name:
+                    if link_name in file_map or link_name_lower in file_map or link in file_map or link.lower() in file_map or stripped_link in file_map or stripped_link.lower() in file_map:
+                        found = True
+                else:
+                    if "/" not in link and "\\" not in link and (link_stem in file_map or link_stem_lower in file_map):
+                        found = True
 
             if not found:
                 broken_links.append((rel, link))
@@ -495,6 +591,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     fast_track_warnings = check_fast_track_specs(docs_dir)
     phase_warnings = check_phase_consistency(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
+    asset_warnings = check_asset_weights(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings or memory_errors)
 
     if verbose:
@@ -547,6 +644,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {pw}")
             print()
 
+        if asset_warnings:
+            print(f"⚠️ Asset Weight Warnings ({len(asset_warnings)}):")
+            for aw in asset_warnings:
+                print(f"   • {aw}")
+            print()
+
         if has_errors:
             print("❌ Linter failed: please resolve broken links.")
             return 1
@@ -563,6 +666,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {ftw}")
         for pw in phase_warnings:
             print(f"⚠️  WARN: {pw}")
+        for aw in asset_warnings:
+            print(f"⚠️  {aw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0

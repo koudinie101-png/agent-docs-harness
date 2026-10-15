@@ -635,6 +635,63 @@ date: 2026-10-15
         ok, msg = kb_lint.check_file_frontmatter(adr_file)
         self.assertTrue(ok)
 
+    def test_task_072_media_indexing_no_stem_shadowing(self):
+        """Verifies media files do not shadow .md specs by stem (TASK-072)."""
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        spec_file = specs_dir / "TASK-001.md"
+        spec_file.write_text("# Spec", encoding="utf-8")
+
+        assets_dir = self.docs_dir / "assets"
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        media_file = assets_dir / "TASK-001.png"
+        media_file.write_bytes(b"fake png")
+
+        file_map = kb_lint.build_file_map(self.docs_dir)
+        # Stem must point strictly to markdown spec, never to image!
+        self.assertEqual(file_map["TASK-001"], spec_file)
+        self.assertEqual(file_map["task-001"], spec_file)
+        # Image is accessible strictly via extension
+        self.assertEqual(file_map["TASK-001.png"], media_file)
+        self.assertEqual(file_map["task-001.png"], media_file)
+
+    def test_task_072_parse_wikilinks_embed_and_size_stripping(self):
+        """Verifies ! embed prefix and size parameters are cleanly stripped (TASK-072)."""
+        content = (
+            "Embed: ![[screenshot.png|600x400]]\n"
+            "Simple embed: ![[diagram.svg|300]]\n"
+            "Regular wikilink: [[TASK-001|My Task]]"
+        )
+        links = kb_lint.parse_wikilinks(content)
+        self.assertIn("screenshot.png", links)
+        self.assertIn("diagram.svg", links)
+        self.assertIn("TASK-001", links)
+
+    def test_task_072_markdown_images_validation(self):
+        """Verifies markdown images parsing and external link filtering (TASK-072)."""
+        content = (
+            "Local image: ![Alt Text](assets/diagram.png)\n"
+            "URL encoded: ![UI](assets/my%20screenshot.png)\n"
+            "External: ![External](https://example.com/pic.png)\n"
+            "Data uri: ![Data](data:image/png;base64,...)"
+        )
+        imgs = kb_lint.parse_markdown_images(content)
+        self.assertIn("assets/diagram.png", imgs)
+        self.assertIn("assets/my screenshot.png", imgs)
+        self.assertNotIn("https://example.com/pic.png", imgs)
+        self.assertNotIn("data:image/png;base64,...", imgs)
+
+    def test_task_072_asset_weights_gate(self):
+        """Verifies non-blocking warning when an asset in docs/assets/ exceeds 2MB (TASK-072)."""
+        assets_dir = self.docs_dir / "assets"
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        big_asset = assets_dir / "heavy_mockup.png"
+        # 2.2 MB = 2.2 * 1024 * 1024 bytes
+        big_asset.write_bytes(b"0" * int(2.2 * 1024 * 1024))
+
+        warnings = kb_lint.check_asset_weights(self.docs_dir, max_bytes=2 * 1024 * 1024)
+        self.assertTrue(any("heavy_mockup.png" in w and "exceeds size limit" in w for w in warnings))
+
 
 if __name__ == "__main__":
     unittest.main()

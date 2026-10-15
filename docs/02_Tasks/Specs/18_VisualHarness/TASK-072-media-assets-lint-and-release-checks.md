@@ -1,7 +1,7 @@
 ---
 id: TASK-072
 title: "Механический контроль медиа-ассетов в scripts/kb_lint.py и scripts/kb_release.py"
-status: planned
+status: done
 type: task
 phase: 18
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-072 — Механический контроль медиа-ассетов в scripts/kb_lint.py и scripts/kb_release.py
 
-> **ID:** TASK-072 | **Статус:** К реализации  
+> **ID:** TASK-072 | **Статус:** Выполнено  
 > **Фаза:** 18 | **Релиз:** v0.18.0  
 > **План:** [[../../Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../../../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]
@@ -119,20 +119,20 @@ def check_asset_weights(root: Path, max_bytes: int = 2 * 1024 * 1024) -> List[st
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая проверка: `python -m py_compile scripts/kb_lint.py scripts/kb_release.py` (Exit code 0).
-- [ ] Тестирование линтера на базе знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
-- [ ] Проверка индексации медиа и синтаксиса размера: тест на викиссылку `![[test.png|600x400]]`.
-- [ ] Проверка Asset Weight Gate: генерация временного тестового файла $> 2\text{ MB}$ в `docs/assets/` и проверка появления предупреждения `WARN: Asset ... exceeds size limit`.
-- [ ] Проверка конвертации в `kb_release.py`: запуск тестов `tests/test_kb_release.py`.
+- [x] Синтаксическая проверка: `python -m py_compile scripts/kb_lint.py scripts/kb_release.py` (Exit code 0).
+- [x] Тестирование линтера на базе знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Проверка индексации медиа и синтаксиса размера: тест на викиссылку `![[test.png|600x400]]`.
+- [x] Проверка Asset Weight Gate: генерация временного тестового файла $> 2\text{ MB}$ в `docs/assets/` и проверка появления предупреждения `WARN: Asset ... exceeds size limit`.
+- [x] Проверка конвертации в `kb_release.py`: запуск тестов `tests/test_kb_release.py`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код написан строго по ТЗ без внешних зависимостей (Python 3 stdlib).
-- [ ] Медиафайлы не затеняют одноименные `.md`-файлы задач.
-- [ ] Параметры размера Obsidian корректно отсекаются в `kb_lint.py` и `kb_release.py`.
-- [ ] Файлы $> 2\text{ MB}$ в `docs/assets/` детектируются с понятным предупреждением.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код написан строго по ТЗ без внешних зависимостей (Python 3 stdlib).
+- [x] Медиафайлы не затеняют одноименные `.md`-файлы задач.
+- [x] Параметры размера Obsidian корректно отсекаются в `kb_lint.py` и `kb_release.py`.
+- [x] Файлы $> 2\text{ MB}$ в `docs/assets/` детектируются с понятным предупреждением.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

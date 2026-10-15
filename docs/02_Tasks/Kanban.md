@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|План: Фаза 18 — Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы]] #plan #phase18 #ui-ux #multi-target #visual-harness
-  - [ ] [[Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py` #task #phase18 #lint #release #assets
   - [ ] [[Specs/18_VisualHarness/TASK-073-the-4-state-matrix-visual-dod-and-templates|TASK-073]]: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в `AGENTS.md` #task #phase18 #templates #agents #visual-dod
   - [ ] [[Specs/18_VisualHarness/TASK-074-bundling-e2e-tests-and-living-spec|TASK-074]]: Бандлинг инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec #task #phase18 #installer #e2e #spec
 
@@ -20,6 +19,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py` (2026-10-15) #task #phase18 #lint #release #assets
 - [x] [[Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` (2026-10-15) #task #phase18 #installer #assets #obsidian
 
 - [x] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в AGENTS.md (2026-10-15) #task #skills #templates #memory #phase17
