@@ -11,11 +11,11 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-017-core-hardening-and-ssot-sync|План: Фаза 17 — Стабилизация ядра, синхронизация SSOT и защита краевых сценариев]] #plan #phase17 #hardening #ssot #quality-gates
-- [ ] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов #task #agents #ssot #docs #phase17
 - [ ] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в AGENTS.md #task #skills #templates #memory #phase17
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов (2026-10-15) #task #agents #ssot #docs #phase17
 - [x] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py (2026-10-15) #task #installer #release #phase17
 - [x] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py (2026-10-15) #task #ingest #imap #phase17
 - [x] [[Bugs/BUG-009-issue-templates-hardcoded-repo-leak|BUG-009]]: Устранение утечки метаданных и ссылок agent-docs-harness в .github/ISSUE_TEMPLATE/ (2026-10-15) #bug #installer #templates #phase17

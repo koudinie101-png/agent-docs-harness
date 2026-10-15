@@ -9,12 +9,13 @@
 ## 🏛️ Docs-as-Code Knowledge Base Standard
 
 All project knowledge, task tracking, and architectural decisions are maintained strictly inside `docs/`:
-- `docs/00_Templates/` — 12 canonical templates with YAML frontmatter.
+- `docs/00_Templates/` — 16 canonical templates with YAML frontmatter (4 Core Essentials + 12 Advanced Governance).
 - `docs/01_Architecture/` — System architecture, module diagrams, and contracts.
-- `docs/02_Tasks/` — Backlog, Kanban (`Kanban.md`), Roadmap (`Roadmap.md`), Plans (`Plans/`), Task Specs (`Specs/`), and Defect Reports (`Bugs/`).
+- `docs/02_Tasks/` — Backlog, Kanban (`Kanban.md`), Roadmap (`Roadmap.md`), Plans (`Plans/`), Task Specs (`Specs/`), Defect Reports (`Bugs/`), Feedback Buffer (`Inbox/`), and Releases (`Releases/`).
 - `docs/03_Decisions_ADR/` — Architectural Decision Records (`ADR-XXXX`).
 - `docs/04_Research/` — Platform investigations, quirks, and trade-off matrices (`RESEARCH-XXX`).
 - `docs/05_Testing/` — Acceptance testing checklists (E2E UX) with interactive checkboxes (`- [ ]`).
+- `docs/06_Memory/` — Procedural error memory, Incident reports (`Incidents/`), and active patterns index (`patterns.md`).
 - `docs/Devlog.md` — Chronological development journal.
 
 ### Core Rules & Principles
@@ -46,11 +47,11 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - **Pipelined Co-fetching:** when an operation genuinely requires reading a template or reference note, the agent must bundle all necessary context read requests into that same first tool-call turn rather than chaining sequential read steps.
    - Specialized procedural skills (`/kb-release`, `/kb-lint`, `/kb-init`) remain strictly On-Demand via Progressive Disclosure.
 11. **Quality Gates & Reliability Tiers Invariant:**
-   - Все проектные правила и требования надежности классифицируются по 3 слоям исполнения:
-     * **Tier 1 (Enforcement / Принуждение):** Механические барьеры (линтеры `kb_lint.py`, компилятор, юнит/регресс-тесты, CI). Ошибка физически блокирует сборку (Exit code 1).
-     * **Tier 2 (Always-On Prompt):** Нормативные инварианты в `AGENTS.md` и системных промптах IDE (100% видимость в каждом диалоговом такте).
-     * **Tier 3 (Playbook / On-Demand):** Инструкции скиллов, шаблонов и справочников (вероятностное следование).
-   - **Инвариант надежности:** Критическое правило надежности или выявленный систематический дефект категорически запрещено оставлять исключительно в вероятностном слое Tier 3. Правило обязано быть автоматизировано в тесте/линтере (Tier 1) либо вынесено в Always-On префикс (Tier 2).
+   - All project rules and reliability invariants are classified across 3 execution tiers:
+     * **Tier 1 (Enforcement):** Mechanical barriers (linters `kb_lint.py`, compiler, unit/regression test suite, CI). Any error physically blocks build/release (Exit code 1).
+     * **Tier 2 (Always-On Prompt):** Normative invariants in `AGENTS.md` and IDE system prompts (100% visibility in every dialogue turn).
+     * **Tier 3 (Playbook / On-Demand):** Skill instructions, templates, and reference manuals (probabilistic compliance).
+   - **Reliability Invariant:** Critical reliability rules and systemic defect preventions must **never** remain solely in probabilistic Tier 3. They must be mechanized in tests/linters (Tier 1) or elevated into the Always-On prefix (Tier 2).
 
 ---
 

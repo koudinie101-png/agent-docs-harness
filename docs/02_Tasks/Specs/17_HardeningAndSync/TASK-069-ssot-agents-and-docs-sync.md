@@ -1,7 +1,7 @@
 ---
 id: TASK-069
 title: "Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов"
-status: planned
+status: done
 type: task
 phase: 17
 component:
@@ -11,7 +11,7 @@ component:
   - onboarding
 parent_plan: "[[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]]"
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 tags:
   - task/spec
   - phase17
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-069 — Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов
 
-> **ID:** TASK-069 | **Статус:** К реализации  
+> **ID:** TASK-069 | **Статус:** Выполнено  
 > **Фаза:** 17 | **Релиз:** v0.17.0  
 > **План:** [[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]] | **Канбан:** [[../../Kanban|Канбан]]  
 
@@ -85,15 +85,15 @@ self.assertIn("16 templates: 4 Core, 12 Advanced", onboard_text)
 ---
 
 ## 4. План верификации (Verification Plan)
-- [ ] Автотесты: `pytest tests/test_installer.py` — 100% pass (включая `test_21` и `test_26`).
-- [ ] Проверка генератора: запуск `install.generate_agents_md("TestApp", "generic", "ru")` содержит разделы Режима 0 и Режима 2C.
-- [ ] Проверка ссылок Changelog: все URL тегов валидны и ведут на существующие версии.
-- [ ] Линтер: `python scripts/kb_lint.py --path docs` — Exit code 0, 0 broken links.
+- [x] Автотесты: `pytest tests/test_installer.py` — 100% pass (включая `test_21` и `test_26`).
+- [x] Проверка генератора: запуск `install.generate_agents_md("TestApp", "generic", "ru")` содержит разделы Режима 0 и Режима 2C.
+- [x] Проверка ссылок Changelog: все URL тегов валидны и ведут на существующие версии.
+- [x] Линтер: `python scripts/kb_lint.py --path docs` — Exit code 0, 0 broken links.
 
 ---
 
 ## 5. Критерии готовности (DoD)
-- [ ] Все адаптеры и документация согласованы с SSOT (`AGENTS.md`).
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Все адаптеры и документация согласованы с SSOT (`AGENTS.md`).
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

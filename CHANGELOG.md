@@ -165,6 +165,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-bundled and compressed standalone installer `install.py` down to 81.2 KB (-17.6%).
 - Enhanced `install.py --update` with non-destructive updates and stack customization for skeleton templates.
 
+[0.16.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.8.0
 [0.7.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.7.0
 [0.6.0]: https://github.com/koudinie101-png/agent-docs-harness/releases/tag/v0.6.0

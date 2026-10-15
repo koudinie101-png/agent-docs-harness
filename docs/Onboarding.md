@@ -254,7 +254,7 @@ flowchart LR
 
 ## 12. Двухуровневая таксономия шаблонов (Core vs Advanced)
 
-Для снижения когнитивной нагрузки 14 шаблонов базы знаний (`docs/00_Templates/`) разделены на два ясных уровня ([[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]):
+Для снижения когнитивной нагрузки 16 шаблонов базы знаний (`docs/00_Templates/`) разделены на два ясных уровня ([[03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]]):
 
 ### 🌟 1. Базовые шаблоны (Core Essentials — 4 шаблона)
 Инструменты повседневного рабочего процесса, с которыми разработчик и агент взаимодействуют в каждой задаче:
@@ -263,7 +263,7 @@ flowchart LR
 3. `TEMPLATE_TASK.md` — Инженерные спецификации (TASK-XXX) с точными файловыми контрактами и планом верификации (`/kb-task`).
 4. `TEMPLATE_BUG.md` — Отчеты о дефектах (BUG-XXX) с RCA-анализом и контрактом воспроизводящего TDD-теста (`/kb-bug`).
 
-### 🏛️ 2. Системные шаблоны управления (Advanced Governance — 10 шаблонов)
+### 🏛️ 2. Системные шаблоны управления (Advanced Governance — 12 шаблонов)
 Инфраструктурные каркасы, используемые скиллами харнесса и системными процессами базы знаний (не требуют ручного заполнения с нуля):
 1. `TEMPLATE_RESEARCH.md` — Исследования гипотез и платформенных ограничений (RESEARCH-XXX, `/kb-research`).
 2. `TEMPLATE_RELEASE.md` — Заметки о выпуске версий (RELEASE-vX.Y.Z, `/kb-release`).
@@ -276,6 +276,7 @@ flowchart LR
 9. `TEMPLATE_ARCHITECTURE.md` — Архитектурные срезы подсистем (`docs/01_Architecture/`).
 10. `TEMPLATE_ONBOARDING.md` — Руководство по онбордингу проекта (`docs/Onboarding.md`).
 11. `TEMPLATE_INCIDENT.md` — Шаблон отчета об инциденте процедурной памяти (`docs/06_Memory/Incidents/`).
+12. `TEMPLATE_TASK_MICRO.md` — Облегченная микро-спецификация для Fast-Track обхода (`docs/00_Templates/TEMPLATE_TASK_MICRO.md`).
 
 ---
 

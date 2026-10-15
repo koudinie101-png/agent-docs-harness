@@ -35,7 +35,7 @@ When developing with modern AI coding agents (**Google Antigravity, VS Code Clin
 │ • Trade-off matrix │ • Critical review  │   [NEW] / [MODIFY]          │ • Run tests    │
 │ • Icebox / Reject  │ • Risk analysis    │ • Definition of Done (DoD)  │ • Living Spec  │
 │ • Stack selection  │ • PLAN-XXX file    │ • Verification commands     │ • Devlog/Kanban│
-│ 🚨 NO CODE EDITS!  │ 🚨 NO CODE EDITS!  │ 🚨 NO CODE EDITS!           │ • kb_lint.py   │
+│ 🛡️ Align & Research│ 🛡️ Plan & Review   │ 🛡️ Spec Contracts           │ • kb_lint.py   │
 └────────────────────┴────────────────────┴─────────────────────────────┴────────────────┘
 ```
 
@@ -130,13 +130,13 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
-| **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. **🚨 STRICTLY NO CODE EDITS!** |
-| **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. **🚨 NO CODE EDITS!** |
+| **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. Read-only planning; guides user with clear options and next steps. |
+| **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. Read-only specification; focuses on contracts before implementation. |
 | **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict execution of ONE task spec (TASK-XXX) or defect fix (BUG-XXX via TDD), verification, auto-completion, and Stop & Yield Control. |
 | **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
 | **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, defect release targeting, blocker validation, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
-| **`/kb-bug`** | 🐞 Mode 2B (Triage) | Isolated defect logging, root cause analysis (RCA), release targeting & blocker triage. **🚨 STRICTLY NO CODE EDITS!** Enforces Stop & Yield Control. |
-| **`/kb-triage`** | 📥 Mode 2C (Triage) | Two-stage screening of `docs/02_Tasks/Inbox/` items, dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with in-place status updates. **🚨 STRICTLY NO CODE EDITS!** Enforces Stop & Yield Control. |
+| **`/kb-bug`** | 🐞 Mode 2B (Triage) | Isolated defect logging, root cause analysis (RCA), release targeting & blocker triage. Read-only analysis; enforces Stop & Yield Control. |
+| **`/kb-triage`** | 📥 Mode 2C (Triage) | Two-stage screening of `docs/02_Tasks/Inbox/` items, dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with in-place status updates. Read-only triage; enforces Stop & Yield Control. |
 | **`/kb-adr`** | Architecture | Records Architectural Decisions including **explicitly rejected alternatives** (`status: rejected`) to prevent anti-patterns. |
 | **`/kb-research`** | Platform Research | Documents OS quirks, worst-case stress tests, thread safety, memory limits, and discarded prototypes. |
 | **`/kb-lint`** | Health Audit | Scans internal wikilinks, YAML frontmatter, detects link rot, and ensures knowledge base consistency. |

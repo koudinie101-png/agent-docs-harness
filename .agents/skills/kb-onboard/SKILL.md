@@ -11,7 +11,7 @@ Use when the user runs `/kb-onboard` or asks how to interact with the project an
 
 | Trigger | Mode | Function | Skill |
 | :--- | :--- | :--- | :--- |
-| `/kb-init` | Init | Scaffold `docs/`, 14 templates, Obsidian graph | `kb-init` |
+| `/kb-init` | Init | Scaffold `docs/`, 16 templates, Obsidian graph | `kb-init` |
 | `/kb-onboard` | Help | Developer and agent onboarding cheatsheet | `kb-onboard` |
 | `/kb-research` | Mode 0 | Discovery & feasibility (RESEARCH-XXX, Icebox sync) | `kb-research` |
 | `/kb-adr` | Mode 0 / ADR | ADR-XXXX record with rejected options | `kb-adr` |
@@ -25,7 +25,7 @@ Use when the user runs `/kb-onboard` or asks how to interact with the project an
 | `/kb-lint` | Audit | Verify wikilinks and YAML integrity | `kb-lint` |
 
 ## 🏛️ Directory Layout (`docs/`)
-`00_Templates/` (14 templates: 4 Core, 10 Advanced), `01_Architecture/`, `02_Tasks/` (Kanban, Roadmap, Plans, Specs, Bugs, Inbox, Releases), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `Devlog.md`, `Onboarding.md`.
+`00_Templates/` (16 templates: 4 Core, 12 Advanced), `01_Architecture/`, `02_Tasks/` (Kanban, Roadmap, Plans, Specs, Bugs, Inbox, Releases), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (Incidents, patterns.md), `Devlog.md`, `Onboarding.md`.
 
 ## 🚨 Invariants
 * **Permalinks:** Specs, plans, bugs, and feedback are never moved or renamed when closed.

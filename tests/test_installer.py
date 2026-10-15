@@ -1207,6 +1207,9 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn("14. Zero-State & Spec Genesis", agents_content)
         self.assertIn("Zero-State Anti-Hallucination & Spec Genesis", agents_content)
         self.assertIn("6. Zero-State Anti-Hallucination & Spec Genesis", agents_content)
+        self.assertIn("## Docs-as-Code (19 Disciplines)", agents_content)
+        self.assertIn("Mode 0: Discovery & Feasibility", agents_content)
+        self.assertIn("Mode 2C: Feedback Triage & Dispatch", agents_content)
 
         for gen_fn in [
             install.generate_gemini_md,
@@ -1670,7 +1673,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Fast-Track Protocol", out)
             self.assertIn("Zero Round-Trip", out)
             self.assertIn("Anti-Echo & Single-Task Barrier", out)
-            self.assertNotIn("## Docs-as-Code (17 Disciplines)", out)
+            self.assertNotIn("## Docs-as-Code (19 Disciplines)", out)
             self.assertNotIn("1. Read `SPEC.md`", out)
 
         # 2. Project root adapter files check
@@ -1693,7 +1696,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Human Guardrails", content)
             self.assertIn("Fast-Track Protocol", content)
             self.assertIn("Zero Round-Trip", content)
-            self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
+            self.assertNotIn("## Docs-as-Code (19 Disciplines)", content)
 
         # 3. Fresh installation with all adapters check
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1726,7 +1729,8 @@ class TestAgentDocsHarness(unittest.TestCase):
                 self.assertIn("Human Guardrails", content)
                 self.assertIn("Fast-Track Protocol", content)
                 self.assertIn("Zero Round-Trip", content)
-                self.assertNotIn("## Docs-as-Code (17 Disciplines)", content)
+                self.assertNotIn("## Docs-as-Code (19 Disciplines)", content)
+
 
     def test_26_skills_consolidation_and_template_taxonomy(self):
         """E2E test: Verify consolidation of docs-as-code into kb-onboard (12 skills total) and two-tier template taxonomy."""
@@ -1757,20 +1761,20 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Command Router", onboard_text)
             self.assertIn("/kb-init", onboard_text)
             self.assertIn("/kb-implement", onboard_text)
-            self.assertIn("14 templates: 4 Core, 10 Advanced", onboard_text)
+            self.assertIn("16 templates: 4 Core, 12 Advanced", onboard_text)
 
             # 3. Two-tier template taxonomy documented in TEMPLATE_ONBOARDING.md and repo Onboarding.md
             template_onboarding = target / "docs" / "00_Templates" / "TEMPLATE_ONBOARDING.md"
             self.assertTrue(template_onboarding.is_file())
             template_content = template_onboarding.read_text(encoding="utf-8")
             self.assertIn("Core Essentials (4)", template_content)
-            self.assertIn("Advanced Governance (10)", template_content)
+            self.assertIn("Advanced Governance (12)", template_content)
 
             repo_onboarding = REPO_ROOT / "docs" / "Onboarding.md"
             repo_content = repo_onboarding.read_text(encoding="utf-8")
             self.assertIn("Двухуровневая таксономия шаблонов", repo_content)
             self.assertIn("Core Essentials — 4 шаблона", repo_content)
-            self.assertIn("Advanced Governance — 10 шаблонов", repo_content)
+            self.assertIn("Advanced Governance — 12 шаблонов", repo_content)
 
     def test_27_dist_monolith_e2e_fresh_install_and_update(self):
         """E2E test: Verify dist/install.py compiled monolith behavior on fresh install and safe update."""

@@ -16,6 +16,27 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-069: Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]:
+    1. В функцию `generate_agents_md()` утилиты `install.py` добавлены разделы Режима 0 (`/kb-research` & `/kb-adr`) и Режима 2C (`/kb-triage`), а роботизированные алерты заменены на принципы Human Guardrails.
+    2. В `install.py` заголовок `_RULES_BODY` обновлен на `## Docs-as-Code (19 Disciplines)`.
+    3. В каноническом `AGENTS.md` зафиксирована таксономия 16 шаблонов (4 Core Essentials + 12 Advanced Governance), синхронизирована структура каталогов (`06_Memory/`, `02_Tasks/Inbox/`, `02_Tasks/Releases/`), а Правило 11 переведено на английский язык.
+    4. В `README.md` устранены устаревшие роботизированные запреты `NO CODE EDITS` в диаграмме режимов и таблице скиллов, синхронизированы принципы Human Guardrails.
+    5. Зафиксирована каноническая таксономия 16 шаблонов (Core 4 + Advanced 12) в `docs/Onboarding.md`, `templates/TEMPLATE_ONBOARDING.md`, `docs/00_Templates/TEMPLATE_ONBOARDING.md` и `.agents/skills/kb-onboard/SKILL.md`.
+    6. В подвал `CHANGELOG.md` добавлены ссылки на диффы сравнения релизов для тегов `[0.10.0]` – `[0.16.0]`.
+    7. Пересобран автономный инсталлятор `install.py` и дистрибутив `dist/install.py` через `scripts/build_installer.py`.
+  - В `tests/test_installer.py` обновлены ассерты `test_21`, `test_25` и `test_26`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус спецификации обновлен на `done`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_installer.py` -> 33/33 теста успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 99/99 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 183 files scanned, 1644 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующей инженерной задачи Фазы 17 (`/kb-implement TASK-070`).
+
+---
+
 ### [2026-10-15] — Реализация TASK-068: Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]:

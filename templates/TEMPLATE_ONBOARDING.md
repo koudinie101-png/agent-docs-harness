@@ -50,10 +50,10 @@ tags:
 ---
 
 ## 4. Архитектура каталогов `docs/` и таксономия шаблонов
-* `00_Templates/` (14 шаблонов):
+* `00_Templates/` (16 шаблонов):
   - **Core Essentials (4):** `TEMPLATE_ADR.md`, `TEMPLATE_PLAN.md`, `TEMPLATE_TASK.md`, `TEMPLATE_BUG.md` — регулярная разработка.
-  - **Advanced Governance (10):** `TEMPLATE_RESEARCH.md`, `TEMPLATE_RELEASE.md`, `TEMPLATE_FEEDBACK.md`, `TEMPLATE_TEST.md`, `TEMPLATE_DEVLOG.md`, `TEMPLATE_INDEX.md`, `TEMPLATE_KANBAN.md`, `TEMPLATE_ROADMAP.md`, `TEMPLATE_ARCHITECTURE.md`, `TEMPLATE_ONBOARDING.md` — системный харнесс.
-* `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`.
+  - **Advanced Governance (12):** `TEMPLATE_RESEARCH.md`, `TEMPLATE_RELEASE.md`, `TEMPLATE_FEEDBACK.md`, `TEMPLATE_TEST.md`, `TEMPLATE_DEVLOG.md`, `TEMPLATE_INDEX.md`, `TEMPLATE_KANBAN.md`, `TEMPLATE_ROADMAP.md`, `TEMPLATE_ARCHITECTURE.md`, `TEMPLATE_ONBOARDING.md`, `TEMPLATE_INCIDENT.md`, `TEMPLATE_TASK_MICRO.md` — системный харнесс.
+* `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (инциденты, паттерны).
 * `Devlog.md` (журнал сессий) и `00_Index.md` (карта заметок).
 
 ---
