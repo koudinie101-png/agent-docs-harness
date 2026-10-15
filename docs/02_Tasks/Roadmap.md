@@ -260,6 +260,17 @@ tags:
 
 ---
 
+## Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting) — ⏳ В планировании
+**Цель:** Устранить «дрифт редизайнов» (To-Be Drift) и перезапись макетов за счет пространств имен `docs/assets/mockups/<target>/TASK-XXX/` и сквозных сценариев `docs/assets/mockups/flows/TASK-XXX/`, стандартизировать жизненный цикл `As-Is / To-Be` (`asis.svg`, `tobe.svg`), исправить ложноположительное разрешение путей одноименных медиафайлов в `scripts/kb_lint.py` и внедрить механическую проверку топологии `check_asset_layout()`.  
+**Первоисточник плана:** [[Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]  
+**Нормативная база:** [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] | **Источник:** [[Inbox/FB-GH-5|FB-GH-5]]
+
+- [ ] `TASK-079`: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`.
+- [ ] `TASK-080`: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`.
+- [ ] `TASK-081`: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -272,7 +283,6 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Asset Storage Hardening & Task-Scoped Namespaces (FB-GH-5) [⭐⭐⭐⭐⭐ Высокая ценность / Низкая сложность]:** стандартизация макетов в task-scoped директориях (`mockups/<target>/TASK-XXX/` и `mockups/flows/TASK-XXX/`), жизненный цикл `As-Is / To-Be` (`asis.svg`, `tobe.svg`) для исключения дрифта редизайнов, строгое разрешение путей одноименных медиафайлов и проверка топологии `docs/assets/` (`check_asset_layout()`) в `scripts/kb_lint.py` — [[Inbox/FB-GH-5|FB-GH-5]], [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] (валидировано в Режиме 0, готово к `/kb-plan`).
 
 
 ---
