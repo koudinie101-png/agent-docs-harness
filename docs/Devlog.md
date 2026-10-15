@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Исследование и архитектурное решение: Контур UI/UX и гетерогенные multi-target системы (RESEARCH-021 & ADR-0026)
+- **Что сделано:**
+  - Завершено исследование в Режиме 0 (Discovery): оформлена исследовательская заметка [[04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]].
+  - Принято архитектурное решение [[03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]:
+    * Сформулирована обобщенная концепция гетерогенных целевых узлов (Heterogeneous Target Nodes) для масштабирования на любые связки платформ (`Windows + Android`, `macOS + iOS`, `Windows + iOS`, `Linux + Android`, `Web + Mobile`).
+    * Спроектирован композитный CLI-параметр `--ui <target1,target2>` для `install.py` с сохранением Zero-Dependencies (Python 3 stdlib).
+    * Стандартизирована структура хранения ассетов `docs/assets/{mockups,screenshots}/<target>/` и авто-роутинг скриншотов Obsidian через `docs/.obsidian/app.json`.
+    * Внедрена изоляция временных E2E-снапшотов в `.gitignore` (`tmp/ui_snapshots/`) для предотвращения Git Bloat.
+    * Зафиксированы дисциплины The 4-State Matrix (`Empty`, `Loading`, `Error`, `Populated`), Multi-Actor Interaction Flow и Visual DoD.
+    * Спроектированы механические проверки Tier 1 для `scripts/kb_lint.py` (индексация графических файлов, очистка параметров размера `![[image.png|600]]`, лимит веса ассетов $\le 2\text{ MB}$).
+  - Инициатива зарегистрирована в Дорожной карте [[02_Tasks/Roadmap|Roadmap.md]] в разделе перспективных направлений (Icebox).
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 186 файлов проверено, 1677 ссылок валидировано (0 битых).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации — запустить Режим 1: `/kb-plan` для формирования плана реализации Фазы гетерогенного UI-контура.
+
+---
+
 ### [2026-10-15] — Выпуск релиза v0.17.0: Фаза 17 (Core Hardening & SSOT Sync)
 - **Что сделано:**
   - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.17.0|RELEASE-v0.17.0]] по итогам завершения Фазы 17.
