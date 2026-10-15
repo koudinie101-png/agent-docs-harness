@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Устранение дефекта BUG-008: patterns.md в локальном fallback install.py и маска фаз >= 10 в kb_release.py
+- **Что сделано:**
+  - Устранен дефект [[02_Tasks/Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]:
+    1. В функцию `unpack_assets()` утилиты `install.py` добавлено чтение `docs/06_Memory/patterns.md` в ветку локального fallback для разработки, гарантирующее инициализацию процедурной памяти при отсутствии собранного base64-бандла.
+    2. В функцию `find_phase_artifacts()` скрипта `scripts/kb_release.py` добавлена корректная маска выравнивания номеров фаз `f"{p:02d}_"` и `f"{p}_"`, устраняющая потерю спеков для двузначных фаз ($\ge 10$) без явного поля `phase:` во фронтматтере.
+  - В `tests/test_installer.py` добавлен модульный тест `test_31_bug_008_local_fallback_memory_patterns`, а в `tests/test_kb_release.py` — `test_find_phase_artifacts_double_digit_fallback` (TDD: RED -> GREEN -> REFACTOR).
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус дефекта обновлен на `fixed`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_31_bug_008_local_fallback_memory_patterns` -> OK.
+  - `python -m unittest tests/test_kb_release.py` -> 25/25 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 181 files scanned, 1645 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию инженерных задач Фазы 17 (например, `/kb-implement TASK-066`).
+
+---
+
 ### [2026-10-15] — Устранение дефекта BUG-007: Поддержка инлайн-текста в scripts/kb_ingest.py --paste
 - **Что сделано:**
   - Устранен дефект [[02_Tasks/Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: сбой `unrecognized arguments` при вызове `scripts/kb_ingest.py --paste "<text>"`, документированном в `CHANGELOG.md`.

@@ -168,6 +168,9 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
         zth_guide = repo_root / "docs" / "Zero_To_Hero_Guide.md"
         if zth_guide.is_file():
             assets["docs/Zero_To_Hero_Guide.md"] = zth_guide.read_text(encoding="utf-8")
+        patterns_md = repo_root / "docs" / "06_Memory" / "patterns.md"
+        if patterns_md.is_file():
+            assets["docs/06_Memory/patterns.md"] = patterns_md.read_text(encoding="utf-8")
         if assets:
             return assets
 

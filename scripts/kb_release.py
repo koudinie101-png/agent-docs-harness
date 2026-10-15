@@ -611,7 +611,7 @@ def find_phase_artifacts(
                 else:
                     # Fallback only if frontmatter phase is missing
                     for p in target_phases:
-                        if f"0{p}_" in str(spec_file) or f"phase{p}" in str(spec_file).lower():
+                        if f"{p:02d}_" in str(spec_file) or f"{p}_" in str(spec_file) or f"phase{p}" in str(spec_file).lower():
                             phase_match = True
                             break
 

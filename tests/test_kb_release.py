@@ -163,6 +163,21 @@ status: done
         self.assertEqual(len(found["adrs"]), 1)
         self.assertEqual(found["adrs"][0]["id"], "ADR-0010")
 
+    def test_find_phase_artifacts_double_digit_fallback(self):
+        """Verifies phase artifacts matching for double-digit phases (>= 10) without phase frontmatter (BUG-008)."""
+        docs_dir = self.test_root / "docs"
+        specs_dir = docs_dir / "02_Tasks" / "Specs" / "15_LatencyAndChannels"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Spec file in folder 15_LatencyAndChannels WITHOUT phase field in frontmatter
+        (specs_dir / "TASK-057-zero-roundtrip.md").write_text(
+            "---\nid: TASK-057\ntitle: Zero Round-Trip Dispatch\nstatus: done\n---\n# TASK-057",
+            encoding="utf-8"
+        )
+        found = kb_release.find_phase_artifacts(docs_dir, phase_num=15)
+        self.assertEqual(len(found["tasks"]), 1)
+        self.assertEqual(found["tasks"][0]["id"], "TASK-057")
+
     def test_generate_release_markdown(self):
         env_info = {
             "has_git": True,

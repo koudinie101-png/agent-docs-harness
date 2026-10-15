@@ -10,6 +10,7 @@ import shutil
 import tempfile
 import unittest
 import subprocess
+from unittest.mock import patch
 from pathlib import Path
 
 # Ensure UTF-8 output on Windows consoles
@@ -2016,6 +2017,14 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(res_lint.returncode, 0, f"kb_lint failed on MemoryApp:\n{res_lint.stdout}\n{res_lint.stderr}")
             self.assertIn("0 broken", res_lint.stdout)
+
+    def test_31_bug_008_local_fallback_memory_patterns(self):
+        """Verify local development fallback in unpack_assets includes docs/06_Memory/patterns.md (BUG-008)."""
+        with patch.object(install, "EMBEDDED_ASSETS_B64", ""):
+            assets = install.unpack_assets(REPO_ROOT)
+            self.assertIn("docs/06_Memory/patterns.md", assets)
+            content = assets["docs/06_Memory/patterns.md"]
+            self.assertIn("Память процедурных ошибок: Активные паттерны", content)
 
 
 if __name__ == "__main__":
