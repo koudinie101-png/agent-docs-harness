@@ -1,7 +1,7 @@
 ---
 id: TASK-073
 title: "Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в AGENTS.md"
-status: planned
+status: done
 type: task
 phase: 18
 component:
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-073 — Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в AGENTS.md
 
-> **ID:** TASK-073 | **Статус:** К реализации  
+> **ID:** TASK-073 | **Статус:** Выполнено  
 > **Фаза:** 18 | **Релиз:** v0.18.0  
 > **План:** [[../../Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../../../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]
@@ -84,18 +84,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Контроль объема каталога шаблонов: суммарный размер файлов в `docs/00_Templates/` $\le 28\text{ KB}$.
-- [ ] Линтинг базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
-- [ ] Синтаксическая проверка `install.py`: `python -m py_compile install.py` (Exit code 0).
-- [ ] Проверка синхронизации SSOT: формулировки в `AGENTS.md` и `install.py` идентичны.
+- [x] Контроль объема каталога шаблонов: суммарный размер файлов в `docs/00_Templates/` $\le 28\text{ KB}$.
+- [x] Линтинг базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Синтаксическая проверка `install.py`: `python -m py_compile install.py` (Exit code 0).
+- [x] Проверка синхронизации SSOT: формулировки в `AGENTS.md` и `install.py` идентичны.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] The 4-State Matrix и Visual DoD интегрированы в шаблоны `TEMPLATE_PLAN.md` и `TEMPLATE_TASK.md`.
-- [ ] Правила агентов в `AGENTS.md` и `install.py` синхронизированы.
-- [ ] Жесткий лимит `docs/00_Templates/ <= 28 KB` не превышен.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] The 4-State Matrix и Visual DoD интегрированы в шаблоны `TEMPLATE_PLAN.md` и `TEMPLATE_TASK.md`.
+- [x] Правила агентов в `AGENTS.md` и `install.py` синхронизированы.
+- [x] Жесткий лимит `docs/00_Templates/ <= 28 KB` не превышен.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

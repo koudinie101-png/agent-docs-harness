@@ -16,6 +16,27 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-073: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в AGENTS.md
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-073-the-4-state-matrix-visual-dod-and-templates|TASK-073]]:
+    1. В `docs/00_Templates/TEMPLATE_PLAN.md` внедрен компактный блок проектирования «The 4-State UI Matrix» (`Empty`, `Loading`, `Error`, `Populated`) и подсказка сопряжения узлов в multi-target системах.
+    2. В `docs/00_Templates/TEMPLATE_TASK.md` добавлен раздел «Visual DoD» с чеклистом фиксации постоянного скриншота в `docs/assets/screenshots/<target>/TASK-XXX.png` ($\le 2\text{ MB}$) и Headless/CLI Fallback слотом.
+    3. Каталог `docs/00_Templates/` сохранен в Skeleton-формате (суммарный вес: 27.6 KB при лимите $\le 28.0\text{ KB}$).
+    4. В корневой `AGENTS.md` добавлено правило 12: «The 4-State UI & Visual Verification Invariant» и правила изоляции снимков `tmp/ui_snapshots/` (Git Bloat Prevention).
+    5. В `install.py` расширен `_RULES_BODY` (20 дисциплин Docs-as-Code), синхронизированы генераторы `_gen_rule()`, `generate_agents_md()` и корневой `GEMINI.md`.
+    6. Актуализированы тесты в `tests/test_installer.py`.
+  - Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - Суммарный вес `docs/00_Templates/` = 27628 байт ($\le 28000$ байт).
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 191 файл проверен, 1732 ссылки валидировано (0 битых).
+  - `python -m unittest tests/test_installer.py` -> 33/33 тестов пройдено.
+  - `python -m unittest discover -s tests` -> 104/104 теста пройдено.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации завершающей задачи Фазы 18 — запустить Режим 3: `/kb-implement TASK-074`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-072: Механический контроль медиа-ассетов в scripts/kb_lint.py и scripts/kb_release.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]:

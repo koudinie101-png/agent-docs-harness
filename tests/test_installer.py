@@ -1207,7 +1207,8 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn("14. Zero-State & Spec Genesis", agents_content)
         self.assertIn("Zero-State Anti-Hallucination & Spec Genesis", agents_content)
         self.assertIn("6. Zero-State Anti-Hallucination & Spec Genesis", agents_content)
-        self.assertIn("## Docs-as-Code (19 Disciplines)", agents_content)
+        self.assertIn("## Docs-as-Code (20 Disciplines)", agents_content)
+        self.assertIn("20. The 4-State UI & Visual Verification", agents_content)
         self.assertIn("Mode 0: Discovery & Feasibility", agents_content)
         self.assertIn("Mode 2C: Feedback Triage & Dispatch", agents_content)
 
@@ -1673,7 +1674,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Fast-Track Protocol", out)
             self.assertIn("Zero Round-Trip", out)
             self.assertIn("Anti-Echo & Single-Task Barrier", out)
-            self.assertNotIn("## Docs-as-Code (19 Disciplines)", out)
+            self.assertNotIn("## Docs-as-Code (", out)
             self.assertNotIn("1. Read `SPEC.md`", out)
 
         # 2. Project root adapter files check
@@ -1696,7 +1697,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("Human Guardrails", content)
             self.assertIn("Fast-Track Protocol", content)
             self.assertIn("Zero Round-Trip", content)
-            self.assertNotIn("## Docs-as-Code (19 Disciplines)", content)
+            self.assertNotIn("## Docs-as-Code (", content)
 
         # 3. Fresh installation with all adapters check
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -1729,7 +1730,7 @@ class TestAgentDocsHarness(unittest.TestCase):
                 self.assertIn("Human Guardrails", content)
                 self.assertIn("Fast-Track Protocol", content)
                 self.assertIn("Zero Round-Trip", content)
-                self.assertNotIn("## Docs-as-Code (19 Disciplines)", content)
+                self.assertNotIn("## Docs-as-Code (", content)
 
 
     def test_26_skills_consolidation_and_template_taxonomy(self):

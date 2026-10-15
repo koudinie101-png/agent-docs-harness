@@ -182,7 +182,7 @@ def unpack_assets(source_repo_path: Path = None) -> dict:
 
 # --- GENERATORS FOR AGENTS & REPO RULES ---
 
-_RULES_BODY = ("## Docs-as-Code (19 Disciplines)\n"
+_RULES_BODY = ("## Docs-as-Code (20 Disciplines)\n"
     "Language: {lang}\n"
     "1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).\n"
     "2. Kanban: move cards with date `(YYYY-MM-DD)`.\n"
@@ -202,7 +202,8 @@ _RULES_BODY = ("## Docs-as-Code (19 Disciplines)\n"
     "16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.\n"
     "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n"
     "18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.\n"
-    "19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.\n")
+    "19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.\n"
+    "20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -232,6 +233,7 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
         f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
         f"6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.\n"
+        f"7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store screenshots in `docs/assets/screenshots/<target>/` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.\n"
         f"{tail}"
     )
 
@@ -294,6 +296,14 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 - When `SPEC.md` is missing or in `status: discovery`, the agent is **strictly prohibited** from inventing arbitrary product requirements, features, or technology stacks out of thin air.
 - Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
 - Planning (`/kb-plan`) and task specification (`/kb-task`) must issue a Soft Nudge if `SPEC.md` is unvalidated.
+
+---
+
+## 🎨 7. The 4-State UI & Visual Verification Invariant
+
+- Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size <= 2 MB).
+- In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
+- **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
 
 ---
 
