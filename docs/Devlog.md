@@ -16,6 +16,30 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-074: Бандлинг инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-074-bundling-e2e-tests-and-living-spec|TASK-074]]:
+    1. В `tests/test_installer.py` добавлен сквозной E2E тест `test_34_task_071_and_074_ui_harness_and_obsidian_dx`, покрывающий:
+       - Скаффолдинг `--ui web` (структура каталогов, `UI_Design_System.md`, `app.json`, `.gitignore`).
+       - Композитный мультитаргет `--ui windows,android` (директории обоих таргетов, `multi-device/`, `Protocols/`, `Targets/`).
+       - Профиль `--ui none` (полное отсутствие каталога `docs/assets/`).
+       - Безопасный мерж `docs/.obsidian/app.json` при запуске `install.py --update` (сохранение пользовательских настроек и инжекция `attachmentFolderPath`).
+    2. В `install.py` добавлен псевдоним `ui_targets: str = None` в функцию `install_harness()` для обратной совместимости API.
+    3. Запущен `scripts/build_installer.py`: монолитный установщик `install.py` и его зеркало `dist/install.py` пересобраны (150.4 KB / 154029 байт при лимите $\le 160\text{ KB}$).
+    4. Синхронизированы Living Spec файлы:
+       - `SPEC.md`: добавлена структура `assets/` в раздел 2.1, настройки Obsidian DX в 2.2, медиа-проверки в 2.3, правило 4-State UI в 2.4, ключ `--ui` в 3.2, Фазы 17 и 18 в раздел 4.
+       - `README.md`: обновлены дерево директорий `docs/`, сводка параметров CLI (`--ui`) и ключевая дисциплина #11 (The 4-State UI & Visual Verification Invariant).
+       - `docs/Onboarding.md`: добавлен раздел 14 «Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы».
+    5. Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`), плане `PLAN-018` (`Done`) и Дорожной карте (`[x]`). Фаза 18 официально завершена!
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> 154029 байт ($\le 160000$ байт).
+  - `python scripts/kb_lint.py --path docs` -> 191 файл проверен, 1735 ссылок валидировано (0 битых).
+  - `python -m unittest discover -s tests` -> 105/105 тестов пройдено (100% pass, 0 regressions).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Все задачи Фазы 18 успешно завершены. Для подготовки и выпуска релиза v0.18.0 запустите процедуру подготовки релиза: `/kb-release`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-073: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в AGENTS.md
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-073-the-4-state-matrix-visual-dod-and-templates|TASK-073]]:

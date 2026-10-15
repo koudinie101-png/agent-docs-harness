@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-12
+updated: 2026-10-15
 tags:
   - spec
   - master
@@ -50,25 +50,21 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * `04_Research/` — Исследования платформенных ограничений, памяти и гипотез (`RESEARCH-XXX`).
 * `05_Testing/` — Сценарии приемочного тестирования (E2E UX) с интерактивными чек-боксами.
 * `06_Memory/` — Процедурная память агента: High-SNR компактный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей, лимит ~350 токенов) и архив детальных отчетов об инцидентах `Incidents/` (`INC-XXX`).
+* `assets/` — Хранилище визуальных ассетов (`mockups/`, `screenshots/<target>/`, `diagrams/`, `design/UI_Design_System.md`).
 * `Devlog.md` — Хронологический журнал сессий разработки.
 * `Onboarding.md` — Единое руководство разработчика и агента.
 * `Zero_To_Hero_Guide.md` — Интерактивное руководство для начинающих разработчиков и вайбкодеров.
 * `00_Index.md` — Карта заметок (Map of Content).
 
-### 2.2. Цветовая дифференциация Obsidian Graph (`.obsidian/graph.json`)
-7 цветовых групп для визуализации архитектурных связей:
-* ⚪ **Белый:** Главные хабы (`00_Index`, `Devlog`, `SPEC`, `Onboarding`).
-* 🟣 **Фиолетовый:** Архитектура (`01_Architecture`).
-* 🔵 **Голубой/Циан:** Решения (`03_Decisions_ADR`, `#adr`).
-* 🟡 **Желтый/Янтарный:** Исследования платформы (`04_Research`, `#research`).
-* 🟠 **Оранжевый:** Задачи, планы и roadmap (`02_Tasks`, `#task`).
-* 🔴 **Красный:** Баги и дефекты (`02_Tasks/Bugs`, `#bug`).
-* 🟢 **Зеленый:** Приемочное тестирование (`05_Testing`, `#testing`).
+### 2.2. Настройки Obsidian и граф связей (`.obsidian/`)
+* **Цветовая дифференциация графа (`.obsidian/graph.json`):** 7 цветовых групп для визуализации архитектурных связей (Белый — хабы, Фиолетовый — архитектура, Циан — ADR, Янтарный — исследования, Оранжевый — задачи, Красный — баги, Зеленый — тестирование).
+* **Obsidian DX и вставка ассетов (`.obsidian/app.json`):** автоматическая конфигурация `attachmentFolderPath: "assets/screenshots"`, позволяющая пользователям вставлять скриншоты по Ctrl+V прямо в репозиторий без ручного перекладывания файлов.
 
 ### 2.3. Автономные утилиты скриптов (`scripts/`)
 * **`scripts/kb_lint.py`:**
   * Zero dependencies (только Python 3 stdlib: `pathlib`, `re`, `argparse`).
   * Валидация всех вики-ссылок `[[...]]`, регистра имен и структуры путей.
+  * Индексация и валидация медиа-ассетов (изображения `![[...]]`, markdown `![...](...)`): поддержка параметров размера/отображения (`![[img.png|300]]`), проверка физического существования файлов и аудит весового лимита ($\le 2\text{ MB}$).
   * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах, ADR, элементах обратной связи (`FB-XXX`) и отчетах об инцидентах (`INC-XXX`).
   * Механический Tier 1 контроль лимита процедурной памяти (`check_memory_limits`): строгая проверка лимита активных записей ($\le 15$) в `docs/06_Memory/patterns.md` с блокировкой сборки (Exit code 1).
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
@@ -78,6 +74,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
   * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.
+  * Конвертер медиа-вставок в чистый Markdown: преобразование синтаксиса `![[image.png]]` в стандартные Markdown-изображения `![image.png](...)` в публичных заметках `dist/RELEASE_NOTES.md`.
   * Релизный таргетинг дефектов (`collect_fixed_bugs`): включение в чейнджлог только устраненных багов целевой версии (`fixed_in` или `target_release`).
   * Префлайт-контроль релиз-блокеров (`check_release_blockers`): аварийная остановка сборки релиза (Exit code 1) при наличии открытых багов с флагом `release_blocker: true`.
   * Адаптивный блок установки (Adaptive Quick Install): контекстная генерация инструкций в `dist/RELEASE_NOTES.md` (Docs-as-Code инсталлятор только для репозитория самого harness-а, скачивание скомпилированных артефактов `dist/` для сторонних проектов, либо кастомные команды через аргумент `--quick-install`).
@@ -111,6 +108,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Feedback Ingestion & Triage Buffer Invariant:** внешние сигналы никогда не попадают в код или ТЗ в обход буфера `Inbox/`; триаж выполняется исключительно через `/kb-triage` с соблюдением принципа пермалинков (in-place обновление frontmatter `FB-XXX`).
 * **Permalinks Principle:** файлы ТЗ, багов и обратной связи не перемещаются в архивы при закрытии.
 * **Regression-First:** баги закрываются только после создания падающего воспроизводящего автотеста и успешного прохождения TDD-цикла через `/kb-implement BUG-XXX`.
+* **The 4-State UI & Visual Verification Invariant:** обязательное проектирование матрицы 4 состояний (`Empty`, `Loading`, `Error`, `Populated`) в планах (`TEMPLATE_PLAN.md`) и спецификациях (`TEMPLATE_TASK.md`) для графических (GUI) и терминальных (TUI) интерфейсов; подтверждение завершения задач скриншотом в `docs/assets/screenshots/<target>/TASK-XXX.png` ($\le 2\text{ MB}$) или ASCII/SVG превью в Headless окружении; изоляция временных тестовых снапшотов в `tmp/ui_snapshots/` с запретом коммита в Git.
 
 ---
 
@@ -138,6 +136,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
    * `--git {github,local,none}` — стратегия контроля версий.
    * `--update` — бережное обновление шаблонов, скиллов, утилит и создание буфера Inbox без перезаписи пользовательских заметок.
    * `--report` — генерация анонимизированного диагностического Markdown-отчета окружения (ОС, Python, Git, статус kb_lint, найденные конфиги агентов).
+   * `--ui {auto,none,web,mobile,desktop,tui,<comma-separated>}` — выбор UI-платформ и инициализация каталогов визуальных ассетов (`docs/assets/`).
    * `-y`, `--yes`, `--non-interactive` — авто-подтверждение дефолтов.
    * `--target-dir <path>` — путь назначения (по умолчанию `.`).
 
@@ -161,4 +160,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 * **Фаза 14: Продуктовый DX, протокол Fast-Track и адаптация для вайбкодеров (Agile Docs-as-Code & Chat-First DX)** — протокол Fast-Track для микро-задач (пропуск Режима 1, компактная Micro-Spec `TEMPLATE_TASK_MICRO.md`, экономия 70% токенов), принцип «Направляй, а не блокируй» (Human Guardrails) в правилах агентов, Chat-First Bootstrapping в README (запуск без терминала), практическое руководство `Zero_To_Hero_Guide.md` («Вайбкодинг со страховкой»), понятные чейнджлоги в `kb_release.py` и аудит лимитов в `kb_lint.py`.
 * **Фаза 15: Устранение задержек отклика и прозрачность каналов (Response Latency Elimination & Channel Transparency)** — архитектура Zero Round-Trip Dispatch (Hot Invariants в Always-On префиксе без предварительного чтения `SKILL.md`), User-Centric Ingestion & Channel Transparency в `scripts/kb_ingest.py` (Zero-Deps автодетект репозитория из `git remote origin`, флаг `--status`, гибкая фильтрация `--label` / `--all-open`, запрет немых пропусков), актуализация скилла `/kb-triage`, семантический контроль фаз в `scripts/kb_lint.py` (`check_phase_consistency`), монолитный дистрибутив `install.py` и сквозные E2E тесты.
 * **Фаза 16: Самообучающийся харнесс и память дефектов (Self-Improving Harness & Defect Memory)** — ликвидация амнезии процедурных ошибок агента через двухуровневый контур памяти (архив инцидентов `docs/06_Memory/Incidents/` и High-SNR агрегированный индекс `patterns.md` с лимитом $\le 15$ записей), контрольные точки Memory-First в Режиме 3 (`kb-implement`) и `/kb-complete`, протокол двухосевого промоушена, матрица слоев надежности Quality Gates (Tier 1–3), аудит лимитов в `scripts/kb_lint.py`, бандлинг инсталлятора `install.py` и сквозные E2E тесты.
+* **Фаза 17: Стабилизация ядра, синхронизация SSOT и защита краевых сценариев (Core Hardening & SSOT Sync)** — устранение рассинхронизации между корневым `AGENTS.md` и генераторами `install.py`, исправление краевых дефектов линтера/инжестора/релизера (`BUG-005`–`BUG-009`), обеспечение 100% совместимости с Python 3.8+, защита анонимизатора и синхронизация всех 16 шаблонов.
+* **Фаза 18: Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы (Heterogeneous UI/UX & Visual Asset Harness)** — изолированное хранилище ассетов с Obsidian DX (`docs/assets/`, `docs/.obsidian/app.json`), композитный CLI-флаг `--ui <targets>`, механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py` (лимит $\le 2\text{ MB}$, очистка размеров, конвертация в Markdown), норматив матрицы 4 состояний (The 4-State UI Matrix) и визуальный DoD в `AGENTS.md`, шаблонах и руководствах.
+
 

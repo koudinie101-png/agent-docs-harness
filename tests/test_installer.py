@@ -6,6 +6,7 @@ Zero external dependencies (uses standard library unittest, tempfile, pathlib).
 
 import sys
 import os
+import json
 import shutil
 import tempfile
 import unittest
@@ -2154,6 +2155,86 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res_code, 0)
             mock_build.assert_called_once()
             mock_copy.assert_called_once()
+
+    def test_34_task_071_and_074_ui_harness_and_obsidian_dx(self):
+        """Verify composite --ui targets scaffolding, app.json safe merge, and .gitignore rules (TASK-071 & TASK-074)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base_dir = Path(tmpdir)
+
+            # 1. Single target: --ui web
+            target_web = base_dir / "WebApp"
+            target_web.mkdir()
+            install.install_harness(
+                target_dir=target_web,
+                project_name="WebApp",
+                stack_key="ts",
+                ui_targets="web",
+                agent_choice="none",
+                git_choice="none",
+            )
+            self.assertTrue((target_web / "docs" / "assets" / "screenshots" / "web").is_dir())
+            self.assertTrue((target_web / "docs" / "assets" / "mockups" / "web").is_dir())
+            self.assertFalse((target_web / "docs" / "01_Architecture" / "Protocols").exists())
+            self.assertTrue((target_web / "docs" / "01_Architecture" / "UI_Design_System.md").is_file())
+
+            # Verify .obsidian/app.json configuration
+            app_json = target_web / "docs" / ".obsidian" / "app.json"
+            self.assertTrue(app_json.is_file())
+            app_data = json.loads(app_json.read_text(encoding="utf-8"))
+            self.assertEqual(app_data.get("attachmentFolderPath"), "assets/screenshots")
+
+            # Verify .gitignore rules
+            gitignore = (target_web / ".gitignore").read_text(encoding="utf-8")
+            self.assertIn("!.obsidian/app.json", gitignore)
+            self.assertIn("tmp/ui_snapshots/", gitignore)
+
+            # 2. Multi-target: --ui windows,android
+            target_multi = base_dir / "MultiApp"
+            target_multi.mkdir()
+            install.install_harness(
+                target_dir=target_multi,
+                project_name="MultiApp",
+                stack_key="generic",
+                ui_targets="windows,android",
+                agent_choice="none",
+                git_choice="none",
+            )
+            self.assertTrue((target_multi / "docs" / "assets" / "screenshots" / "windows").is_dir())
+            self.assertTrue((target_multi / "docs" / "assets" / "screenshots" / "android").is_dir())
+            self.assertTrue((target_multi / "docs" / "assets" / "screenshots" / "multi-device").is_dir())
+            self.assertTrue((target_multi / "docs" / "assets" / "mockups" / "flows").is_dir())
+            self.assertTrue((target_multi / "docs" / "01_Architecture" / "Protocols").is_dir())
+            self.assertTrue((target_multi / "docs" / "01_Architecture" / "Targets" / "Windows.md").is_file())
+            self.assertTrue((target_multi / "docs" / "01_Architecture" / "Targets" / "Android.md").is_file())
+
+            # 3. None target: --ui none
+            target_none = base_dir / "NoneApp"
+            target_none.mkdir()
+            install.install_harness(
+                target_dir=target_none,
+                project_name="NoneApp",
+                stack_key="python",
+                ui_targets="none",
+                agent_choice="none",
+                git_choice="none",
+            )
+            self.assertFalse((target_none / "docs" / "assets").exists())
+
+            # 4. Safe merge of docs/.obsidian/app.json on --update
+            existing_app_json = target_web / "docs" / ".obsidian" / "app.json"
+            existing_app_json.write_text(json.dumps({"theme": "obsidian", "legacy": True}), encoding="utf-8")
+            res_upd = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target_web)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_upd.returncode, 0)
+            merged_app_data = json.loads(existing_app_json.read_text(encoding="utf-8"))
+            self.assertEqual(merged_app_data.get("theme"), "obsidian")
+            self.assertEqual(merged_app_data.get("legacy"), True)
+            self.assertEqual(merged_app_data.get("attachmentFolderPath"), "assets/screenshots")
 
 
 if __name__ == "__main__":

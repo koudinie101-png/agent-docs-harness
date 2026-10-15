@@ -1,7 +1,7 @@
 ---
 id: TASK-074
 title: "Бандлинг инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec"
-status: planned
+status: done
 type: task
 phase: 18
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-074 — Бандлинг инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec
 
-> **ID:** TASK-074 | **Статус:** К реализации  
+> **ID:** TASK-074 | **Статус:** Выполнено  
 > **Фаза:** 18 | **Релиз:** v0.18.0  
 > **План:** [[../../Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../../../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]
@@ -80,18 +80,18 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Запуск модульного сьюта: `python -m unittest discover -s tests` (100% pass, 0 regressions).
-- [ ] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Линтинг базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
-- [ ] Аудит Living Spec: `SPEC.md` и `README.md` содержат актуальные флаги и описание ассетов.
+- [x] Запуск модульного сьюта: `python -m unittest discover -s tests` (100% pass, 0 regressions).
+- [x] Сборка инсталлятора: `python scripts/build_installer.py` (Exit code 0).
+- [x] Линтинг базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Аудит Living Spec: `SPEC.md` и `README.md` содержат актуальные флаги и описание ассетов.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Все модульные и E2E тесты написаны и проходят успешно.
-- [ ] Монолитный `install.py` пересобран и готов к распространению.
-- [ ] Документация `SPEC.md`, `README.md` и `docs/Onboarding.md` синхронизирована с кодом.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Все модульные и E2E тесты написаны и проходят успешно.
+- [x] Монолитный `install.py` пересобран и готов к распространению.
+- [x] Документация `SPEC.md`, `README.md` и `docs/Onboarding.md` синхронизирована с кодом.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.
