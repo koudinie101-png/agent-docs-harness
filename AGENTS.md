@@ -117,6 +117,7 @@ Every feature or architectural initiative follows structured stages:
 
 ### 🟢 Mode 3: Implementation & Verification (`/kb-implement` & `/kb-complete` or "Режим 3")
 - **Action:**
+  - **Memory-First Preflight:** Read `docs/06_Memory/patterns.md` to avoid known procedural pitfalls and regression patterns before making any changes.
   - For tasks (`TASK-XXX`): implement code strictly adhering to the approved spec.
   - For defects (`BUG-XXX`): execute strict TDD cycle (**RED:** reproduction test fails $\to$ **GREEN:** fix passes $\to$ **REFACTOR:** full test suite passes).
 - **Verification:** Run all commands from the Verification Plan:
@@ -131,6 +132,7 @@ Every feature or architectural initiative follows structured stages:
   4. `docs/02_Tasks/Kanban.md`: move card to `## ✅ Готово (Done)` with current date `(YYYY-MM-DD)`.
   5. `docs/02_Tasks/Roadmap.md`: mark milestone `[x]` with permanent link to spec or bug.
   6. `docs/Devlog.md`: record chronological summary of the session.
-  7. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
-  8. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
-  9. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
+  7. Defect Loop Reflection: If execution involved errors, failed iterations, or unexpected defects, log an incident report (`docs/06_Memory/Incidents/INC-XXX.md`) and update `docs/06_Memory/patterns.md` according to Tier 2 guidelines.
+  8. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
+  9. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
+  10. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.

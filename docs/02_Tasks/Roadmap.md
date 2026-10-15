@@ -216,7 +216,7 @@ tags:
 
 ---
 
-## Фаза 17: Стабилизация ядра, синхронизация SSOT и защита краевых сценариев (Core Hardening & SSOT Sync)
+## Фаза 17: Стабилизация ядра, синхронизация SSOT и защита краевых сценариев (Core Hardening & SSOT Sync) — ✅ Завершена
 **Цель:** Устранение рассинхронизации между корневым `AGENTS.md` и генераторами `install.py`, исправление краевых дефектов линтера/инжестора/релизера и обеспечение 100% совместимости с Python 3.8+.  
 **Первоисточник плана:** [[Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]]
 
@@ -232,7 +232,7 @@ tags:
 - [x] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование кавычек в YAML frontmatter (`FB-*.md`), переход на постоянные IMAP UID (`client.uid`) и URL-кодирование меток GitHub в `kb_ingest.py`.
 - [x] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора `--report` по границам путей, проверка открытия `/dev/tty` в контейнерах, диагностика `git commit` и вызов `build_installer.build()` внутри `scripts/build_release.py`.
 - [x] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Полная синхронизация `generate_agents_md()` (`install.py`) с корневым `AGENTS.md` (добавление Mode 0 и Mode 2C, Human Guardrails, таксономия 16 шаблонов в `Onboarding` и тестах, ссылки в `CHANGELOG.md`).
-- [ ] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в `AGENTS.md` (Zero Round-Trip Memory Sync, Stop & Yield в Read-Only скиллах, кастомизация `TEMPLATE_TASK_MICRO.md`, пути `TEMPLATE_RELEASE.md`, таксономия 16 шаблонов и граф).
+- [x] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в `AGENTS.md` (Zero Round-Trip Memory Sync, Stop & Yield в Read-Only скиллах, кастомизация `TEMPLATE_TASK_MICRO.md`, пути `TEMPLATE_RELEASE.md`, таксономия 16 шаблонов и граф).
 
 ---
 

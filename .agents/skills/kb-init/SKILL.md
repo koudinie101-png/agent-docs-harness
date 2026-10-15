@@ -1,6 +1,6 @@
 ---
 name: kb-init
-description: "Initialize Docs-as-Code structure, 13 templates, Obsidian graph, and core tracking files."
+description: "Initialize Docs-as-Code structure, 16 templates, Obsidian graph, and core tracking files."
 ---
 
 # /kb-init — Initialize Knowledge Base (Docs-as-Code)
@@ -14,13 +14,14 @@ Use when the user runs `/kb-init` or requests setting up the knowledge base in a
 ## Procedure
 1. **Verify Target:** Check if `docs/` exists in project root.
 2. **Scaffold Directory Layout:**
-   - Create directories: `docs/.obsidian/`, `docs/00_Templates/`, `docs/01_Architecture/`, `docs/02_Tasks/Plans/`, `docs/02_Tasks/Specs/01_MVP/`, `docs/02_Tasks/Bugs/`, `docs/02_Tasks/Releases/`, `docs/03_Decisions_ADR/`, `docs/04_Research/`, `docs/05_Testing/`.
+   - Create directories: `docs/.obsidian/`, `docs/00_Templates/`, `docs/01_Architecture/`, `docs/02_Tasks/Inbox/`, `docs/02_Tasks/Plans/`, `docs/02_Tasks/Specs/01_MVP/`, `docs/02_Tasks/Bugs/`, `docs/02_Tasks/Releases/`, `docs/03_Decisions_ADR/`, `docs/04_Research/`, `docs/05_Testing/`, `docs/06_Memory/Incidents/`.
 3. **Deploy Templates & Configs:**
    - Deploy `docs/.obsidian/graph.json` (Obsidian color-coded palette).
-   - Deploy all 13 canonical templates to `docs/00_Templates/`.
+   - Deploy all 16 canonical templates to `docs/00_Templates/`.
 4. **Deploy Core Tracking Files & Master Spec:**
    - Deploy root `SPEC.md` with frontmatter `status: discovery` (Spec Genesis skeleton), matching `install.py` behavior.
    - Deploy `docs/Onboarding.md`, `docs/00_Index.md`, `docs/02_Tasks/Kanban.md`, `docs/02_Tasks/Roadmap.md`, and `docs/Devlog.md`.
 5. **Verify & Onboard Git:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 errors.
    - If Git is not initialized, assist user: `git init`, `git add .`, `git commit -m "feat: initial docs-as-code scaffolding"`.
+6. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-onboard`), and strictly STOP all tool calls.

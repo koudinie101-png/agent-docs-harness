@@ -20,3 +20,4 @@ Use when the user runs `/kb-adr <name>`, decides on an architectural trade-off, 
    - Add reference in `docs/00_Index.md` (section 3).
 4. **Git Sync (Conditional):**
    - Stage and commit: `git add docs/03_Decisions_ADR/ docs/02_Tasks/Roadmap.md docs/00_Index.md && git commit -m "docs(adr): record ADR-XXXX <slug>"`. Push if remote exists.
+5. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-plan <name>` or `/kb-task <name>`), and strictly STOP all tool calls. Wait for user command.

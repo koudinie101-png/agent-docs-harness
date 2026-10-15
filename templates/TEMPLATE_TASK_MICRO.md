@@ -3,7 +3,7 @@ id: TASK-XXX
 title: "[Краткое действие: 3-7 слов]"
 status: planned # planned | in-progress | done | cancelled
 type: fast-track
-phase: 14 # Номер текущей фазы
+phase: 1 # Номер текущей фазы
 component:
   - core
 parent_plan: "[[../../Plans/PLAN-XXX|PLAN-XXX]]" # Опционально или ссылка на фазовый план

@@ -30,3 +30,4 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
    - Stage: `git add docs/02_Tasks/Specs/ docs/02_Tasks/Kanban.md`
    - Commit: `git commit -m "docs(spec): add TASK-XXX <slug> and set in-progress"`
    - Push if remote origin exists.
+7. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-implement TASK-XXX`), and strictly STOP all tool calls. Wait for user command.

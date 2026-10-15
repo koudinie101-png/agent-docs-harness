@@ -15,9 +15,8 @@ Use when the user runs `/kb-implement <TASK-XXX | BUG-XXX>` or begins implementa
 
 ## Procedure
 0. **Memory-First Check:**
-   - Если существует `docs/06_Memory/patterns.md`, ознакомиться с активными паттернами.
-   - Проверить, содержит ли текущая задача риски из списка граблей (Windows paths, ложные моки, несовместимость версий, галлюцинации API).
-   - Учесть защитные правила паттернов при проектировании решения.
+   - Ознакомиться с `docs/06_Memory/patterns.md` (если существует) перед внесением правок.
+   - Учесть защитные правила (Windows paths, mock leaks, API drifts).
 1. **Sync & Context:**
    - If `TASK-XXX`: read `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`. Confirm affected files and Verification Plan.
    - If `BUG-XXX`: read `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md`. Confirm reproduction steps and Root Cause Analysis (RCA).

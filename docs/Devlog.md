@@ -16,6 +16,28 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-070: Синхронизация скиллов, шаблонов и контура памяти в AGENTS.md
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]:
+    1. В `AGENTS.md` и функцию `generate_agents_md()` утилиты `install.py` интегрирован нулевой шаг `Memory-First Preflight (read patterns.md)` и рефлексия `Defect Loop Reflection (log INC-XXX & update patterns.md)` в Режиме 3 (Implementation).
+    2. Во все read-only скиллы (`kb-plan`, `kb-task`, `kb-research`, `kb-adr`) и `kb-init` добавлен терминальный шаг `Stop & Yield Control` с генерацией Anti-Echo отчета и строгой остановкой вызовов инструментов.
+    3. В шаблоне `TEMPLATE_TASK_MICRO.md` скорректирована начальная фаза (`phase: 1`), а в `customize_templates_for_stack()` добавлена замена команды тестов на специфичную для стека.
+    4. В шаблоне `TEMPLATE_RELEASE.md` исправлены относительные викиссылки на задачи и баги (`[[../Specs/...]]`, `[[../Bugs/...]]`).
+    5. В индексных хабах `TEMPLATE_INDEX.md` и `docs/00_Index.md` синхронизированы ссылки на `Zero_To_Hero_Guide.md`, `02_Tasks/Inbox/` и `06_Memory/` в структуре и Mermaid-диаграмме.
+    6. В `templates/graph.json` и `docs/.obsidian/graph.json` добавлена нода `Zero_To_Hero_Guide` и выделенная цветовая группа для процедурной памяти `06_Memory/`.
+    7. Руководство `docs/Zero_To_Hero_Guide.md` отполировано: добавлена прямая curl-команда и неинтерактивный флаг `-y` в Разделе 4, подраздел `/kb-bug` в Разделе 2, и скорректирован синтаксис команды `/kb-task`.
+    8. Пересобран автономный инсталлятор `install.py` и дистрибутив `dist/install.py` через `scripts/build_installer.py`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус спецификации обновлен на `done`, Фаза 17 отмечена как завершенная в [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_installer.py` -> 33/33 теста успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 99/99 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 183 files scanned, 1649 wikilinks verified (0 broken, Exit code 0).
+  - `python -m py_compile scripts/*.py install.py` -> 100% компиляция без ошибок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Все задачи и дефекты Фазы 17 завершены. Ожидает команды пользователя на выпуск релиза (`/kb-release 0.17.0`) или планирование следующей фазы (`/kb-plan`).
+
+---
+
 ### [2026-10-15] — Реализация TASK-069: Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]:

@@ -29,3 +29,4 @@ Use when validating new ideas, testing technical hypotheses, exploring architect
 5. **Index & Git Sync:**
    - Link research note in `docs/00_Index.md` (section 4: Исследования).
    - Git commit: `git add docs/04_Research/ docs/02_Tasks/Roadmap.md docs/03_Decisions_ADR/ docs/00_Index.md && git commit -m "docs(research): add RESEARCH-XXX <slug>"`. Push if remote origin exists.
+6. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-plan <name>`), and strictly STOP all tool calls. Wait for user command.

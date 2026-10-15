@@ -17,6 +17,7 @@ tags:
 > **Теги:** #project #pkm #index #agent-docs-harness  
 > **Главная спецификация:** [[../SPEC|SPEC.md (Master Specification)]]  
 > **Руководство по онбордингу:** [[Onboarding|Руководство разработчика]]  
+> **Вайбкодинг:** [[Zero_To_Hero_Guide|Zero to Hero: «Вайбкодинг со страховкой»]]  
 
 Добро пожаловать в базу знаний проекта **agent-docs-harness**. Каталог `docs/` спроектирован по методологии **Docs-as-Code** и представляет собой локальный Vault для Obsidian и любых IDE с поддержкой AI-агентов.
 
@@ -27,6 +28,7 @@ tags:
 ```mermaid
 flowchart TD
     Index["00_Index (База знаний)"] --> Onboarding["[[Onboarding|Онбординг]]"]
+    Index --> Zero["[[Zero_To_Hero_Guide|Вайбкодинг]]"]
     Index --> Arch["01. Архитектура"]
     Index --> Tasks["02. Задачи и планы"]
     Index --> ADR["03. Решения (ADR)"]
@@ -47,7 +49,7 @@ flowchart TD
 ### 0. Вводные материалы
 * [[Zero_To_Hero_Guide|Zero to Hero: «Вайбкодинг со страховкой»]] — практическое руководство для начинающих разработчиков простым языком.
 * [[Onboarding|Руководство по онбордингу]] — правила ведения базы знаний, 4 режима разработки и быстрые команды.
-* [[00_Templates/TEMPLATE_TASK|Каталог шаблонов]] — эталонные шаблоны для всех типов документов (14 шаблонов, включая [[00_Templates/TEMPLATE_TASK_MICRO|TEMPLATE_TASK_MICRO]] и [[00_Templates/TEMPLATE_RELEASE|TEMPLATE_RELEASE]]).
+* [[00_Templates/TEMPLATE_TASK|Каталог шаблонов]] — эталонные шаблоны для всех типов документов (16 шаблонов, включая [[00_Templates/TEMPLATE_TASK_MICRO|TEMPLATE_TASK_MICRO]] и [[00_Templates/TEMPLATE_RELEASE|TEMPLATE_RELEASE]]).
 
 ### 1. Архитектура (`01_Architecture/`)
 * Системные компоненты инсталлятора, архитектура Self-Contained сборки, кроссплатформенная абстракция.
@@ -55,6 +57,7 @@ flowchart TD
 ### 2. Задачи и трекинг (`02_Tasks/`)
 * [[02_Tasks/Kanban|Канбан-доска]] — оперативные задачи (Backlog, In Progress, Done).
 * [[02_Tasks/Roadmap|Дорожная карта]] — стратегические фазы от MVP до релиза.
+* `Inbox/` — буфер входящей обратной связи (`FB-*.md`) перед триажем (`/kb-triage`).
 * `Plans/` — концепции и планы фичей (Режим 1).
 * `Specs/` — технические задания по фазам (Режим 2).
 * `Bugs/` — журнал дефектов и баг-репортов.

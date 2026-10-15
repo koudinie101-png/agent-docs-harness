@@ -89,7 +89,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 - [x] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование кавычек в YAML frontmatter (`FB-*.md`), переход на постоянные IMAP UID (`client.uid`) и URL-кодирование меток GitHub в `kb_ingest.py`.
 - [x] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора `--report` по границам путей, проверка открытия `/dev/tty` в контейнерах, диагностика `git commit` и вызов `build_installer.build()` внутри `scripts/build_release.py`.
 - [x] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Полная синхронизация `generate_agents_md()` (`install.py`) с корневым `AGENTS.md` (добавление Mode 0 и Mode 2C, Human Guardrails, таксономия 16 шаблонов в `Onboarding` и тестах, ссылки в `CHANGELOG.md`).
-- [ ] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в `AGENTS.md` (Zero Round-Trip Memory Sync, Stop & Yield в Read-Only скиллах, кастомизация `TEMPLATE_TASK_MICRO.md`, пути `TEMPLATE_RELEASE.md`, таксономия 16 шаблонов и граф).
+- [x] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в `AGENTS.md` (Zero Round-Trip Memory Sync, Stop & Yield в Read-Only скиллах, кастомизация `TEMPLATE_TASK_MICRO.md`, пути `TEMPLATE_RELEASE.md`, таксономия 16 шаблонов и граф).
 
 ---
 
@@ -100,4 +100,4 @@ kanban: "[[../Kanban|Канбан-доска]]"
 - [x] Дефекты `BUG-005`–`BUG-008` зарегистрированы в `docs/02_Tasks/Bugs/`.
 - [x] Карточки добавлены в `docs/02_Tasks/Kanban.md` в секцию `📥 Бэклог`.
 - [x] Целостность базы знаний подтверждена через `python scripts/kb_lint.py --path docs` (0 broken links).
-- [ ] Пользователь подтвердил план для перехода к реализации (`/kb-implement BUG-005`).
+- [x] Пользователь подтвердил план для перехода к реализации (`/kb-implement BUG-005`).

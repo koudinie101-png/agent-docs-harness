@@ -30,3 +30,4 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
    - Stage: `git add docs/02_Tasks/Plans/ docs/02_Tasks/Kanban.md docs/02_Tasks/Roadmap.md`
    - Commit: `git commit -m "docs(plan): record PLAN-XXX <slug> and update backlog"`
    - Push if remote origin exists.
+7. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-task <name>`), and strictly STOP all tool calls. Wait for user command.
