@@ -17,10 +17,10 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` #task #phase18 #installer #assets #obsidian
-
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` (2026-10-15) #task #phase18 #installer #assets #obsidian
 
 - [x] [[Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]: Синхронизация скиллов, шаблонов и контура памяти в AGENTS.md (2026-10-15) #task #skills #templates #memory #phase17
 - [x] [[Plans/PLAN-017-core-hardening-and-ssot-sync|План: Фаза 17 — Стабилизация ядра, синхронизация SSOT и защита краевых сценариев]] (2026-10-15) #plan #phase17 #hardening #ssot #quality-gates

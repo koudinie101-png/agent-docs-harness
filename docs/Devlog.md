@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-071: Архитектура хранения ассетов, композитный --ui и Obsidian DX в install.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]:
+    1. В `install.py` реализован парсинг и нормализация композитного флага `--ui` (`auto`, `none`, `web`, `mobile`, `desktop`, `tui` и произвольные связки через запятую, например `--ui windows,android`).
+    2. Внедрена двухступенчатая раскладка хранилища ассетов `docs/assets/`:
+       - Single-target (1 узел): `docs/assets/mockups/<target>/`, `docs/assets/screenshots/<target>/`.
+       - Multi-target ($\ge 2$ узлов): дополнительно `docs/assets/mockups/flows/`, `docs/assets/screenshots/multi-device/`, `docs/01_Architecture/Protocols/` и `docs/01_Architecture/Targets/`.
+    3. Реализована функция `setup_obsidian()` с авто-роутингом вложений в `docs/.obsidian/app.json` (`"attachmentFolderPath": "assets/screenshots"`) и безопасным JSON-мержем настроек при `install.py --update`.
+    4. В `handle_gitignore()` добавлены правила `!.obsidian/app.json` и `tmp/ui_snapshots/` (защита от Git Bloat).
+    5. В `create_starter_docs()` интегрирована динамическая генерация `docs/01_Architecture/UI_Design_System.md` и спецификаций узлов `Targets/<Platform>.md` без изменения `docs/00_Templates/` с сохранением жесткого лимита $\le 28\text{ KB}$.
+  - Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - Изолированные E2E тесты (Single target, Multi target, Safe update merge) -> 100% пройдены.
+  - `python scripts/kb_lint.py --path docs` -> 191 файл проверен, 1730 ссылок валидировано (0 битых).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации следующей задачи — запустить Режим 3: `/kb-implement TASK-072`.
+
+---
+
 ### [2026-10-15] — Инженерная спецификация: Фаза 18 (TASK-071–TASK-074)
 - **Что сделано:**
   - В Режиме 2 (Task Specification) разработаны детальные технические спецификации для всех задач Фазы 18:

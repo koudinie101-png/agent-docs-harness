@@ -1,7 +1,7 @@
 ---
 id: TASK-071
 title: "Архитектура хранения ассетов, композитный --ui и Obsidian DX в install.py"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 18
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-071 — Архитектура хранения ассетов, композитный --ui и Obsidian DX в install.py
 
-> **ID:** TASK-071 | **Статус:** В работе  
+> **ID:** TASK-071 | **Статус:** Выполнено  
 > **Фаза:** 18 | **Релиз:** v0.18.0  
 > **План:** [[../../Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../../../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]

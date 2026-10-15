@@ -24,6 +24,7 @@ import argparse
 import subprocess
 from datetime import date
 from pathlib import Path
+from typing import Optional, List, Dict, Tuple
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -464,12 +465,105 @@ This project uses the Docs-as-Code knowledge base and strict 3-mode workflow for
         print("📝 Created root README.md with Docs-as-Code section.")
 
 
+def normalize_ui_targets(ui_arg: Optional[str]) -> List[str]:
+    """Разбивает строку --ui по запятым, очищает пробелы и приводит к lowercase."""
+    if not ui_arg:
+        return []
+    cleaned = ui_arg.strip().lower()
+    if cleaned in ("none", "no", "false", "0"):
+        return []
+    parts = [p.strip().lower() for p in cleaned.split(",") if p.strip()]
+    if "none" in parts:
+        return []
+    return parts
+
+
+def detect_ui_targets(target_dir: Path, stack_key: str = "generic") -> List[str]:
+    """Автодетект UI профилей проекта на основе маркеров каталогов или стека."""
+    targets = []
+    if (target_dir / "package.json").is_file() or any((target_dir / d).is_dir() for d in ("web", "frontend", "client")):
+        targets.append("web")
+    if stack_key == "swift" or (target_dir / "Podfile").is_file() or any(target_dir.glob("*.xcodeproj")) or any(target_dir.glob("*.xcworkspace")):
+        targets.append("mobile")
+    if (target_dir / "android").is_dir() or any((target_dir / d).is_dir() for d in ("mobile", "app")):
+        if "mobile" not in targets:
+            targets.append("mobile")
+    if not targets:
+        if stack_key == "swift":
+            targets = ["mobile"]
+        elif stack_key == "ts":
+            targets = ["web"]
+    return targets
+
+
+def setup_obsidian(target_dir: Path, is_update: bool = False):
+    """Настраивает Obsidian vault: маршрутизация вложений в assets/screenshots."""
+    obsidian_dir = target_dir / "docs" / ".obsidian"
+    obsidian_dir.mkdir(parents=True, exist_ok=True)
+    app_json_path = obsidian_dir / "app.json"
+    app_data = {}
+    if app_json_path.exists():
+        try:
+            app_data = json.loads(app_json_path.read_text(encoding="utf-8"))
+        except Exception:
+            app_data = {}
+    app_data["attachmentFolderPath"] = "assets/screenshots"
+    app_json_path.write_text(json.dumps(app_data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def setup_ui_harness(target_dir: Path, ui_targets: List[str]):
+    """Разворачивает двухступенчатую структуру каталогов визуальных ассетов docs/assets/."""
+    if not ui_targets:
+        return
+    docs_dir = target_dir / "docs"
+    assets_dir = docs_dir / "assets"
+
+    (assets_dir / "mockups").mkdir(parents=True, exist_ok=True)
+    (assets_dir / "screenshots").mkdir(parents=True, exist_ok=True)
+
+    for t in ui_targets:
+        t_mockup = assets_dir / "mockups" / t
+        t_mockup.mkdir(parents=True, exist_ok=True)
+        if not list(t_mockup.glob("*")):
+            (t_mockup / ".gitkeep").touch()
+
+        t_shot = assets_dir / "screenshots" / t
+        t_shot.mkdir(parents=True, exist_ok=True)
+        if not list(t_shot.glob("*")):
+            (t_shot / ".gitkeep").touch()
+
+    if len(ui_targets) > 1:
+        flows_dir = assets_dir / "mockups" / "flows"
+        flows_dir.mkdir(parents=True, exist_ok=True)
+        if not list(flows_dir.glob("*")):
+            (flows_dir / ".gitkeep").touch()
+
+        multi_shot = assets_dir / "screenshots" / "multi-device"
+        multi_shot.mkdir(parents=True, exist_ok=True)
+        if not list(multi_shot.glob("*")):
+            (multi_shot / ".gitkeep").touch()
+
+        protocols_dir = docs_dir / "01_Architecture" / "Protocols"
+        protocols_dir.mkdir(parents=True, exist_ok=True)
+        if not list(protocols_dir.glob("*")):
+            (protocols_dir / ".gitkeep").touch()
+
+        targets_dir = docs_dir / "01_Architecture" / "Targets"
+        targets_dir.mkdir(parents=True, exist_ok=True)
+        if not list(targets_dir.glob("*")):
+            (targets_dir / ".gitkeep").touch()
+
+
 def handle_gitignore(target_dir: Path):
     gitignore_path = target_dir / ".gitignore"
     obsidian_rules = """
-# Obsidian Workspace (preserve graph.json)
+# Obsidian Workspace (preserve graph.json and app.json)
 .obsidian/*
 !.obsidian/graph.json
+!.obsidian/app.json
+
+# Ephemeral UI Test Diff Artifacts
+tmp/ui_snapshots/
 """
     if not gitignore_path.exists():
         gitignore_content = """# System & IDE
@@ -480,15 +574,24 @@ Thumbs.db
 !.vscode/settings.json
 """ + obsidian_rules
         gitignore_path.write_text(gitignore_content.strip() + "\n", encoding="utf-8")
-        print("📁 Created .gitignore (with Obsidian graph retention rules).")
+        print("📁 Created .gitignore (with Obsidian retention and UI snapshot rules).")
     else:
         content = gitignore_path.read_text(encoding="utf-8")
+        append_rules = []
         if ".obsidian" not in content:
-            gitignore_path.write_text(content.rstrip() + "\n" + obsidian_rules, encoding="utf-8")
-            print("📁 Appended Obsidian retention rules to existing .gitignore.")
+            append_rules.append(obsidian_rules.strip())
+        else:
+            if "!.obsidian/app.json" not in content:
+                append_rules.append("!.obsidian/app.json")
+            if "tmp/ui_snapshots/" not in content:
+                append_rules.append("tmp/ui_snapshots/")
+        if append_rules:
+            new_content = content.rstrip() + "\n\n" + "\n".join(append_rules) + "\n"
+            gitignore_path.write_text(new_content, encoding="utf-8")
+            print("📁 Appended missing retention/UI rules to existing .gitignore.")
 
 
-def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, assets: dict = None, force: bool = False, idea: str = None):
+def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, assets: dict = None, force: bool = False, idea: str = None, ui_targets: Optional[List[str]] = None):
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
     today_str = date.today().isoformat()
     docs_dir = target_dir / "docs"
@@ -644,6 +747,104 @@ tags:
 * 💡 **[Идея 1]:** Краткое описание проблемы и ценности.
 """
         roadmap_path.write_text(roadmap_content, encoding="utf-8")
+
+    # 7. UI/UX Starter Documents (if ui_targets specified)
+    if ui_targets:
+        arch_dir = docs_dir / "01_Architecture"
+        arch_dir.mkdir(parents=True, exist_ok=True)
+        ds_path = arch_dir / "UI_Design_System.md"
+        if not ds_path.exists() or force:
+            targets_str = ", ".join(ui_targets)
+            ds_content = f"""---
+id: UI-DESIGN-SYSTEM
+title: "Дизайн-система и визуальные стандарты: {project_name}"
+status: active
+type: architecture
+created: {today_str}
+updated: {today_str}
+tags:
+  - architecture
+  - ui-ux
+  - design-system
+---
+
+# 🎨 Дизайн-система и визуальные стандарты: {project_name}
+
+> **Проект:** {project_name}  
+> **Целевые узлы:** {targets_str}  
+> **Связанные документы:** [[../00_Index|00_Index]], [[../../SPEC|SPEC.md]].
+
+---
+
+## 1. Концепция и визуальные принципы
+Семантическая дизайн-система разделяет абстрактные токены интерфейса и их конкретную реализацию в нативных гайдлайнах платформ (Apple HIG, Google Material 3, Microsoft Fluent, Web CSS).
+
+---
+
+## 2. Семантические токены интерфейса (Design Tokens)
+
+| Категория | Семантический токен | Назначение |
+| :--- | :--- | :--- |
+| **Цвет** | `Color.Brand.Primary` | Акцентный фирменный цвет интерфейса |
+| **Цвет** | `Color.Background.Canvas` | Основной фон экранов и представлений |
+| **Цвет** | `Color.State.Error` | Ошибки, предупреждения, деструктивные действия |
+| **Отступы** | `Spacing.Card.Padding` | Внутренний отступ контейнеров и карточек |
+| **Действия** | `Action.Primary.Button` | Главное целевое действие на экране (CTA) |
+
+---
+
+## 3. Матрица 4 состояний (The 4-State Matrix)
+Каждый интерактивный компонент или экран обязан реализовывать 4 базовых состояния:
+1. **Empty State:** экран при отсутствии данных (первый запуск, пустой список).
+2. **Loading State:** состояние ожидания ответа узла/сети (спиннер, скелетон).
+3. **Error State:** сбой транспорта, таймаут, отказ в правах доступа + кнопка повтора.
+4. **Populated State:** штатное отображение активных данных.
+"""
+            ds_path.write_text(ds_content, encoding="utf-8")
+
+        if len(ui_targets) > 1:
+            targets_folder = arch_dir / "Targets"
+            targets_folder.mkdir(parents=True, exist_ok=True)
+            for t in ui_targets:
+                t_name = t.capitalize()
+                node_spec_path = targets_folder / f"{t_name}.md"
+                if not node_spec_path.exists() or force:
+                    node_content = f"""---
+id: TARGET-{t.upper()}
+title: "Спецификация целевого узла: {t_name}"
+status: active
+type: architecture
+created: {today_str}
+updated: {today_str}
+tags:
+  - architecture
+  - target-node
+  - {t.lower()}
+---
+
+# 📱 Спецификация целевого узла: {t_name}
+
+> **Узел:** {t_name}  
+> **Архитектура:** [[../UI_Design_System|Дизайн-система]], [[../Protocols/|Транспортные протоколы]].
+
+---
+
+## 1. Назначение и платформенный контекст
+Спецификация платформенных особенностей узла `{t_name}` в распределенной системе `{project_name}`.
+
+---
+
+## 2. Ограничения и системные политики
+* **Фоновое выполнение:** управление жизненным циклом фоновых задач и сокетов.
+* **Энергопотребление и Doze Mode:** политики удержания соединения (keep-alive, wake locks).
+* **Сетевые интерфейсы и права:** требования к брандмауэру, разрешениям ОС (Permissions).
+
+---
+
+## 3. Платформенный маппинг токенов
+Маппинг семантических токенов дизайн-системы на нативные компоненты платформы.
+"""
+                    node_spec_path.write_text(node_content, encoding="utf-8")
 
 
 
@@ -991,6 +1192,7 @@ def install_harness(
     force: bool = False,
     ci_choice: str = "none",
     idea: str = None,
+    ui: str = None,
 ):
     print(f"\n🚀 Installing Agent Docs-as-Code Harness into: {target_dir.resolve()}")
     print(f"   • Project Name: {project_name}")
@@ -1000,6 +1202,12 @@ def install_harness(
     print(f"   • Git mode: {git_choice}")
     if ci_choice != "none":
         print(f"   • CI mode: {ci_choice}")
+    if ui == "auto":
+        ui_targets = detect_ui_targets(target_dir, stack_key)
+    else:
+        ui_targets = normalize_ui_targets(ui)
+    if ui_targets:
+        print(f"   • UI targets: {', '.join(ui_targets)}")
     print()
 
     docs_dir = target_dir / "docs"
@@ -1044,6 +1252,11 @@ def install_harness(
         }
         inbox_state_path.write_text(json.dumps(init_state, indent=2) + "\n", encoding="utf-8")
 
+    # 2.1. Deploy UI/UX assets skeleton and Obsidian attachment routing
+    if ui_targets:
+        setup_ui_harness(target_dir, ui_targets)
+        setup_obsidian(target_dir)
+
     # 3. Write unpacked templates and scripts
     today_str = date.today().isoformat()
     tpl_count, skills_count = deploy_infrastructure(target_dir, assets, stack_key, today_str, project_name=project_name)
@@ -1053,8 +1266,10 @@ def install_harness(
         print(f"✅ Deployed {skills_count} AI agent skills (.agents/skills/).")
 
     # 4. Generate starter knowledge base documents
-    create_starter_docs(target_dir, project_name, stack_key, assets=assets, force=force, idea=idea)
+    create_starter_docs(target_dir, project_name, stack_key, assets=assets, force=force, idea=idea, ui_targets=ui_targets)
     print("✅ Created starter knowledge base docs (SPEC.md, 00_Index.md, Onboarding.md, Kanban.md, Roadmap.md, Devlog.md).")
+    if ui_targets:
+        print(f"✅ Deployed UI/UX asset structure and design system for targets: {', '.join(ui_targets)}.")
 
     # 4.1. Handle README.md and .gitignore (non-destructive)
     handle_readme(target_dir, project_name, doc_lang)
@@ -1156,6 +1371,7 @@ def update_harness(
     project_name: str = None,
     ci_provider: str = None,
     backup: bool = True,
+    ui: str = None,
 ) -> int:
     docs_dir = target_dir / "docs"
     if not (docs_dir / "00_Index.md").is_file():
@@ -1219,6 +1435,21 @@ def update_harness(
     memory_incidents.mkdir(parents=True, exist_ok=True)
     if not list(memory_incidents.glob("*")):
         (memory_incidents / ".gitkeep").touch()
+
+    # Configure/Refresh UI harness and Obsidian attachment routing
+    if ui:
+        if ui == "auto":
+            ui_targets = detect_ui_targets(target_dir, stack_key)
+        else:
+            ui_targets = normalize_ui_targets(ui)
+        if ui_targets:
+            setup_ui_harness(target_dir, ui_targets)
+            setup_obsidian(target_dir, is_update=True)
+            handle_gitignore(target_dir)
+            print(f"✅ Configured UI targets in update: {', '.join(ui_targets)}.")
+    elif (docs_dir / "assets").exists():
+        setup_obsidian(target_dir, is_update=True)
+        handle_gitignore(target_dir)
 
     # Refresh templates, skills, linter, graph
     tpl_count, skills_count = deploy_infrastructure(target_dir, assets, stack_key, today_str, project_name=project_name)
@@ -1323,6 +1554,32 @@ def run_interactive_wizard(args) -> tuple:
         if user_idea:
             args.idea = user_idea
 
+    # 3.1. UI / Visual Target Profile
+    detected_ui = detect_ui_targets(target_dir, stack_key)
+    default_ui_option = "1"
+    if detected_ui:
+        if "web" in detected_ui and len(detected_ui) == 1:
+            default_ui_option = "2"
+        elif "mobile" in detected_ui and len(detected_ui) == 1:
+            default_ui_option = "3"
+        elif len(detected_ui) > 1:
+            default_ui_option = "6"
+
+    print("\n? Select UI / Visual Target Profile:")
+    print("  [1] None / Headless (No UI assets) [Default]")
+    print(f"  [2] Web Application (SPA, Next.js, Frontend){' (Detected)' if 'web' in detected_ui else ''}")
+    print(f"  [3] Mobile Application (iOS / Android){' (Detected)' if 'mobile' in detected_ui else ''}")
+    print("  [4] Desktop Application (Windows / macOS / Linux)")
+    print("  [5] Terminal UI (TUI / CLI)")
+    print("  [6] Multi-Target / Companion (custom comma-separated list)")
+    ui_choice_input = prompt_user_input("Select [1-6]", default=default_ui_option)
+    ui_map = {"1": "none", "2": "web", "3": "mobile", "4": "desktop", "5": "tui"}
+    if ui_choice_input == "6":
+        default_multi = ",".join(detected_ui) if len(detected_ui) > 1 else "windows,android"
+        ui_val = prompt_user_input("? Enter target platforms separated by comma (e.g. windows,android)", default=default_multi)
+    else:
+        ui_val = ui_map.get(ui_choice_input, "none")
+
     # 4. AI Agent Setup
     print("\n? Select AI Agent / IDE Setup:")
     print("  [1] All AI Agents (AGENTS.md, GEMINI.md, Cline, Claude, Cursor, Copilot, Windsurf) [Recommended]")
@@ -1354,7 +1611,7 @@ def run_interactive_wizard(args) -> tuple:
     ci_map = {"1": "none", "2": "github"}
     ci_choice = ci_map.get(ci_choice_input, "none")
 
-    return project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice
+    return project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice, ui_val
 
 
 # --- MAIN ENTRY POINT ---
@@ -1402,6 +1659,12 @@ def main():
         choices=["auto", "swift", "ts", "python", "dotnet", "generic", "undecided"],
         default=None,
         help="Target technology stack preset (default: auto)",
+    )
+    parser.add_argument(
+        "--ui",
+        type=str,
+        default=None,
+        help="Target UI profile: none, auto, web, mobile, desktop, tui, or composite targets separated by comma (e.g. windows,android)",
     )
     parser.add_argument(
         "--agent", "-a",
@@ -1465,6 +1728,7 @@ def main():
             doc_lang=args.doc_lang,
             project_name=args.name,
             ci_provider=args.ci,
+            ui=args.ui,
         )
         sys.exit(exit_code)
 
@@ -1476,7 +1740,7 @@ def main():
         is_interactive = False
 
     if is_interactive:
-        project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice = run_interactive_wizard(args)
+        project_name, stack_key, agent_choice, git_choice, doc_lang, ci_choice, ui_choice = run_interactive_wizard(args)
     else:
         project_name = args.name or target_dir.name or "MyProject"
         if args.idea and not args.stack:
@@ -1487,6 +1751,7 @@ def main():
         git_choice = args.git or "local"
         doc_lang = args.doc_lang or "ru"
         ci_choice = args.ci or "none"
+        ui_choice = args.ui
 
     install_harness(
         target_dir=target_dir,
@@ -1498,6 +1763,7 @@ def main():
         force=args.force,
         ci_choice=ci_choice,
         idea=args.idea,
+        ui=ui_choice,
     )
 
 

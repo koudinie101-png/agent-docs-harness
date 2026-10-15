@@ -933,9 +933,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 140 KB for Phase 16 with 16 templates, 12 skills, 3 standalone scripts, memory patterns)
+            # Installer size check (budget <= 160 KB for Phase 18 with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 140000, f"install.py exceeded budget: {installer_size} bytes (budget <= 140 KB)")
+            self.assertLessEqual(installer_size, 160000, f"install.py exceeded budget: {installer_size} bytes (budget <= 160 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
