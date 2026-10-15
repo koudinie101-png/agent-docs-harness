@@ -16,6 +16,11 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+import scripts.build_installer as build_installer
+
 DIST_DIR = REPO_ROOT / "dist"
 INSTALL_PY = REPO_ROOT / "install.py"
 
@@ -25,6 +30,10 @@ def main() -> int:
     if not INSTALL_PY.is_file():
         print(f"Error: {INSTALL_PY} not found.", file=sys.stderr)
         return 1
+
+    # Rebuild embedded bundle in install.py before packaging
+    print("Building embedded installer bundle...")
+    build_installer.build()
 
     target = DIST_DIR / "install.py"
     shutil.copy2(INSTALL_PY, target)

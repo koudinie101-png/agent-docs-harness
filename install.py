@@ -649,9 +649,20 @@ def generate_diagnostic_report(project_dir: Path) -> str:
     except Exception:
         current_user = ""
 
+    try:
+        home_dir = str(Path.home())
+    except Exception:
+        home_dir = ""
+
     def anonymize(text: str) -> str:
+        if home_dir:
+            if home_dir in text:
+                text = text.replace(home_dir, "~")
+            home_dir_fwd = home_dir.replace("\\", "/")
+            if home_dir_fwd in text:
+                text = text.replace(home_dir_fwd, "~")
         if current_user and len(current_user) > 1:
-            text = text.replace(current_user, "<user>")
+            text = re.sub(r'([/\\\\])' + re.escape(current_user) + r'([/\\\\]|$)', r'\1<user>\2', text)
         return text
 
     today_str = date.today().isoformat()
@@ -767,6 +778,10 @@ def setup_git(target_dir: Path, git_choice: str):
         subprocess.run([git_cmd, "branch", "-M", "main"], cwd=str(target_dir), env=git_env, check=False, capture_output=True, text=True, encoding="utf-8", errors="replace")
         if res.returncode == 0:
             print("✅ Created initial Git commit with Docs-as-Code harness (branch: main).")
+        else:
+            print(f"⚠️ Git commit notice: Initial commit could not be created automatically (exit code {res.returncode}).")
+            if "user.name" in res.stderr or "user.email" in res.stderr:
+                print("   ℹ️ Configure Git identity: git config --global user.name 'Your Name' && git config --global user.email 'you@example.com'")
     except Exception as e:
         print(f"⚠️ Git commit notice: {e}")
 
@@ -1331,6 +1346,20 @@ def run_interactive_wizard(args) -> tuple:
 
 # --- MAIN ENTRY POINT ---
 
+def can_open_tty() -> bool:
+    if os.name == "nt":
+        return sys.stdin.isatty()
+    if sys.stdin.isatty():
+        return True
+    if os.path.exists("/dev/tty"):
+        try:
+            with open("/dev/tty", "r"):
+                return True
+        except (OSError, IOError):
+            return False
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Agent Docs-as-Code Harness Installer",
@@ -1427,7 +1456,7 @@ def main():
         sys.exit(exit_code)
 
     # Determine whether to run interactively
-    is_interactive = not args.non_interactive and (sys.stdin.isatty() or os.name == "nt" or os.path.exists("/dev/tty"))
+    is_interactive = not args.non_interactive and can_open_tty()
 
     # If flags were all explicitly passed, run directly
     if args.stack and args.agent and args.git and args.name:

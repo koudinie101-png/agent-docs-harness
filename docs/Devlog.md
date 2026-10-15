@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-068: Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]:
+    1. В функции `generate_diagnostic_report()` утилиты `install.py` усилен внутренний анонимизатор: добавлена замена домашней директории пользователя на `~` (с поддержкой как прямых, так и обратных слэшей) и проверка границ путей через регулярное выражение `([/\\\\])<user>([/\\\\]|$)`. Это предотвращает порчу слов с короткими именами пользователей (например, `dev` в `Devlog.md`).
+    2. Внедрена вспомогательная функция `can_open_tty()`, проверяющая возможность интерактивного ввода как на Windows, так и в POSIX/Docker/CI контейнерах через дескриптор `/dev/tty`. В `main()` условие интерактивности переведено на `can_open_tty()`.
+    3. В функции `setup_git()` инсталлятора `install.py` добавлена детальная диагностика при сбое первоначального `git commit`: вывод кода ошибки и явные инструкции по настройке `user.name` и `user.email`.
+    4. В `scripts/build_release.py` интегрирован автоматический вызов `build_installer.build()` перед копированием артефакта в `dist/install.py`, гарантирующий актуальность упакованного бандла при релизной сборке.
+    5. Пересобран монолитный инсталлятор `install.py` и `dist/install.py` через `scripts/build_installer.py`.
+  - В `tests/test_installer.py` добавлен комплексный тест `test_33_task_068_installer_tty_anonymizer_and_build_hook`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус спецификации обновлен на `done`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]] и плане [[02_Tasks/Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_installer.py` -> 33/33 теста успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 99/99 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 183 files scanned, 1640 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующей инженерной задачи Фазы 17 (`/kb-implement TASK-069`).
+
+---
+
 ### [2026-10-15] — Реализация TASK-067: Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]:

@@ -2074,6 +2074,82 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn(".github/ISSUE_TEMPLATE/bug_report.yml", local_assets)
             self.assertIn(".github/ISSUE_TEMPLATE/feature_request.yml", local_assets)
 
+    def test_33_task_068_installer_tty_anonymizer_and_build_hook(self):
+        """Verify anonymizer boundary protection, can_open_tty probe, and build_release hook (TASK-068)."""
+        import getpass
+        import io
+
+        # 1. Anonymizer boundary protection
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_target = Path(tmpdir) / "TestApp"
+            test_target.mkdir()
+            (test_target / "docs").mkdir()
+            (test_target / "docs" / "Devlog.md").write_text("# Devlog", encoding="utf-8")
+
+            with patch("getpass.getuser", return_value="dev"), \
+                 patch.object(Path, "home", return_value=Path("C:/Users/dev")):
+                rep = install.generate_diagnostic_report(test_target)
+                # Ensure Devlog is preserved and not corrupted into <user>log
+                self.assertNotIn("<user>log", rep)
+                # Ensure home_dir or user in path is masked
+                self.assertNotIn("Users/dev/", rep.replace("\\", "/"))
+
+        # 2. can_open_tty probe tests
+        # Case A: sys.stdin.isatty() is True
+        with patch.object(sys.stdin, "isatty", return_value=True):
+            self.assertTrue(install.can_open_tty())
+
+        # Case B: sys.stdin.isatty() is False on Windows (os.name == 'nt')
+        with patch.object(sys.stdin, "isatty", return_value=False), patch("os.name", "nt"):
+            self.assertFalse(install.can_open_tty())
+
+        # Case C: sys.stdin.isatty() is False on posix, /dev/tty does not exist
+        with patch.object(sys.stdin, "isatty", return_value=False), \
+             patch("os.name", "posix"), \
+             patch("os.path.exists", return_value=False):
+            self.assertFalse(install.can_open_tty())
+
+        # Case D: sys.stdin.isatty() is False on posix, /dev/tty exists but raises OSError on open
+        with patch.object(sys.stdin, "isatty", return_value=False), \
+             patch("os.name", "posix"), \
+             patch("os.path.exists", return_value=True), \
+             patch("builtins.open", side_effect=OSError("No such device or address")):
+            self.assertFalse(install.can_open_tty())
+
+        # 3. setup_git() diagnostics on commit failure
+        with tempfile.TemporaryDirectory() as tmpdir:
+            git_target = Path(tmpdir) / "GitApp"
+            git_target.mkdir()
+            (git_target / ".git" / "HEAD").parent.mkdir(parents=True)
+            (git_target / ".git" / "HEAD").write_text("ref: refs/heads/main\n", encoding="utf-8")
+
+            mock_commit_res = subprocess.CompletedProcess(
+                args=["git", "commit"],
+                returncode=128,
+                stdout="",
+                stderr="fatal: empty ident name (for <user@domain>) not allowed\n*** Please tell me who you are.\nRun\n  git config --global user.email 'you@example.com'\n  git config --global user.name 'Your Name'\n"
+            )
+
+            with patch("subprocess.run") as mock_run, patch("sys.stdout", new=io.StringIO()) as fake_out:
+                mock_run.side_effect = [
+                    subprocess.CompletedProcess(args=["git", "add"], returncode=0),
+                    mock_commit_res,
+                    subprocess.CompletedProcess(args=["git", "branch"], returncode=0),
+                ]
+                install.setup_git(git_target, "local")
+                out_str = fake_out.getvalue()
+                self.assertIn("Initial commit could not be created automatically (exit code 128)", out_str)
+                self.assertIn("Configure Git identity: git config --global user.name", out_str)
+
+        # 4. scripts/build_release.py calls build_installer.build()
+        import scripts.build_release as build_release
+        with patch("scripts.build_installer.build") as mock_build, \
+             patch("shutil.copy2") as mock_copy:
+            res_code = build_release.main()
+            self.assertEqual(res_code, 0)
+            mock_build.assert_called_once()
+            mock_copy.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

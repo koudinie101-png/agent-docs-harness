@@ -1,7 +1,7 @@
 ---
 id: TASK-068
 title: "Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py"
-status: planned
+status: done
 type: task
 phase: 17
 component:
@@ -9,7 +9,7 @@ component:
   - release
 parent_plan: "[[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]]"
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 tags:
   - task/spec
   - phase17
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-068 — Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py
 
-> **ID:** TASK-068 | **Статус:** К реализации  
+> **ID:** TASK-068 | **Статус:** Выполнено  
 > **Фаза:** 17 | **Релиз:** v0.17.0  
 > **План:** [[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]] | **Канбан:** [[../../Kanban|Канбан]]  
 
@@ -109,15 +109,15 @@ def main() -> int:
 ---
 
 ## 4. План верификации (Verification Plan)
-- [ ] Автотесты: `pytest tests/test_installer.py` — 100% pass.
-- [ ] Тест анонимизатора: подача строки `C:/Users/dev/Documents/project/docs/Devlog.md` с `user='dev'` возвращает `~/Documents/project/docs/Devlog.md` или `.../<user>/.../Devlog.md` без искажения слова `Devlog`.
-- [ ] Тест TTY-зонда: вызов в окружении с закрытым или недоступным `/dev/tty` корректно определяет `is_interactive=False`.
-- [ ] Тест билда: вызов `python scripts/build_release.py` выполняет `build_installer.build()` и обновляет `dist/install.py`.
+- [x] Автотесты: `pytest tests/test_installer.py` — 100% pass.
+- [x] Тест анонимизатора: подача строки `C:/Users/dev/Documents/project/docs/Devlog.md` с `user='dev'` возвращает `~/Documents/project/docs/Devlog.md` или `.../<user>/.../Devlog.md` без искажения слова `Devlog`.
+- [x] Тест TTY-зонда: вызов в окружении с закрытым или недоступным `/dev/tty` корректно определяет `is_interactive=False`.
+- [x] Тест билда: вызов `python scripts/build_release.py` выполняет `build_installer.build()` и обновляет `dist/install.py`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
-- [ ] Код написан строго по ТЗ без внешних зависимостей.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код написан строго по ТЗ без внешних зависимостей.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.
