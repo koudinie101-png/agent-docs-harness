@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-075: Инфраструктура реестра техдолга, скаффолдинг в install.py и правила триажа P1/P2 vs P3
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-075-tech-debt-registry-and-triage-rules|TASK-075]]:
+    1. Создан канонический реестр `docs/02_Tasks/TechDebt.md` с протоколом триажа находок ревью и таблицами открытого ($P3$) и погашенного долга.
+    2. В `install.py` добавлена генерация `generate_tech_debt_md()`, создание файла в `create_starter_docs()` и безопасная инициализация в `update_harness()` без перезаписи существующего пользовательского долга.
+    3. В `AGENTS.md` (уровень Tier 2 Always-On) внедрено правило 13 «Tech Debt Governance & Review Triage ($P1/P2$ vs $P3$)» для надежной защиты Single-Task Execution Barrier.
+    4. В `GEMINI.md` и генераторы адаптеров `install.py` (`_gen_rule()`, `generate_agents_md()`) интегрирован норматив триажа техдолга.
+    5. Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - `python -m py_compile install.py` -> синтаксис корректен (Exit code 0).
+  - Скаффолдинг в чистую директорию -> `docs/02_Tasks/TechDebt.md` успешно разворачивается.
+  - Повторный запуск `--update` -> существующие записи техдолга сохраняются в полном объеме (`PRESERVED: True`).
+  - `python scripts/kb_lint.py --path docs` -> 198 файлов проверено, 1796 ссылок валидировано (0 битых).
+  - `python -m unittest tests/test_installer.py` -> все тесты пройдены.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации следующей задачи Фазы 19 — запустить Режим 3: `/kb-implement TASK-076`.
+
+---
+
 ### [2026-10-15] — Выпуск релиза v0.18.0: Фаза 18 (Heterogeneous UI/UX & Visual Asset Harness)
 - **Что сделано:**
   - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.18.0|RELEASE-v0.18.0]] по итогам завершения Фазы 18.

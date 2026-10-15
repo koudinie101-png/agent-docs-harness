@@ -1,7 +1,7 @@
 ---
 id: TASK-075
 title: "Инфраструктура реестра техдолга, скаффолдинг в install.py и правила триажа P1/P2 vs P3"
-status: planned # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 19
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-075 — Инфраструктура реестра техдолга, скаффолдинг в install.py и правила триажа P1/P2 vs P3
 
-> **ID:** TASK-075 | **Статус:** К реализации  
+> **ID:** TASK-075 | **Статус:** Выполнено  
 > **Фаза:** 19 | **План:** [[../../Plans/PLAN-019-engineering-gates-and-tech-debt-governance|PLAN-019]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
 

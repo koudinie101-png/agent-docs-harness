@@ -234,6 +234,7 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
         f"6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.\n"
         f"7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store screenshots in `docs/assets/screenshots/<target>/` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.\n"
+        f"8. **Tech Debt Governance (P1/P2 vs P3):** Fix P1/P2 immediately; log P3 in `docs/02_Tasks/TechDebt.md` (never refactor opportunistically).\n"
         f"{tail}"
     )
 
@@ -304,6 +305,15 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size <= 2 MB).
 - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
 - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
+
+---
+
+## 💳 8. Tech Debt Governance & Review Triage (P1/P2 vs P3)
+
+- Code review findings and secondary defects are triaged into two strict tiers:
+  * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
+  * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged immediately in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+- Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
 
 ---
 
@@ -601,6 +611,51 @@ Thumbs.db
             print("📁 Appended missing retention/UI rules to existing .gitignore.")
 
 
+def generate_tech_debt_md(project_name: str = "") -> str:
+    """Генерирует начальный реестр технического долга docs/02_Tasks/TechDebt.md."""
+    today_str = date.today().isoformat()
+    return f"""---
+id: TECHDEBT
+title: "Реестр технического долга (Tech Debt Registry)"
+type: techdebt
+status: active
+created: {today_str}
+updated: {today_str}
+tags:
+  - techdebt
+  - governance
+  - backlog
+parent_roadmap: "[[Roadmap|Дорожная карта]]"
+---
+
+# 💳 Реестр технического долга (Tech Debt Registry)
+
+> **Теги:** #techdebt #governance #backlog | **Канбан:** [[Kanban|Канбан-доска]] | **Дорожная карта:** [[Roadmap|Roadmap]]
+
+---
+
+## 🎯 Протокол триажа находок ревью (Review Triage Protocol)
+
+* **P1 / P2 (Блокеры, функциональные ошибки, регрессии):** устраняются **немедленно** в рамках текущей задачи (`TASK-XXX` или `BUG-XXX`).
+* **P3 (Мелкий косметический долг, некритичный рефакторинг, отложенная оптимизация):** **запрещено** исправлять посреди текущей задачи во избежание нарушения барьера единичной задачи (Single-Task Barrier). Находка фиксируется в таблице ниже.
+* **Принцип фиксации:** *«Находка ревью, оставшаяся только в чате, не существует»*.
+
+---
+
+## 📋 Открытый технический долг (Active P3 Debt)
+
+| ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+
+---
+
+## ✅ Погашенный технический долг (Resolved Debt)
+
+| ID | Приоритет | Модуль / Файл | Описание техдолга | Задача погашения | Дата закрытия |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+"""
+
+
 def create_starter_docs(target_dir: Path, project_name: str, stack_key: str, assets: dict = None, force: bool = False, idea: str = None, ui_targets: Optional[List[str]] = None):
     stack = STACK_PRESETS.get(stack_key, STACK_PRESETS["generic"])
     today_str = date.today().isoformat()
@@ -855,6 +910,11 @@ tags:
 Маппинг семантических токенов дизайн-системы на нативные компоненты платформы.
 """
                     node_spec_path.write_text(node_content, encoding="utf-8")
+
+    # 8. docs/02_Tasks/TechDebt.md
+    tech_debt_path = docs_dir / "02_Tasks" / "TechDebt.md"
+    if not tech_debt_path.exists() or force:
+        tech_debt_path.write_text(generate_tech_debt_md(project_name), encoding="utf-8")
 
 
 
@@ -1448,6 +1508,12 @@ def update_harness(
     memory_incidents.mkdir(parents=True, exist_ok=True)
     if not list(memory_incidents.glob("*")):
         (memory_incidents / ".gitkeep").touch()
+
+    # Ensure TechDebt.md exists safely without overwriting existing debt
+    tech_debt_path = docs_dir / "02_Tasks" / "TechDebt.md"
+    if not tech_debt_path.is_file():
+        tech_debt_path.write_text(generate_tech_debt_md(project_name), encoding="utf-8")
+        print("✅ Initialized missing docs/02_Tasks/TechDebt.md.")
 
     # Configure/Refresh UI harness and Obsidian attachment routing
     if ui:

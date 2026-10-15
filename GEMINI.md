@@ -16,5 +16,6 @@
 5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).
 6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.
 7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store screenshots in `docs/assets/screenshots/<target>/` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.
+8. **Tech Debt Governance (P1/P2 vs P3):** Fix P1/P2 immediately; log P3 in `docs/02_Tasks/TechDebt.md` (never refactor opportunistically).
 
 Skills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-triage` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`

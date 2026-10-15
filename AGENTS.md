@@ -56,6 +56,11 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$).
    - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
    - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
+13. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**
+   - Code review findings and secondary defects are triaged into two strict tiers:
+     * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
+     * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged immediately in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+   - Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
 
 ---
 
