@@ -160,7 +160,8 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 
   # Ingest issues with auto-detected remote or custom filters
   python3 scripts/kb_ingest.py --github --label needs-triage
-  python3 scripts/kb_ingest.py --paste --text "App crashes when clicking save"
+  # Quick paste feedback from clipboard or arguments
+  python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
   ```
 
 ### 4. Agent Configuration & Rule Files (Thin Forwarders Pattern)

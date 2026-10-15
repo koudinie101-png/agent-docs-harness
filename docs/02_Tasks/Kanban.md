@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-017-core-hardening-and-ssot-sync|План: Фаза 17 — Стабилизация ядра, синхронизация SSOT и защита краевых сценариев]] #plan #phase17 #hardening #ssot #quality-gates
-- [ ] [[Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: Падение с ошибкой unrecognized arguments при передаче инлайн-текста в scripts/kb_ingest.py --paste "<text>" #bug #ingest #cli #phase17
 - [ ] [[Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]: Отсутствие docs/06_Memory/patterns.md в локальном fallback install.py и некорректная маска фаз >= 10 в scripts/kb_release.py #bug #installer #release #phase17
 - [ ] [[Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]: Харденинг парсинга викиссылок и валидация схем frontmatter в scripts/kb_lint.py #task #lint #schemas #phase17
 - [ ] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py #task #ingest #imap #phase17
@@ -20,6 +19,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: Падение с ошибкой unrecognized arguments при передаче инлайн-текста в scripts/kb_ingest.py --paste "<text>" (2026-10-15) #bug #ingest #cli #phase17
 - [x] [[Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: dist/RELEASE_NOTES.md попадает в таблицу артефактов SHA-256 при повторном запуске scripts/kb_release.py (2026-10-15) #bug #release #phase17
 - [x] [[Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: AttributeError при вызове Path.is_relative_to в scripts/kb_lint.py на Python 3.8 (2026-10-15) #bug #lint #python38 #phase17
 

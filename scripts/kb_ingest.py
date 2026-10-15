@@ -651,7 +651,7 @@ def main():
     parser = argparse.ArgumentParser(description="Multi-Channel Feedback Ingestion Engine (Zero-Dependencies)")
     parser.add_argument("--github", action="store_true", help="Ingest issues from GitHub repository")
     parser.add_argument("--email", action="store_true", help="Ingest incoming feedback via IMAP")
-    parser.add_argument("--paste", action="store_true", help="Ingest quick snippet/paste from arguments or stdin")
+    parser.add_argument("--paste", nargs="?", const=True, default=None, help="Ingest quick snippet/paste from arguments or stdin")
     parser.add_argument("--all", action="store_true", help="Run all available channels (GitHub + Email)")
     parser.add_argument("--title", type=str, default="", help="Title for pasted feedback")
     parser.add_argument("--text", type=str, default="", help="Text content for pasted feedback")
@@ -675,8 +675,10 @@ def main():
         sys.exit(render_status_dashboard(inbox_dir=inbox_dir, repo_root=repo_root))
 
     paste_data = None
-    if args.paste or args.text:
+    if args.paste is not None or args.text:
         text_content = args.text
+        if not text_content and isinstance(args.paste, str):
+            text_content = args.paste
         if not text_content and not sys.stdin.isatty():
             try:
                 text_content = sys.stdin.read()

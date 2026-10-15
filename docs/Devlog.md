@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Устранение дефекта BUG-007: Поддержка инлайн-текста в scripts/kb_ingest.py --paste
+- **Что сделано:**
+  - Устранен дефект [[02_Tasks/Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: сбой `unrecognized arguments` при вызове `scripts/kb_ingest.py --paste "<text>"`, документированном в `CHANGELOG.md`.
+  - Аргумент `--paste` переконфигурирован на `nargs="?", const=True, default=None`, поддержано извлечение строкового содержимого из аргумента (с сохранением полной обратной совместимости для `--paste --text "<text>"`, `--paste` через stdin и автономного `--text`).
+  - В `tests/test_kb_ingest.py` добавлен регрессионный тест `test_bug_007_paste_inline_argument_support` (TDD: RED -> GREEN -> REFACTOR).
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус дефекта обновлен на `fixed`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]], обновлен пример в [README.md](file:///c:/Users/Koudinie/Documents/antigravityProjects/agent-docs-harness/README.md).
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_ingest.py` -> 11/11 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 181 files scanned, 1642 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующего дефекта или задачи (например, `/kb-implement BUG-008` или `/kb-implement TASK-066`).
+
+---
+
 ### [2026-10-15] — Устранение дефекта BUG-006: Исключение RELEASE_NOTES.md из таблицы артефактов SHA-256
 - **Что сделано:**
   - Устранен дефект [[02_Tasks/Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: при повторном запуске `scripts/kb_release.py` файл заметок релиза `dist/RELEASE_NOTES.md` каталогизировался как скачиваемый артефакт релиза и попадал в таблицу SHA-256.

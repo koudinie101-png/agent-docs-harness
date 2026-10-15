@@ -316,6 +316,36 @@ class TestKbIngest(unittest.TestCase):
         self.assertIn("Всего тикетов:      3", output)
         self.assertIn("new: 1 | processed: 1 | rejected: 1", output)
 
+    def test_bug_007_paste_inline_argument_support(self):
+        """Verifies that --paste accepts inline text without unrecognized arguments error (BUG-007)."""
+        inline_text = "Пользователь пожаловался на сбой авторизации"
+        argv = [
+            "kb_ingest.py",
+            "--inbox-dir", str(self.inbox_dir),
+            "--paste", inline_text,
+            "--title", "Сбой авторизации"
+        ]
+        with patch.object(sys, "argv", argv):
+            with self.assertRaises(SystemExit) as cm:
+                kb_ingest.main()
+            self.assertEqual(cm.exception.code, 0)
+
+        # Verify backward compatibility with --paste --text
+        argv_flag = [
+            "kb_ingest.py",
+            "--inbox-dir", str(self.inbox_dir),
+            "--paste",
+            "--text", "Второй тикет через явный флаг",
+            "--title", "Второй тикет"
+        ]
+        with patch.object(sys, "argv", argv_flag):
+            with self.assertRaises(SystemExit) as cm:
+                kb_ingest.main()
+            self.assertEqual(cm.exception.code, 0)
+
+        fb_files = list(self.inbox_dir.glob("FB-*.md"))
+        self.assertEqual(len(fb_files), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
