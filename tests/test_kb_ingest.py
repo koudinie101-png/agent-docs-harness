@@ -152,10 +152,9 @@ class TestKbIngest(unittest.TestCase):
 
     @patch("imaplib.IMAP4_SSL")
     def test_email_driver_ingestion(self, mock_imap_ssl):
-        """Test Email IMAP driver with mocked imaplib connection."""
+        """Test Email IMAP driver with mocked imaplib connection using client.uid."""
         mock_client = MagicMock()
         mock_imap_ssl.return_value = mock_client
-        mock_client.search.return_value = ("OK", [b"1"])
 
         raw_email = (
             b"From: user@test.com\r\n"
@@ -166,7 +165,15 @@ class TestKbIngest(unittest.TestCase):
             b"\r\n"
             b"Great tool! Would love dark mode support.\r\n"
         )
-        mock_client.fetch.return_value = ("OK", [(b"1 (RFC822)", raw_email)])
+
+        def mock_uid_call(cmd, *args):
+            if cmd == "search":
+                return ("OK", [b"105"])
+            elif cmd == "fetch":
+                return ("OK", [(b"105 (RFC822)", raw_email)])
+            return ("BAD", [])
+
+        mock_client.uid.side_effect = mock_uid_call
 
         driver = kb_ingest.EmailIngestDriver(
             host="imap.example.com",
@@ -175,8 +182,11 @@ class TestKbIngest(unittest.TestCase):
         )
         emails = driver.fetch_emails()
         self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0]["uid"], 105)
         self.assertEqual(emails[0]["subject"], "Feedback on CLI")
         self.assertIn("dark mode support", emails[0]["body"])
+        mock_client.uid.assert_any_call("search", None, "UNSEEN")
+        mock_client.uid.assert_any_call("fetch", b"105", "(RFC822)")
 
     def test_detect_github_repo(self):
         """Test zero-deps git remote URL parsing and env override."""
@@ -345,6 +355,83 @@ class TestKbIngest(unittest.TestCase):
 
         fb_files = list(self.inbox_dir.glob("FB-*.md"))
         self.assertEqual(len(fb_files), 2)
+
+    def test_task_067_yaml_escaping_in_feedback_markdown(self):
+        """Verify build_feedback_markdown safely escapes quotes and backslashes in frontmatter (TASK-067)."""
+        raw_title = 'Crash: "Error 404: \'Not Found\'" & backslash \\ test'
+        raw_author = '"John Doe" <john.doe@example.com>'
+        raw_source = 'https://example.com/item?id="123"&user="alice"'
+
+        md = kb_ingest.build_feedback_markdown(
+            fb_id="FB-TEST-001",
+            title=raw_title,
+            channel="paste",
+            body="Problem description with quotes: \"broken\"",
+            author=raw_author,
+            source_ref=raw_source,
+            created_date="2026-10-15"
+        )
+
+        self.assertTrue(md.startswith("---\n"))
+        self.assertIn("\n---\n", md[4:])
+
+        # Extract frontmatter lines
+        fm_part = md.split("---\n")[1]
+        fm_dict = {}
+        for line in fm_part.strip().split("\n"):
+            if ":" in line and not line.strip().startswith("-"):
+                k, v = line.split(":", 1)
+                fm_dict[k.strip()] = v.strip()
+
+        # Parse JSON-escaped strings
+        self.assertEqual(json.loads(fm_dict["title"]), raw_title)
+        self.assertEqual(json.loads(fm_dict["author"]), raw_author)
+        self.assertEqual(json.loads(fm_dict["source_ref"]), raw_source)
+
+    @patch("urllib.request.urlopen")
+    def test_task_067_github_driver_url_encoding(self, mock_urlopen):
+        """Verify GitHubIngestDriver URL-encodes labels with spaces and special characters (TASK-067)."""
+        mock_cm = MagicMock()
+        mock_cm.read.return_value = json.dumps([]).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_cm
+
+        driver = kb_ingest.GitHubIngestDriver(repo="owner/repo", token="dummy")
+
+        # 1. Label with space
+        driver.fetch_issues(label="help wanted")
+        req1 = mock_urlopen.call_args[0][0]
+        self.assertIn("labels=help%20wanted", req1.full_url)
+
+        # 2. Label with special characters
+        driver.fetch_issues(label="kind:bug & defect")
+        req2 = mock_urlopen.call_args[0][0]
+        self.assertIn("labels=kind%3Abug%20%26%20defect", req2.full_url)
+
+    @patch("imaplib.IMAP4_SSL")
+    def test_task_067_imap_uid_calls(self, mock_imap_ssl):
+        """Verify EmailIngestDriver uses client.uid for permanent UNSEEN searching and fetching (TASK-067)."""
+        mock_client = MagicMock()
+        mock_imap_ssl.return_value = mock_client
+
+        mock_email = (
+            b"From: \"Tester\" <tester@example.com>\r\n"
+            b"Subject: Test Subject with \"Quotes\"\r\n"
+            b"Content-Type: text/plain\r\n\r\n"
+            b"Hello world\r\n"
+        )
+        mock_client.uid.side_effect = lambda cmd, *args: (
+            ("OK", [b"42 99"]) if cmd == "search" else (("OK", [(b"dummy", mock_email)]) if cmd == "fetch" else ("BAD", []))
+        )
+
+        driver = kb_ingest.EmailIngestDriver(host="imap.test", user="u", password="p")
+        results = driver.fetch_emails()
+
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]["uid"], 42)
+        self.assertEqual(results[1]["uid"], 99)
+        mock_client.uid.assert_any_call("search", None, "UNSEEN")
+        mock_client.uid.assert_any_call("fetch", b"42", "(RFC822)")
+        mock_client.uid.assert_any_call("fetch", b"99", "(RFC822)")
 
 
 if __name__ == "__main__":

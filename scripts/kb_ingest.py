@@ -15,6 +15,7 @@ import argparse
 import subprocess
 import urllib.request
 import urllib.error
+import urllib.parse
 import imaplib
 import email
 from email.header import decode_header
@@ -187,9 +188,13 @@ def build_feedback_markdown(
     perceived_severity: str = "s2"
 ) -> str:
     today = created_date or datetime.date.today().isoformat()
+    clean_title = json.dumps(title or "", ensure_ascii=False)
+    clean_author = json.dumps(author or "", ensure_ascii=False)
+    clean_source_ref = json.dumps(source_ref or "", ensure_ascii=False)
+
     return f"""---
 id: {fb_id}
-title: "{title}"
+title: {clean_title}
 status: new
 type: feedback
 channel: {channel}
@@ -197,8 +202,8 @@ perceived_severity: {perceived_severity}
 target: ""
 created: {today}
 updated: {today}
-author: "{author}"
-source_ref: "{source_ref}"
+author: {clean_author}
+source_ref: {clean_source_ref}
 tags:
   - feedback
   - inbox
@@ -236,7 +241,8 @@ class GitHubIngestDriver:
         if all_open:
             url = f"https://api.github.com/repos/{self.repo}/issues?state=open&per_page=100"
         else:
-            url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={label}&per_page=100"
+            quoted_label = urllib.parse.quote(label)
+            url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={quoted_label}&per_page=100"
         req = urllib.request.Request(url)
         req.add_header("User-Agent", "agent-docs-harness/kb_ingest")
         req.add_header("Accept", "application/vnd.github.v3+json")
@@ -427,15 +433,15 @@ class EmailIngestDriver:
             client.login(self.user, self.password)
             client.select(self.folder)
 
-            typ, data = client.search(None, "UNSEEN")
+            typ, data = client.uid("search", None, "UNSEEN")
             if typ != "OK" or not data or not data[0]:
                 client.logout()
                 return []
 
-            msg_ids = data[0].split()
-            for mid in msg_ids:
-                typ, fetch_data = client.fetch(mid, "(RFC822)")
-                if typ != "OK":
+            uids = data[0].split()
+            for uid in uids:
+                typ, fetch_data = client.uid("fetch", uid, "(RFC822)")
+                if typ != "OK" or not fetch_data or not isinstance(fetch_data[0], tuple):
                     continue
                 raw_email = fetch_data[0][1]
                 msg = email.message_from_bytes(raw_email)
@@ -443,11 +449,12 @@ class EmailIngestDriver:
                 subject = self.decode_mime_header(msg.get("Subject", "No Subject"))
                 sender = self.decode_mime_header(msg.get("From", "Unknown"))
                 date_str = msg.get("Date", "")
-                message_id = msg.get("Message-ID", f"{mid.decode()}-{hashlib.sha256(raw_email).hexdigest()[:8]}")
+                uid_str = uid.decode("ascii", errors="replace")
+                message_id = msg.get("Message-ID", f"{uid_str}-{hashlib.sha256(raw_email).hexdigest()[:8]}")
                 body = self.extract_body(msg)
 
                 try:
-                    uid_val = int(mid)
+                    uid_val = int(uid_str)
                 except Exception:
                     uid_val = 0
 

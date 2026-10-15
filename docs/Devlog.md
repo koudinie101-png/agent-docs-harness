@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-067: Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]:
+    1. В функции `build_feedback_markdown()` утилиты `scripts/kb_ingest.py` внедрена сериализация строк через `json.dumps(..., ensure_ascii=False)` для полей `title`, `author` и `source_ref`, полностью защищающая frontmatter от синтаксических сбоев при наличии кавычек, апострофов и обратных слэшей.
+    2. В драйвере `EmailIngestDriver` вызовы `client.search` и `client.fetch` переведены на использование интерфейса `client.uid("search", ...)` и `client.uid("fetch", ...)`, обеспечивающего постоянство идентификаторов писем и надежную дедупликацию в `.inbox_state.json`.
+    3. В методе `GitHubIngestDriver.fetch_issues()` добавлено экранирование меток через `urllib.parse.quote(label)`, предотвращающее искажение запросов с пробелами и специальными символами.
+    4. Синхронизирован бандл `install.py` и дистрибутив `dist/install.py` через `scripts/build_installer.py`.
+  - В `tests/test_kb_ingest.py` добавлены 3 целевых модульных теста: `test_task_067_yaml_escaping_in_feedback_markdown`, `test_task_067_github_driver_url_encoding` и `test_task_067_imap_uid_calls`. Обновлен `test_email_driver_ingestion`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус спецификации обновлен на `done`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_ingest.py` -> 14/14 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 98/98 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 183 files scanned, 1637 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующей инженерной задачи Фазы 17 (например, `/kb-implement TASK-068`).
+
+---
+
 ### [2026-10-15] — Устранение дефекта BUG-009: Утечка метаданных agent-docs-harness в .github/ISSUE_TEMPLATE/
 - **Что сделано:**
   - Устранен дефект [[02_Tasks/Bugs/BUG-009-issue-templates-hardcoded-repo-leak|BUG-009]]:

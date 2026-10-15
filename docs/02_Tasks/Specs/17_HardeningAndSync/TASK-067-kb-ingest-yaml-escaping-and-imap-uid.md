@@ -1,14 +1,14 @@
 ---
 id: TASK-067
 title: "Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py"
-status: planned
+status: done
 type: task
 phase: 17
 component:
   - ingestion
 parent_plan: "[[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]]"
 created: 2026-10-14
-updated: 2026-10-14
+updated: 2026-10-15
 tags:
   - task/spec
   - phase17
@@ -20,7 +20,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-067 — Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py
 
-> **ID:** TASK-067 | **Статус:** К реализации  
+> **ID:** TASK-067 | **Статус:** Выполнено  
 > **Фаза:** 17 | **Релиз:** v0.17.0  
 > **План:** [[../../Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]] | **Канбан:** [[../../Kanban|Канбан]]  
 
@@ -106,15 +106,15 @@ url = f"https://api.github.com/repos/{self.repo}/issues?state=open&labels={quote
 ---
 
 ## 4. План верификации (Verification Plan)
-- [ ] Автотесты: `pytest tests/test_kb_ingest.py` — 100% pass.
-- [ ] Тест экранирования: запуск `build_feedback_markdown()` с `title='Crash: "Error 404"'` и `author='"John" <j@ex.com>'` — YAML валиден и парсится без ошибок.
-- [ ] Тест IMAP: проверка мока `mock_client.uid.assert_called()` с UNSEEN и RFC822.
-- [ ] Тест GitHub: вызов `fetch_issues(label="help wanted")` формирует запрос с `labels=help%20wanted`.
+- [x] Автотесты: `pytest tests/test_kb_ingest.py` — 100% pass.
+- [x] Тест экранирования: запуск `build_feedback_markdown()` с `title='Crash: "Error 404"'` и `author='"John" <j@ex.com>'` — YAML валиден и парсится без ошибок.
+- [x] Тест IMAP: проверка мока `mock_client.uid.assert_called()` с UNSEEN и RFC822.
+- [x] Тест GitHub: вызов `fetch_issues(label="help wanted")` формирует запрос с `labels=help%20wanted`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
-- [ ] Код написан строго по ТЗ без внешних зависимостей (Python `stdlib`).
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код написан строго по ТЗ без внешних зависимостей (Python `stdlib`).
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.
