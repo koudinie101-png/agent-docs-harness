@@ -10,6 +10,11 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|План: Фаза 18 — Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы]] #plan #phase18 #ui-ux #multi-target #visual-harness
+  - [ ] `TASK-071`: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` #task #phase18 #installer #assets #obsidian
+  - [ ] `TASK-072`: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py` #task #phase18 #lint #release #assets
+  - [ ] `TASK-073`: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в `AGENTS.md` #task #phase18 #templates #agents #visual-dod
+  - [ ] `TASK-074`: Бандлинг инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec #task #phase18 #installer #e2e #spec
 
 ## ⏳ В работе (In Progress)
 

@@ -236,12 +236,23 @@ tags:
 
 ---
 
+## Фаза 18: Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы (Heterogeneous UI/UX & Visual Asset Harness)
+**Цель:** Создать надежный, масштабируемый контур управления UI/UX, изолированное хранилище ассетов с Obsidian DX (`docs/assets/`, `docs/.obsidian/app.json`), механический контроль медиа в `kb_lint.py`/`kb_release.py` и поддержку гетерогенных multi-target комплексов (`--ui <targets>`).  
+**Первоисточник плана:** [[Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]]  
+**Нормативная база:** [[../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]]
+
+- [ ] `TASK-071`: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py`.
+- [ ] `TASK-072`: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py`.
+- [ ] `TASK-073`: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в `AGENTS.md`.
+- [ ] `TASK-074`: Бандлинг инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы (Heterogeneous UI/UX & Visual Asset Harness):** композитная поддержка UI-профилей и связок узлов в `install.py` (`--ui <target1,target2>`), структура хранения ассетов `docs/assets/{mockups,screenshots}/<target>/`, автоматический роутинг вложений Obsidian `docs/.obsidian/app.json`, единый SSOT транспортного протокола (`01_Architecture/Protocols/`) и дизайн-системы (`UI_Design_System.md`), матрицы 4 состояний (Empty/Loading/Error/Populated) и кросс-девайсной связки, изоляция временных снимков в `.gitignore` (`tmp/ui_snapshots/`) и Tier 1 аудит медиа-ссылок/веса файлов в `scripts/kb_lint.py`. Обоснование: [[../../04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021]], [[../../03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026]].
-* 💡 **Фаза 18: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
+* 💡 **Фаза 19: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
 * 💡 **Single-Source Rule Compiler (AGENTS.md Template Injection):** компиляция правил `_RULES_BODY` в `install.py` непосредственно из корневого `AGENTS.md` в процессе `scripts/build_installer.py` для исключения ручной рассинхронизации SSOT.
 * 💡 **Детерминированный синтаксический автофикс (kb_lint.py --fix):** опциональный флаг для безопасного автоматического экранирования неэкранированных пайпов `\|` в табличных викиссылках и нормализации пробелов без эвристического вмешательства в семантику ссылок.
 * 💡 **Автоматизированная ротация процедурной памяти (Compaction):** процедурный механизм в `kb-complete` или встроенный хелпер для ротации старейших паттернов `[TRG-XX]` из `patterns.md` в архив `docs/06_Memory/Incidents/` при приближении к лимиту 15 записей.
