@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-077: Чеклист приемочного тестирования GUI («UI не лжёт») в TEMPLATE_TEST.md и аудит целостности TechDebt.md в scripts/kb_lint.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-077-gui-acceptance-checklist-and-kb-lint-audit|TASK-077]]:
+    1. В `TEMPLATE_TEST.md` (в `docs/00_Templates/` и `templates/`) добавлен структурированный чеклист приемочного тестирования интерфейсов («UI не лжёт» / The 4-State Matrix, отклик элементов, геометрия и верстка без наложений, непрерывность UI-потока, скриншот).
+    2. В `scripts/kb_lint.py` внедрена функция `check_tech_debt_integrity()`: верификация существования `TechDebt.md`, формата идентификаторов `DEBT-XXX` и валидности викиссылок в таблицах долга.
+    3. В `scripts/kb_lint.py` добавлена функция `check_untracked_todos()`: неблокирующее предупреждение `WARN` об обнаружении комментариев `TODO`/`FIXME` без явной привязки к `ROADMAP-<ID>`.
+    4. В `tests/test_kb_lint.py` добавлены модульные тесты для проверки отсутствия `TechDebt.md`, обнаружения невалидных ID `DEBT-XXX`, битых викиссылок и отслеживания висячих `TODO`.
+    5. Статус задачи обновлен в ТЗ (`done`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - Суммарный объем шаблонов в `templates/*.md` = 27511 байт ($\le 28000$ байт, лимит соблюден).
+  - `python -m unittest tests/test_kb_lint.py` -> 35 тестов пройдено (100% pass, Exit code 0).
+  - `python -m unittest discover -s tests` -> 109 тестов пройдено (100% pass, Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 198 файлов проверено, 1798 ссылок валидировано (0 битых).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации следующей задачи Фазы 19 — запустить Режим 3: `/kb-implement TASK-078`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-076: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate, трассировка // ROADMAP-<ID> и замеры >= 3 прогонов
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-076-prior-art-gate-roadmap-tagging-and-benchmarks|TASK-076]]:

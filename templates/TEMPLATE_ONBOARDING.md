@@ -51,8 +51,8 @@ tags:
 
 ## 4. Архитектура каталогов `docs/` и таксономия шаблонов
 * `00_Templates/` (16 шаблонов):
-  - **Core Essentials (4):** `TEMPLATE_ADR.md`, `TEMPLATE_PLAN.md`, `TEMPLATE_TASK.md`, `TEMPLATE_BUG.md` — регулярная разработка.
-  - **Advanced Governance (12):** `TEMPLATE_RESEARCH.md`, `TEMPLATE_RELEASE.md`, `TEMPLATE_FEEDBACK.md`, `TEMPLATE_TEST.md`, `TEMPLATE_DEVLOG.md`, `TEMPLATE_INDEX.md`, `TEMPLATE_KANBAN.md`, `TEMPLATE_ROADMAP.md`, `TEMPLATE_ARCHITECTURE.md`, `TEMPLATE_ONBOARDING.md`, `TEMPLATE_INCIDENT.md`, `TEMPLATE_TASK_MICRO.md` — системный харнесс.
+  - **Core Essentials (4):** `ADR`, `PLAN`, `TASK`, `BUG` — регулярная разработка.
+  - **Advanced Governance (12):** `RESEARCH`, `RELEASE`, `FEEDBACK`, `TEST`, `DEVLOG`, `INDEX`, `KANBAN`, `ROADMAP`, `ARCHITECTURE`, `ONBOARDING`, `INCIDENT`, `TASK_MICRO`.
 * `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (инциденты, паттерны).
 * `Devlog.md` (журнал сессий) и `00_Index.md` (карта заметок).
 
@@ -65,7 +65,5 @@ tags:
 ---
 
 ## 6. Внедрение в существующий проект (Brownfield Adoption)
-* **Greenfield Idea-First (`install.py --idea "..."`):** Пресет `undecided`, создание `SPEC.md` со статусом `discovery`, старт с исследования стека через `/kb-research` (Режим 0).
-* **Шаг 1 (Инвентаризация):** Изучи кодовую базу репозитория и зафиксируй стек в `SPEC.md`.
-* **Шаг 2 (План и бэклог):** Создай план внедрения (`/kb-plan`) и внеси карточки в Канбан.
-* **Шаг 3 (Дисциплина 4 режимов):** Веди задачи строго по циклу `/kb-research` -> `/kb-plan` -> `/kb-task` -> `/kb-implement`.
+* **Greenfield Idea-First (`--idea`):** Пресет `undecided`, `SPEC.md` (`status: discovery`), старт с `/kb-research`.
+* **Brownfield:** Инвентаризация стека в `SPEC.md` $\to$ план `/kb-plan` $\to$ цикл 4 режимов.

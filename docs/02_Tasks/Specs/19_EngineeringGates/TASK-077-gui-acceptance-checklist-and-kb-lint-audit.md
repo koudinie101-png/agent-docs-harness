@@ -1,7 +1,7 @@
 ---
 id: TASK-077
 title: "Чеклист приемочного тестирования GUI («UI не лжёт») в TEMPLATE_TEST.md и аудит целостности TechDebt.md в scripts/kb_lint.py"
-status: planned # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 19
 component:

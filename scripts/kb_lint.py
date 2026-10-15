@@ -428,6 +428,151 @@ def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> Lis
     return warnings
 
 
+def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]] = None) -> List[str]:
+    """
+    Tier 1 / Tier 2 Quality Gate: validates tech debt registry docs/02_Tasks/TechDebt.md.
+    Checks:
+    1. Existence of docs/02_Tasks/TechDebt.md.
+    2. Format of active debt IDs in table (must match ^DEBT-\\d{3,}$, e.g. DEBT-001).
+    3. Wikilinks validity inside the table.
+    Returns a list of error/warning strings.
+    """
+    errors = []
+    debt_path = docs_dir / "02_Tasks" / "TechDebt.md"
+    if not debt_path.is_file() and (docs_dir / "docs" / "02_Tasks" / "TechDebt.md").is_file():
+        debt_path = docs_dir / "docs" / "02_Tasks" / "TechDebt.md"
+
+    if not debt_path.is_file():
+        errors.append("Tech debt registry not found: expected 'TechDebt.md' in '02_Tasks'")
+        return errors
+
+    try:
+        content = debt_path.read_text(encoding="utf-8")
+    except Exception as e:
+        errors.append(f"Could not read TechDebt.md: {e}")
+        return errors
+
+    if not content.startswith("---"):
+        errors.append("Malformed YAML frontmatter in TechDebt.md (starts without ---)")
+
+    if file_map is None:
+        file_map = build_file_map(docs_dir)
+
+    repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
+    in_debt_section = False
+
+    for line_no, line in enumerate(content.splitlines(), start=1):
+        stripped = line.strip()
+        if "##" in stripped and ("долг" in stripped.lower() or "debt" in stripped.lower()):
+            in_debt_section = True
+            continue
+        elif stripped.startswith("## ") and in_debt_section:
+            in_debt_section = False
+
+        if in_debt_section and stripped.startswith("|") and stripped.endswith("|"):
+            parts = [p.strip() for p in stripped.split("|")[1:-1]]
+            if not parts:
+                continue
+            first_cell = parts[0]
+            if first_cell.lower() in ["id", "идентификатор"] or re.match(r"^:?-+:?$", first_cell):
+                continue
+            if not first_cell:
+                continue
+
+            # Validate DEBT-XXX format
+            if not re.match(r"^DEBT-\d{3,}$", first_cell):
+                errors.append(
+                    f"In 'TechDebt.md' line {line_no}: invalid tech debt ID '{first_cell}'. "
+                    f"Expected format DEBT-XXX (e.g. DEBT-001)."
+                )
+
+            # Validate wikilinks in this row
+            row_links = parse_wikilinks(stripped)
+            for link in row_links:
+                link_clean = link.strip()
+                if not link_clean or "XXX" in link_clean:
+                    continue
+                direct_target = (debt_path.parent / link_clean).resolve()
+                direct_target_md = (debt_path.parent / f"{link_clean}.md").resolve()
+                vault_target = (docs_dir / link_clean).resolve()
+                vault_target_md = (docs_dir / f"{link_clean}.md").resolve()
+                repo_target = (repo_root / link_clean).resolve()
+                repo_target_md = (repo_root / f"{link_clean}.md").resolve()
+                link_stem = Path(link_clean).stem.lower()
+                link_name = Path(link_clean).name.lower()
+
+                found = (
+                    direct_target.exists()
+                    or direct_target_md.exists()
+                    or vault_target.exists()
+                    or vault_target_md.exists()
+                    or repo_target.exists()
+                    or repo_target_md.exists()
+                    or link_clean in file_map
+                    or link_clean.lower() in file_map
+                    or link_name in file_map
+                    or link_stem in file_map
+                )
+                if not found:
+                    errors.append(f"In 'TechDebt.md' line {line_no}: broken wikilink [[{link_clean}]]")
+
+    return errors
+
+
+def check_untracked_todos(docs_dir: Path) -> List[str]:
+    """
+    Tier 1 / Tier 2 Non-blocking Quality Gate:
+    Audits documentation files and scripts for untracked TODO/FIXME comments
+    that are not associated with a // ROADMAP-<ID> (or # ROADMAP-<ID> / <!-- ROADMAP-<ID>).
+    Returns a list of warning strings.
+    """
+    warnings = []
+    repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
+
+    files_to_scan: List[Path] = []
+    if docs_dir.is_dir():
+        for md_file in docs_dir.rglob("*.md"):
+            if "00_Templates" in md_file.parts or md_file.name.startswith("TEMPLATE_"):
+                continue
+            files_to_scan.append(md_file)
+
+    scripts_dir = repo_root / "scripts"
+    if scripts_dir.is_dir():
+        for py_file in scripts_dir.glob("*.py"):
+            files_to_scan.append(py_file)
+
+    md_comment_pattern = re.compile(r'<!--\s*(?:TODO|FIXME)\b', re.IGNORECASE)
+    code_comment_pattern = re.compile(r'(?:#|//|/\*)\s*(?:TODO|FIXME)\b', re.IGNORECASE)
+
+    for file_path in sorted(set(files_to_scan)):
+        try:
+            content = file_path.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        rel_name = file_path.name
+        try:
+            if _is_relative_to(file_path, docs_dir):
+                rel_name = _relative_to(file_path, docs_dir).as_posix()
+            elif _is_relative_to(file_path, repo_root):
+                rel_name = _relative_to(file_path, repo_root).as_posix()
+        except Exception:
+            pass
+
+        is_markdown = file_path.suffix.lower() == ".md"
+        active_pattern = md_comment_pattern if is_markdown else code_comment_pattern
+
+        for line_no, line in enumerate(content.splitlines(), start=1):
+            line_to_check = re.sub(r'`[^`]*`', '', line)
+            if active_pattern.search(line_to_check):
+                if not re.search(r'ROADMAP-[A-Za-z0-9_-]+', line, re.IGNORECASE):
+                    warnings.append(
+                        f"Untracked TODO without ROADMAP-<ID> reference in {rel_name}:{line_no}"
+                    )
+
+    return warnings
+
+
 def build_file_map(docs_dir: Path, repo_root: Optional[Path] = None) -> Dict[str, Path]:
     if repo_root is None:
         repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
@@ -592,7 +737,17 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     phase_warnings = check_phase_consistency(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
     asset_warnings = check_asset_weights(docs_dir)
-    has_errors = bool(broken_links or frontmatter_warnings or memory_errors)
+    debt_results = check_tech_debt_integrity(docs_dir, file_map=file_map)
+    debt_errors = [e for e in debt_results if not e.startswith("Tech debt registry not found")]
+    has_tasks_harness = (
+        (docs_dir / "02_Tasks" / "Kanban.md").is_file()
+        or (docs_dir / "02_Tasks" / "Roadmap.md").is_file()
+        or (docs_dir / "docs" / "02_Tasks" / "Kanban.md").is_file()
+        or (docs_dir / "docs" / "02_Tasks" / "Roadmap.md").is_file()
+    )
+    debt_warnings = [e for e in debt_results if e.startswith("Tech debt registry not found") and has_tasks_harness]
+    todo_warnings = check_untracked_todos(docs_dir)
+    has_errors = bool(broken_links or frontmatter_warnings or memory_errors or debt_errors)
 
     if verbose:
         print(f"📊 Total Markdown Files Scanned: {len(all_md_files)}")
@@ -650,8 +805,26 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {aw}")
             print()
 
+        if debt_warnings:
+            print(f"⚠️ Tech Debt Warnings ({len(debt_warnings)}):")
+            for dw in debt_warnings:
+                print(f"   • {dw}")
+            print()
+
+        if debt_errors:
+            print(f"❌ Tech Debt Integrity Errors ({len(debt_errors)}):")
+            for de in debt_errors:
+                print(f"   • {de}")
+            print()
+
+        if todo_warnings:
+            print(f"⚠️ Untracked TODO Warnings ({len(todo_warnings)}):")
+            for tw in todo_warnings:
+                print(f"   • {tw}")
+            print()
+
         if has_errors:
-            print("❌ Linter failed: please resolve broken links.")
+            print("❌ Linter failed: please resolve errors.")
             return 1
         else:
             print("🎉 Knowledge base is healthy and consistent!")
@@ -668,12 +841,16 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {pw}")
         for aw in asset_warnings:
             print(f"⚠️  {aw}")
+        for dw in debt_warnings:
+            print(f"⚠️  WARN: {dw}")
+        for tw in todo_warnings:
+            print(f"⚠️  WARN: {tw}")
         if not has_errors:
             print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
             return 0
         else:
-            error_count = len(broken_links) + len(frontmatter_warnings) + len(memory_errors)
-            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings, {len(memory_errors)} memory errors.")
+            error_count = len(broken_links) + len(frontmatter_warnings) + len(memory_errors) + len(debt_errors)
+            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings, {len(memory_errors)} memory errors, {len(debt_errors)} tech debt errors.")
             if broken_links:
                 for src, target in broken_links:
                     print(f"   • In '{src}' -> target not found: [[{target}]]")
@@ -683,6 +860,9 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             if memory_errors:
                 for me in memory_errors:
                     print(f"   • {me}")
+            if debt_errors:
+                for de in debt_errors:
+                    print(f"   • {de}")
             return 1
 
 

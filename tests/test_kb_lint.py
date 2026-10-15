@@ -692,6 +692,93 @@ date: 2026-10-15
         warnings = kb_lint.check_asset_weights(self.docs_dir, max_bytes=2 * 1024 * 1024)
         self.assertTrue(any("heavy_mockup.png" in w and "exceeds size limit" in w for w in warnings))
 
+    def test_task_077_tech_debt_lint_missing_file(self):
+        """Verifies check_tech_debt_integrity returns error when TechDebt.md is missing (TASK-077)."""
+        res = kb_lint.check_tech_debt_integrity(self.docs_dir)
+        self.assertTrue(any("Tech debt registry not found" in err for err in res))
+
+    def test_task_077_tech_debt_lint_broken_links(self):
+        """Verifies check_tech_debt_integrity reports broken wikilinks in debt table (TASK-077)."""
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        debt_file = tasks_dir / "TechDebt.md"
+        debt_content = (
+            "---\nid: TECHDEBT\ntitle: Tech Debt\ntype: techdebt\nstatus: active\n---\n"
+            "# Tech Debt\n"
+            "## 📋 Открытый технический долг (Active P3 Debt)\n"
+            "| ID | Приоритет | Модуль | Описание | Задача-источник | Дата | Статус |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| DEBT-001 | P3 | `core.py` | Refactor regex | [[NonExistentTaskFile]] | 2026-10-15 | open |\n"
+        )
+        debt_file.write_text(debt_content, encoding="utf-8")
+        file_map = kb_lint.build_file_map(self.docs_dir)
+
+        errors = kb_lint.check_tech_debt_integrity(self.docs_dir, file_map=file_map)
+        self.assertTrue(any("broken wikilink [[NonExistentTaskFile]]" in err for err in errors))
+
+    def test_task_077_tech_debt_lint_valid_and_invalid_id(self):
+        """Verifies check_tech_debt_integrity validates DEBT-XXX format and passes when valid (TASK-077)."""
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        debt_file = tasks_dir / "TechDebt.md"
+
+        # Invalid ID format
+        invalid_content = (
+            "---\nid: TECHDEBT\ntitle: Tech Debt\ntype: techdebt\nstatus: active\n---\n"
+            "# Tech Debt\n"
+            "## 📋 Открытый технический долг (Active P3 Debt)\n"
+            "| ID | Приоритет | Модуль | Описание | Задача-источник | Дата | Статус |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| INVALID_ID | P3 | `core.py` | Fix | [[00_Index]] | 2026-10-15 | open |\n"
+        )
+        debt_file.write_text(invalid_content, encoding="utf-8")
+        file_map = kb_lint.build_file_map(self.docs_dir)
+        errors = kb_lint.check_tech_debt_integrity(self.docs_dir, file_map=file_map)
+        self.assertTrue(any("invalid tech debt ID 'INVALID_ID'" in err for err in errors))
+
+        # Valid content
+        valid_content = (
+            "---\nid: TECHDEBT\ntitle: Tech Debt\ntype: techdebt\nstatus: active\n---\n"
+            "# Tech Debt\n"
+            "## 📋 Открытый технический долг (Active P3 Debt)\n"
+            "| ID | Приоритет | Модуль | Описание | Задача-источник | Дата | Статус |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| DEBT-001 | P3 | `core.py` | Fix | [[00_Index]] | 2026-10-15 | open |\n"
+        )
+        debt_file.write_text(valid_content, encoding="utf-8")
+        valid_errors = kb_lint.check_tech_debt_integrity(self.docs_dir, file_map=file_map)
+        self.assertEqual(valid_errors, [])
+
+    def test_task_077_untracked_todo_warning(self):
+        """Verifies check_untracked_todos flags bare TODOs and ignores ROADMAP-XXX tagged ones (TASK-077)."""
+        scripts_dir = self.temp_dir / "scripts"
+        scripts_dir.mkdir(parents=True, exist_ok=True)
+        py_script = scripts_dir / "sample.py"
+        py_script.write_text(
+            "# TODO: bare hanging todo\n"
+            "# ROADMAP-019: tagged roadmap todo\n"
+            "// ROADMAP-TASK-076: another tagged todo\n",
+            encoding="utf-8"
+        )
+
+        md_doc = self.docs_dir / "sample_doc.md"
+        md_doc.write_text(
+            "<!-- TODO: untracked doc todo -->\n"
+            "<!-- ROADMAP-020 TODO: tracked doc todo -->\n"
+            "Discussing `TODO` in prose should not trigger warning.\n",
+            encoding="utf-8"
+        )
+
+        warnings = kb_lint.check_untracked_todos(self.docs_dir)
+        # Should flag sample.py:1 and sample_doc.md:1
+        self.assertTrue(any("sample.py:1" in w for w in warnings))
+        self.assertTrue(any("sample_doc.md:1" in w for w in warnings))
+        # Should NOT flag ROADMAP lines or prose
+        self.assertFalse(any("sample.py:2" in w for w in warnings))
+        self.assertFalse(any("sample.py:3" in w for w in warnings))
+        self.assertFalse(any("sample_doc.md:2" in w for w in warnings))
+        self.assertFalse(any("sample_doc.md:3" in w for w in warnings))
+
 
 if __name__ == "__main__":
     unittest.main()
