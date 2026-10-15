@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-10-15
+
+### Added
+- **Heterogeneous UI/UX & Visual Asset Harness** (PLAN-018, ADR-0026, RESEARCH-021, TASK-071–TASK-074):
+  - Isolated asset storage structure `docs/assets/` (`screenshots/<target>/`, `mockups/`, `diagrams/`, `design/UI_Design_System.md`).
+  - Composite `--ui {auto,none,web,mobile,desktop,tui,<targets>}` CLI flag in `install.py` with multi-target cross-platform layout (`multi-device/`, `Protocols/`, `Targets/`).
+  - Seamless Obsidian DX: automatic configuration of `docs/.obsidian/app.json` (`attachmentFolderPath: "assets/screenshots"`), enabling instant image pasting via Ctrl+V, with safe non-destructive key merging during `install.py --update`.
+  - The 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) integrated into `TEMPLATE_PLAN.md`.
+  - Visual Definition of Done (DoD) in `TEMPLATE_TASK.md` with permanent screenshot verification (`docs/assets/screenshots/<target>/TASK-XXX.png`, $\le 2\text{ MB}$) and headless ASCII/SVG preview fallback.
+  - Codified Rule 12: "The 4-State UI & Visual Verification Invariant" in canonical `AGENTS.md` and synced into all thin IDE adapters (`GEMINI.md`, etc.).
+  - Git Bloat Prevention: temporary E2E test snapshots isolated in `tmp/ui_snapshots/` and barred from Git tracking in `.gitignore`.
+  - Media asset indexing, Obsidian size stripping (`![[image.png|300]]`), and asset weight checking ($\le 2\text{ MB}$) in `scripts/kb_lint.py`.
+  - Media embed conversion to clean Markdown (`![alt](path)`) without `.md` pollution in `scripts/kb_release.py`.
+  - Comprehensive E2E test suite in `tests/test_installer.py` covering single, multi-target, none profiles, and app.json updates.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (150.4 KB / 154029 bytes) with updated templates, skills, rules, and scripts.
+
 ## [0.17.0] - 2026-10-15
 
 ### Added

@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Выпуск релиза v0.18.0: Фаза 18 (Heterogeneous UI/UX & Visual Asset Harness)
+- **Что сделано:**
+  - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.18.0|RELEASE-v0.18.0]] по итогам завершения Фазы 18.
+  - Успешно завершены и верифицированы все инженерные задачи фазы (`TASK-071`–`TASK-074`):
+    * Архитектура хранения визуальных ассетов `docs/assets/`, композитный флаг `--ui` и Obsidian DX (`.obsidian/app.json`) в `install.py`.
+    * Механический Tier 1 контроль медиа-ассетов в `scripts/kb_lint.py` и конвертация в чистый Markdown в `scripts/kb_release.py`.
+    * Норматив матрицы 4 состояний (The 4-State UI Matrix), Visual DoD и правила изоляции временных тестовых снапшотов `tmp/ui_snapshots/` в `AGENTS.md` и шаблонах.
+    * Бандлинг автономного инсталлятора `build_installer.py`, сквозные E2E тесты в `tests/test_installer.py` и актуализация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
+  - Сформированы публичные релизные заметки `dist/RELEASE_NOTES.md` по стандарту High-SNR (без шума ADR).
+  - Собраны релизные артефакты в каталоге `dist/`:
+    * `dist/install.py` (150.4 KB) — SHA-256: `8449faf8e61fc8f5d494c387d96ed38107c12744c3807a66c637f6aa9c4a6ea1`.
+  - Обновлен `CHANGELOG.md` с подробным перечнем добавленных возможностей.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 105/105 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Переход к следующей фазе развития (Фаза 19: Инженерные барьеры качества и контроль техдолга / Engineering Gates & Tech Debt Governance) через `/kb-plan`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-074: Бандлинг инсталлятора build_installer.py, сквозные E2E тесты и актуализация Living Spec
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/18_VisualHarness/TASK-074-bundling-e2e-tests-and-living-spec|TASK-074]]:
