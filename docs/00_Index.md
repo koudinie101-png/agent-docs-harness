@@ -89,6 +89,8 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0023-fast-track-protocol-for-micro-tasks|ADR-0023: Архитектура протокола Fast-Track для микро-задач и легковесные спецификации]]
 * [[03_Decisions_ADR/ADR-0024-user-centric-ingestion-and-channel-transparency|ADR-0024: Архитектура прозрачности каналов обратной связи, автоопределения репозитория и диагностического статуса]]
 * [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025: Архитектура самообучающегося контура дефектов (Defect Loop), слои надежности Quality Gates и фильтрация инициатив FB-GH-3]]
+* [[03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026: Контур UI/UX, управление визуальными ассетами и архитектура гетерогенных multi-target систем]]
+* [[03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027: Task-Scoped пространства имен визуальных макетов (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация топологии docs/assets/ в kb_lint.py]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -111,6 +113,8 @@ flowchart TD
 * [[04_Research/RESEARCH-018-fast-track-protocol-for-micro-tasks|RESEARCH-018: Протокол Fast-Track для микро-задач (Agile Docs-as-Code)]]
 * [[04_Research/RESEARCH-019-user-centric-ingestion-and-channel-transparency|RESEARCH-019: Прозрачный UX инжеста обратной связи и статус источников (User-Centric Ingestion & Channel Transparency)]]
 * [[04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020: Самообучающийся контур дефектов, память об ошибках (Defect Loop) и слои качества Quality Gates (по мотивам FB-GH-3)]]
+* [[04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021: Архитектура UI/UX контура, визуальных ассетов и гетерогенных multi-target систем]]
+* [[04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022: Укрепление контура визуальных ассетов: Task-Scoped пространства имен (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация лейаута в kb_lint.py]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.

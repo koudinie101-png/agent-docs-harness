@@ -272,7 +272,7 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Asset Storage Hardening & Task-Scoped Namespaces (FB-GH-5):** стандартизация макетов в task-scoped директориях (`mockups/<target>/TASK-XXX/`), As-Is / To-Be жизненный цикл для исключения дрифта редизайнов и проверка лейаута `docs/assets/` в `scripts/kb_lint.py` — [[Inbox/FB-GH-5|FB-GH-5]] (кандидат в Режим 0: `/kb-research`).
+* 💡 **Asset Storage Hardening & Task-Scoped Namespaces (FB-GH-5) [⭐⭐⭐⭐⭐ Высокая ценность / Низкая сложность]:** стандартизация макетов в task-scoped директориях (`mockups/<target>/TASK-XXX/` и `mockups/flows/TASK-XXX/`), жизненный цикл `As-Is / To-Be` (`asis.svg`, `tobe.svg`) для исключения дрифта редизайнов, строгое разрешение путей одноименных медиафайлов и проверка топологии `docs/assets/` (`check_asset_layout()`) в `scripts/kb_lint.py` — [[Inbox/FB-GH-5|FB-GH-5]], [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] (валидировано в Режиме 0, готово к `/kb-plan`).
 
 
 ---

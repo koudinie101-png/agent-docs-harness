@@ -5,7 +5,7 @@ status: processed
 type: feedback
 channel: github
 perceived_severity: s2
-target: "[[../Roadmap#🔮 Перспективные направления (Future Horizons / Icebox)|Roadmap Icebox]]"
+target: "[[../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]]"
 created: 2026-10-15
 updated: 2026-10-15
 author: "koudinie101-png"
@@ -18,7 +18,7 @@ tags:
 # 📥 Обращение: FB-GH-5 — Asset Storage Hardening: Task-scoped mockup namespaces (`TASK-XXX/`), As-Is/To-Be lifecycle, and `kb_lint` layout validation
 
 > **Источник:** Github (https://github.com/koudinie101-png/agent-docs-harness/issues/5) | **Статус:** processed  
-> **Целевой артефакт:** [[../Roadmap#🔮 Перспективные направления (Future Horizons / Icebox)|Roadmap Icebox]]  
+> **Целевой артефакт:** [[../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]  
 
 ---
 
@@ -70,4 +70,4 @@ docs/assets/
 - **Контекст:** Развитие VisualHarness (ADR-0026) при внедрении в companion-приложения. Обнаружены риски дрифта ассетов при повторных редизайнах экранов («To-Be Drift»), отсутствие явного стандарта вложенности и слепая зона в `scripts/kb_lint.py` по валидации структуры `docs/assets/`.
 
 ## 3. Решение по триажу
-Зарегистрировано в [[../Roadmap#🔮 Перспективные направления (Future Horizons / Icebox)|Roadmap (Icebox)]]. Следующий шаг — запуск Режима 0 (Discovery) через `/kb-research` для валидации архитектуры task-scoped пространств имен, жизненного цикла As-Is/To-Be и правил линтера.
+Зарегистрировано в [[../Roadmap#🔮 Перспективные направления (Future Horizons / Icebox)|Roadmap (Icebox)]] и проработано в Режиме 0 (Discovery): [[../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]] и [[../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]. Готово к планированию фазы через `/kb-plan`.
