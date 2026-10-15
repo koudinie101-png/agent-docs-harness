@@ -1,12 +1,13 @@
 {
   "version": 1,
   "github": {
-    "last_issue_number": 4,
+    "last_issue_number": 5,
     "processed_ids": [
       4,
       3,
       2,
-      1
+      1,
+      5
     ]
   },
   "email": {

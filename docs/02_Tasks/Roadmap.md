@@ -272,6 +272,7 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
+* 💡 **Asset Storage Hardening & Task-Scoped Namespaces (FB-GH-5):** стандартизация макетов в task-scoped директориях (`mockups/<target>/TASK-XXX/`), As-Is / To-Be жизненный цикл для исключения дрифта редизайнов и проверка лейаута `docs/assets/` в `scripts/kb_lint.py` — [[Inbox/FB-GH-5|FB-GH-5]] (кандидат в Режим 0: `/kb-research`).
 
 
 ---
