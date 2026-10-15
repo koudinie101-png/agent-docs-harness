@@ -260,14 +260,14 @@ tags:
 
 ---
 
-## Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting) — ⏳ В планировании
+## Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting) — ⏳ В работе
 **Цель:** Устранить «дрифт редизайнов» (To-Be Drift) и перезапись макетов за счет пространств имен `docs/assets/mockups/<target>/TASK-XXX/` и сквозных сценариев `docs/assets/mockups/flows/TASK-XXX/`, стандартизировать жизненный цикл `As-Is / To-Be` (`asis.svg`, `tobe.svg`), исправить ложноположительное разрешение путей одноименных медиафайлов в `scripts/kb_lint.py` и внедрить механическую проверку топологии `check_asset_layout()`.  
 **Первоисточник плана:** [[Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]  
 **Нормативная база:** [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] | **Источник:** [[Inbox/FB-GH-5|FB-GH-5]]
 
-- [ ] `TASK-079`: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`.
-- [ ] `TASK-080`: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`.
-- [ ] `TASK-081`: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
+- [ ] [[Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`.
+- [ ] [[Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`.
+- [ ] [[Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
 
 ---
 

@@ -85,14 +85,14 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] `TASK-079`: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`
-  * Реализация `check_asset_layout(root_path: Path)` с проверкой `VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}` и выводом `[WARN]`.
+- [ ] [[../Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`
+  * Реализация `check_asset_layout(docs_dir: Path)` с проверкой `VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}`, проверкой пространств `TASK-XXX/` внутри `mockups/` и выводом `WARN`.
   * Устранение ложноположительного fallback'а `elif link_name in file_map:` для медиа-ссылок с разделителями пути (`/` или `\`) в `run_linter()`.
   * Модульные тесты `test_kb_lint.py` на детекцию «диких» папок в `docs/assets/` и коллизии одноименных файлов `tobe.svg` в разных директориях `TASK-XXX/`.
-- [ ] `TASK-080`: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`
-  * Замена скаффолдинга `mockups/multi-device` на `mockups/flows` в `install.py` и обновление `_generate_ui_design_system()` с правилами `TASK-XXX/`, `asis.svg` / `tobe.svg` и префиксами `<surface>_`.
-  * Обновление `docs/00_Templates/TEMPLATE_TASK.md`, `AGENTS.md`, `GEMINI.md` и встроенных правил в `install.py`.
-- [ ] `TASK-081`: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`)
+- [ ] [[../Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`
+  * Обновление `UI_Design_System.md` в `create_starter_docs()` (`install.py`) с правилами `TASK-XXX/`, `asis.svg` / `tobe.svg`, `mockups/flows/TASK-XXX/` и префиксами `<surface>_`.
+  * Обновление `docs/00_Templates/TEMPLATE_TASK.md`, `AGENTS.md`, `GEMINI.md` и встроенных генераторов правил в `install.py`.
+- [ ] [[../Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`)
   * Обновление и расширение E2E тестов в `tests/test_installer.py`.
   * Пересборка автономного инсталлятора `install.py` через `scripts/build_installer.py`.
   * Актуализация `SPEC.md`, `README.md` и `docs/Onboarding.md`.
