@@ -10,14 +10,14 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-019-engineering-gates-and-tech-debt-governance|План: Фаза 19 — Инженерные барьеры качества и контроль техдолга]] #plan #phase19 #quality-gates #tech-debt
-  - [ ] [[Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]]: Синхронизация install.py, сборка монолита через build_installer.py, E2E тесты и актуализация Living Spec #task #phase19 #installer #e2e #spec
 
 ## ⏳ В работе (In Progress)
 
 
 ## ✅ Готово (Done)
 
+- [x] [[Plans/PLAN-019-engineering-gates-and-tech-debt-governance|План: Фаза 19 — Инженерные барьеры качества и контроль техдолга]] (2026-10-15) #plan #phase19 #quality-gates #tech-debt
+  - [x] [[Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]]: Синхронизация `install.py`, сборка монолита через `build_installer.py`, E2E тесты и актуализация Living Spec (2026-10-15) #task #phase19 #installer #e2e #spec
 - [x] [[Specs/19_EngineeringGates/TASK-077-gui-acceptance-checklist-and-kb-lint-audit|TASK-077]]: Чеклист приемочного тестирования GUI («UI не лжёт») в TEMPLATE_TEST.md и аудит целостности TechDebt.md в scripts/kb_lint.py (2026-10-15) #task #phase19 #testing #lint
 - [x] [[Specs/19_EngineeringGates/TASK-076-prior-art-gate-roadmap-tagging-and-benchmarks|TASK-076]]: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate, трассировка // ROADMAP-<ID> и замеры >= 3 прогонов (2026-10-15) #task #phase19 #prior-art #benchmarks
 - [x] [[Specs/19_EngineeringGates/TASK-075-tech-debt-registry-and-triage-rules|TASK-075]]: Инфраструктура реестра техдолга (`docs/02_Tasks/TechDebt.md`, скаффолдинг в `install.py`, правила триажа $P1/P2$ vs $P3$) (2026-10-15) #task #phase19 #tech-debt

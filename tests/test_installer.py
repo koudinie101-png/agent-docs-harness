@@ -934,9 +934,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 160 KB for Phase 18 with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness)
+            # Installer size check (budget <= 165 KB for Phase 19 with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 160000, f"install.py exceeded budget: {installer_size} bytes (budget <= 160 KB)")
+            self.assertLessEqual(installer_size, 165000, f"install.py exceeded budget: {installer_size} bytes (budget <= 165 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -2235,6 +2235,67 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(merged_app_data.get("theme"), "obsidian")
             self.assertEqual(merged_app_data.get("legacy"), True)
             self.assertEqual(merged_app_data.get("attachmentFolderPath"), "assets/screenshots")
+
+    def test_28_phase_19_engineering_gates_and_tech_debt_e2e(self):
+        """E2E test: Verify Phase 19 TechDebt scaffolding, safe update preservation, and engineering gates in AGENTS.md."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            base_dir = Path(tmp_dir)
+
+            # 1. Clean slate installation includes TechDebt.md
+            target = base_dir / "TechDebtApp"
+            target.mkdir()
+            install.install_harness(
+                target_dir=target,
+                project_name="TechDebtApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            tech_debt_file = target / "docs" / "02_Tasks" / "TechDebt.md"
+            self.assertTrue(tech_debt_file.is_file(), "docs/02_Tasks/TechDebt.md must be scaffolded on clean install")
+            content = tech_debt_file.read_text(encoding="utf-8")
+            self.assertIn("id: TECHDEBT", content)
+            self.assertIn("type: techdebt", content)
+            self.assertIn("Открытый технический долг", content)
+            self.assertIn("Погашенный технический долг", content)
+            self.assertIn("P1 / P2", content)
+            self.assertIn("P3", content)
+
+            # 2. Add custom P3 debt item and verify --update preserves it
+            custom_debt_row = "| DEBT-001 | P3 | `engine.py` | Optimize parser regex | [[Specs/01_MVP/TASK-001|TASK-001]] | 2026-10-15 | open |\n"
+            custom_content = content + "\n" + custom_debt_row
+            tech_debt_file.write_text(custom_content, encoding="utf-8")
+
+            res_upd = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_upd.returncode, 0)
+            updated_content = tech_debt_file.read_text(encoding="utf-8")
+            self.assertIn("DEBT-001", updated_content, "Existing DEBT items must be strictly preserved on install.py --update")
+            self.assertIn("Optimize parser regex", updated_content)
+
+            # 3. Check AGENTS.md has engineering gates rules (Prior-Art Gate, ROADMAP-ID, Benchmark Persistence)
+            agents_file = target / "AGENTS.md"
+            self.assertTrue(agents_file.is_file())
+            agents_text = agents_file.read_text(encoding="utf-8")
+            self.assertIn("Prior-Art Gate Invariant", agents_text)
+            self.assertIn("Traceable Backlog Tags (// ROADMAP-<ID>)", agents_text)
+            self.assertIn("Benchmark Persistence («Замер = артефакт»)", agents_text)
+            self.assertIn("Tech Debt Governance & Review Triage (P1/P2 vs P3)", agents_text)
+
+            # 4. Check adapter rules (GEMINI.md) have the new rules
+            gemini_file = target / "GEMINI.md"
+            self.assertTrue(gemini_file.is_file())
+            gemini_text = gemini_file.read_text(encoding="utf-8")
+            self.assertIn("Prior-Art Gate", gemini_text)
+            self.assertIn("ROADMAP-<ID>", gemini_text)
+            self.assertIn("Tech Debt Governance", gemini_text)
 
 
 if __name__ == "__main__":

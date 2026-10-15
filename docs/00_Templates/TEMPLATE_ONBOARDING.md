@@ -66,4 +66,4 @@ tags:
 
 ## 6. Внедрение в существующий проект (Brownfield Adoption)
 * **Greenfield Idea-First (`--idea`):** Пресет `undecided`, `SPEC.md` (`status: discovery`), старт с `/kb-research`.
-* **Brownfield:** Инвентаризация стека в `SPEC.md` $\to$ план `/kb-plan` $\to$ цикл 4 режимов.
+* **Brownfield:** Изучи кодовую базу репозитория и зафиксируй стек в `SPEC.md` $\to$ план `/kb-plan` $\to$ цикл 4 режимов.

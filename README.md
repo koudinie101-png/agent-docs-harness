@@ -115,6 +115,7 @@ docs/
 ├── 02_Tasks/
 │   ├── Kanban.md             # Operational board (Backlog, In Progress, Done, Ideas)
 │   ├── Roadmap.md            # Strategic milestones and phased goals
+│   ├── TechDebt.md           # Tech debt registry (P1/P2 vs P3 review triage)
 │   ├── Inbox/                # External feedback triage buffer (.inbox_state.json)
 │   ├── Plans/                # RFCs (Mode 1)
 │   ├── Specs/01_MVP/         # Detailed task specifications (Mode 2)
@@ -339,6 +340,16 @@ Once installed, your workflow is seamless:
     * Двухуровневый контур процедурной памяти (`docs/06_Memory/`): жестко лимитированный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей) и архив инцидентов `Incidents/` с обязательной проверкой `Memory-First` перед реализацией.
 11. **The 4-State UI & Visual Verification Invariant:**
     * Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$) ([ADR-0026](docs/03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management.md)). Ephemeral test snapshots in `tmp/ui_snapshots/` are barred from git tracking.
+12. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**
+    * Findings from code reviews are strictly triaged into critical blockers (P1/P2 — resolved immediately) and non-blocking debt (P3 — strictly prohibited from opportunistic fixing; recorded in `docs/02_Tasks/TechDebt.md`).
+13. **Prior-Art Gate Invariant:**
+    * Mandatory inspection of existing modules and standard libraries before designing new abstractions to eliminate wheel reinvention.
+14. **Traceable Backlog Tags (`// ROADMAP-<ID>`):**
+    * Untracked, hanging `TODO`/`FIXME` comments without roadmap linkage are strictly prohibited.
+15. **Benchmark Persistence («Замер = артефакт»):**
+    * All performance and token claims must be verified via $\ge 3$ reproducible runs with cold-start discard and persistent environment documentation.
+16. **GUI Acceptance Checklist («UI не лжёт»):**
+    * Passing unit tests is insufficient for visual components; interactive verification of clicks, non-blocking threads, and unclipped layouts is mandatory before task completion.
 
 ---
 

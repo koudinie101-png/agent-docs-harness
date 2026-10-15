@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-078: Синхронизация install.py, сборка монолита через build_installer.py, E2E тесты и актуализация Living Spec
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]] — финальная задача Фазы 19 «Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance)»:
+    1. Генератор правил `generate_agents_md()` и адаптеров `_gen_rule()` в `install.py` синхронизирован с нормативами Prior-Art Gate (#14), `// ROADMAP-<ID>` (#15), Benchmark Persistence (#16) и триажа техдолга (#13).
+    2. Все 16 шаблонов оптимизированы по High-SNR (суммарный объем `templates/*.md` $\le 28\text{ KB}$).
+    3. Монолитный установщик `install.py` и артефакт `dist/install.py` собраны через `scripts/build_installer.py` (размер 161.4 KB $\le 165\text{ KB}$).
+    4. В `tests/test_installer.py` добавлен сквозной E2E тест `test_28_phase_19_engineering_gates_and_tech_debt_e2e` для проверки реестра техдолга, неразрушающего обновления и внедрения правил 13–16.
+    5. Актуализирован Living Spec: обновлены `SPEC.md`, `README.md` и `docs/Onboarding.md` (добавлена секция 15 «Управление техническим долгом и инженерные барьеры качества»).
+    6. Статусы `TASK-078` и плана `PLAN-019` переведены в завершенные в ТЗ (`done`), Канбане (`Done`) и Дорожной карте (`[x]`). Фаза 19 официально закрыта!
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 198 файлов проверено, 1804 ссылки валидировано (0 битых).
+  - `python -m unittest discover -s tests` -> 110 тестов пройдено (100% pass, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 19 полностью завершена. При готовности выпустить релиз — запустить навык `/kb-release --version v0.19.0 --phase 19`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-077: Чеклист приемочного тестирования GUI («UI не лжёт») в TEMPLATE_TEST.md и аудит целостности TechDebt.md в scripts/kb_lint.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-077-gui-acceptance-checklist-and-kb-lint-audit|TASK-077]]:

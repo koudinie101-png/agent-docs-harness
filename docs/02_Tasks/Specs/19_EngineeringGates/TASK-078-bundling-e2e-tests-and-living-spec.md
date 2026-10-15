@@ -1,7 +1,7 @@
 ---
 id: TASK-078
 title: "Синхронизация install.py, сборка монолита через build_installer.py, E2E тесты и актуализация Living Spec"
-status: planned # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 19
 component:
