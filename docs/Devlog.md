@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Устранение дефекта BUG-009: Утечка метаданных agent-docs-harness в .github/ISSUE_TEMPLATE/
+- **Что сделано:**
+  - Устранен дефект [[02_Tasks/Bugs/BUG-009-issue-templates-hardcoded-repo-leak|BUG-009]]:
+    1. В функцию `deploy_infrastructure()` утилиты `install.py` добавлен пропуск развертывания `config.yml` в сторонние проекты во избежание утечки жестко зашитых ссылок на обсуждения и онбординг исходного репозитория `koudinie101-png/agent-docs-harness`.
+    2. Добавлена параметризация шаблонов `.github/ISSUE_TEMPLATE/` (замена имени `agent-docs-harness` на целевой `project_name`).
+    3. В утилите сборщика `scripts/build_installer.py` и локальном fallback `unpack_assets()` исключена упаковка `config.yml` в клиентские дистрибутивы.
+    4. Обновлены и приведены к нейтральным формулировки в `.github/ISSUE_TEMPLATE/bug_report.yml` и `feature_request.yml`.
+  - В `tests/test_installer.py` добавлен регрессионный тест `test_32_bug_009_issue_templates_no_repo_leak` (TDD: RED -> GREEN -> REFACTOR) и актуализированы фикстуры задач/багов под новые валидационные схемы frontmatter.
+  - Пересобран монолитный инсталлятор `install.py` и зеркало `dist/install.py` через `scripts/build_installer.py`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус дефекта обновлен на `fixed`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_32_bug_009_issue_templates_no_repo_leak` -> OK.
+  - `python -m unittest discover -s tests` -> 95/95 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 183 files scanned, 1634 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующей инженерной задачи Фазы 17 (например, `/kb-implement TASK-067`).
+
+---
+
 ### [2026-10-15] — Реализация TASK-066: Харденинг парсинга викиссылок и валидация схем frontmatter в scripts/kb_lint.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]:

@@ -546,7 +546,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             # 3. Simulate user data in tasks, Kanban, Roadmap, ADR, SPEC
             user_task = target / "docs" / "02_Tasks" / "Specs" / "01_MVP" / "TASK-099-user-feature.md"
             user_task.parent.mkdir(parents=True, exist_ok=True)
-            user_task_content = "---\nid: TASK-099\ntitle: Custom User Task\nstatus: in-progress\n---\n# Custom User Feature"
+            user_task_content = "---\nid: TASK-099\ntitle: Custom User Task\nstatus: in-progress\ntype: task\nphase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-15\n---\n# Custom User Feature"
             user_task.write_text(user_task_content, encoding="utf-8")
 
             kanban_path = target / "docs" / "02_Tasks" / "Kanban.md"
@@ -555,7 +555,7 @@ class TestAgentDocsHarness(unittest.TestCase):
             kanban_path.write_text(kanban_custom, encoding="utf-8")
 
             adr_path = target / "docs" / "03_Decisions_ADR" / "ADR-0001-custom-db.md"
-            adr_content = "---\nid: ADR-0001\ntitle: Custom DB Choice\nstatus: accepted\n---\n# ADR-0001: Custom DB Choice"
+            adr_content = "---\nid: ADR-0001\ntitle: Custom DB Choice\nstatus: accepted\ncreated: 2026-10-15\n---\n# ADR-0001: Custom DB Choice"
             adr_path.write_text(adr_content, encoding="utf-8")
 
             # 4. Simulate outdated template and linter
@@ -771,6 +771,8 @@ class TestAgentDocsHarness(unittest.TestCase):
                 "status: done\n"
                 "type: task\n"
                 "phase: 1\n"
+                "parent_plan: PLAN-001\n"
+                "created: 2026-10-15\n"
                 "---\n\n"
                 "# TASK-001: Project Initialization\n",
                 encoding="utf-8"
@@ -1286,13 +1288,13 @@ class TestAgentDocsHarness(unittest.TestCase):
             task_dir = target / "docs" / "02_Tasks" / "Specs" / "01_MVP"
             task_dir.mkdir(parents=True, exist_ok=True)
             (task_dir / "TASK-001-setup.md").write_text(
-                "---\nid: TASK-001\ntitle: MVP Setup\nstatus: done\nphase: 1\n---\n# TASK-001: MVP Setup\n",
+                "---\nid: TASK-001\ntitle: MVP Setup\nstatus: done\ntype: task\nphase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-15\n---\n# TASK-001: MVP Setup\n",
                 encoding="utf-8"
             )
             adr_dir = target / "docs" / "03_Decisions_ADR"
             adr_dir.mkdir(parents=True, exist_ok=True)
             (adr_dir / "ADR-0001-init.md").write_text(
-                "---\nid: ADR-0001\ntitle: Initial Stack\nstatus: accepted\nphase: 1\n---\n# ADR-0001: Initial Stack\n",
+                "---\nid: ADR-0001\ntitle: Initial Stack\nstatus: accepted\nphase: 1\ncreated: 2026-10-15\n---\n# ADR-0001: Initial Stack\n",
                 encoding="utf-8"
             )
 
@@ -1420,23 +1422,23 @@ class TestAgentDocsHarness(unittest.TestCase):
             task_dir = target / "docs" / "02_Tasks" / "Specs" / "01_MVP"
             task_dir.mkdir(parents=True, exist_ok=True)
             (task_dir / "TASK-001.md").write_text(
-                "---\nid: TASK-001\ntitle: MVP\nstatus: done\nphase: 1\n---\n# TASK-001\n",
+                "---\nid: TASK-001\ntitle: MVP\nstatus: done\ntype: task\nphase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-15\n---\n# TASK-001\n",
                 encoding="utf-8"
             )
 
             bugs_dir = target / "docs" / "02_Tasks" / "Bugs"
             bugs_dir.mkdir(parents=True, exist_ok=True)
             (bugs_dir / "BUG-001-fixed.md").write_text(
-                "---\nid: BUG-001\ntitle: Fixed Bug\nstatus: fixed\ntarget_release: v0.1.0\nfixed_in: v0.1.0\nphase: 1\n---\n# BUG-001\n",
+                "---\nid: BUG-001\ntitle: Fixed Bug\nstatus: fixed\nseverity: medium\ntype: bug\ntarget_release: v0.1.0\nfixed_in: v0.1.0\nphase: 1\ncreated: 2026-10-15\n---\n# BUG-001\n",
                 encoding="utf-8"
             )
             (bugs_dir / "BUG-002-future.md").write_text(
-                "---\nid: BUG-002\ntitle: Future Bug\nstatus: fixed\ntarget_release: v0.2.0\nfixed_in: v0.2.0\nphase: 1\n---\n# BUG-002\n",
+                "---\nid: BUG-002\ntitle: Future Bug\nstatus: fixed\nseverity: low\ntype: bug\ntarget_release: v0.2.0\nfixed_in: v0.2.0\nphase: 1\ncreated: 2026-10-15\n---\n# BUG-002\n",
                 encoding="utf-8"
             )
             blocker_file = bugs_dir / "BUG-003-blocker.md"
             blocker_file.write_text(
-                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\ntarget_release: v0.1.0\nrelease_blocker: true\nphase: 1\n---\n# BUG-003\n",
+                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\nseverity: high\ntype: bug\ntarget_release: v0.1.0\nrelease_blocker: true\nphase: 1\ncreated: 2026-10-15\n---\n# BUG-003\n",
                 encoding="utf-8"
             )
 
@@ -1453,7 +1455,7 @@ class TestAgentDocsHarness(unittest.TestCase):
 
             # Clear blocker flag and re-run release
             blocker_file.write_text(
-                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\ntarget_release: v0.1.0\nrelease_blocker: false\nphase: 1\n---\n# BUG-003\n",
+                "---\nid: BUG-003\ntitle: Blocker Bug\nstatus: open\nseverity: high\ntype: bug\ntarget_release: v0.1.0\nrelease_blocker: false\nphase: 1\ncreated: 2026-10-15\n---\n# BUG-003\n",
                 encoding="utf-8"
             )
             rel_ok = subprocess.run(
@@ -2026,9 +2028,56 @@ class TestAgentDocsHarness(unittest.TestCase):
             content = assets["docs/06_Memory/patterns.md"]
             self.assertIn("Память процедурных ошибок: Активные паттерны", content)
 
+    def test_32_bug_009_issue_templates_no_repo_leak(self):
+        """Verify .github/ISSUE_TEMPLATE in installed project does not leak harness repo metadata (BUG-009)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            target = base / "ClientApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="ClientApp",
+                stack_key="python",
+                agent_choice="generic",
+                git_choice="none",
+                doc_lang="ru",
+                force=True,
+            )
+
+            issue_tpl_dir = target / ".github" / "ISSUE_TEMPLATE"
+            self.assertTrue(issue_tpl_dir.is_dir(), ".github/ISSUE_TEMPLATE/ should exist")
+
+            # 1. config.yml must NOT be deployed to client projects (leaks harness repo links)
+            config_file = issue_tpl_dir / "config.yml"
+            self.assertFalse(config_file.exists(), ".github/ISSUE_TEMPLATE/config.yml should not be deployed to client projects")
+
+            # 2. bug_report.yml must be parameterized with project_name or neutral (no agent-docs-harness leak)
+            bug_file = issue_tpl_dir / "bug_report.yml"
+            self.assertTrue(bug_file.is_file(), "bug_report.yml must exist")
+            bug_content = bug_file.read_text(encoding="utf-8")
+            self.assertNotIn("koudinie101-png", bug_content)
+            self.assertNotIn("agent-docs-harness", bug_content)
+            self.assertIn("ClientApp", bug_content)
+
+            # 3. feature_request.yml must not leak harness repo metadata
+            feat_file = issue_tpl_dir / "feature_request.yml"
+            self.assertTrue(feat_file.is_file(), "feature_request.yml must exist")
+            feat_content = feat_file.read_text(encoding="utf-8")
+            self.assertNotIn("koudinie101-png", feat_content)
+            self.assertNotIn("agent-docs-harness", feat_content)
+
+        # 4. Verify local development fallback in unpack_assets also skips config.yml
+        with patch.object(install, "EMBEDDED_ASSETS_B64", ""):
+            local_assets = install.unpack_assets(REPO_ROOT)
+            self.assertNotIn(".github/ISSUE_TEMPLATE/config.yml", local_assets)
+            self.assertIn(".github/ISSUE_TEMPLATE/bug_report.yml", local_assets)
+            self.assertIn(".github/ISSUE_TEMPLATE/feature_request.yml", local_assets)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
 
 

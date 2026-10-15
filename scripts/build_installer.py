@@ -80,9 +80,12 @@ def bundle_assets() -> dict:
     issue_tpl_dir = REPO_ROOT / ".github" / "ISSUE_TEMPLATE"
     if issue_tpl_dir.is_dir():
         for itf in sorted(list(issue_tpl_dir.glob("*.yml"))):
+            if itf.name == "config.yml":
+                continue
             rel_key = f".github/ISSUE_TEMPLATE/{itf.name}"
             assets[rel_key] = itf.read_text(encoding="utf-8")
             print(f"  • Bundled issue template: {itf.name} ({len(assets[rel_key])} chars)")
+
 
     # 6. Collect Zero_To_Hero_Guide.md
     zth_guide = REPO_ROOT / "docs" / "Zero_To_Hero_Guide.md"
