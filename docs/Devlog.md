@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Инженерная спецификация: Фаза 18 (TASK-071–TASK-074)
+- **Что сделано:**
+  - В Режиме 2 (Task Specification) разработаны детальные технические спецификации для всех задач Фазы 18:
+    * [[02_Tasks/Specs/18_VisualHarness/TASK-071-asset-storage-composite-ui-and-obsidian-dx|TASK-071]]: Архитектура хранения ассетов, композитный `--ui` и Obsidian DX в `install.py` (статус переведен в `В работе`).
+    * [[02_Tasks/Specs/18_VisualHarness/TASK-072-media-assets-lint-and-release-checks|TASK-072]]: Механический контроль медиа-ассетов в `scripts/kb_lint.py` и `scripts/kb_release.py`.
+    * [[02_Tasks/Specs/18_VisualHarness/TASK-073-the-4-state-matrix-visual-dod-and-templates|TASK-073]]: Матрица 4 состояний (The 4-State Matrix), Visual DoD и шаблоны жизненного цикла в `AGENTS.md`.
+    * [[02_Tasks/Specs/18_VisualHarness/TASK-074-bundling-e2e-tests-and-living-spec|TASK-074]]: Бандлинг инсталлятора `build_installer.py`, сквозные E2E тесты и актуализация Living Spec.
+  - Канбан-доска [[02_Tasks/Kanban|Kanban.md]] и Дорожная карта [[02_Tasks/Roadmap|Roadmap.md]] актуализированы постоянными ссылками на спецификации; карточка `TASK-071` перемещена в `⏳ В работе (In Progress)`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 191 файл проверен, 1724 ссылки валидировано (0 битых).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к началу реализации первой задачи — запустить Режим 3: `/kb-implement TASK-071`.
+
+---
+
 ### [2026-10-15] — Планирование и декомпозиция: Фаза 18 (PLAN-018)
 - **Что сделано:**
   - В Режиме 1 (RFC & Планирование) сформирован и утвержден план [[02_Tasks/Plans/PLAN-018-heterogeneous-ui-ux-and-visual-asset-harness|PLAN-018]]: Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы.
