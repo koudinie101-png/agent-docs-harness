@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-076: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate, трассировка // ROADMAP-<ID> и замеры >= 3 прогонов
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-076-prior-art-gate-roadmap-tagging-and-benchmarks|TASK-076]]:
+    1. В `TEMPLATE_PLAN.md` (в `docs/00_Templates/` и `templates/`) внедрен барьер `Prior-Art Gate` со сканом внутренних модулей проекта и платформенных библиотек перед проектированием новых подсистем.
+    2. В `TEMPLATE_RESEARCH.md` (в `docs/00_Templates/` и `templates/`) добавлена секция `Prior-Art Gate` для ранней проверки готовых решений.
+    3. В `TEMPLATE_TASK.md` (в `docs/00_Templates/` и `templates/`) добавлен протокол «Benchmark Persistence» для фиксации серийных замеров.
+    4. В `AGENTS.md` (уровень Tier 2 Always-On) внедрены инварианты: #14 (Prior-Art Gate Invariant), #15 (Traceable Backlog Tags `// ROADMAP-<ID>`) и #16 (Benchmark Persistence «Замер = артефакт» на сериях $\ge 3$ прогонов с отсечением холодного старта).
+    5. Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- **Результаты верификации:**
+  - Суммарный объем шаблонов в `templates/*.md` = 27484 байт ($\le 28000$ байт, лимит соблюден).
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_16_high_snr_static_corpus_benchmarks` -> 100% pass (0.435s).
+  - `python scripts/kb_lint.py --path docs` -> 198 файлов проверено, 1797 ссылок валидировано (0 битых).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При готовности к реализации следующей задачи Фазы 19 — запустить Режим 3: `/kb-implement TASK-077`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-075: Инфраструктура реестра техдолга, скаффолдинг в install.py и правила триажа P1/P2 vs P3
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-075-tech-debt-registry-and-triage-rules|TASK-075]]:

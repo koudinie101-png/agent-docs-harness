@@ -254,7 +254,7 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
 
 - [x] [[Specs/19_EngineeringGates/TASK-075-tech-debt-registry-and-triage-rules|TASK-075]]: Инфраструктура реестра техдолга (`docs/02_Tasks/TechDebt.md`, скаффолдинг в `install.py`, правила триажа $P1/P2$ vs $P3$) (2026-10-15).
-- [ ] [[Specs/19_EngineeringGates/TASK-076-prior-art-gate-roadmap-tagging-and-benchmarks|TASK-076]]: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate (`TEMPLATE_PLAN.md`, `TEMPLATE_RESEARCH.md`), трассировка `// ROADMAP-<ID>` и замеры $\ge 3$ прогонов в `AGENTS.md` и `TEMPLATE_TASK.md`.
+- [x] [[Specs/19_EngineeringGates/TASK-076-prior-art-gate-roadmap-tagging-and-benchmarks|TASK-076]]: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate (`TEMPLATE_PLAN.md`, `TEMPLATE_RESEARCH.md`), трассировка `// ROADMAP-<ID>` и замеры $\ge 3$ прогонов в `AGENTS.md` и `TEMPLATE_TASK.md` (2026-10-15).
 - [ ] [[Specs/19_EngineeringGates/TASK-077-gui-acceptance-checklist-and-kb-lint-audit|TASK-077]]: Чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md` и аудит целостности `TechDebt.md` в `scripts/kb_lint.py`.
 - [ ] [[Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]]: Синхронизация `install.py`, сборка монолита через `scripts/build_installer.py`, E2E тесты и актуализация Living Spec.
 

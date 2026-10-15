@@ -61,6 +61,15 @@ All project knowledge, task tracking, and architectural decisions are maintained
      * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
      * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged immediately in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
    - Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
+14. **Prior-Art Gate Invariant:**
+   - Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and the language's standard library for existing solutions.
+   - Reinventing wheels and introducing duplicate parallel abstractions is strictly prohibited.
+15. **Traceable Backlog Tags (// ROADMAP-<ID>):**
+   - Untracked "hanging" `TODO` or `FIXME` comments without roadmap linkage are strictly prohibited.
+   - Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`).
+16. **Benchmark Persistence («Замер = артефакт»):**
+   - All performance, latency, memory, or token claims must be verified via a series of $\ge 3$ reproducible runs.
+   - The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.
 
 ---
 
