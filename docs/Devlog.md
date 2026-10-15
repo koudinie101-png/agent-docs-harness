@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Выпуск релиза v0.19.0: Фаза 19 (Engineering Gates & Tech Debt Governance)
+- **Что сделано:**
+  - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.19.0|RELEASE-v0.19.0]] по итогам завершения Фазы 19.
+  - Успешно завершены и верифицированы все инженерные задачи фазы (`TASK-075`–`TASK-078`):
+    * Реестр техдолга `docs/02_Tasks/TechDebt.md`, скаффолдинг в `install.py` и правило триажа P1/P2 vs P3 (Rule 13).
+    * Инженерные барьеры в шаблонах и правилах: Prior-Art Gate (Rule 14), трассировка `// ROADMAP-<ID>` (Rule 15) и серийные замеры $\ge 3$ прогонов (Rule 16).
+    * Чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md` и механический аудит `check_tech_debt_integrity()` / `check_untracked_todos()` в `scripts/kb_lint.py`.
+    * Синхронизация `install.py`, сборка монолита через `build_installer.py`, E2E тесты в `tests/test_installer.py` и актуализация Living Spec.
+  - Сформированы публичные релизные заметки `dist/RELEASE_NOTES.md` по стандарту High-SNR.
+  - Собраны релизные артефакты в каталоге `dist/`:
+    * `dist/install.py` (157.7 KB) — SHA-256: `3360889dbaf7fb1b23829022ef0191cdbdf04a743752b080e9b1a34183442601`.
+  - Обновлен `CHANGELOG.md` с подробным перечнем добавленных возможностей.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 110/110 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Переход к следующей фазе развития харнесса через `/kb-plan` (или обсуждение инициатив из Icebox Дорожной карты).
+
+---
+
 ### [2026-10-15] — Реализация TASK-078: Синхронизация install.py, сборка монолита через build_installer.py, E2E тесты и актуализация Living Spec
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]] — финальная задача Фазы 19 «Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance)»:

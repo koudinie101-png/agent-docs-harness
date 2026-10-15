@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2026-10-15
+
+### Added
+- **Engineering Quality Gates & Tech Debt Governance** (PLAN-019, ADR-0025, RESEARCH-020, TASK-075–TASK-078):
+  - Tech Debt Registry `docs/02_Tasks/TechDebt.md` with explicit triage protocol for code review findings: P1/P2 (critical defects/regressions) fixed immediately in-pass, P3 (cosmetic debt, deferred optimization) recorded with unique `DEBT-XXX` IDs.
+  - Codified Rule 13: "Tech Debt Governance & Review Triage (P1/P2 vs P3)" in canonical `AGENTS.md` and synced into thin IDE adapters (`GEMINI.md`, etc.).
+  - Automated Tech Debt & Integrity Audit in `scripts/kb_lint.py`: validates existence of `TechDebt.md`, uniqueness and formatting of `DEBT-XXX` IDs, and verifies wikilinks in debt tables.
+  - Codified Rule 14: "Prior-Art Gate Invariant" in `AGENTS.md`, `TEMPLATE_PLAN.md`, and `TEMPLATE_RESEARCH.md` requiring codebase and standard library audits before designing new abstractions.
+  - Codified Rule 15: "Traceable Backlog Tags (// ROADMAP-<ID>)" in `AGENTS.md` prohibiting untracked `TODO`/`FIXME` comments in favour of roadmap linkages, with non-blocking `WARN` audit in `scripts/kb_lint.py`.
+  - Codified Rule 16: "Benchmark Persistence («Замер = артефакт»)" in `AGENTS.md` and `TEMPLATE_TASK.md` requiring $\ge 3$ reproducible runs with cold-start mitigation recorded in task artifacts.
+  - GUI Acceptance Checklist («UI не лжёт» / The 4-State Matrix, responsiveness, geometry, continuous flow) integrated into `TEMPLATE_TEST.md`.
+  - Comprehensive E2E test `test_28_phase_19_engineering_gates_and_tech_debt_e2e` in `tests/test_installer.py`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (157.7 KB / 161481 bytes) with updated templates, skills, rules, and scripts.
+
 ## [0.18.0] - 2026-10-15
 
 ### Added
