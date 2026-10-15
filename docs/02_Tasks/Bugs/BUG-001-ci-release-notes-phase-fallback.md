@@ -2,6 +2,7 @@
 id: BUG-001
 title: "Рассинхронизация номера фазы и описания релиза в CI release.yml (fallback на Фазу 1)"
 severity: major
+type: bug
 component:
   - ci
   - automation

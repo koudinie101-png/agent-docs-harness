@@ -49,9 +49,21 @@ def _relative_to(p: Path, base: Path) -> Path:
 
 
 def parse_wikilinks(content: str):
-    # Matches [[target|label]], [[target#heading|label]], or [[target]]
-    pattern = re.compile(r'\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\|[^\]]*)?\]\]')
-    return pattern.findall(content)
+    # 1. Strip code blocks ```...``` and inline code `...`
+    stripped = re.sub(r'```[\s\S]*?```', '', content)
+    stripped = re.sub(r'`[^`\n]*`', '', stripped)
+
+    # 2. Match wikilinks: [[target|label]], [[target#heading|label]], [[target]] with optional escaped pipes \|
+    pattern = re.compile(r'\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\\?\|[^\]]*)?\]\]')
+    matches = pattern.findall(stripped)
+
+    # 3. Clean up escaping backslashes from targets
+    cleaned = []
+    for m in matches:
+        target = m.rstrip("\\").strip()
+        if target:
+            cleaned.append(target)
+    return cleaned
 
 
 def check_file_frontmatter(file_path: Path):
@@ -68,17 +80,30 @@ def check_file_frontmatter(file_path: Path):
         return False, "Malformed YAML frontmatter (missing closing ---)"
 
     fm_raw = parts[1]
-    # Check specific requirements for Inbox/ feedback files
     rel_posix = file_path.as_posix()
-    if "02_Tasks/Inbox" in rel_posix:
-        required_fields = ["id", "title", "status", "type", "channel", "created"]
-        missing = []
-        for field in required_fields:
-            if not re.search(rf'^{field}:\s*.+', fm_raw, re.MULTILINE):
-                missing.append(field)
-        if missing:
-            return False, f"Missing required frontmatter fields: {', '.join(missing)}"
 
+    schemas = {
+        "02_Tasks/Inbox": ["id", "title", "status", "type", "channel", "created"],
+        "06_Memory/Incidents": ["id", "title", "status", "created"],
+        "02_Tasks/Specs": ["id", "title", "status", "type", "phase", "parent_plan", "created"],
+        "02_Tasks/Bugs": ["id", "title", "status", "severity", "type", "created"],
+        "03_Decisions_ADR": ["id", "title", "status"],
+    }
+
+    for path_prefix, required_fields in schemas.items():
+        if path_prefix in rel_posix:
+            missing = []
+            for field in required_fields:
+                if not re.search(rf'^{field}:\s*.+', fm_raw, re.MULTILINE):
+                    missing.append(field)
+            if path_prefix == "03_Decisions_ADR":
+                if not re.search(r'^(date|created):\s*.+', fm_raw, re.MULTILINE):
+                    missing.append("date/created")
+            if missing:
+                return False, f"Missing required frontmatter fields: {', '.join(missing)}"
+            break
+
+    if "02_Tasks/Inbox" in rel_posix:
         status_match = re.search(r'^status:\s*([^\s#]+)', fm_raw, re.MULTILINE)
         if status_match:
             val = status_match.group(1).lower()
@@ -422,11 +447,30 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             repo_target = (repo_root / link).resolve()
             repo_target_md = (repo_root / f"{link}.md").resolve()
 
+            # Check relative to parent directory (e.g. 02_Tasks sibling directories)
+            sibling_target = (file_dir.parent / link).resolve()
+            sibling_target_md = (file_dir.parent / f"{link}.md").resolve()
+
+            # Check stripped leading relative dots against docs_dir and repo_root
+            stripped_link = re.sub(r'^(?:\.\./|\./)+', '', link)
+            stripped_vault_target = (docs_dir / stripped_link).resolve()
+            stripped_vault_target_md = (docs_dir / f"{stripped_link}.md").resolve()
+            stripped_repo_target = (repo_root / stripped_link).resolve()
+            stripped_repo_target_md = (repo_root / f"{stripped_link}.md").resolve()
+
             link_name_no_ext = Path(link).name
             link_name_lower = link_name_no_ext.lower()
 
             found = False
-            for cand in [direct_target, direct_target_md, vault_target, vault_target_md, repo_target, repo_target_md]:
+            candidates = [
+                direct_target, direct_target_md,
+                vault_target, vault_target_md,
+                repo_target, repo_target_md,
+                sibling_target, sibling_target_md,
+                stripped_vault_target, stripped_vault_target_md,
+                stripped_repo_target, stripped_repo_target_md,
+            ]
+            for cand in candidates:
                 if cand.exists():
                     found = True
                     break
@@ -440,7 +484,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                     pass
 
             if not found:
-                if link_name_no_ext in file_map or link_name_lower in file_map:
+                if "/" not in link and "\\" not in link and (link_name_no_ext in file_map or link_name_lower in file_map):
                     found = True
 
             if not found:

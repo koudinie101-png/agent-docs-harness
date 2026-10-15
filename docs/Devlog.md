@@ -16,6 +16,25 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-066: Харденинг парсинга викиссылок и валидация схем frontmatter в scripts/kb_lint.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]:
+    1. В функцию `parse_wikilinks()` утилиты `scripts/kb_lint.py` добавлена предварительная очистка контента от fenced code blocks (` ```...``` `) и инлайн-кода (` `...` `), исключающая ложные срабатывания на демонстрационные ссылки.
+    2. В регулярное выражение `parse_wikilinks()` добавлена поддержка экранированных пайпов `\|` в Markdown-таблицах Obsidian (`[[target\|Label]]`).
+    3. В функции `run_linter()` запрещен невалидный fallback на `file_map` для ссылок с явным путем (`/` или `\`), маскировавший битые относительные ссылки на GitHub.
+    4. В функцию `check_file_frontmatter()` добавлена строгая валидация обязательных полей схем frontmatter для каталогов `06_Memory/Incidents/`, `02_Tasks/Specs/`, `02_Tasks/Bugs/` и `03_Decisions_ADR/`.
+  - В `tests/test_kb_lint.py` добавлены 4 целевых модульных теста, покрывающие все новые требования.
+  - Устранен дефект фронтматтера в `docs/02_Tasks/Bugs/BUG-001-ci-release-notes-phase-fallback.md` (`type: bug`) и исправлена битая ссылка в `docs/Devlog.md`.
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус спецификации обновлен на `done`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_lint.py` -> 27/27 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 94/94 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 181 files scanned, 1618 wikilinks verified (0 broken, 0 warnings, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующей инженерной задачи Фазы 17 (например, `/kb-implement TASK-067`).
+
+---
+
 ### [2026-10-15] — Устранение дефекта BUG-008: patterns.md в локальном fallback install.py и маска фаз >= 10 в kb_release.py
 - **Что сделано:**
   - Устранен дефект [[02_Tasks/Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]:
@@ -413,7 +432,7 @@ tags:
 
 ### [2026-10-11] — Официальный релиз v0.13.0 (Фаза 13: Слоистая архитектура правил, тонкие адаптеры и таксономия базы знаний)
 - **Что сделано:**
-  - Осуществлен выпуск релиза [[Releases/RELEASE-v0.13.0|RELEASE-v0.13.0]] через скилл `/kb-release` и утилиту `scripts/kb_release.py`.
+  - Осуществлен выпуск релиза [[02_Tasks/Releases/RELEASE-v0.13.0|RELEASE-v0.13.0]] через скилл `/kb-release` и утилиту `scripts/kb_release.py`.
   - Успешно сформирован комплект релизных артефактов в каталоге `dist/` с потоковым расчетом контрольных сумм SHA-256:
     - `dist/install.py` (114.1 KB) — `f472fe4dbcf8e12d8a15249d52475d23890b48ea8e1423f8c7b5f405df3fe633`
     - `dist/RELEASE_NOTES.md` (2.9 KB) — `d60a7ba1f4bdaec9570b8595423cab212bd80ed760854b6225a57b6314d9bfae`

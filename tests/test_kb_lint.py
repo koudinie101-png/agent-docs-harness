@@ -35,7 +35,7 @@ class TestKbLint(unittest.TestCase):
         # Create valid task spec with frontmatter
         tasks_dir = self.docs_dir / "02_Tasks" / "Specs"
         tasks_dir.mkdir(parents=True)
-        task_content = "---\nid: TASK-001\ntitle: Test\nstatus: done\n---\n# Task 001\n[[../../00_Index]]"
+        task_content = "---\nid: TASK-001\ntitle: Test\nstatus: done\ntype: task\nphase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-01\n---\n# Task 001\n[[../../00_Index]]"
         (tasks_dir / "TASK-001.md").write_text(task_content, encoding="utf-8")
 
     def tearDown(self):
@@ -446,7 +446,11 @@ tags:
         bad_spec.write_text("""---
 id: TASK-061
 title: "Mismatched"
+status: done
+type: task
 phase: 12
+parent_plan: PLAN-015
+created: 2026-10-12
 tags:
   - phase12
 ---
@@ -526,6 +530,110 @@ tags:
                 PurePath.is_relative_to = orig_purepath_method
             if orig_path_method is not None and "is_relative_to" in Path.__dict__:
                 Path.is_relative_to = orig_path_method
+
+    def test_task_066_wikilinks_in_code_blocks_and_inline_code_ignored(self):
+        """Verifies that links inside fenced code blocks and inline code are ignored (TASK-066)."""
+        content = """# Note
+Here is some text with `[[non_existent_inline]]` and a code block:
+```python
+# Demo code
+link = "[[non_existent_in_fenced_block]]"
+```
+And a real valid link: [[01_Architecture/arch|Arch]]
+"""
+        links = kb_lint.parse_wikilinks(content)
+        self.assertNotIn("non_existent_inline", links)
+        self.assertNotIn("non_existent_in_fenced_block", links)
+        self.assertIn("01_Architecture/arch", links)
+
+    def test_task_066_escaped_pipe_in_tables_supported(self):
+        """Verifies that wikilinks with escaped pipes \\| in Markdown tables are extracted correctly (TASK-066)."""
+        content = """# Table Note
+| Column 1 | Column 2 |
+| :--- | :--- |
+| Item | [[01_Architecture/arch\\|Architecture]] |
+| Sibling | [[01_Architecture/arch#sec\\|Section]] |
+"""
+        links = kb_lint.parse_wikilinks(content)
+        self.assertIn("01_Architecture/arch", links)
+        self.assertEqual(len(links), 2)
+
+    def test_task_066_strict_relative_path_resolution_no_file_map_fallback(self):
+        """Verifies that links with path separators do not fall back to file_map if path is invalid (TASK-066)."""
+        doc_file = self.docs_dir / "bad_path_doc.md"
+        doc_file.write_text("# Doc\nLink to: [[../WrongDir/TASK-001]]", encoding="utf-8")
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 1)
+        self.assertIn("target not found", captured.getvalue())
+        self.assertIn("WrongDir/TASK-001", captured.getvalue())
+
+    def test_task_066_frontmatter_schemas_validation(self):
+        """Verifies schema validation for Specs, Bugs, Incidents, and ADRs (TASK-066)."""
+        # 1. Spec missing parent_plan
+        spec_file = self.docs_dir / "02_Tasks" / "Specs" / "TASK-998.md"
+        spec_file.write_text("""---
+id: TASK-998
+title: "No Plan Spec"
+status: done
+type: task
+phase: 1
+created: 2026-10-15
+---
+# TASK-998
+""", encoding="utf-8")
+        ok, msg = kb_lint.check_file_frontmatter(spec_file)
+        self.assertFalse(ok)
+        self.assertIn("parent_plan", msg)
+
+        # 2. Bug missing severity
+        bugs_dir = self.docs_dir / "02_Tasks" / "Bugs"
+        bugs_dir.mkdir(parents=True, exist_ok=True)
+        bug_file = bugs_dir / "BUG-999.md"
+        bug_file.write_text("""---
+id: BUG-999
+title: "No Sev Bug"
+status: open
+type: bug
+created: 2026-10-15
+---
+# BUG-999
+""", encoding="utf-8")
+        ok, msg = kb_lint.check_file_frontmatter(bug_file)
+        self.assertFalse(ok)
+        self.assertIn("severity", msg)
+
+        # 3. Memory Incident missing created
+        inc_dir = self.docs_dir / "06_Memory" / "Incidents"
+        inc_dir.mkdir(parents=True, exist_ok=True)
+        inc_file = inc_dir / "INC-001.md"
+        inc_file.write_text("""---
+id: INC-001
+title: "Incident 1"
+status: active
+---
+# INC-001
+""", encoding="utf-8")
+        ok, msg = kb_lint.check_file_frontmatter(inc_file)
+        self.assertFalse(ok)
+        self.assertIn("created", msg)
+
+        # 4. ADR valid
+        adr_dir = self.docs_dir / "03_Decisions_ADR"
+        adr_dir.mkdir(parents=True, exist_ok=True)
+        adr_file = adr_dir / "ADR-0099.md"
+        adr_file.write_text("""---
+id: ADR-0099
+title: "ADR Test"
+status: accepted
+date: 2026-10-15
+---
+# ADR-0099
+""", encoding="utf-8")
+        ok, msg = kb_lint.check_file_frontmatter(adr_file)
+        self.assertTrue(ok)
 
 
 if __name__ == "__main__":

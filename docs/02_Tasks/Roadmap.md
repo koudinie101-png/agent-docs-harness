@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-14
+updated: 2026-10-15
 tags:
   - roadmap
   - planning
@@ -227,7 +227,7 @@ tags:
 - [x] [[Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]: Добавление `docs/06_Memory/patterns.md` в локальный fallback `unpack_assets()` (`install.py`) и фикс маски фаз `f"{p:02d}_"` в `scripts/kb_release.py`.
 
 ### 🛠️ Инженерные задачи фазы (Mode 2 -> Mode 3)
-- [ ] [[Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]: Игнорирование кодовых блоков и экранированных пайпов `\|` в `kb_lint.py`, строгая проверка относительных путей и валидация YAML-схем для `06_Memory/Incidents/`.
+- [x] [[Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]: Игнорирование кодовых блоков и экранированных пайпов `\|` в `kb_lint.py`, строгая проверка относительных путей и валидация YAML-схем для `06_Memory/Incidents/`.
 - [ ] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование кавычек в YAML frontmatter (`FB-*.md`), переход на постоянные IMAP UID (`client.uid`) и URL-кодирование меток GitHub в `kb_ingest.py`.
 - [ ] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора `--report` по границам путей, проверка открытия `/dev/tty` в контейнерах, диагностика `git commit` и вызов `build_installer.build()` внутри `scripts/build_release.py`.
 - [ ] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Полная синхронизация `generate_agents_md()` (`install.py`) с корневым `AGENTS.md` (добавление Mode 0 и Mode 2C, Human Guardrails, таксономия 16 шаблонов в `Onboarding` и тестах, ссылки в `CHANGELOG.md`).
