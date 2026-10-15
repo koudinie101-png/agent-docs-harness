@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Выпуск релиза v0.17.0: Фаза 17 (Core Hardening & SSOT Sync)
+- **Что сделано:**
+  - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.17.0|RELEASE-v0.17.0]] по итогам завершения Фазы 17.
+  - Устранены все накопленные дефекты совместимости и краевые сценарии (`BUG-005`–`BUG-009`).
+  - Выполнены инженерные задачи `TASK-066`–`TASK-070`: харденинг линтера `scripts/kb_lint.py`, экранирование YAML и IMAP UID в `scripts/kb_ingest.py`, защита анонимизатора и контейнерный TTY-зонд в `install.py`, вызов `build_installer.build()` в `scripts/build_release.py`, полная синхронизация канонического `AGENTS.md` и генератора `generate_agents_md()`, внедрение контура процедурной памяти и терминального шага `Stop & Yield Control` во все read-only скиллы.
+  - Сформированы публичные релизные заметки `dist/RELEASE_NOTES.md` по стандарту High-SNR (без шума ADR).
+  - Собраны релизные артефакты в каталоге `dist/`:
+    * `dist/install.py` (135.6 KB) — SHA-256: `5163a7629b939f18de76b7ec2a44cc3cc23f6e7db045c9e521ca17b8f5b7fe5c`.
+  - Обновлен `CHANGELOG.md` с подробным перечнем добавленных возможностей и исправленных дефектов.
+- **Результаты верификации:**
+  - `python -m unittest discover -s tests` -> 99/99 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Переход к Фазе 18 (Engineering Gates & Tech Debt Governance) через `/kb-plan`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-070: Синхронизация скиллов, шаблонов и контура памяти в AGENTS.md
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/17_HardeningAndSync/TASK-070-skills-templates-and-memory-sync|TASK-070]]:

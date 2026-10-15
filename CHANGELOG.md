@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-10-15
+
+### Added
+- **Core Hardening & SSOT Synchronization** (PLAN-017, TASK-066–TASK-070):
+  - Zero Round-Trip Memory Sync: added `Memory-First Preflight` (`patterns.md`) and `Defect Loop Reflection` to Mode 3 in `AGENTS.md` and `install.py` (`generate_agents_md()`).
+  - Terminal `Stop & Yield Control` step added to all read-only skills (`kb-plan`, `kb-task`, `kb-research`, `kb-adr`, `kb-init`) with Anti-Echo summary and strict tool stop.
+  - Full synchronization of `generate_agents_md()` in `install.py` with canonical `AGENTS.md` (Mode 0 Discovery, Mode 2C Feedback Triage, Human Guardrails, 16 canonical templates taxonomy).
+  - Obsidian Graph enhancement: added `Zero_To_Hero_Guide` node and distinct color group for `06_Memory/` in `templates/graph.json` and `docs/.obsidian/graph.json`.
+  - Polished beginner onboarding guide `docs/Zero_To_Hero_Guide.md` with curl download instructions, non-interactive `-y` flag, `/kb-bug` section, and corrected `/kb-task` syntax.
+  - Stack-customized test commands for `TEMPLATE_TASK_MICRO.md` in `install.py`.
+  - Support for `02_Tasks/Inbox/` and `06_Memory/Incidents/` directory scaffolding in `kb-init`.
+
+### Fixed
+- **BUG-005**: Replaced `Path.is_relative_to()` with Python 3.8-compatible helper in `scripts/kb_lint.py`.
+- **BUG-006**: Excluded `dist/RELEASE_NOTES.md` from self-referencing SHA-256 artifacts table in `scripts/kb_release.py`.
+- **BUG-007**: Added positional text support for inline paste in `scripts/kb_ingest.py --paste "<text>"`.
+- **BUG-008**: Added `docs/06_Memory/patterns.md` to local fallback extraction in `install.py` and fixed double-digit phase mask `f"{p:02d}_"` in `scripts/kb_release.py`.
+- **BUG-009**: Eliminated hardcoded repo metadata leaks in deployed `.github/ISSUE_TEMPLATE/` forms.
+- **TASK-066**: Fixed wikilink parsing in `scripts/kb_lint.py` by ignoring code blocks and escaped Markdown pipes `\|`.
+- **TASK-067**: Implemented secure YAML frontmatter quote-escaping, persistent IMAP UIDs, and URL-encoded GitHub label filters in `scripts/kb_ingest.py`.
+- **TASK-068**: Bounded word-boundary path replacement in `install.py --report` anonymizer, container `/dev/tty` probe, and integrated `build_installer.build()` into `scripts/build_release.py`.
+- Fixed relative links to `[[../Specs/...]]` and `[[../Bugs/...]]` in `TEMPLATE_RELEASE.md`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (135.6 KB) with compressed embedded assets.
+
 ## [0.16.0] - 2026-10-12
 
 ### Added
@@ -165,6 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-bundled and compressed standalone installer `install.py` down to 81.2 KB (-17.6%).
 - Enhanced `install.py --update` with non-destructive updates and stack customization for skeleton templates.
 
+[0.17.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/koudinie101-png/agent-docs-harness/compare/v0.13.0...v0.14.0
