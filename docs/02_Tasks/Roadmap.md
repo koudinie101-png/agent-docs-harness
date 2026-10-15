@@ -248,11 +248,22 @@ tags:
 
 ---
 
+## Фаза 19: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance)
+**Цель:** Создать реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), внедрить Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, запретить висячие `TODO` в пользу `// ROADMAP-<ID>`, закрепить замеры $\ge 3$ прогонов («Замер = артефакт»), добавить чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md` и механический аудит в `scripts/kb_lint.py`.  
+**Первоисточник плана:** [[Plans/PLAN-019-engineering-gates-and-tech-debt-governance|PLAN-019]]  
+**Нормативная база:** [[../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
+
+- [ ] TASK-075: Инфраструктура реестра техдолга (`docs/02_Tasks/TechDebt.md`, скаффолдинг в `install.py`, правила триажа $P1/P2$ vs $P3$).
+- [ ] TASK-076: Инженерные барьеры в шаблонах и правилах: Prior-Art Gate (`TEMPLATE_PLAN.md`, `TEMPLATE_RESEARCH.md`), трассировка `// ROADMAP-<ID>` и замеры $\ge 3$ прогонов в `AGENTS.md` и `TEMPLATE_TASK.md`.
+- [ ] TASK-077: Чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md` и аудит целостности `TechDebt.md` в `scripts/kb_lint.py`.
+- [ ] TASK-078: Синхронизация `install.py`, сборка монолита через `scripts/build_installer.py`, E2E тесты и актуализация Living Spec.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Фаза 19: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
 * 💡 **Single-Source Rule Compiler (AGENTS.md Template Injection):** компиляция правил `_RULES_BODY` в `install.py` непосредственно из корневого `AGENTS.md` в процессе `scripts/build_installer.py` для исключения ручной рассинхронизации SSOT.
 * 💡 **Детерминированный синтаксический автофикс (kb_lint.py --fix):** опциональный флаг для безопасного автоматического экранирования неэкранированных пайпов `\|` в табличных викиссылках и нормализации пробелов без эвристического вмешательства в семантику ссылок.
 * 💡 **Автоматизированная ротация процедурной памяти (Compaction):** процедурный механизм в `kb-complete` или встроенный хелпер для ротации старейших паттернов `[TRG-XX]` из `patterns.md` в архив `docs/06_Memory/Incidents/` при приближении к лимиту 15 записей.
