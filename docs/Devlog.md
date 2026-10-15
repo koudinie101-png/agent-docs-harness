@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-12
+updated: 2026-10-15
 tags:
   - devlog
   - journal
@@ -15,6 +15,21 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-10-15] — Устранение дефекта BUG-005: Совместимость kb_lint.py с Python 3.8 (Path.is_relative_to)
+- **Что сделано:**
+  - Устранен дефект [[02_Tasks/Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: аварийное завершение `scripts/kb_lint.py` на Python 3.8 из-за вызова метода `Path.is_relative_to()`, появившегося только в Python 3.9+.
+  - Реализованы кросс-версионные хелперы `_is_relative_to(p, base)` и `_relative_to(p, base)` на базе `os.path.commonpath` / `relative_to` с перехватом исключений, гарантирующие корректную работу на Python 3.8+ без внешних библиотек.
+  - В `tests/test_kb_lint.py` добавлен воспроизводящий регрессионный тест `test_bug_005_is_relative_to_python38_compatibility` (TDD: RED -> GREEN -> REFACTOR).
+  - Карточка перемещена в `Done` в [[02_Tasks/Kanban|Kanban.md]], статус дефекта обновлен на `fixed`, веха отмечена в [[02_Tasks/Roadmap|Roadmap.md]].
+- **Результаты верификации:**
+  - `python -m unittest tests/test_kb_lint.py` -> 23/23 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest discover -s tests` -> 86/86 тестов успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 181 files scanned, 1636 wikilinks verified (0 broken, Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Ожидает команды пользователя на реализацию следующего дефекта или задачи (например, `/kb-implement BUG-006` или `/kb-implement TASK-066`).
+
+---
 
 ### [2026-10-12] — Официальный выпуск релиза v0.16.0: Самообучающийся харнесс и память дефектов (Фаза 16)
 - **Что сделано:**

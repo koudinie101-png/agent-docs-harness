@@ -30,6 +30,24 @@ def find_vault_root(start_dir: Path) -> Path:
     return start_dir.resolve()
 
 
+def _is_relative_to(p: Path, base: Path) -> bool:
+    """Check if path p is relative to base directory (Python 3.8+ compatible)."""
+    try:
+        p_res = str(p.resolve())
+        base_res = str(base.resolve())
+        return os.path.normcase(os.path.commonpath([p_res, base_res])) == os.path.normcase(base_res)
+    except (ValueError, TypeError):
+        return False
+
+
+def _relative_to(p: Path, base: Path) -> Path:
+    """Return relative path, compatible with Python 3.8+."""
+    try:
+        return p.resolve().relative_to(base.resolve())
+    except (AttributeError, ValueError):
+        return Path(os.path.relpath(p.resolve(), base.resolve()))
+
+
 def parse_wikilinks(content: str):
     # Matches [[target|label]], [[target#heading|label]], or [[target]]
     pattern = re.compile(r'\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\|[^\]]*)?\]\]')
@@ -347,8 +365,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     # Collect map of base names without extension and relative paths
     file_map = {}
     for f in all_md_files:
-        if f.is_relative_to(docs_dir):
-            rel_posix = f.relative_to(docs_dir).as_posix()
+        if _is_relative_to(f, docs_dir):
+            rel_posix = _relative_to(f, docs_dir).as_posix()
             file_map[rel_posix] = f
             file_map[rel_posix.lower()] = f
         name_no_ext = f.stem
@@ -367,8 +385,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"⚠️ Error reading {f}: {e}")
             continue
 
-        if f.is_relative_to(docs_dir):
-            rel = f.relative_to(docs_dir).as_posix()
+        if _is_relative_to(f, docs_dir):
+            rel = _relative_to(f, docs_dir).as_posix()
         else:
             rel = f.name
 

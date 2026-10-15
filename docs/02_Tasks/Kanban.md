@@ -10,8 +10,18 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
- 
+- [ ] [[Plans/PLAN-017-core-hardening-and-ssot-sync|План: Фаза 17 — Стабилизация ядра, синхронизация SSOT и защита краевых сценариев]] #plan #phase17 #hardening #ssot #quality-gates
+- [ ] [[Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: dist/RELEASE_NOTES.md попадает в таблицу артефактов SHA-256 при повторном запуске scripts/kb_release.py #bug #release #phase17
+- [ ] [[Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: Падение с ошибкой unrecognized arguments при передаче инлайн-текста в scripts/kb_ingest.py --paste "<text>" #bug #ingest #cli #phase17
+- [ ] [[Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]: Отсутствие docs/06_Memory/patterns.md в локальном fallback install.py и некорректная маска фаз >= 10 в scripts/kb_release.py #bug #installer #release #phase17
+- [ ] [[Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]: Харденинг парсинга викиссылок и валидация схем frontmatter в scripts/kb_lint.py #task #lint #schemas #phase17
+- [ ] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование YAML, постоянные IMAP UIDs и URL-кодирование в scripts/kb_ingest.py #task #ingest #imap #phase17
+- [ ] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора, контейнерный TTY-зонд и интеграция сборщика в install.py и build_release.py #task #installer #release #phase17
+- [ ] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Синхронизация SSOT: правила агентов, режимы жизненного цикла и таксономия 16 шаблонов #task #agents #ssot #docs #phase17
+
 ## ✅ Готово (Done)
+
+- [x] [[Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: AttributeError при вызове Path.is_relative_to в scripts/kb_lint.py на Python 3.8 (2026-10-15) #bug #lint #python38 #phase17
 
 - [x] [[Specs/16_MemoryAndQualityGates/TASK-065-align-cli-flags-and-sync-readme|TASK-065]]: Выравнивание CLI-флагов (`-i`, `-r`) и синхронизация `README.md` (2026-10-12) #task #fast-track #phase16 #installer #docs
 - [x] [[Plans/PLAN-016-self-improving-harness-and-defect-memory|План: Фаза 16 — Самообучающийся харнесс и память дефектов]] (2026-10-12) #plan #phase16 #memory #defect-loop #quality-gates

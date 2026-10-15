@@ -506,6 +506,27 @@ tags:
         self.assertEqual(exit_code, 1)
         self.assertIn("Memory patterns limit exceeded", captured.getvalue())
 
+    def test_bug_005_is_relative_to_python38_compatibility(self):
+        """Simulate Python 3.8 where Path.is_relative_to does not exist (BUG-005)."""
+        from pathlib import PurePath
+        orig_purepath_method = getattr(PurePath, "is_relative_to", None)
+        orig_path_method = getattr(Path, "is_relative_to", None)
+        try:
+            if hasattr(PurePath, "is_relative_to"):
+                del PurePath.is_relative_to
+            if hasattr(Path, "is_relative_to") and "is_relative_to" in Path.__dict__:
+                del Path.is_relative_to
+
+            captured = io.StringIO()
+            with patch("sys.stdout", captured):
+                exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+            self.assertEqual(exit_code, 0)
+        finally:
+            if orig_purepath_method is not None:
+                PurePath.is_relative_to = orig_purepath_method
+            if orig_path_method is not None and "is_relative_to" in Path.__dict__:
+                Path.is_relative_to = orig_path_method
+
 
 if __name__ == "__main__":
     unittest.main()

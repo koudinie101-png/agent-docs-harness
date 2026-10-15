@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-12
+updated: 2026-10-14
 tags:
   - roadmap
   - planning
@@ -216,11 +216,33 @@ tags:
 
 ---
 
+## Фаза 17: Стабилизация ядра, синхронизация SSOT и защита краевых сценариев (Core Hardening & SSOT Sync)
+**Цель:** Устранение рассинхронизации между корневым `AGENTS.md` и генераторами `install.py`, исправление краевых дефектов линтера/инжестора/релизера и обеспечение 100% совместимости с Python 3.8+.  
+**Первоисточник плана:** [[Plans/PLAN-017-core-hardening-and-ssot-sync|PLAN-017]]
+
+### 🐞 Исправление дефектов (Mode 2B -> Mode 3 TDD)
+- [x] [[Bugs/BUG-005-kb-lint-py38-is-relative-to|BUG-005]]: Замена `Path.is_relative_to()` в `scripts/kb_lint.py` для совместимости с Python 3.8.
+- [ ] [[Bugs/BUG-006-release-notes-self-artifact|BUG-006]]: Исключение `dist/RELEASE_NOTES.md` из таблицы SHA-256 артефактов при повторном запуске `scripts/kb_release.py`.
+- [ ] [[Bugs/BUG-007-kb-ingest-paste-inline-arg|BUG-007]]: Поддержка позиционного текста в `scripts/kb_ingest.py --paste "<text>"` и синхронизация с `--text`.
+- [ ] [[Bugs/BUG-008-local-fallback-patterns-and-phase-pad|BUG-008]]: Добавление `docs/06_Memory/patterns.md` в локальный fallback `unpack_assets()` (`install.py`) и фикс маски фаз `f"{p:02d}_"` в `scripts/kb_release.py`.
+
+### 🛠️ Инженерные задачи фазы (Mode 2 -> Mode 3)
+- [ ] [[Specs/17_HardeningAndSync/TASK-066-kb-lint-codeblocks-and-schemas|TASK-066]]: Игнорирование кодовых блоков и экранированных пайпов `\|` в `kb_lint.py`, строгая проверка относительных путей и валидация YAML-схем для `06_Memory/Incidents/`.
+- [ ] [[Specs/17_HardeningAndSync/TASK-067-kb-ingest-yaml-escaping-and-imap-uid|TASK-067]]: Безопасное экранирование кавычек в YAML frontmatter (`FB-*.md`), переход на постоянные IMAP UID (`client.uid`) и URL-кодирование меток GitHub в `kb_ingest.py`.
+- [ ] [[Specs/17_HardeningAndSync/TASK-068-installer-tty-anonymizer-and-build-hook|TASK-068]]: Защита анонимизатора `--report` по границам путей, проверка открытия `/dev/tty` в контейнерах, диагностика `git commit` и вызов `build_installer.build()` внутри `scripts/build_release.py`.
+- [ ] [[Specs/17_HardeningAndSync/TASK-069-ssot-agents-and-docs-sync|TASK-069]]: Полная синхронизация `generate_agents_md()` (`install.py`) с корневым `AGENTS.md` (добавление Mode 0 и Mode 2C, Human Guardrails, таксономия 16 шаблонов в `Onboarding` и тестах, ссылки в `CHANGELOG.md`).
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Фаза 17: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
+* 💡 **Фаза 18: Инженерные барьеры качества и контроль техдолга (Engineering Gates & Tech Debt Governance):** реестр техдолга `docs/02_Tasks/TechDebt.md` (P1/P2 vs P3), барьер Prior-Art Gate в `TEMPLATE_PLAN.md` и `TEMPLATE_RESEARCH.md`, явные точки расширения `// ROADMAP-<ID>`, замеры сериями $\ge 3$ прогонов («Замер = артефакт») и чеклист приемочного тестирования GUI («UI не лжёт») в `TEMPLATE_TEST.md`. Обоснование: [[../../04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020]], [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
+* 💡 **Single-Source Rule Compiler (AGENTS.md Template Injection):** компиляция правил `_RULES_BODY` в `install.py` непосредственно из корневого `AGENTS.md` в процессе `scripts/build_installer.py` для исключения ручной рассинхронизации SSOT.
+* 💡 **Детерминированный синтаксический автофикс (kb_lint.py --fix):** опциональный флаг для безопасного автоматического экранирования неэкранированных пайпов `\|` в табличных викиссылках и нормализации пробелов без эвристического вмешательства в семантику ссылок.
+* 💡 **Автоматизированная ротация процедурной памяти (Compaction):** процедурный механизм в `kb-complete` или встроенный хелпер для ротации старейших паттернов `[TRG-XX]` из `patterns.md` в архив `docs/06_Memory/Incidents/` при приближении к лимиту 15 записей.
+* 💡 **Расширенные пресеты стеков (Go, Rust, JVM):** автодетект стеков (`Cargo.toml`, `go.mod`, `build.gradle.kts`, `pom.xml`) и базовые команды верификации для `install.py`.
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
