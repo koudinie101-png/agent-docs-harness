@@ -85,7 +85,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] [[../Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py`
+- [x] [[../Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py` (2026-10-15)
   * Реализация `check_asset_layout(docs_dir: Path)` с проверкой `VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}`, проверкой пространств `TASK-XXX/` внутри `mockups/` и выводом `WARN`.
   * Устранение ложноположительного fallback'а `elif link_name in file_map:` для медиа-ссылок с разделителями пути (`/` или `\`) в `run_linter()`.
   * Модульные тесты `test_kb_lint.py` на детекцию «диких» папок в `docs/assets/` и коллизии одноименных файлов `tobe.svg` в разных директориях `TASK-XXX/`.

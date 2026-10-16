@@ -16,6 +16,28 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-15] — Реализация TASK-079: Строгая резолюция медиа-путей и проверка топологии check_asset_layout() в scripts/kb_lint.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]] — первая задача Фазы 20 «Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии»:
+    1. В `scripts/kb_lint.py` внедрена проверка топологии каталога ассетов `check_asset_layout(docs_dir: Path) -> List[str]` (Tier 1 Non-blocking Gate, выдает `WARN` без падения с Exit code 1):
+       * Проверяет корневые подкаталоги `docs/assets/` на соответствие каноническому списку `VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}` и сообщает о неразмеченных файлах в корне.
+       * Проверяет вложенные элементы в `docs/assets/mockups/<target>/` и `docs/assets/mockups/flows/` на соответствие шаблону задач `^(?:TASK|BUG)-\d{3,}(?:-[a-zA-Z0-9_-]+)?$` (пропуская системные dotfiles вроде `.gitkeep`).
+    2. В `run_linter()` исправлен дефект ложноположительного разрешения путей медиафайлов: fallback-поиск по голому имени `link_name in file_map` ограничен строго ссылками без разделителей путей (`"/" not in link and "\\" not in link`). Относительные пути медиафайлов теперь валидируются исключительно через проверку существования целевого файла на диске, что исключает маскировку битых ссылок при наличии одноименных файлов (`tobe.svg`, `asis.svg`) в других задачах.
+    3. Добавлен вывод предупреждений `⚠️ Asset Layout Warnings` в подробном и компактном режимах работы линтера.
+    4. В `tests/test_kb_lint.py` добавлено 4 модульных теста:
+       * `test_same_name_media_in_different_task_folders_no_false_positive` (битая ссылка на `TASK-098/tobe.svg` не маскируется наличием `TASK-047/tobe.svg`, Exit code 1).
+       * `test_bare_wikilink_media_still_resolves` (плоская викиссылка `![[Pasted image...|600]]` резолвится, Exit code 0).
+       * `test_check_asset_layout_warns_rogue_platform_dir_and_flat_mockup` (неканоническая папка `assets/windows/` и плоский файл `mockups/web/login.svg` дают `WARN` без сбоя линтера).
+       * `test_check_asset_layout_allows_canonical_roots` (каноническая топология проходит с пустым списком предупреждений).
+    5. Обновлены статусы задачи в спецификации (`done`), Канбане (`Done`), плане `PLAN-020` (`[x]`) и Дорожной карте `Roadmap.md` (`[x]`).
+- **Результаты верификации:**
+  - `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` -> компиляция успешна (Exit code 0).
+  - `python -m unittest tests/test_kb_lint.py` -> 39/39 тестов успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация задачи [[02_Tasks/Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]] через `/kb-implement TASK-080`.
+
+---
+
 ### [2026-10-15] — Выпуск релиза v0.19.0: Фаза 19 (Engineering Gates & Tech Debt Governance)
 - **Что сделано:**
   - Опубликован официальный релиз [[02_Tasks/Releases/RELEASE-v0.19.0|RELEASE-v0.19.0]] по итогам завершения Фазы 19.

@@ -779,6 +779,106 @@ date: 2026-10-15
         self.assertFalse(any("sample_doc.md:2" in w for w in warnings))
         self.assertFalse(any("sample_doc.md:3" in w for w in warnings))
 
+    def test_same_name_media_in_different_task_folders_no_false_positive(self):
+        """Verifies that having tobe.svg in TASK-047 does not mask broken link to TASK-098/tobe.svg (TASK-079)."""
+        # Create TASK-047/tobe.svg
+        task47_dir = self.docs_dir / "assets" / "mockups" / "windows" / "TASK-047"
+        task47_dir.mkdir(parents=True, exist_ok=True)
+        (task47_dir / "tobe.svg").write_text("<svg>task47</svg>", encoding="utf-8")
+
+        # In TASK-001.md, reference non-existent TASK-098/tobe.svg using relative path
+        spec_path = self.docs_dir / "02_Tasks" / "Specs" / "TASK-001.md"
+        content = spec_path.read_text(encoding="utf-8")
+        content += "\n\n![Mockup](../../assets/mockups/windows/TASK-098/tobe.svg)\n"
+        spec_path.write_text(content, encoding="utf-8")
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+
+        # Must fail with exit code 1 because TASK-098/tobe.svg does not exist!
+        self.assertEqual(exit_code, 1)
+        self.assertIn("target not found", captured.getvalue())
+
+    def test_bare_wikilink_media_still_resolves(self):
+        """Verifies that flat wikilink ![[Pasted image 20261015.png|600]] still resolves (TASK-079)."""
+        screenshots_dir = self.docs_dir / "assets" / "screenshots" / "windows"
+        screenshots_dir.mkdir(parents=True, exist_ok=True)
+        (screenshots_dir / "Pasted image 20261015.png").write_bytes(b"\x89PNG\r\n\x1a\n")
+
+        # In TASK-001.md, reference via bare wikilink with resize
+        spec_path = self.docs_dir / "02_Tasks" / "Specs" / "TASK-001.md"
+        content = spec_path.read_text(encoding="utf-8")
+        content += "\n\n![[Pasted image 20261015.png|600]]\n"
+        spec_path.write_text(content, encoding="utf-8")
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+
+        self.assertEqual(exit_code, 0)
+
+    def test_check_asset_layout_warns_rogue_platform_dir_and_flat_mockup(self):
+        """Verifies check_asset_layout warns on rogue root folder, unorganized files and flat mockup entries (TASK-079)."""
+        # Create rogue platform directory directly in assets/
+        rogue_dir = self.docs_dir / "assets" / "windows"
+        rogue_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create unorganized file in root of assets/
+        (self.docs_dir / "assets" / "loose.png").write_bytes(b"data")
+
+        # Create flat mockup entry in mockups/web/
+        web_mockups = self.docs_dir / "assets" / "mockups" / "web"
+        web_mockups.mkdir(parents=True, exist_ok=True)
+        (web_mockups / "login.svg").write_text("<svg>login</svg>", encoding="utf-8")
+
+        warnings = kb_lint.check_asset_layout(self.docs_dir)
+        self.assertTrue(any("Disallowed asset category directory 'assets/windows'" in w for w in warnings))
+        self.assertTrue(any("Unorganized file 'assets/loose.png'" in w for w in warnings))
+        self.assertTrue(any("Non-task mockup entry 'assets/mockups/web/login.svg'" in w for w in warnings))
+
+        # Non-blocking: run_linter returns exit code 0
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("WARN: Disallowed asset category directory 'assets/windows'", captured.getvalue())
+
+    def test_check_asset_layout_allows_canonical_roots(self):
+        """Verifies check_asset_layout produces no warnings for canonical roots and task-scoped mockups (TASK-079)."""
+        # mockups/windows/TASK-001/tobe.svg
+        m_win = self.docs_dir / "assets" / "mockups" / "windows" / "TASK-001"
+        m_win.mkdir(parents=True, exist_ok=True)
+        (m_win / "tobe.svg").write_text("<svg></svg>", encoding="utf-8")
+
+        # mockups/flows/TASK-002/flow.svg
+        m_flows = self.docs_dir / "assets" / "mockups" / "flows" / "TASK-002-checkout"
+        m_flows.mkdir(parents=True, exist_ok=True)
+        (m_flows / "flow.svg").write_text("<svg></svg>", encoding="utf-8")
+
+        # screenshots/windows/TASK-001.png
+        s_win = self.docs_dir / "assets" / "screenshots" / "windows"
+        s_win.mkdir(parents=True, exist_ok=True)
+        (s_win / "TASK-001.png").write_bytes(b"png")
+
+        # diagrams/arch.png
+        diagrams = self.docs_dir / "assets" / "diagrams"
+        diagrams.mkdir(parents=True, exist_ok=True)
+        (diagrams / "arch.png").write_bytes(b"png")
+
+        # design/tokens.svg
+        design = self.docs_dir / "assets" / "design"
+        design.mkdir(parents=True, exist_ok=True)
+        (design / "tokens.svg").write_text("<svg></svg>", encoding="utf-8")
+
+        # dotfiles like .gitkeep
+        (self.docs_dir / "assets" / ".gitkeep").write_text("", encoding="utf-8")
+        (self.docs_dir / "assets" / "mockups" / ".gitkeep").write_text("", encoding="utf-8")
+        (self.docs_dir / "assets" / "mockups" / "windows" / ".gitkeep").write_text("", encoding="utf-8")
+
+        warnings = kb_lint.check_asset_layout(self.docs_dir)
+        self.assertEqual(warnings, [])
+
 
 if __name__ == "__main__":
     unittest.main()

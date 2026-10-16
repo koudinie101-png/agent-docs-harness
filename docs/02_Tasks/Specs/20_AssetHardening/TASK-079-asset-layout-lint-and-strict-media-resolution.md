@@ -1,7 +1,7 @@
 ---
 id: TASK-079
 title: "Строгая резолюция медиа-путей и проверка топологии check_asset_layout() в scripts/kb_lint.py"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 20
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-079 — Строгая резолюция медиа-путей и проверка топологии check_asset_layout() в scripts/kb_lint.py
 
-> **ID:** TASK-079 | **Статус:** В работе  
+> **ID:** TASK-079 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 20 | **План:** [[../../Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]
 
@@ -130,15 +130,15 @@ def check_asset_layout(docs_dir: Path) -> List[str]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` (Exit code 0).
-- [ ] Автотесты линтера: `pytest tests/test_kb_lint.py` (Exit code 0, 100% pass).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0).
+- [x] Сборка: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` (Exit code 0).
+- [x] Автотесты линтера: `pytest tests/test_kb_lint.py` (Exit code 0, 100% pass).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код написан строго по ТЗ без заглушек.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код написан строго по ТЗ без заглушек.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

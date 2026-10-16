@@ -21,6 +21,8 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 MEDIA_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
+VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}
+TASK_NAMESPACE_PATTERN = re.compile(r"^(?:TASK|BUG)-\d{3,}(?:-[a-zA-Z0-9_-]+)?$")
 
 
 def find_vault_root(start_dir: Path) -> Path:
@@ -428,6 +430,56 @@ def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> Lis
     return warnings
 
 
+def check_asset_layout(docs_dir: Path) -> List[str]:
+    """
+    Tier 1 Quality Gate (Non-blocking):
+    Validates docs/assets/ directory topology:
+    - Root subdirectories must be in VALID_ASSET_ROOTS ("mockups", "screenshots", "diagrams", "design").
+    - No unorganized loose files in root docs/assets/.
+    - Subdirectories inside docs/assets/mockups/<target>/ must be task-scoped (TASK-XXX or BUG-XXX).
+    Returns a list of warning strings.
+    """
+    warnings: List[str] = []
+    assets_dir = docs_dir / "assets"
+    if not assets_dir.is_dir() and (docs_dir / "docs" / "assets").is_dir():
+        assets_dir = docs_dir / "docs" / "assets"
+    if not assets_dir.is_dir():
+        return warnings
+
+    allowed_str = ", ".join(sorted(VALID_ASSET_ROOTS))
+    for item in sorted(assets_dir.iterdir()):
+        if item.name.startswith("."):
+            continue
+        if item.is_dir():
+            if item.name not in VALID_ASSET_ROOTS:
+                warnings.append(
+                    f"WARN: Disallowed asset category directory 'assets/{item.name}'. "
+                    f"Allowed root categories: {allowed_str}. "
+                    f"Move platform folders inside 'assets/mockups/{item.name}/' or 'assets/screenshots/{item.name}/'."
+                )
+        elif item.is_file():
+            warnings.append(
+                f"WARN: Unorganized file 'assets/{item.name}' in root of docs/assets/. "
+                f"Place assets inside mockups/, screenshots/, diagrams/, or design/."
+            )
+
+    mockups_dir = assets_dir / "mockups"
+    if mockups_dir.is_dir():
+        for target_dir in sorted(mockups_dir.iterdir()):
+            if not target_dir.is_dir() or target_dir.name.startswith("."):
+                continue
+            for entry in sorted(target_dir.iterdir()):
+                if entry.name.startswith("."):
+                    continue
+                if not entry.is_dir() or not TASK_NAMESPACE_PATTERN.match(entry.name):
+                    rel_entry = f"assets/mockups/{target_dir.name}/{entry.name}"
+                    warnings.append(
+                        f"WARN: Non-task mockup entry '{rel_entry}'. "
+                        f"Expected task-scoped directory 'assets/mockups/{target_dir.name}/TASK-XXX/' (ADR-0027)."
+                    )
+    return warnings
+
+
 def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]] = None) -> List[str]:
     """
     Tier 1 / Tier 2 Quality Gate: validates tech debt registry docs/02_Tasks/TechDebt.md.
@@ -721,11 +773,19 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                     pass
 
             if not found:
+                has_path_sep = ("/" in link or "\\" in link)
                 if link_ext in MEDIA_EXTENSIONS or "." in link_name:
-                    if link_name in file_map or link_name_lower in file_map or link in file_map or link.lower() in file_map or stripped_link in file_map or stripped_link.lower() in file_map:
+                    if not has_path_sep and (link_name in file_map or link_name_lower in file_map):
+                        found = True
+                    elif (
+                        link in file_map
+                        or link.lower() in file_map
+                        or stripped_link in file_map
+                        or stripped_link.lower() in file_map
+                    ):
                         found = True
                 else:
-                    if "/" not in link and "\\" not in link and (link_stem in file_map or link_stem_lower in file_map):
+                    if not has_path_sep and (link_stem in file_map or link_stem_lower in file_map):
                         found = True
 
             if not found:
@@ -737,6 +797,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     phase_warnings = check_phase_consistency(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
     asset_warnings = check_asset_weights(docs_dir)
+    asset_layout_warnings = check_asset_layout(docs_dir)
     debt_results = check_tech_debt_integrity(docs_dir, file_map=file_map)
     debt_errors = [e for e in debt_results if not e.startswith("Tech debt registry not found")]
     has_tasks_harness = (
@@ -805,6 +866,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {aw}")
             print()
 
+        if asset_layout_warnings:
+            print(f"⚠️ Asset Layout Warnings ({len(asset_layout_warnings)}):")
+            for alw in asset_layout_warnings:
+                print(f"   • {alw}")
+            print()
+
         if debt_warnings:
             print(f"⚠️ Tech Debt Warnings ({len(debt_warnings)}):")
             for dw in debt_warnings:
@@ -841,6 +908,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {pw}")
         for aw in asset_warnings:
             print(f"⚠️  {aw}")
+        for alw in asset_layout_warnings:
+            print(f"⚠️  {alw}")
         for dw in debt_warnings:
             print(f"⚠️  WARN: {dw}")
         for tw in todo_warnings:
