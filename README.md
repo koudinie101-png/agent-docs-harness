@@ -127,7 +127,8 @@ docs/
 ├── 06_Memory/                # Agent procedural memory: patterns.md & Incidents/
 └── assets/                   # UI/UX visual assets (mockups, screenshots, design system)
     ├── screenshots/          # Target-specific screenshots for visual DoD
-    ├── mockups/              # Wireframes, layout drafts and visual RFCs
+    ├── mockups/              # Task-scoped mockups (<target>/TASK-XXX/, flows/TASK-XXX/)
+    ├── diagrams/             # Architecture and UX flow diagrams
     └── design/               # Design system & tokens (UI_Design_System.md)
 ```
 
@@ -339,7 +340,7 @@ Once installed, your workflow is seamless:
 10. **Procedural Defect Memory & Patterns Loop:**
     * Двухуровневый контур процедурной памяти (`docs/06_Memory/`): жестко лимитированный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей) и архив инцидентов `Incidents/` с обязательной проверкой `Memory-First` перед реализацией.
 11. **The 4-State UI & Visual Verification Invariant:**
-    * Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$) ([ADR-0026](docs/03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management.md)). Ephemeral test snapshots in `tmp/ui_snapshots/` are barred from git tracking.
+    * Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$) ([ADR-0026](docs/03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management.md)). Project mockups are isolated in task-scoped namespaces `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows `docs/assets/mockups/flows/TASK-XXX/` ([ADR-0027](docs/03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting.md)), with non-blocking topology linting (`check_asset_layout()`) in `kb_lint.py`. Ephemeral test snapshots in `tmp/ui_snapshots/` are barred from git tracking.
 12. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**
     * Findings from code reviews are strictly triaged into critical blockers (P1/P2 — resolved immediately) and non-blocking debt (P3 — strictly prohibited from opportunistic fixing; recorded in `docs/02_Tasks/TechDebt.md`).
 13. **Prior-Art Gate Invariant:**

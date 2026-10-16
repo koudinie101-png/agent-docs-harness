@@ -1,7 +1,7 @@
 ---
 id: TASK-081
 title: "Сквозные E2E-тесты в tests/test_installer.py, пересборка бандла install.py и синхронизация Living Spec"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 20
 component:
@@ -10,7 +10,7 @@ component:
   - docs
 parent_plan: "[[../../Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]"
 created: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-16
 tags:
   - task/spec
   - phase20
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-081 — Сквозные E2E-тесты в tests/test_installer.py, пересборка бандла install.py и синхронизация Living Spec
 
-> **ID:** TASK-081 | **Статус:** В работе  
+> **ID:** TASK-081 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 20 | **План:** [[../../Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]
 
@@ -84,17 +84,17 @@ def test_ui_harness_task_scoped_mockup_taxonomy_and_asset_layout_lint(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Пересборка бандла: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Сборка всех скриптов: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Полный прогон тестов: `pytest` (Exit code 0, 100% pass).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links).
+- [x] Пересборка бандла: `python scripts/build_installer.py` (Exit code 0).
+- [x] Сборка всех скриптов: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Полный прогон тестов: `pytest` (Exit code 0, 100% pass).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0, 0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Автономный бандл `install.py` пересобран и синхронизирован с исходниками.
-- [ ] E2E-тесты в `tests/test_installer.py` проходят успешно.
-- [ ] Документация `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизирована (Living Spec).
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Автономный бандл `install.py` пересобран и синхронизирован с исходниками.
+- [x] E2E-тесты в `tests/test_installer.py` проходят успешно.
+- [x] Документация `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизирована (Living Spec).
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

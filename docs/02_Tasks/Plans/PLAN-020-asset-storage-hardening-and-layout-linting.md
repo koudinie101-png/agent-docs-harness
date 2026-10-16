@@ -1,11 +1,11 @@
 ---
 id: PLAN-020
 title: "Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting)"
-status: accepted
+status: done
 type: plan
 phase: 20
 created: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-16
 tags:
   - plan
   - phase20
@@ -18,7 +18,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 # 📋 План: PLAN-020 — Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии
 
-> **ID:** PLAN-020 | **Статус:** Согласовано  
+> **ID:** PLAN-020 | **Статус:** Выполнено (2026-10-16)  
 > **Фаза:** 20 | **Целевой релиз:** v0.20.0  
 > **Спецификация:** [[../../SPEC|SPEC.md]] | **Канбан:** [[../Kanban|Канбан]] | **Дорожная карта:** [[../Roadmap|Дорожная карта (Фаза 20)]]  
 > **Нормативная база:** [[../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] | **Источник:** [[../Inbox/FB-GH-5|Обращение FB-GH-5]]
@@ -92,7 +92,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 - [x] [[../Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` (2026-10-16)
   * Обновление `UI_Design_System.md` в `create_starter_docs()` (`install.py`) с правилами `TASK-XXX/`, `asis.svg` / `tobe.svg`, `mockups/flows/TASK-XXX/` и префиксами `<surface>_`.
   * Обновление `docs/00_Templates/TEMPLATE_TASK.md`, `AGENTS.md`, `GEMINI.md` и встроенных генераторов правил в `install.py`.
-- [ ] [[../Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`)
+- [x] [[../Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-16)
   * Обновление и расширение E2E тестов в `tests/test_installer.py`.
   * Пересборка автономного инсталлятора `install.py` через `scripts/build_installer.py`.
   * Актуализация `SPEC.md`, `README.md` и `docs/Onboarding.md`.

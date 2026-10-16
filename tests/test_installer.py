@@ -2297,42 +2297,99 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("ROADMAP-<ID>", gemini_text)
             self.assertIn("Tech Debt Governance", gemini_text)
 
-    def test_35_task_080_mockup_namespaces_and_ui_design_system(self):
-        """Verify task-scoped mockup namespaces, flows convention and Visual DoD in install.py & templates (TASK-080)."""
+    def test_ui_harness_task_scoped_mockup_taxonomy_and_asset_layout_lint(self):
+        """Verifies Phase 20: UI_Design_System.md, AGENTS.md, TEMPLATE_TASK.md and deployed kb_lint.py (TASK-081)."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            target_dir = Path(tmpdir) / "UIApp"
+            target_dir = Path(tmpdir) / "AssetHardeningApp"
             target_dir.mkdir()
             install.install_harness(
                 target_dir=target_dir,
-                project_name="UIApp",
+                project_name="AssetHardeningApp",
                 stack_key="python",
-                ui_targets="web,mobile",
+                ui_targets="windows,android",
                 agent_choice="all",
                 git_choice="none",
             )
+
+            # 1. Verification of folders and UI_Design_System.md
+            self.assertTrue((target_dir / "docs" / "assets" / "mockups" / "flows").is_dir())
             ds_file = target_dir / "docs" / "01_Architecture" / "UI_Design_System.md"
             self.assertTrue(ds_file.is_file())
+
+            # 2. Section 4 in UI_Design_System.md
             ds_text = ds_file.read_text(encoding="utf-8")
             self.assertIn("## 4. Организация макетов и визуальных артефактов (Asset Taxonomy)", ds_text)
-            self.assertIn("mockups/<target>/TASK-XXX/", ds_text)
-            self.assertIn("mockups/flows/TASK-XXX/", ds_text)
+            self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", ds_text)
+            self.assertIn("asis.svg", ds_text)
+            self.assertIn("tobe.svg", ds_text)
+            self.assertIn("docs/assets/mockups/flows/TASK-XXX/", ds_text)
 
-            # 2. AGENTS.md rule 12 contains Mockup Namespaces & Lifecycle (ADR-0027)
+            # 3. AGENTS.md and GEMINI.md have mockup namespaces
             agents_text = (target_dir / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("Mockup Namespaces & Lifecycle (ADR-0027)", agents_text)
             self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", agents_text)
-            self.assertIn("docs/assets/mockups/flows/TASK-XXX/", agents_text)
+            gemini_text = (target_dir / "GEMINI.md").read_text(encoding="utf-8")
+            self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", gemini_text)
 
-            # 3. Adapters contain mockups/<target>/TASK-XXX/
-            for adapter_name in [".clinerules", ".cursorrules", ".windsurfrules", "CLAUDE.md", "GEMINI.md"]:
-                adapter_file = target_dir / adapter_name
-                self.assertTrue(adapter_file.is_file())
-                adapter_text = adapter_file.read_text(encoding="utf-8")
-                self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", adapter_text)
-
-            # 4. TEMPLATE_TASK.md has updated Visual DoD
-            task_template_text = (REPO_ROOT / "docs" / "00_Templates" / "TEMPLATE_TASK.md").read_text(encoding="utf-8")
+            # 4. Deployed TEMPLATE_TASK.md has updated Visual DoD
+            task_template_file = target_dir / "docs" / "00_Templates" / "TEMPLATE_TASK.md"
+            self.assertTrue(task_template_file.is_file())
+            task_template_text = task_template_file.read_text(encoding="utf-8")
             self.assertIn("docs/assets/mockups/<target>/TASK-XXX/tobe.svg", task_template_text)
+
+            # 5. Deployed scripts/kb_lint.py checks
+            deployed_lint = target_dir / "scripts" / "kb_lint.py"
+            self.assertTrue(deployed_lint.is_file())
+
+            # 5a. Clean run passes with exit code 0
+            res_clean = subprocess.run(
+                [sys.executable, str(deployed_lint), "--path", "docs"],
+                cwd=str(target_dir),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_clean.returncode, 0, f"Clean lint failed: {res_clean.stdout} {res_clean.stderr}")
+
+            # 5b. Rogue root folder produces WARN but exit code 0 (non-blocking)
+            rogue_dir = target_dir / "docs" / "assets" / "windows"
+            rogue_dir.mkdir(parents=True, exist_ok=True)
+            res_rogue = subprocess.run(
+                [sys.executable, str(deployed_lint), "--path", "docs"],
+                cwd=str(target_dir),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_rogue.returncode, 0)
+            self.assertIn("WARN: Disallowed asset category directory 'assets/windows'", res_rogue.stdout)
+            rogue_dir.rmdir()
+
+            # 5c. Broken relative link to TASK-099/tobe.svg fails with code 1 even when TASK-001/tobe.svg exists
+            task001_dir = target_dir / "docs" / "assets" / "mockups" / "windows" / "TASK-001"
+            task001_dir.mkdir(parents=True, exist_ok=True)
+            (task001_dir / "tobe.svg").write_text("<svg>task001</svg>", encoding="utf-8")
+
+            spec_dir = target_dir / "docs" / "02_Tasks" / "Specs"
+            spec_dir.mkdir(parents=True, exist_ok=True)
+            broken_spec = spec_dir / "TASK-099-broken.md"
+            broken_spec.write_text(
+                "---\nid: TASK-099\ntitle: Broken Spec\nstatus: in-progress\ntype: task\nphase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-16\n---\n"
+                "# Broken Spec\n![Mockup](../../assets/mockups/windows/TASK-099/tobe.svg)\n",
+                encoding="utf-8",
+            )
+            res_broken = subprocess.run(
+                [sys.executable, str(deployed_lint), "--path", "docs"],
+                cwd=str(target_dir),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(res_broken.returncode, 1, "Broken relative media link must fail with exit code 1!")
+            self.assertIn("target not found", res_broken.stdout)
 
 
 

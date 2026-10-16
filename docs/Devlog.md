@@ -16,6 +16,32 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-16] — Реализация TASK-081: Сквозные E2E-тесты в tests/test_installer.py, пересборка бандла install.py и синхронизация Living Spec
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]] — финальная задача Фазы 20 «Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting)»:
+    1. Автономный монолитный инсталлятор `install.py` и публичный дистрибутив `dist/install.py` пересобраны через `scripts/build_installer.py` (упакованы актуальные `scripts/kb_lint.py` с `check_asset_layout()` и шаблоны `templates/TEMPLATE_TASK.md` с пространствами имен `mockups/<target>/TASK-XXX/`). Размер бандла: 159.9 KB (строго в рамках DoD $\le 165\text{ KB}$).
+    2. В `tests/test_installer.py` добавлен сквозной E2E-тест `test_ui_harness_task_scoped_mockup_taxonomy_and_asset_layout_lint`, валидирующий 5 ключевых инвариантов:
+       * Развертывание мультитаргета `--ui windows,android` создает `mockups/flows/` и `01_Architecture/UI_Design_System.md`.
+       * В `UI_Design_System.md` присутствует секция 4 с пространствами `mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`) и `mockups/flows/TASK-XXX/`.
+       * В развернутых `AGENTS.md` и `GEMINI.md` зафиксированы пути макетов задач.
+       * Развернутый шаблон `docs/00_Templates/TEMPLATE_TASK.md` содержит обновленный путь Headless-макета `docs/assets/mockups/<target>/TASK-XXX/tobe.svg`.
+       * Развернутый `scripts/kb_lint.py` успешно проходит с кодом 0 на чистом проекте, выдает предупреждение `WARN` при появлении неканонической директории `assets/windows/` и возвращает код ошибки 1 при наличии битой относительной ссылки на несуществующий `TASK-099/tobe.svg` даже при наличии одноименного файла `TASK-001/tobe.svg`.
+    3. Синхронизированы Living Spec документы:
+       * `SPEC.md`: обновлены раздел 2.3 (`check_asset_layout`), раздел 2.4 (The 4-State UI & Visual Verification Invariant, ADR-0027) и раздел 4 (добавлено описание Фазы 20).
+       * `README.md`: обновлены дерево структуры `assets/` (макеты по задачам и кросс-девайсные сценарии) и ключевая дисциплина #11 со ссылкой на ADR-0027.
+       * `docs/Onboarding.md`: в разделе 14 детализирована таксономия директорий `mockups/<target>/TASK-XXX/` и `mockups/flows/TASK-XXX/`.
+    4. Статусы задачи `TASK-081` и плана `PLAN-020` переведены в завершенные в ТЗ (`done`), Канбане (`Done`) и Дорожной карте (`[x]`). Фаза 20 официально закрыта!
+- **Результаты верификации:**
+  - `python scripts/build_installer.py` -> сборка успешна (159.9 KB, Exit code 0).
+  - `python -m py_compile install.py scripts/*.py tests/*.py` -> компиляция успешна (Exit code 0).
+  - `python -m unittest tests/test_kb_lint.py` -> 39/39 тестов успешно пройдено (Exit code 0).
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_ui_harness_task_scoped_mockup_taxonomy_and_asset_layout_lint` -> успешно пройдено (Exit code 0).
+  - `python scripts/kb_lint.py --path docs` -> 0 broken links (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Подготовка и публикация релиза v0.20.0 через `/kb-release 0.20.0`.
+
+---
+
 ### [2026-10-16] — Реализация TASK-080: Стандартизация TASK-XXX/ для макетов и конвенции mockups/flows/ в install.py, шаблонах и правилах агентов
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]] — вторая задача Фазы 20 «Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии»:

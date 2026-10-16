@@ -305,12 +305,13 @@ flowchart LR
 
 ### 🎨 1. Изолированное хранилище ассетов (`docs/assets/`)
 * **Структура директорий:**
-  * `docs/assets/screenshots/<target>/` — постоянные скриншоты для визуального Definition of Done (DoD).
-  * `docs/assets/mockups/` — визуальные макеты, черновики интерфейсов и прототипы.
+  * `docs/assets/screenshots/<target>/TASK-XXX.png` — постоянные скриншоты для визуального Definition of Done (DoD).
+  * `docs/assets/mockups/<target>/TASK-XXX/` — проектные макеты задач с жизненным циклом `asis.svg`, `tobe.svg`, `<surface>_tobe.svg` ([[03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]).
+  * `docs/assets/mockups/flows/TASK-XXX/` — сквозные кросс-девайсные пользовательские сценарии (для multi-target систем).
   * `docs/assets/diagrams/` — схемы архитектуры и UX-флоу.
   * `docs/assets/design/UI_Design_System.md` — токены дизайна, цвета, типографика и сетки.
 * **Гетерогенные платформы (`--ui <targets>`):**
-  Инсталлятор `install.py --ui web,mobile,desktop` автоматически настраивает подкаталоги `screenshots/<target>/` и целевые спецификации интерфейсов (`Targets/`), а также протоколы взаимодействия (`Protocols/`) и межплатформенные сценарии (`multi-device/`).
+  Инсталлятор `install.py --ui web,mobile,desktop` автоматически настраивает подкаталоги `screenshots/<target>/`, `mockups/<target>/`, а при числе таргетов > 1 — `mockups/flows/` и `screenshots/multi-device/`, а также целевые спецификации интерфейсов (`Targets/`) и протоколы взаимодействия (`Protocols/`).
 
 ### 🖱️ 2. Бесшовный Obsidian DX
 * Инсталлятор автоматически настраивает `docs/.obsidian/app.json` (`attachmentFolderPath: "assets/screenshots"`).
