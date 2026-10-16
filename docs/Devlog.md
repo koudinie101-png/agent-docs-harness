@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-16] — Реализация TASK-080: Стандартизация TASK-XXX/ для макетов и конвенции mockups/flows/ в install.py, шаблонах и правилах агентов
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]] — вторая задача Фазы 20 «Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии»:
+    1. В `install.py` генератор дизайн-системы `create_starter_docs()` дополнен разделом `## 4. Организация макетов и визуальных артефактов (Asset Taxonomy)` в `docs/01_Architecture/UI_Design_System.md` с фиксацией пространств имен `mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`), сквозных сценариев `mockups/flows/TASK-XXX/` и скриншотов `screenshots/<target>/TASK-XXX.png`.
+    2. В `_RULES_BODY` (дисциплина 20) и `_gen_rule()` (правило 7) инсталлятора зафиксирована симметрия хранения макетов в `docs/assets/mockups/<target>/TASK-XXX/` (или `flows/TASK-XXX/`) и скриншотов в `docs/assets/screenshots/<target>/TASK-XXX.png`.
+    3. В генераторе `generate_agents_md()` и каноническом `AGENTS.md` (Правило 12: The 4-State UI & Visual Verification Invariant) закреплено положение `Mockup Namespaces & Lifecycle (ADR-0027)`.
+    4. Синхронизированы все 6 тонких адаптеров в корне проекта: `.clinerules`, `.cursorrules`, `.windsurfrules`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`.
+    5. Обновлен шаблон `docs/00_Templates/TEMPLATE_TASK.md` (и `templates/TEMPLATE_TASK.md`) с указанием точных путей макетов `docs/assets/mockups/<target>/TASK-XXX/tobe.svg` (`asis.svg`) в блоке Visual DoD при сохранении жесткого бюджета шаблонов $\le 28\text{ KB}$ (текущий вес: 28,375 байт).
+    6. В `tests/test_installer.py` добавлен тест `test_35_task_080_mockup_namespaces_and_ui_design_system`, подтверждающий корректность генерации артефактов и адаптеров.
+    7. Обновлены статусы задачи в спецификации (`done`), Канбане (`Done`), плане `PLAN-020` (`[x]`) и Дорожной карте `Roadmap.md` (`[x]`).
+- **Результаты верификации:**
+  - `python -m py_compile install.py scripts/*.py tests/*.py` -> компиляция успешна (Exit code 0).
+  - Контроль бюджета шаблонов: 28,375 байт $\le 28,672$ байт (Exit code 0).
+  - `python -m unittest tests/test_kb_lint.py` -> 39/39 тестов пройдено (Exit code 0).
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_35_task_080_mockup_namespaces_and_ui_design_system` -> успешно пройдено (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Реализация завершающей задачи Фазы 20 [[02_Tasks/Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]] через `/kb-implement TASK-081`.
+
+---
+
 ### [2026-10-15] — Реализация TASK-079: Строгая резолюция медиа-путей и проверка топологии check_asset_layout() в scripts/kb_lint.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]] — первая задача Фазы 20 «Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии»:

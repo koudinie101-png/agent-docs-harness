@@ -2297,6 +2297,44 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertIn("ROADMAP-<ID>", gemini_text)
             self.assertIn("Tech Debt Governance", gemini_text)
 
+    def test_35_task_080_mockup_namespaces_and_ui_design_system(self):
+        """Verify task-scoped mockup namespaces, flows convention and Visual DoD in install.py & templates (TASK-080)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_dir = Path(tmpdir) / "UIApp"
+            target_dir.mkdir()
+            install.install_harness(
+                target_dir=target_dir,
+                project_name="UIApp",
+                stack_key="python",
+                ui_targets="web,mobile",
+                agent_choice="all",
+                git_choice="none",
+            )
+            ds_file = target_dir / "docs" / "01_Architecture" / "UI_Design_System.md"
+            self.assertTrue(ds_file.is_file())
+            ds_text = ds_file.read_text(encoding="utf-8")
+            self.assertIn("## 4. Организация макетов и визуальных артефактов (Asset Taxonomy)", ds_text)
+            self.assertIn("mockups/<target>/TASK-XXX/", ds_text)
+            self.assertIn("mockups/flows/TASK-XXX/", ds_text)
+
+            # 2. AGENTS.md rule 12 contains Mockup Namespaces & Lifecycle (ADR-0027)
+            agents_text = (target_dir / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("Mockup Namespaces & Lifecycle (ADR-0027)", agents_text)
+            self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", agents_text)
+            self.assertIn("docs/assets/mockups/flows/TASK-XXX/", agents_text)
+
+            # 3. Adapters contain mockups/<target>/TASK-XXX/
+            for adapter_name in [".clinerules", ".cursorrules", ".windsurfrules", "CLAUDE.md", "GEMINI.md"]:
+                adapter_file = target_dir / adapter_name
+                self.assertTrue(adapter_file.is_file())
+                adapter_text = adapter_file.read_text(encoding="utf-8")
+                self.assertIn("docs/assets/mockups/<target>/TASK-XXX/", adapter_text)
+
+            # 4. TEMPLATE_TASK.md has updated Visual DoD
+            task_template_text = (REPO_ROOT / "docs" / "00_Templates" / "TEMPLATE_TASK.md").read_text(encoding="utf-8")
+            self.assertIn("docs/assets/mockups/<target>/TASK-XXX/tobe.svg", task_template_text)
+
+
 
 if __name__ == "__main__":
     unittest.main()

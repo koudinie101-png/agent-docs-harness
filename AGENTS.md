@@ -54,6 +54,7 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - **Reliability Invariant:** Critical reliability rules and systemic defect preventions must **never** remain solely in probabilistic Tier 3. They must be mechanized in tests/linters (Tier 1) or elevated into the Always-On prefix (Tier 2).
 12. **The 4-State UI & Visual Verification Invariant:**
    - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$).
+   - **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
    - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
    - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
 13. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**

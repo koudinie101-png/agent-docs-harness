@@ -14,12 +14,12 @@ kanban-plugin: basic
 ## ⏳ В работе (In Progress)
 
 - [ ] [[Plans/PLAN-020-asset-storage-hardening-and-layout-linting|План: Фаза 20 — Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии]] #plan #phase20 #assets #ui-ux #lint
-  - [ ] [[Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` #task #phase20 #installer #templates #agents
   - [ ] [[Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`) #task #phase20 #installer #e2e #spec
 
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` (2026-10-16) #task #phase20 #installer #templates #agents
 - [x] [[Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py` (2026-10-15) #task #phase20 #lint #assets
 - [x] [[Plans/PLAN-019-engineering-gates-and-tech-debt-governance|План: Фаза 19 — Инженерные барьеры качества и контроль техдолга]] (2026-10-15) #plan #phase19 #quality-gates #tech-debt
   - [x] [[Specs/19_EngineeringGates/TASK-078-bundling-e2e-tests-and-living-spec|TASK-078]]: Синхронизация `install.py`, сборка монолита через `build_installer.py`, E2E тесты и актуализация Living Spec (2026-10-15) #task #phase19 #installer #e2e #spec

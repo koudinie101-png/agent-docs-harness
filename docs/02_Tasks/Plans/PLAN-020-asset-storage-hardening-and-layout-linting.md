@@ -89,7 +89,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
   * Реализация `check_asset_layout(docs_dir: Path)` с проверкой `VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}`, проверкой пространств `TASK-XXX/` внутри `mockups/` и выводом `WARN`.
   * Устранение ложноположительного fallback'а `elif link_name in file_map:` для медиа-ссылок с разделителями пути (`/` или `\`) в `run_linter()`.
   * Модульные тесты `test_kb_lint.py` на детекцию «диких» папок в `docs/assets/` и коллизии одноименных файлов `tobe.svg` в разных директориях `TASK-XXX/`.
-- [ ] [[../Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md`
+- [x] [[../Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` (2026-10-16)
   * Обновление `UI_Design_System.md` в `create_starter_docs()` (`install.py`) с правилами `TASK-XXX/`, `asis.svg` / `tobe.svg`, `mockups/flows/TASK-XXX/` и префиксами `<surface>_`.
   * Обновление `docs/00_Templates/TEMPLATE_TASK.md`, `AGENTS.md`, `GEMINI.md` и встроенных генераторов правил в `install.py`.
 - [ ] [[../Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`)

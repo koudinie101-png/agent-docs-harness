@@ -42,6 +42,11 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 - [ ] Автотесты: `<!-- команда запуска тестов, 100% pass -->`
 - [ ] Проверка: `<!-- шаг ручной/интеграционной проверки -->`
 
+### Visual DoD (для задач с GUI/TUI):
+- [ ] Фиксация скриншота: `docs/assets/screenshots/<target>/TASK-XXX.png` (лимит $\le 2\text{ MB}$).
+- [ ] *Headless/CLI Fallback (при отсутствии дисплея):* макет в `docs/assets/mockups/<target>/TASK-XXX/tobe.svg` (`asis.svg`) и слот в отчете:  
+  `![Скриншот](../../assets/screenshots/<target>/TASK-XXX.png) <!-- Вставьте скриншот через Ctrl+V в Obsidian -->`
+
 * **Замеры $\ge 3$ прогонов (без холодного старта):** фиксировать команду, среду и среднее ($\bar{X}$).
 
 ## 5. Критерии готовности (DoD)

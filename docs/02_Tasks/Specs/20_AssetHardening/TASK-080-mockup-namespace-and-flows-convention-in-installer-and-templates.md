@@ -1,7 +1,7 @@
 ---
 id: TASK-080
 title: "Стандартизация TASK-XXX/ для макетов и конвенции mockups/flows/ в install.py, шаблонах и правилах агентов"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 20
 component:
@@ -10,7 +10,7 @@ component:
   - agent-rules
 parent_plan: "[[../../Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]"
 created: 2026-10-15
-updated: 2026-10-15
+updated: 2026-10-16
 tags:
   - task/spec
   - phase20
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-080 — Стандартизация TASK-XXX/ для макетов и конвенции mockups/flows/ в install.py, шаблонах и правилах агентов
 
-> **ID:** TASK-080 | **Статус:** В работе  
+> **ID:** TASK-080 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 20 | **План:** [[../../Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../../../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]]
 
@@ -82,16 +82,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Контроль бюджета шаблонов: `python -c "from pathlib import Path; s = sum(p.stat().st_size for p in Path('docs/00_Templates').glob('*.md')); print(s); assert s <= 28672"` (Exit code 0).
-- [ ] Автотесты: `pytest` (Exit code 0, 100% pass).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0).
+- [x] Сборка: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Контроль бюджета шаблонов: `python -c "from pathlib import Path; s = sum(p.stat().st_size for p in Path('docs/00_Templates').glob('*.md')); print(s); assert s <= 28672"` (Exit code 0).
+- [x] Автотесты: `pytest` (Exit code 0, 100% pass).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код и шаблоны обновлены строго по ТЗ без заглушек.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код и шаблоны обновлены строго по ТЗ без заглушек.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

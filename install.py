@@ -203,7 +203,7 @@ _RULES_BODY = ("## Docs-as-Code (20 Disciplines)\n"
     "17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.\n"
     "18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.\n"
     "19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.\n"
-    "20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).\n")
+    "20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated), store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).\n")
 
 
 def _rules(doc_lang: str) -> str:
@@ -233,7 +233,7 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.\n"
         f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
         f"6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.\n"
-        f"7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store screenshots in `docs/assets/screenshots/<target>/` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.\n"
+        f"7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and screenshots in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.\n"
         f"8. **Tech Debt Governance (P1/P2 vs P3):** Fix P1/P2 immediately; log P3 in `docs/02_Tasks/TechDebt.md` (never refactor opportunistically).\n"
         f"9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.\n"
         f"10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` (never hanging TODOs); verify benchmarks with >= 3 runs.\n"
@@ -305,6 +305,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 ## 🎨 7. The 4-State UI & Visual Verification Invariant
 
 - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size <= 2 MB).
+- **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
 - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
 - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
 
@@ -887,6 +888,14 @@ tags:
 2. **Loading State:** состояние ожидания ответа узла/сети (спиннер, скелетон).
 3. **Error State:** сбой транспорта, таймаут, отказ в правах доступа + кнопка повтора.
 4. **Populated State:** штатное отображение активных данных.
+
+---
+
+## 4. Организация макетов и визуальных артефактов (Asset Taxonomy)
+* **Пространства имен задач (`TASK-XXX/`):** все проектные макеты группируются в подкаталоги задач:
+  * Платформенные макеты: `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`).
+  * Кросс-девайсные сценарии (для multi-target): `docs/assets/mockups/flows/TASK-XXX/`.
+* **Финальные скриншоты верификации (Visual DoD):** `docs/assets/screenshots/<target>/TASK-XXX.png` (и `docs/assets/screenshots/multi-device/TASK-XXX.png`).
 """
             ds_path.write_text(ds_content, encoding="utf-8")
 
