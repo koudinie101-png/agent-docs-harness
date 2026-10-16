@@ -923,9 +923,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints)
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups)
             self.assertLessEqual(total_skills_size, 30000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 30000)")
-            self.assertLessEqual(total_templates_size, 28000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 28000)")
+            self.assertLessEqual(total_templates_size, 30000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 30000)")
 
             # Micro-benchmarks for critical files
             onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
