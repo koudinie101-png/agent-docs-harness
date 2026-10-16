@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.0] - 2026-10-16
+
+### Added
+- **Asset Storage Hardening & Layout Linting** (PLAN-020, ADR-0027, RESEARCH-022, TASK-079–TASK-081):
+  - Task-scoped mockup namespaces `docs/assets/mockups/<target>/TASK-XXX/` and cross-device user flows directory `docs/assets/mockups/flows/TASK-XXX/` to eliminate redesign drift (To-Be Drift) and asset collisions.
+  - Standardized As-Is / To-Be mockup lifecycle (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) across UI design systems, templates (`TEMPLATE_TASK.md`), and canonical agent rules (`AGENTS.md`, `GEMINI.md`, etc.).
+  - Topology and layout validator `check_asset_layout()` in `scripts/kb_lint.py` enforcing canonical root directories under `docs/assets/` (`screenshots/`, `mockups/`, `diagrams/`, `design/`).
+  - Strict relative path resolution for Markdown media references (`![alt](../../assets/...)`) in `scripts/kb_lint.py`, preventing false-positive resolution of identically named files across sibling folders.
+  - Synchronized installer scaffolding in `install.py`, including `mockups/flows/` and comprehensive section 4 in `UI_Design_System.md`.
+  - Comprehensive E2E test `test_ui_harness_task_scoped_mockup_taxonomy_and_asset_layout_lint` in `tests/test_installer.py`.
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (159.9 KB / 163745 bytes) with updated templates, skills, rules, and layout linter.
+
 ## [0.19.0] - 2026-10-15
 
 ### Added

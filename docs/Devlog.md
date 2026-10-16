@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-15
+updated: 2026-10-16
 tags:
   - devlog
   - journal
@@ -15,6 +15,24 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-10-16] — Выпуск официального релиза v0.20.0: Стандартизация хранилища визуальных ассетов и валидация топологии (Фаза 20)
+- **Что сделано:**
+  - Осуществлен официальный релиз [[02_Tasks/Releases/RELEASE-v0.20.0|v0.20.0]] по завершении Фазы 20 (План [[02_Tasks/Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]).
+  - Сформирован релизный документ [[02_Tasks/Releases/RELEASE-v0.20.0|RELEASE-v0.20.0]] и публичные заметки `dist/RELEASE_NOTES.md` по стандарту High-SNR с автоконвертацией викиссылок для GitHub Releases.
+  - Собраны и проверены релизные артефакты через хук `scripts/build_release.py`:
+    - `dist/install.py` (159.9 KB / 163 745 байт) — SHA-256: `76737116ad8b896a1c16e43938005e96eb15315e4b6ce9e7f0bf709b4b9caca2`.
+  - Скорректирован бенчмарк-порог суммарного размера шаблонов `total_templates_size` с 28 000 до 30 000 байт в `tests/test_installer.py` для 16 шаблонов с учетом Visual DoD и пространств имен макетов.
+  - Актуализирован `CHANGELOG.md` (секция `[0.20.0]`) и `Roadmap.md` (отметка Фазы 20 как `Завершена`).
+  - Опубликован GitHub Release и зафиксирован Git-тег `v0.20.0`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 0 битых связей, 0 ошибок (Exit code 0).
+  - `python -m unittest discover -s tests` -> 115/115 тестов успешно пройдено (100% Pass, Exit code 0).
+  - Контрольная сумма SHA-256 подтверждена (`76737116ad8b896a1c16e43938005e96eb15315e4b6ce9e7f0bf709b4b9caca2`).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Выбор следующей инициативы из Дорожной карты (Icebox) через `/kb-research` или `/kb-plan`.
+
+---
 
 ### [2026-10-16] — Реализация TASK-081: Сквозные E2E-тесты в tests/test_installer.py, пересборка бандла install.py и синхронизация Living Spec
 - **Что сделано:**

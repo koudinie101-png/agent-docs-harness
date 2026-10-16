@@ -260,10 +260,11 @@ tags:
 
 ---
 
-## Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting) — ✅ Готово (2026-10-16)
+## Фаза 20: Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии (Asset Storage Hardening & Layout Linting) — ✅ Завершена
 **Цель:** Устранить «дрифт редизайнов» (To-Be Drift) и перезапись макетов за счет пространств имен `docs/assets/mockups/<target>/TASK-XXX/` и сквозных сценариев `docs/assets/mockups/flows/TASK-XXX/`, стандартизировать жизненный цикл `As-Is / To-Be` (`asis.svg`, `tobe.svg`), исправить ложноположительное разрешение путей одноименных медиафайлов в `scripts/kb_lint.py` и внедрить механическую проверку топологии `check_asset_layout()`.  
 **Первоисточник плана:** [[Plans/PLAN-020-asset-storage-hardening-and-layout-linting|PLAN-020]]  
-**Нормативная база:** [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] | **Источник:** [[Inbox/FB-GH-5|FB-GH-5]]
+**Нормативная база:** [[../04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022]], [[../03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027]] | **Источник:** [[Inbox/FB-GH-5|FB-GH-5]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.20.0|RELEASE-v0.20.0]]
 
 - [x] [[Specs/20_AssetHardening/TASK-079-asset-layout-lint-and-strict-media-resolution|TASK-079]]: Механический контроль топологии `docs/assets/` (`check_asset_layout()`) и строгая резолюция относительных путей медиа-ссылок в `scripts/kb_lint.py` (2026-10-15).
 - [x] [[Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` (2026-10-16).
