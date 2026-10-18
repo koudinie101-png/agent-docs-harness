@@ -28,7 +28,7 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
 5. **Living Spec Sync:**
    - If task or fix modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same session.
 6. **Tech Debt Migration (DEBT-XXX):**
-   - For a task tagged `#techdebt`, move its resolved `DEBT-XXX` row from `## 📋 Открытый технический долг (Active P3 Debt)` to `## ✅ Погашенный технический долг (Resolved Debt)` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
+   - In `docs/02_Tasks/TechDebt.md`, for a task tagged `#techdebt`, move its resolved `DEBT-XXX` row from `## 📋 Открытый технический долг (Active P3 Debt)` to `## ✅ Погашенный технический долг (Resolved Debt)` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
 7. **Defect Loop Reflection:**
    - Если возникли процедурные ошибки, падения тестов или сбои:
      * Оформить отчет `docs/06_Memory/Incidents/INC-XXX-<slug>.md` (`TEMPLATE_INCIDENT.md`).

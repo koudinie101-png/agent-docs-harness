@@ -341,12 +341,12 @@ Once installed, your workflow is seamless:
     * Двухуровневый контур процедурной памяти (`docs/06_Memory/`): жестко лимитированный индекс систематических ошибок `patterns.md` ($\le 15$ активных записей) и архив инцидентов `Incidents/` с обязательной проверкой `Memory-First` перед реализацией.
 11. **The 4-State UI & Visual Verification Invariant:**
     * Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$) ([ADR-0026](docs/03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management.md)). Project mockups are isolated in task-scoped namespaces `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows `docs/assets/mockups/flows/TASK-XXX/` ([ADR-0027](docs/03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting.md)), with non-blocking topology linting (`check_asset_layout()`) in `kb_lint.py`. Ephemeral test snapshots in `tmp/ui_snapshots/` are barred from git tracking.
-12. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**
-    * Findings from code reviews are strictly triaged into critical blockers (P1/P2 — resolved immediately) and non-blocking debt (P3 — strictly prohibited from opportunistic fixing; recorded in `docs/02_Tasks/TechDebt.md`).
+12. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):**
+    * Findings from code reviews are strictly triaged into critical blockers (P1/P2 — resolved immediately) and non-blocking debt (P3 — strictly prohibited from opportunistic fixing). `docs/02_Tasks/TechDebt.md` is the mandatory SSOT registry for all `P3` debt (`DEBT-XXX`); planned `#techdebt` refactoring is registered in `Active P3 Debt` during planning/spec, and migrated to `Resolved Debt` at completion (`/kb-complete`).
 13. **Prior-Art Gate Invariant:**
     * Mandatory inspection of existing modules and standard libraries before designing new abstractions to eliminate wheel reinvention.
-14. **Traceable Backlog Tags (`// ROADMAP-<ID>`):**
-    * Untracked, hanging `TODO`/`FIXME` comments without roadmap linkage are strictly prohibited.
+14. **Traceable Backlog Tags (`// ROADMAP-<ID>` and `// DEBT-XXX`):**
+    * Untracked, hanging `TODO`/`FIXME` comments without roadmap/debt linkage are strictly prohibited.
 15. **Benchmark Persistence («Замер = артефакт»):**
     * All performance and token claims must be verified via $\ge 3$ reproducible runs with cold-start discard and persistent environment documentation.
 16. **GUI Acceptance Checklist («UI не лжёт»):**

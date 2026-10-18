@@ -923,8 +923,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups)
-            self.assertLessEqual(total_skills_size, 30000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 30000)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups + Phase 21 tech-debt lifecycle)
+            self.assertLessEqual(total_skills_size, 31000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 31000)")
             self.assertLessEqual(total_templates_size, 30000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 30000)")
 
             # Micro-benchmarks for critical files
@@ -934,9 +934,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 165 KB for Phase 19 with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates)
+            # Installer size check (budget <= 170 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 165000, f"install.py exceeded budget: {installer_size} bytes (budget <= 165 KB)")
+            self.assertLessEqual(installer_size, 170000, f"install.py exceeded budget: {installer_size} bytes (budget <= 170 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -1620,7 +1620,7 @@ class TestAgentDocsHarness(unittest.TestCase):
         agents_content = install.generate_agents_md("TaxonomyApp", "generic", "ru")
         self.assertIn("### 🎨 Obsidian Graph & Taxonomy", agents_content)
         self.assertIn("Visual graph taxonomy is configured in `.obsidian/graph.json`", agents_content)
-        self.assertIn("`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`", agents_content)
+        self.assertIn("`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`", agents_content)
         self.assertNotIn("⚪ White / Light", agents_content)
         self.assertNotIn("🟣 Purple", agents_content)
         self.assertNotIn("Color / Category", agents_content)
@@ -2285,9 +2285,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertTrue(agents_file.is_file())
             agents_text = agents_file.read_text(encoding="utf-8")
             self.assertIn("Prior-Art Gate Invariant", agents_text)
-            self.assertIn("Traceable Backlog Tags (// ROADMAP-<ID>)", agents_text)
+            self.assertIn("Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)", agents_text)
             self.assertIn("Benchmark Persistence («Замер = артефакт»)", agents_text)
-            self.assertIn("Tech Debt Governance & Review Triage (P1/P2 vs P3)", agents_text)
+            self.assertIn("Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)", agents_text)
 
             # 4. Check adapter rules (GEMINI.md) have the new rules
             gemini_file = target / "GEMINI.md"
@@ -2391,6 +2391,82 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res_broken.returncode, 1, "Broken relative media link must fail with exit code 1!")
             self.assertIn("target not found", res_broken.stdout)
 
+    def test_tech_debt_end_to_end_lifecycle_and_lint_cross_check(self):
+        """Verifies Phase 21 (ADR-0028): TechDebt.md SSOT rules, skills, graph.json #techdebt, and kb_lint cross-check."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "TechDebtApp"
+            target.mkdir()
+            install.install_harness(
+                target_dir=target,
+                project_name="TechDebtApp",
+                stack_key="generic",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # 1. Generated AGENTS.md contains DEBT-XXX lifecycle, #techdebt, and Resolved Debt
+            agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("DEBT-XXX", agents_text)
+            self.assertIn("#techdebt", agents_text)
+            self.assertIn("Resolved Debt", agents_text)
+
+            # 2. docs/.obsidian/graph.json contains tag:#techdebt
+            graph = json.loads((target / "docs" / ".obsidian" / "graph.json").read_text(encoding="utf-8"))
+            self.assertTrue(any("techdebt" in g.get("query", "") for g in graph.get("colorGroups", [])))
+
+            # 3. Deployed skills reference TechDebt.md
+            kb_plan = (target / ".agents" / "skills" / "kb-plan" / "SKILL.md").read_text(encoding="utf-8")
+            kb_complete = (target / ".agents" / "skills" / "kb-complete" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("TechDebt.md", kb_plan)
+            self.assertIn("TechDebt.md", kb_complete)
+
+            # 4. Deployed templates reference TechDebt
+            index_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_INDEX.md").read_text(encoding="utf-8")
+            onboard_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_ONBOARDING.md").read_text(encoding="utf-8")
+            self.assertIn("TechDebt", index_tpl)
+            self.assertIn("TechDebt", onboard_tpl)
+
+            # 5. Deployed kb_lint cross-check: #techdebt spec + empty registry -> WARN (exit 0);
+            #    after registering DEBT-001 -> no warning.
+            deployed_lint = target / "scripts" / "kb_lint.py"
+            docs_dir = target / "docs"
+            spec_dir = docs_dir / "02_Tasks" / "Specs" / "21_TechDebt"
+            spec_dir.mkdir(parents=True, exist_ok=True)
+            spec_path = spec_dir / "TASK-100.md"
+            spec_path.write_text(
+                "---\nid: TASK-100\ntitle: Tech Debt Task\nstatus: in-progress\ntype: task\nphase: 21\nparent_plan: PLAN-021\ncreated: 2026-10-18\ntags:\n  - techdebt\n---\n# TASK-100\nRefactor something.\n",
+                encoding="utf-8",
+            )
+
+            res = subprocess.run(
+                [sys.executable, str(deployed_lint), "--path", str(docs_dir)],
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+            )
+            self.assertEqual(res.returncode, 0)
+            self.assertIn("WARN:", res.stdout)
+            self.assertIn("TASK-100", res.stdout)
+
+            # Register DEBT-001 in the Active P3 Debt table and reference it from the spec
+            techdebt = docs_dir / "02_Tasks" / "TechDebt.md"
+            content = techdebt.read_text(encoding="utf-8")
+            debt_row = "| DEBT-001 | P3 | core.py | Refactor regex | [[00_Index]] | 2026-10-18 | open |\n"
+            content = content.replace(
+                "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n\n---\n\n## ✅",
+                f"| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n{debt_row}\n---\n\n## ✅",
+            )
+            techdebt.write_text(content, encoding="utf-8")
+            spec_path.write_text(
+                "---\nid: TASK-100\ntitle: Tech Debt Task\nstatus: in-progress\ntype: task\nphase: 21\nparent_plan: PLAN-021\ncreated: 2026-10-18\ntags:\n  - techdebt\n---\n# TASK-100\nResolves DEBT-001 refactor.\n",
+                encoding="utf-8",
+            )
+
+            res2 = subprocess.run(
+                [sys.executable, str(deployed_lint), "--path", str(docs_dir)],
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+            )
+            self.assertEqual(res2.returncode, 0)
+            self.assertNotIn("WARN:", res2.stdout)
 
 
 if __name__ == "__main__":

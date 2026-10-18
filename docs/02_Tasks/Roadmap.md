@@ -272,14 +272,14 @@ tags:
 
 ---
 
-## Фаза 21: Сквозной жизненный цикл технического долга и кросс-режимная синхронизация (Tech Debt Lifecycle & Cross-Mode Sync) — ⏳ В разработке
+## Фаза 21: Сквозной жизненный цикл технического долга и кросс-режимная синхронизация (Tech Debt Lifecycle & Cross-Mode Sync) — ✅ Завершена
 **Цель:** Замкнуть сквозной жизненный цикл технического долга (`DEBT-XXX`) во всех режимах разработки (`/kb-plan`, `/kb-task`, `/kb-triage`, `/kb-complete`), разрешить кодовые комментарии `// DEBT-XXX` наравне с `// ROADMAP-<ID>`, унифицировать канонический тег `#techdebt` в таксономии/шаблонах и добавить семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` в `scripts/kb_lint.py`.  
 **Первоисточник плана:** [[Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]  
 **Нормативная база:** [[../04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023]], [[../03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]
 
 - [x] [[Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py`.
 - [x] [[Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py`.
-- [ ] [[Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`).
+- [x] [[Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`).
 
 ---
 

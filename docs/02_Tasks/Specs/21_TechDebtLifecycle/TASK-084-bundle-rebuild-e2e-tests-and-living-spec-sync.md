@@ -1,7 +1,7 @@
 ---
 id: TASK-084
 title: "Сборка монолита build_installer.py, E2E тестирование в tests/test_installer.py и синхронизация Living Spec (SPEC.md, README.md, Onboarding.md)"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 21
 component:
@@ -10,7 +10,7 @@ component:
   - docs
 parent_plan: "[[../../Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]"
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-18
 tags:
   - task/spec
   - phase21
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-084 — Сборка монолита build_installer.py, E2E тестирование в tests/test_installer.py и синхронизация Living Spec
 
-> **ID:** TASK-084 | **Статус:** В работе (Режим 2)  
+> **ID:** TASK-084 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 21 | **План:** [[../../Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023]], [[../../../03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]
 
@@ -79,16 +79,16 @@ def test_tech_debt_end_to_end_lifecycle_and_lint_cross_check(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Пересборка бандла: `py -3 scripts/build_installer.py` (Exit code 0).
-- [ ] Компиляция: `py -3 -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Полный прогон тестов: `py -3 -m unittest discover -s tests` (Exit code 0, 100% pass).
-- [ ] Проверка базы знаний: `py -3 scripts/kb_lint.py --path Docs-As-Code` (0 broken links в `Docs-As-Code`).
+- [x] Пересборка бандла: `py -3 scripts/build_installer.py` (Exit code 0).
+- [x] Компиляция: `py -3 -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Полный прогон тестов: `py -3 -m unittest discover -s tests` (Exit code 0, 100% pass).
+- [x] Проверка базы знаний: `py -3 scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Автономный бандл `install.py` пересобран и проверен E2E-тестами.
-- [ ] Документация `SPEC.md`, `README.md`, `Onboarding.md` синхронизирована (Living Spec).
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`), Плане (`PLAN-021`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Автономный бандл `install.py` пересобран и проверен E2E-тестами.
+- [x] Документация `SPEC.md`, `README.md`, `Onboarding.md` синхронизирована (Living Spec).
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`), Плане (`PLAN-021`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

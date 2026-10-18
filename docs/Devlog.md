@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Реализация TASK-084: Пересборка монолита, E2E-тесты и синхронизация Living Spec (Финал Фазы 21)
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]] — финальная задача Фазы 21:
+    1. Пересобран автономный монолит `install.py` через `scripts/build_installer.py` (166.2 KB) — упакованы обновлённые `scripts/kb_lint.py`, 12 скиллов и 16 шаблонов.
+    2. Добавлен E2E-тест `test_tech_debt_end_to_end_lifecycle_and_lint_cross_check` в `tests/test_installer.py` (5 инвариантов: `AGENTS.md` `DEBT-XXX`/`#techdebt`/`Resolved Debt`, `tag:#techdebt` в graph.json, `TechDebt.md` в скиллах, ссылка в шаблонах, WARN-кросс-чек `kb_lint.py`).
+    3. Актуализированы бенчмарк-пороги в `tests/test_installer.py` (скиллы 30 000 → 31 000 б, монолит 165 → 170 KB) и ассершены `#techdebt`/`// DEBT-XXX` в test_24/test_28.
+    4. Living Spec синхронизирован: `SPEC.md` (Фаза 21, инварианты Правил 13/15, кросс-чек kb_lint), `README.md` (правила 12/14) и `docs/Onboarding.md` (цикл `Active P3 Debt -> Plan/Task -> Resolved Debt`).
+  - **Фаза 21 официально закрыта!** Все 3 задачи (TASK-082, TASK-083, TASK-084) выполнены.
+- **Результаты верификации:**
+  - `py -3 scripts/build_installer.py` -> Exit code 0 (166.2 KB).
+  - `py -3 -m py_compile install.py scripts/*.py` -> Exit code 0.
+  - `py -3 -m unittest discover -s tests` -> 119/119 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `py -3 scripts/kb_lint.py --path docs` -> 216 файлов, 1982 викиссылки, 0 битых (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Выпуск релиза v0.21.0 через `/kb-release 0.21.0`.
+
+---
+
 ### [2026-10-18] — Реализация TASK-083: Сквозной цикл DEBT-XXX в скиллах, правилах AGENTS.md, шаблонах и install.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]] — вторая задача Фазы 21 ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]):

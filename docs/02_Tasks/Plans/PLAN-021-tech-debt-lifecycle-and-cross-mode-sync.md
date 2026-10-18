@@ -63,14 +63,14 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] [[../Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py`
+- [x] [[../Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py`
   * Поддержка `r'(?:ROADMAP-[A-Za-z0-9_-]+|DEBT-\d{3,})'` в `check_untracked_todos()`.
   * Предупреждение (`WARN`) в `check_tech_debt_integrity()` при наличии планов/задач с `#techdebt` без привязки к `DEBT-XXX` или при пустом `TechDebt.md`.
   * Модульные тесты в `tests/test_kb_lint.py`.
-- [ ] [[../Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py`
+- [x] [[../Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py`
   * Обновление `AGENTS.md` (Правила 4, 13, 15 и шапка `02_Tasks/`), `GEMINI.md`, `.clinerules` и `.obsidian/graph.json` (`tag:#techdebt`).
   * Интеграция `TechDebt.md` в скиллы `kb-plan`, `kb-task`, `kb-triage`, `kb-complete`, `kb-lint`, шаблоны `TEMPLATE_INDEX.md`, `TEMPLATE_ONBOARDING.md` и генераторы `install.py`.
-- [ ] [[../Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`)
+- [x] [[../Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`)
   * Пересборка `install.py` через `scripts/build_installer.py`, E2E тесты в `tests/test_installer.py` и актуализация `SPEC.md`, `README.md`, `Onboarding.md`.
 
 ---
