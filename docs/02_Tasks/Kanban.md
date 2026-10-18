@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-024-symbolic-scope-and-task-contracts|План: Фаза 25 — Символьные контракты скоупа задач (Symbolic Scope)]] #plan #phase25 #symbolic-scope #task-spec #templates #lint
+
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)

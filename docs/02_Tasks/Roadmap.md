@@ -324,6 +324,17 @@ tags:
 
 ---
 
+## Фаза 25: Символьные контракты скоупа задач и защита от дрейфа строк (Symbolic Scope & Line Drift Prevention) — 🟡 В работе
+**Цель:** Заменить плоский список файлов в спецификациях задач иерархическим контрактом `Файл → символ/метод → изменение`, запретить номера строк как ориентир, дать Режиму 3 устойчивую локализацию по именам символов и неблокирующий контроль в `scripts/kb_lint.py` без выхода за бюджеты High-SNR.  
+**Первоисточник плана:** [[Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]]  
+**Нормативная база:** [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]]
+
+- [ ] `TASK-094`: Символьный контракт в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` (обе копии), Tier 1 source-guard тест и замер бюджетов.
+- [ ] `TASK-095`: Поведение `/kb-task` и `/kb-implement`, `check_symbolic_scope()` в `scripts/kb_lint.py` и unit-тесты.
+- [ ] `TASK-096`: Пересборка `install.py` / `dist/install.py`, E2E свежей установки и `--update`, Living Spec Sync.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -335,7 +346,6 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
-* 💡 **Символьные контракты скоупа задач и шаблоны спецификаций (Symbolic Scope & Fine-Grained Change Contracts):** внедрение иерархического контракта `Файл -> Символ/Метод -> Изменение` в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` взамен плоского списка файлов, исключение антипаттерна Line Drift и синхронизация в `install.py` — [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]].
 
 
 ---
