@@ -12,6 +12,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — очистка устаревшего Icebox в Kanban.md (2026-10-18) #task #fast-track #techdebt #phase26
+
 ## ✅ Готово (Done)
 
 - [x] [[Plans/PLAN-024-symbolic-scope-and-task-contracts|План: Фаза 25 — Символьные контракты скоупа задач (Symbolic Scope)]] (2026-10-18) #plan #phase25 #symbolic-scope #task-spec #templates #lint
