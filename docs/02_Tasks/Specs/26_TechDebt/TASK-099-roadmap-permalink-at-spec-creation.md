@@ -1,7 +1,7 @@
 ---
 id: TASK-099
 title: "Пермалинк спеки в Roadmap при /kb-task"
-status: planned
+status: done
 type: fast-track
 phase: 26
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # ⚡ Спецификация (Fast-Track): TASK-099 — Пермалинк спеки в Roadmap
 
-> **Тип:** Fast-Track (≤ 30 LOC) | **Статус:** К реализации  
+> **Тип:** Fast-Track (≤ 30 LOC) | **Статус:** Выполнено (Режим 3)
 > **Фаза:** 26 | **Канбан:** [[../../Kanban|Канбан-доска]]
 
 ---
@@ -81,18 +81,18 @@ python scripts/build_installer.py
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Tier 1 source-guard: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_and_state_aware_skill_guards` → OK.
-- [ ] Синтаксис: `python -m py_compile tests/test_installer.py` → Exit code 0.
-- [ ] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py`; размер ≤ 176 000 B.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **165 тестов OK**; бюджеты `test_16` зелёные.
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок.
-- [ ] `git diff --check` → без trailing whitespace.
-- [ ] 4-State UI / скриншоты: не применимо.
-- [ ] Замеры $\ge 3$ прогонов: не применимо (статические байтовые бюджеты).
+- [x] Tier 1 source-guard: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_and_state_aware_skill_guards` → OK.
+- [x] Синтаксис: `python -m py_compile tests/test_installer.py` → Exit code 0.
+- [x] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py` = **175 195 B** (≤ 176 000).
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **165 тестов OK**; бюджеты `test_16` зелёные (скиллы **30 912 B** ≤ 31 000).
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок.
+- [x] `git diff --check` → без trailing whitespace.
+- [x] 4-State UI / скриншоты: не применимо.
+- [x] Замеры $\ge 3$ прогонов: не применимо (статические байтовые бюджеты).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `/kb-task` содержит правило пермалинка и staging Roadmap; повторный запуск не дублирует ссылку.
-- [ ] Tier 1 source-guard расширен и зелёный; полный suite (165) и `kb_lint` зелёные.
-- [ ] Бандл пересобран, `install.py` ≡ `dist/install.py`, бюджет ≤ 176 000 B; скиллы ≤ 31 000 B.
-- [ ] Статус обновлён в Kanban, Roadmap и Devlog.
+- [x] `/kb-task` содержит правило пермалинка и staging Roadmap; повторный запуск не дублирует ссылку.
+- [x] Tier 1 source-guard расширен и зелёный; полный suite (165) и `kb_lint` зелёные.
+- [x] Бандл пересобран, `install.py` ≡ `dist/install.py` = 175 195 B ≤ 176 000 B; скиллы 30 912 B ≤ 31 000 B.
+- [x] Статус обновлён в Kanban, Roadmap и Devlog.

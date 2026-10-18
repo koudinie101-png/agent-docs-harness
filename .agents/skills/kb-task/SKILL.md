@@ -25,10 +25,11 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
    - Define explicit **Verification Plan** (compilation commands, automated test suites, manual verification).
    - Define **Definition of Done (DoD)**.
    - If the spec carries the `#techdebt` tag: link its `DEBT-XXX` from `docs/02_Tasks/TechDebt.md` (register the row first if missing).
-5. **Update Kanban:**
+5. **Update Kanban & Roadmap:**
    - Move or add task card in `docs/02_Tasks/Kanban.md` to `## ⏳ В работе (In Progress)`.
+   - In `docs/02_Tasks/Roadmap.md`, replace the plain `TASK-XXX` item in the target phase with `[[Specs/<Phase_Folder>/TASK-XXX-<slug>|TASK-XXX]]`, keeping `[ ]`; `/kb-complete` flips it to `[x]`. If no phase line exists, do not invent a phase — report it.
 6. **Git Sync (Conditional):**
-   - Stage: `git add docs/02_Tasks/Specs/ docs/02_Tasks/Kanban.md`
+   - Stage: `git add docs/02_Tasks/Specs/ docs/02_Tasks/Kanban.md docs/02_Tasks/Roadmap.md`
    - Commit: `git commit -m "docs(spec): add TASK-XXX <slug> and set in-progress"`
    - Push if remote origin exists.
 7. **Terminal Step (Stop & Yield Control):** Output Anti-Echo response, suggest next command (`/kb-implement TASK-XXX`), and strictly STOP all tool calls. Wait for user command.

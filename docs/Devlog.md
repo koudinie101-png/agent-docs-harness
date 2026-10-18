@@ -16,6 +16,16 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-099: /kb-task добавляет пермалинк спеки в Roadmap
+- **Что сделано:**
+  - [[02_Tasks/Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]: `.agents/skills/kb-task/SKILL.md` — шаг 5 теперь `Update Kanban & Roadmap`: подставляет `[[Specs/...|TASK-XXX]]` в строку фазы, сохраняя `[ ]`; `/kb-complete` меняет на `[x]`. Staging Roadmap добавлен.
+  - Tier 1 source-guard в `tests/test_installer.py` расширен маркерами `Roadmap.md` и формата ссылки.
+  - `install.py` / `dist/install.py` пересобраны: **175 195 B**, идентичны; скиллы **30 912 B** (≤ 31 000), бюджет install ≤ 176 000.
+- **Проверка:**
+  - Source-guard OK; `py_compile` — 0; полный suite — **165 тестов OK**; `kb_lint` — 0 битых; `git diff --check` чистый.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-100` — DEBT-001; теперь пермалинк должен появиться автоматически по новому правилу.
+
 ### [2026-10-18] — TASK-098: харденинг CI-гейта Rules Check, закрыт DEBT-002
 - **Что сделано:**
   - [[02_Tasks/Specs/26_TechDebt/TASK-098-rules-check-ci-hardening|TASK-098]]: `.github/workflows/rules-check.yml` — `permissions: contents: read`, `concurrency`/`cancel-in-progress`, `push.branches: ['**']` (без тегов), `pull_request.branches: [main]`, шаг `kb_lint`, тесты с `-q`.

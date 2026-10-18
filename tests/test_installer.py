@@ -1201,6 +1201,8 @@ class TestAgentDocsHarness(unittest.TestCase):
 
         self.assertIn("nested symbols", task_skill)
         self.assertIn("ADR-0029", task_skill)
+        self.assertIn("Roadmap.md", task_skill)
+        self.assertIn("[[Specs/<Phase_Folder>/TASK-XXX-<slug>|TASK-XXX]]", task_skill)
         self.assertIn("symbol names", impl_skill)
         self.assertIn("ADR-0029", impl_skill)
         for marker in ("State-Aware", "only if its spec exists", "/kb-task TASK-YYY", "<next command>", "Stop & Yield Control"):
