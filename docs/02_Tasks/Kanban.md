@@ -12,9 +12,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — очистка устаревшего Icebox в Kanban.md (2026-10-18) #task #fast-track #techdebt #phase26
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — очистка устаревшего Icebox в Kanban.md (2026-10-18) #task #fast-track #techdebt #phase26
 
 - [x] [[Plans/PLAN-024-symbolic-scope-and-task-contracts|План: Фаза 25 — Символьные контракты скоупа задач (Symbolic Scope)]] (2026-10-18) #plan #phase25 #symbolic-scope #task-spec #templates #lint
 - [x] [[Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: Пересборка бандла, E2E и Living Spec Sync (2026-10-18) #task #phase25 #symbolic-scope #installer #e2e #spec
@@ -171,8 +171,6 @@ kanban-plugin: basic
 
 ## 💡 Идеи и гипотезы (Icebox / Future Ideas)
 
-- [ ] Семантический контроль фаз в kb_lint.py: валидация соответствия phase: N, структуры папок 0N_... и тегов #phaseN в frontmatter и Kanban.md (неблокирующие предупреждения) #idea #tooling
-- [ ] Адаптация для вайбкодеров и новичков (Chat-First DX & Protected Vibe Coding): устранение барьеров отпугивания пользователей, One-Prompt старт в чате, гайд и диалоговый ментор — [[../04_Research/RESEARCH-017-vibe-coder-dx-and-chat-first-onboarding|RESEARCH-017]], [[../03_Decisions_ADR/ADR-0022-chat-first-vibe-coder-dx-and-human-guardrails|ADR-0022]] #idea #dx #onboarding #vibe-coding
 - [ ] Конфигурации для нишевых агентов: Continue.dev (`.continue/config.json`) и Aider (`.aider.conf.yml`) #idea
 - [x] Отклонено: Web-визуализатор базы знаний (`install.py --serve`) — [[../03_Decisions_ADR/ADR-0005-rejection-of-embedded-web-visualizer|ADR-0005]] #rejected
 - [x] Отклонено: Автогенерация отчетов для руководства (PDF) — [[../03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]] #rejected

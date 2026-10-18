@@ -16,6 +16,15 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-097: закрыт DEBT-003 (устаревший Icebox в Kanban)
+- **Что сделано:**
+  - [[02_Tasks/Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: из секции Icebox в `docs/02_Tasks/Kanban.md` удалены два уже выполненных пункта — «Семантический контроль фаз» (TASK-059) и «Адаптация для вайбкодеров» (Фаза 14). Оставлены Continue/Aider и два отклонённых ADR.
+  - `DEBT-003` переведён в `Resolved Debt` со ссылкой на TASK-097.
+- **Проверка:**
+  - `git diff` — только удаление двух строк; `kb_lint` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-098` — DEBT-002 (`rules-check.yml`); спеки TASK-098 ещё нет, поэтому implement не предлагается.
+
 ### [2026-10-18] — Релиз v0.25.0: Фаза 25 (Symbolic Scope & Line Drift Prevention)
 - **Что сделано:**
   - Выпущен [[02_Tasks/Releases/RELEASE-v0.25.0|RELEASE-v0.25.0]] по завершении Фазы 25 (TASK-094–TASK-096, ADR-0029, RESEARCH-024).

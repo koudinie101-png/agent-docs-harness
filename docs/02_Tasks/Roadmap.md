@@ -340,7 +340,7 @@ tags:
 **Цель:** Закрыть открытый P3-долг после релиза v0.25.0 в согласованном порядке: DEBT-003 (устаревший Icebox в Kanban), DEBT-002 (CI-гейт `rules-check.yml`), DEBT-001 (нумерация разделов корпуса правил + golden-фикстуры).  
 **Первоисточник:** [[TechDebt|TechDebt.md (DEBT-001…DEBT-003)]]
 
-- [ ] `TASK-097`: DEBT-003 — удалить два выполненных пункта из Icebox в `Kanban.md` (fast-track).
+- [x] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — удалить два выполненных пункта из Icebox в `Kanban.md` (fast-track) (2026-10-18).
 - [ ] `TASK-098`: DEBT-002 — `rules-check.yml`: permissions/concurrency, фильтр веток, `kb_lint`, тихие логи.
 - [ ] `TASK-099`: DEBT-001 — выровнять нумерацию разделов 6–11 в `rules/AGENTS_CORE.md`, регенерировать `AGENTS.md` и golden-фикстуры.
 
