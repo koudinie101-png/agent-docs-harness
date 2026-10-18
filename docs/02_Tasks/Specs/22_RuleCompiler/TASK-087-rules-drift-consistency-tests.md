@@ -1,7 +1,7 @@
 ---
 id: TASK-087
 title: "Tier 1 тесты дрейфа правил (tests/test_rules_consistency.py): инвентарь, выводимость адаптеров и hard-proof"
-status: planned
+status: done
 type: task
 phase: 22
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-087 — Tier 1 тесты дрейфа правил
 
-> **ID:** TASK-087 | **Статус:** К реализации  
+> **ID:** TASK-087 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 22 | **План:** [[../../Plans/PLAN-022-single-source-rule-compiler|PLAN-022]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Предшественники:** [[../../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]], [[../../Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (критичное правило не живёт только в Tier 3)
@@ -42,25 +42,25 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 3. Детали реализации
 
-### 3.1. Канонический инвентарь (пин)
+### 3.1. Канонический инвентарь (пин по документам)
 
-В тесте фиксируется список `CANONICAL_RULES` — 20 дисциплин + 4 governance-правила + 4 документных блока:
+Инвентари документов различаются, поэтому пин фиксируется отдельно для каждого (уточнение, выявленное при реализации TASK-085 и зафиксированное здесь):
 
-| Группа | Идентификаторы |
-| :--- | :--- |
-| Дисциплины (20) | `SESSION-READ`, `KANBAN`, `ROADMAP`, `ADR`, `RESEARCH`, `DEVLOG`, `OBSIDIAN`, `PERMALINKS`, `REGRESSION-FIRST`, `QA-CHECKLISTS`, `GRAPH-COLORS`, `GIT-FLOW`, `SINGLE-TASK`, `ZERO-STATE`, `FEEDBACK-TRIAGE`, `HUMAN-GUARDRAILS`, `FAST-TRACK`, `ZERO-ROUNDTRIP`, `QUALITY-GATES`, `FOUR-STATE-UI` |
-| Governance (4) | `TECH-DEBT`, `PRIOR-ART`, `TRACEABLE-TAGS`, `BENCHMARKS` |
-| Документные блоки (4) | `KB-STANDARD`, `ANTI-ECHO`, `SENIOR-PARTNER`, `LIFECYCLE` |
+| Документ | Состав | Кол-во |
+| :--- | :--- | :--- |
+| `client-agents` | 20 дисциплин + 4 governance + `ANTI-ECHO`, `SENIOR-PARTNER`, `LIFECYCLE` | 27 |
+| `adapters` | компактный набор из 10 правил (подмножество клиентского) | 10 |
+| `harness-agents` | 16 принципов (включая `LIVING-SPEC`) + `KB-STANDARD`, `ANTI-ECHO`, `SENIOR-PARTNER`, `LIFECYCLE` | 20 |
 
-Список — контракт: добавление правила меняет и корпус, и пин в одном коммите, иначе тест краснеет.
+Константы `CLIENT_RULES`, `ADAPTER_RULES`, `HARNESS_RULES` — контракт: добавление правила меняет корпус и соответствующий пин в одном коммите, иначе тест краснеет.
 
 ### 3.2. Инварианты
 
 1. **Документы:** `corpus` содержит ровно `client-agents`, `adapters`, `harness-agents`.
-2. **Уникальность:** внутри каждого документа каждый `RULE`-ID встречается один раз (дубль маркера — `AssertionError` с именем ID и документа).
-3. **Полнота клиента:** множество ID документа `client-agents` == `CANONICAL_RULES`.
-4. **Выводимость адаптеров:** документ `adapters` содержит ровно 10 правил, и каждый его ID ∈ `CANONICAL_RULES` (третьего инвентаря нет).
-5. **Полнота харнесса:** `harness-agents` содержит 16 принципов + `KB-STANDARD`, `ANTI-ECHO`, `SENIOR-PARTNER`, `LIFECYCLE`; все ID ∈ `CANONICAL_RULES`.
+2. **Уникальность:** внутри каждого документа каждый `RULE`-ID встречается один раз (дубль маркера — `AssertionError` с именем ID и документа); число закрывающих маркеров совпадает с числом открывающих.
+3. **Полнота клиента:** множество ID документа `client-agents` == `CLIENT_RULES`.
+4. **Выводимость адаптеров:** множество ID документа `adapters` == `ADAPTER_RULES`; `ADAPTER_RULES ⊆ CLIENT_RULES` (третьего инвентаря нет).
+5. **Полнота харнесса:** множество ID документа `harness-agents` == `HARNESS_RULES`; `HARNESS_RULES` содержит `LIVING-SPEC`, которого нет в клиентском документе.
 6. **Чистота вывода:** в отрендеренных `client-agents`, `adapters`, `harness-agents` нет подстрок `<!-- RULE`, `<!-- /RULE`, `<!-- DOCUMENT`.
 7. **Подстановка:** в отрендеренном выводе нет `{{` и `}}`.
 8. **Детерминизм:** два последовательных рендера одного документа равны побайтово.
@@ -77,16 +77,16 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Новый набор: `python -m unittest tests.test_rules_consistency -v` (Exit code 0, ≥ 11 тестов).
-- [ ] Красный сценарий (вручную): удалить маркер `RULE: SINGLE-TASK` из `client-agents` во временной копии корпуса → тест полноты падает с понятным сообщением (файл восстановить).
-- [ ] Полный прогон: `python -m unittest discover -s tests` (Exit code 0).
-- [ ] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Новый набор: `python -m unittest tests.test_rules_consistency -v` (Exit code 0, ≥ 11 тестов).
+- [x] Красный сценарий (вручную): удалить маркер `RULE: SINGLE-TASK` из `client-agents` во временной копии корпуса → тест полноты падает с понятным сообщением (файл восстановить).
+- [x] Полный прогон: `python -m unittest discover -s tests` (Exit code 0).
+- [x] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `tests/test_rules_consistency.py` покрывает 11 инвариантов раздела 3.2.
-- [ ] Канонический инвентарь запинен и падает при добавлении правила без обновления пина.
-- [ ] Тесты не пишут в репозиторий и не зависят от текущего каталога.
-- [ ] Полный прогон зелёный; дрейф любого из трёх артефактов ловится тестом.
-- [ ] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.
+- [x] `tests/test_rules_consistency.py` покрывает 11 инвариантов раздела 3.2.
+- [x] Канонический инвентарь запинен и падает при добавлении правила без обновления пина.
+- [x] Тесты не пишут в репозиторий и не зависят от текущего каталога.
+- [x] Полный прогон зелёный; дрейф любого из трёх артефактов ловится тестом.
+- [x] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.

@@ -14,42 +14,61 @@
 Language: {{lang_instruction}}
 <!-- RULE: SESSION-READ -->
 1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).
+<!-- /RULE: SESSION-READ -->
 <!-- RULE: KANBAN -->
 2. Kanban: move cards with date `(YYYY-MM-DD)`.
+<!-- /RULE: KANBAN -->
 <!-- RULE: ROADMAP -->
 3. Roadmap: mark `[x]` + link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
+<!-- /RULE: ROADMAP -->
 <!-- RULE: ADR -->
 4. ADR & Rejected-ADR: log all decisions incl. rejected (`status: rejected`).
+<!-- /RULE: ADR -->
 <!-- RULE: RESEARCH -->
 5. Research: worst-case tests; record discarded prototypes in `RESEARCH-XXX`.
+<!-- /RULE: RESEARCH -->
 <!-- RULE: DEVLOG -->
 6. Devlog: write entry at task/session end with next step awaiting user command.
+<!-- /RULE: DEVLOG -->
 <!-- RULE: OBSIDIAN -->
 7. Obsidian: wikilinks `[[...]]` + tags.
+<!-- /RULE: OBSIDIAN -->
 <!-- RULE: PERMALINKS -->
 8. Permalinks: NEVER move `TASK-XXX`/`BUG-XXX`/`FB-XXX` to Done/Archive.
+<!-- /RULE: PERMALINKS -->
 <!-- RULE: REGRESSION-FIRST -->
 9. Regression-First: failing test BEFORE fixing any bug via /kb-implement BUG-XXX (RED -> GREEN -> REFACTOR).
+<!-- /RULE: REGRESSION-FIRST -->
 <!-- RULE: QA-CHECKLISTS -->
 10. QA: checklists `- [ ]` in `docs/05_Testing/`, separate from Plans.
+<!-- /RULE: QA-CHECKLISTS -->
 <!-- RULE: GRAPH-COLORS -->
 11. Graph: 7 Obsidian color groups (White/Purple/Cyan/Yellow/Orange/Red/Green).
+<!-- /RULE: GRAPH-COLORS -->
 <!-- RULE: GIT-FLOW -->
 12. Git: Remote/Local/None + Trunk-Based docs + Feature Branching.
+<!-- /RULE: GIT-FLOW -->
 <!-- RULE: SINGLE-TASK -->
 13. Single-Task Barrier: `/kb-implement <TASK-XXX | BUG-XXX>` executes ONE task/bug; stop tool calls on complete, never auto-chain.
+<!-- /RULE: SINGLE-TASK -->
 <!-- RULE: ZERO-STATE -->
 14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.
+<!-- /RULE: ZERO-STATE -->
 <!-- RULE: FEEDBACK-TRIAGE -->
 15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).
+<!-- /RULE: FEEDBACK-TRIAGE -->
 <!-- RULE: HUMAN-GUARDRAILS -->
 16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.
+<!-- /RULE: HUMAN-GUARDRAILS -->
 <!-- RULE: FAST-TRACK -->
 17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.
+<!-- /RULE: FAST-TRACK -->
 <!-- RULE: ZERO-ROUNDTRIP -->
 18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.
+<!-- /RULE: ZERO-ROUNDTRIP -->
 <!-- RULE: QUALITY-GATES -->
 19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.
+<!-- /RULE: QUALITY-GATES -->
 <!-- RULE: FOUR-STATE-UI -->
 20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated), store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).
 
@@ -84,6 +103,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
+<!-- /RULE: FOUR-STATE-UI -->
 <!-- RULE: TECH-DEBT -->
 ## 💳 8. Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
 
@@ -96,6 +116,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
+<!-- /RULE: TECH-DEBT -->
 <!-- RULE: PRIOR-ART -->
 ## 🏛️ 9. Prior-Art Gate Invariant
 
@@ -104,6 +125,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
+<!-- /RULE: PRIOR-ART -->
 <!-- RULE: TRACEABLE-TAGS -->
 ## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
 
@@ -112,6 +134,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
+<!-- /RULE: TRACEABLE-TAGS -->
 <!-- RULE: BENCHMARKS -->
 ## ⏱️ 11. Benchmark Persistence («Замер = артефакт»)
 
@@ -120,6 +143,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
+<!-- /RULE: BENCHMARKS -->
 <!-- RULE: ANTI-ECHO -->
 ## 🔇 Anti-Echo Response Protocol
 
@@ -132,6 +156,7 @@ When modifying or creating files on disk:
 
 ---
 
+<!-- /RULE: ANTI-ECHO -->
 <!-- RULE: SENIOR-PARTNER -->
 ## 🧠 Senior Engineering Partner Standard
 
@@ -143,6 +168,7 @@ You are a **Senior Engineering Partner**, not a passive assistant:
 
 ---
 
+<!-- /RULE: SENIOR-PARTNER -->
 <!-- RULE: LIFECYCLE -->
 ## 🔄 The 4-Stage Development Lifecycle (Discovery + Delivery)
 
@@ -177,30 +203,41 @@ Run:
 python3 scripts/kb_lint.py --path docs
 ```
 Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).
+<!-- /RULE: LIFECYCLE -->
 <!-- /DOCUMENT: client-agents -->
 
 <!-- DOCUMENT: adapters -->
 ## 🛡️ Operating Rules & Routing
 <!-- RULE: ZERO-ROUNDTRIP -->
 1. **Single Source of Truth & Zero Round-Trip:** Read `AGENTS.md` at session start. For Modes 0-3, execute directly from hot prefix without reading SKILL.md; co-fetch context in parallel.
+<!-- /RULE: ZERO-ROUNDTRIP -->
 <!-- RULE: HUMAN-GUARDRAILS -->
 2. **Read-Only Invariant & Human Guardrails:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES. Guide user with friendly next steps rather than blocking errors.
+<!-- /RULE: HUMAN-GUARDRAILS -->
 <!-- RULE: FAST-TRACK -->
 3. **Fast-Track Protocol:** Micro-tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` using Micro-Spec.
+<!-- /RULE: FAST-TRACK -->
 <!-- RULE: SINGLE-TASK -->
 4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.
+<!-- /RULE: SINGLE-TASK -->
 <!-- RULE: ANTI-ECHO -->
 5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).
+<!-- /RULE: ANTI-ECHO -->
 <!-- RULE: QUALITY-GATES -->
 6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.
+<!-- /RULE: QUALITY-GATES -->
 <!-- RULE: FOUR-STATE-UI -->
 7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and screenshots in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.
+<!-- /RULE: FOUR-STATE-UI -->
 <!-- RULE: TECH-DEBT -->
 8. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):** Fix P1/P2 immediately; register ALL P3 debt (review findings + planned `#techdebt` refactoring) as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md` (SSOT); migrate resolved rows to Resolved Debt in `/kb-complete` (never refactor opportunistically).
+<!-- /RULE: TECH-DEBT -->
 <!-- RULE: PRIOR-ART -->
 9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.
+<!-- /RULE: PRIOR-ART -->
 <!-- RULE: TRACEABLE-TAGS -->
 10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.
+<!-- /RULE: TRACEABLE-TAGS -->
 <!-- /DOCUMENT: adapters -->
 
 <!-- DOCUMENT: harness-agents -->
@@ -227,43 +264,54 @@ All project knowledge, task tracking, and architectural decisions are maintained
 - `docs/Devlog.md` — Chronological development journal.
 
 ### Core Rules & Principles
+<!-- /RULE: KB-STANDARD -->
 <!-- RULE: PERMALINKS -->
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
+<!-- /RULE: PERMALINKS -->
 <!-- RULE: REGRESSION-FIRST -->
 2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass. Bug fixing is executed strictly through `/kb-implement BUG-XXX` via the TDD cycle (RED $\to$ GREEN $\to$ REFACTOR).
+<!-- /RULE: REGRESSION-FIRST -->
 <!-- RULE: LIVING-SPEC -->
 3. **Living Spec Invariant (No Documentation Drift):** `SPEC.md` is the Master Specification (Ground Truth), and `README.md` is the project storefront. When a task introduces new CLI arguments, APIs, or architectural modules, update `SPEC.md` and `README.md` in that same task session. Releases (`/kb-release`) cannot proceed if documentation is stale.
+<!-- /RULE: LIVING-SPEC -->
 <!-- RULE: OBSIDIAN -->
 4. **Obsidian Graph & Taxonomy:** Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
+<!-- /RULE: OBSIDIAN -->
 <!-- RULE: SINGLE-TASK -->
 5. **Single-Task Execution Barrier (No Auto-Chaining):**
    - The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work **strictly on that single task specification or defect report**.
    - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY` or `/kb-implement BUG-YYY`).
    - "Next Step" sections in devlogs, plans, and summaries are developer guidance only and are **never** an execution mandate for the agent.
    - Once task verification and commit are complete, the agent must **cease all tool calls immediately** and return control to the user.
+<!-- /RULE: SINGLE-TASK -->
 <!-- RULE: ZERO-STATE -->
 6. **Zero-State Anti-Hallucination & Spec Genesis:**
    - When `SPEC.md` is missing or in `status: discovery`, the agent is strictly prohibited from inventing arbitrary product requirements, features, or technology stacks out of thin air.
    - Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
    - Planning (`/kb-plan`) and task specification (`/kb-task`) must issue a Soft Nudge if `SPEC.md` is unvalidated.
+<!-- /RULE: ZERO-STATE -->
 <!-- RULE: FEEDBACK-TRIAGE -->
 7. **Feedback Ingestion & Triage Buffer Invariant:**
    - Raw external inputs (GitHub issues, emails, chat pastes) must never bypass the triage buffer `docs/02_Tasks/Inbox/` directly into task specs or codebase modifications.
    - Triage is performed via Mode 2C (`/kb-triage`) with **Stop & Yield**.
    - Feedback items `FB-*.md` are subject to the **Permalinks Principle**: never move or delete them upon triage; update `status: processed` (or `rejected`) with `target: "[[...]]"` in-place.
+<!-- /RULE: FEEDBACK-TRIAGE -->
 <!-- RULE: HUMAN-GUARDRAILS -->
 8. **Human Guardrails Protocol («Направляй, а не блокируй»):**
    - In read-only modes (Modes 0, 1, 2, 2B, 2C), agents are **strictly prohibited** from issuing raw, robotic blocking errors (e.g. `🚨 NO CODE EDITS ALLOWED`).
    - Act as a friendly Senior Engineering Partner: explain the stage's purpose in simple terms, ask 1–2 guiding questions or offer choices (A/B), and provide the exact next command (e.g. *"If approved, say `/kb-implement TASK-XXX` to begin"*).
+<!-- /RULE: HUMAN-GUARDRAILS -->
 <!-- RULE: FAST-TRACK -->
 9. **Fast-Track Protocol (Micro-Task Bypass):**
    - For trivial tasks (≤ 30 LOC, ≤ 2 files, 0 architectural risk, no external dependencies), users may bypass Mode 1 planning and generate a lightweight Micro-Spec via `/kb-task --fast <description>` using `docs/00_Templates/TEMPLATE_TASK_MICRO.md`.
    - Micro-tasks still require **Stop & Yield** before implementation. Changes to `SPEC.md`, `AGENTS.md`, or architecture are strictly barred from Fast-Track.
+<!-- /RULE: FAST-TRACK -->
 <!-- RULE: ZERO-ROUNDTRIP -->
 10. **Zero Round-Trip Dispatch & Hot Invariants Protocol:**
    - For standard lifecycle modes (Modes 0, 1, 2, 2B, 2C, 3) and direct agent slash-commands, agents are explicitly authorized to execute directly in the first turn from the Always-On prefix (`AGENTS.md`) without an intermediary `view_file` call to `.agents/skills/<skill>/SKILL.md`.
    - **Pipelined Co-fetching:** when an operation genuinely requires reading a template or reference note, the agent must bundle all necessary context read requests into that same first tool-call turn rather than chaining sequential read steps.
    - Specialized procedural skills (`/kb-release`, `/kb-lint`, `/kb-init`) remain strictly On-Demand via Progressive Disclosure.
+<!-- /RULE: ZERO-ROUNDTRIP -->
 <!-- RULE: QUALITY-GATES -->
 11. **Quality Gates & Reliability Tiers Invariant:**
    - All project rules and reliability invariants are classified across 3 execution tiers:
@@ -271,12 +319,14 @@ All project knowledge, task tracking, and architectural decisions are maintained
      * **Tier 2 (Always-On Prompt):** Normative invariants in `AGENTS.md` and IDE system prompts (100% visibility in every dialogue turn).
      * **Tier 3 (Playbook / On-Demand):** Skill instructions, templates, and reference manuals (probabilistic compliance).
    - **Reliability Invariant:** Critical reliability rules and systemic defect preventions must **never** remain solely in probabilistic Tier 3. They must be mechanized in tests/linters (Tier 1) or elevated into the Always-On prefix (Tier 2).
+<!-- /RULE: QUALITY-GATES -->
 <!-- RULE: FOUR-STATE-UI -->
 12. **The 4-State UI & Visual Verification Invariant:**
    - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size $\le 2\text{ MB}$).
    - **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
    - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
    - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
+<!-- /RULE: FOUR-STATE-UI -->
 <!-- RULE: TECH-DEBT -->
 13. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):**
    - Code review findings and secondary defects are triaged into two strict tiers:
@@ -285,14 +335,17 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - `TechDebt.md` is the mandatory primary registry (SSOT) for ALL `P3` debt — both review findings (Mode 3) and planned refactoring phases/tasks (`#techdebt`) in Modes 1–2 and triage dispatch (Mode 2C).
    - Lifecycle: at planning (`/kb-plan`) or specification (`/kb-task`) of `#techdebt` work, create/link the `DEBT-XXX` row in `Active P3 Debt`; at completion (`/kb-complete`), migrate the resolved `DEBT-XXX` row to `Resolved Debt` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
    - Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
+<!-- /RULE: TECH-DEBT -->
 <!-- RULE: PRIOR-ART -->
 14. **Prior-Art Gate Invariant:**
    - Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and the language's standard library for existing solutions.
    - Reinventing wheels and introducing duplicate parallel abstractions is strictly prohibited.
+<!-- /RULE: PRIOR-ART -->
 <!-- RULE: TRACEABLE-TAGS -->
 15. **Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX):**
    - Untracked "hanging" `TODO` or `FIXME` comments without roadmap/debt linkage are strictly prohibited.
    - Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`) or `// DEBT-XXX` (matching a row in `docs/02_Tasks/TechDebt.md`).
+<!-- /RULE: TRACEABLE-TAGS -->
 <!-- RULE: BENCHMARKS -->
 16. **Benchmark Persistence («Замер = артефакт»):**
    - All performance, latency, memory, or token claims must be verified via a series of $\ge 3$ reproducible runs.
@@ -300,6 +353,7 @@ All project knowledge, task tracking, and architectural decisions are maintained
 
 ---
 
+<!-- /RULE: BENCHMARKS -->
 <!-- RULE: ANTI-ECHO -->
 ## 🔇 Anti-Echo Response Protocol
 
@@ -312,6 +366,7 @@ When modifying or creating files on disk:
 
 ---
 
+<!-- /RULE: ANTI-ECHO -->
 <!-- RULE: SENIOR-PARTNER -->
 ## 🧠 Critical Thinking & Constructive Partnership Standard
 
@@ -325,6 +380,7 @@ You act as a senior software engineering partner, not a passive "yes-man":
 
 ---
 
+<!-- /RULE: SENIOR-PARTNER -->
 <!-- RULE: LIFECYCLE -->
 ## 🔄 The 4-Stage Development Lifecycle (Discovery + Delivery)
 
@@ -387,4 +443,5 @@ Every feature or architectural initiative follows structured stages:
   8. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
   9. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
   10. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
+<!-- /RULE: LIFECYCLE -->
 <!-- /DOCUMENT: harness-agents -->

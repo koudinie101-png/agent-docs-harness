@@ -291,7 +291,7 @@ tags:
 
 - [x] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18).
 - [x] [[Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, workflow `rules-check.yml` и префлайт релиза (2026-10-18).
-- [ ] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`): канонический инвентарь, уникальность ID, выводимость адаптеров.
+- [x] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`): канонический инвентарь, уникальность ID, выводимость адаптеров (2026-10-18).
 - [ ] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация, E2E-синхронизация инсталлятора, Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) и пересборка `dist/install.py`.
 
 ---
