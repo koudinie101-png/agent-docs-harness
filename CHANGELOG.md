@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Living Spec sync: `SPEC.md` (Rules 13/15, lint cross-check), `README.md` (debt governance) and `docs/Onboarding.md` (`Active P3 Debt -> Plan/Task -> Resolved Debt`).
 
 ### Fixed
-- **Credential leak in release artifacts (P1):** `scripts/kb_release.py` propagated credentials embedded in the Git remote URL (e.g. `https://user:TOKEN@github.com/...`) into `RELEASE-vX.Y.Z.md` frontmatter and the public `dist/RELEASE_NOTES.md`. Added `sanitize_repo_url()` applied during environment detection and in all release generators, covered by regression test `test_regression_remote_credentials_not_leaked_into_release_outputs` (120 tests, 100% pass).
+- **Credential leak in release artifacts (P1, [BUG-010](docs/02_Tasks/Bugs/BUG-010-release-remote-credentials-leak.md)):** `scripts/kb_release.py` propagated credentials embedded in the Git remote URL (e.g. `https://user:TOKEN@github.com/...`) into `RELEASE-vX.Y.Z.md` frontmatter and the public `dist/RELEASE_NOTES.md`. Added `sanitize_repo_url()` applied during environment detection and in all release generators, covered by regression test `test_regression_remote_credentials_not_leaked_into_release_outputs` (120 tests, 100% pass).
 
 ### Changed
 - Re-bundled standalone installer `install.py` and `dist/install.py` (162.7 KB / 166650 bytes) with the updated linter, release utility, templates, skills and rules.

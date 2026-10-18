@@ -45,7 +45,14 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
 - [[../Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита build_installer.py, E2E тестирование в tests/test_installer.py и синхронизация Living Spec (SPEC.md, README.md, Onboarding.md).
 
 ### 🐛 Исправленные дефекты (Bug Fixes)
-- Критических дефектов и регрессий за период фазы не зафиксировано.
+- [[../Bugs/BUG-010-release-remote-credentials-leak|BUG-010]]: Утечка credentials из Git remote (PAT) в релизные артефакты и публичные Release Notes.
+
+### 🔒 Безопасность (Security Note)
+- **Что было:** если `git remote` содержал PAT (`https://user:token@github.com/...`), релизные артефакты, выпущенные **до v0.21.0**, могли содержать токен в ссылках.
+- **Что сделано:** в v0.21.0 URL remote нормализуется через `sanitize_repo_url()` (стриппинг userinfo, `ssh` → `https`, снятие `.git`) на этапе детекции окружения и во всех генераторах; добавлен регрессионный тест. Публикация токена в notes исключена.
+- **Что делать пользователю:** обновить харнесс (`python install.py --update`), не хранить секреты в URL remote, использовать credential helper (`gh auth setup-git`) или `GITHUB_TOKEN` в окружении.
+- Дефект выявлен на pre-flight текущего релиза и устранён до создания тега `v0.21.0`; следов токена в истории Git не обнаружено.
+- **Масштаб:** харнесс используется локально одним разработчиком без GitHub-интеграции, поэтому реального раскрытия секрета не произошло.
 
 ### 🏛️ Архитектурные решения (ADR)
 - [[../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]: Архитектура Zero Dependencies на стандартной библиотеке Python 3.
