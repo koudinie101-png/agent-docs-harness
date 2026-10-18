@@ -287,7 +287,8 @@ tags:
 ## Фаза 22: Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler) — ✅ Завершена
 **Цель:** Устранить тройной инвентарь правил агента (корневой `AGENTS.md` — 16 принципов, `_RULES_BODY` — 20 дисциплин + 11 секций, `_gen_rule` — 10 правил для 6 адаптеров) за счёт единого корпуса `rules/AGENTS_CORE.md`, детерминированного рендера и механического Tier 1 контроля дрейфа в CI. Новое правило = одна правка вместо трёх, дрейф ловится на коммите, а не через фазу ремонтной задачи.  
 **Первоисточник плана:** [[Plans/PLAN-022-single-source-rule-compiler|PLAN-022]]  
-**Нормативная база:** ADR-0030 (оформляется в рамках TASK-085)
+**Нормативная база:** ADR-0030 (оформляется в рамках TASK-085)  
+**Официальный релиз:** [[Releases/RELEASE-v0.22.0|RELEASE-v0.22.0]]
 
 - [x] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18).
 - [x] [[Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, workflow `rules-check.yml` и префлайт релиза (2026-10-18).

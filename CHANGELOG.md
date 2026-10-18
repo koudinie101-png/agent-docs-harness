@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0] - 2026-10-18
+
+### Added
+- **Single-Source Rule Compiler** (PLAN-022, ADR-0030, TASK-085–TASK-088):
+  - `rules/AGENTS_CORE.md` — единый корпус правил агента (документы `client-agents`, `adapters`, `harness-agents`, семантические маркеры `RULE`), из которого рендерятся `AGENTS.md` клиента и 6 IDE-адаптеров.
+  - `_load_rules_corpus()` / `_render_rules_document()` в `install.py`; корпус упаковывается в `EMBEDDED_ASSETS` и не разворачивается в `docs/` клиентского проекта.
+  - `scripts/gen_rules.py` (`--check`) — генерация корневого `AGENTS.md` и CI-гейт `.github/workflows/rules-check.yml`; префлайт релиза проверяет дрейф правил.
+  - Tier 1-защита: 24 golden-фикстуры (`tests/test_rules_golden.py`) и 13 инвариантов (`tests/test_rules_consistency.py`); редакционная консолидация индекса до 24 правил без числового литерала в заголовке.
+
+### Changed
+- Корневой `AGENTS.md` стал генерируемым артефактом: единственная точка правки — `rules/AGENTS_CORE.md`.
+- `scripts/build_installer.py` исключает харнесс-специфичный `rules-check.yml` из клиентских бандлов.
+
+### Fixed
+- Устранён дрейф трёх независимых инвентарей правил (корневой `AGENTS.md`, `_RULES_BODY`, `_gen_rule`); governance-правила включены в нумерованный индекс.
+
 ## [0.21.0] - 2026-10-18
 
 ### Added

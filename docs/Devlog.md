@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Релиз v0.22.0: Фаза 22 (Single-Source Rule Compiler)
+- **Что сделано:**
+  - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.22.0|RELEASE-v0.22.0]] по завершении Фазы 22 ([[02_Tasks/Plans/PLAN-022-single-source-rule-compiler|PLAN-022]], [[03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]]).
+  - Собран монолит `install.py` / `dist/install.py` через `scripts/build_release.py` (165.6 KB / 169 562 байта, SHA-256 `8fac0aa7beeb40ab2a6665263267f0ebf4d64b720661f999922443771b8c2ccb`).
+  - Сгенерированы Dual-Export артефакты: внутренний `docs/02_Tasks/Releases/RELEASE-v0.22.0.md` (со scoped-блоком ADR) и публичный `dist/RELEASE_NOTES.md` (High-SNR GFM без ADR).
+  - Синхронизирована база знаний: `Roadmap.md` (ссылка на релиз в шапке Фазы 22), `CHANGELOG.md` (секция `[0.22.0]`) и `Devlog.md`.
+- **Проверка:**
+  - Preflight: 136 тестов OK; `kb_lint` — 228 файлов, 2140 ссылок, 0 битых; tracked-дерево чистое.
+  - Опубликован GitHub Release `v0.22.0` с артефактом `dist/install.py`.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task` для TASK-089 (Фаза 23, Memory Integrity Guard).
+
 ### [2026-10-18] — TASK-088: редакционная консолидация правил, E2E и Living Spec (Фаза 22 завершена)
 - **Что сделано:**
   - Заголовок `## Docs-as-Code (20 Disciplines)` → `## Docs-as-Code Disciplines`: число перестало быть данными, которые нужно синхронизировать.
