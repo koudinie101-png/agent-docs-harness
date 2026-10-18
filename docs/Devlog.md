@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-092: паритет копий шаблонов и Tier 1 parity-тест (Фаза 24)
+- **Что сделано:**
+  - [[02_Tasks/Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: устранён P2-дрейф `templates/` ↔ `docs/00_Templates/`. В `templates/TEMPLATE_PLAN.md` перенесены 4-State UI Matrix и комментарий про multi-target Mermaid (второе расхождение обнаружено при реализации); `docs/00_Templates/TEMPLATE_INDEX.md` синхронизирован с более полной копией из `templates/` (`Zero_To_Hero_Guide`, узел `06_Memory`, `Inbox/`, «16 шаблонов»).
+  - Новый Tier 1 `tests/test_template_parity.py`: сравнение наборов и содержимого всех 16 `*.md` (нормализация CRLF, unified diff в сообщении), `graph.json` исключён намеренно.
+  - Все копии теперь побайтово совпадают (`drifted: []`); blind spot «тесты читают только снимок бандла» закрыт механически.
+- **Проверка:**
+  - `tests.test_template_parity` — **2 теста OK**; полный прогон `python tmp/run_tests.py` — **153 теста OK** (Exit code 0).
+  - Негативный прогон: искусственная строка в `docs/00_Templates/TEMPLATE_INDEX.md` → тест FAILED с diff; восстановление копией из `tmp/` и сверка SHA-256 (`hash match: True`), повторный прогон OK (INC-005 / TRG-05).
+  - Бюджет шаблонов 29 579 ≤ 30 000; `kb_lint` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-093`.
+
 ### [2026-10-18] — TASK-091: `research_basis`/`basis_note` и advisory-контроль в `kb_lint` (Фаза 24)
 - **Что сделано:**
   - [[02_Tasks/Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: в обе копии `TEMPLATE_PLAN.md` (`docs/00_Templates/` и `templates/`) добавлены закомментированные подсказки `research_basis`/`basis_note` и секция `### Research Basis & Unvalidated Assumptions` (известно / не проверено / как закрываем) — план получил durable-след доказательной базы (ADR-0031 R3).

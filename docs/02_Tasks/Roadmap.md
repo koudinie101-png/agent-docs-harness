@@ -318,7 +318,7 @@ tags:
 
 - [x] [[Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: Критерий Evidence Status (`🔬`/`🧪`/`⏸`), `Evidence Nudge` (A/B/C) в `.agents/skills/kb-plan/SKILL.md`, строка правила Mode 1 в `rules/AGENTS_CORE.md` (+ регенерация `AGENTS.md`) и Tier 1 ассерт против повторной потери формулировки (2026-10-18).
 - [x] [[Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` (2026-10-18).
-- [ ] [[Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест копий шаблонов (P2-находка планирования).
+- [x] [[Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест копий шаблонов (P2-находка планирования) (2026-10-18).
 - [ ] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
 
 ---

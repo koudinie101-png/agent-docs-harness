@@ -1,7 +1,7 @@
 ---
 id: TASK-092
 title: "Синхронизация templates/ ↔ docs/00_Templates/ и Tier 1 parity-тест копий шаблонов"
-status: planned
+status: done
 type: task
 phase: 24
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-092 — Parity шаблонов `templates/` ↔ `docs/00_Templates/`
 
-> **ID:** TASK-092 | **Статус:** К реализации  
+> **ID:** TASK-092 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 24 | **План:** [[../../Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]] §1.4, §4 | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1 механизация), [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]] (бюджет шаблонов)  
 > **Происхождение:** P2-находка планирования Фазы 24 (§1.4 PLAN-023); устраняется в том же проходе по протоколу TechDebt (P1/P2 — немедленно)
@@ -45,7 +45,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 2. Затрагиваемые файлы
 
-* `[MODIFY]` `templates/TEMPLATE_PLAN.md` — добавить блок `### The 4-State UI Matrix` (дословно как в `docs/00_Templates/TEMPLATE_PLAN.md`, между Prior-Art Gate и `## 4. Декомпозиция задач`).
+* `[MODIFY]` `templates/TEMPLATE_PLAN.md` — добавить блок `### The 4-State UI Matrix` и строку-комментарий про multi-target Mermaid (обе отсутствовали), дословно как в `docs/00_Templates/TEMPLATE_PLAN.md`.
 * `[MODIFY]` `docs/00_Templates/TEMPLATE_INDEX.md` — синхронизировать с `templates/TEMPLATE_INDEX.md` (добавить `Zero_To_Hero_Guide`, узел `06_Memory` в Mermaid, `Inbox/`, раздел `06_Memory/`, «16 шаблонов»).
 * `[NEW]` `tests/test_template_parity.py` — Tier 1 parity-тест всех `*.md` двух каталогов.
 
@@ -66,6 +66,8 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ```
 
 Порядок важен: [[TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]] уже добавил секцию Research Basis в **обе** копии; здесь переносится только оставшийся блок матрицы.
+
+**Находка при реализации:** в том же файле было второе расхождение — в `docs/` присутствует комментарий `<!-- Для multi-target систем: схема взаимодействия (Mermaid) Target A <-> Protocol <-> Target B -->`, отсутствовавший в `templates/`. Он синхронизирован тем же проходом: паритет означает побайтовое совпадение файла, а не только перенос 4-State Matrix.
 
 ### 3.2. Синхронизация `docs/00_Templates/TEMPLATE_INDEX.md`
 
@@ -134,19 +136,19 @@ class TemplateParityTest(unittest.TestCase):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Паритет: `python -m unittest tests.test_template_parity -v` → OK (2 теста).
-- [ ] Негативная проверка теста: временно добавить строку в `docs/00_Templates/TEMPLATE_INDEX.md` (копия в `tmp/`) → тест падает с diff; файл восстановлен копией из `tmp/` + сверка SHA-256 ([[../../../06_Memory/Incidents/INC-005-inverse-transform-restore-corrupted-corpus|INC-005]] / TRG-05 — не восстанавливать обратной заменой).
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → OK.
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 broken links.
-- [ ] Бюджет шаблонов: `python -c "from pathlib import Path; s=sum(f.stat().st_size for f in Path('templates').glob('*.md')); print(s); assert s<=30000"` → OK (после TASK-091 ≈ 28 598 байт, блок матрицы +851 → ожидаемо ≈ 29 449 байт, запас 551; при превышении сокращать прозу INDEX/Mermaid, **не** поднимать лимит `test_16_high_snr_static_corpus_benchmarks`).
-- [ ] Ожидаемый дифф: `git status --short templates docs/00_Templates tests/test_template_parity.py` — 3 файла (2 изменённых + 1 новый), `adapter`/скиллы не затронуты.
-- [ ] 4-State UI / скриншоты: не применимо (правка Markdown-шаблонов, GUI/TUI отсутствует).
-- [ ] Замеры $\ge 3$ прогонов: не применимо.
+- [x] Паритет: `python -m unittest tests.test_template_parity -v` → **2 теста OK**; прямая сверка 16 файлов: `drifted: []`.
+- [x] Негативная проверка теста: в `docs/00_Templates/TEMPLATE_INDEX.md` добавлена строка (`tmp/parity_index_backup.md` — резервная копия) → тест **FAILED** с unified diff; файл восстановлен копией, SHA-256 совпал (`hash match: True`), повторный прогон OK (INC-005 / TRG-05).
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **153 теста OK**, Exit code 0.
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 broken links.
+- [x] Бюджет шаблонов: **29 579 байт** ≤ 30 000 (запас 421); лимит `test_16` не менялся. Фактический прирост выше оценки на 130 байт из-за второго расхождения (multi-target комментарий), найденного при реализации.
+- [x] Ожидаемый дифф: `templates/TEMPLATE_PLAN.md`, `docs/00_Templates/TEMPLATE_INDEX.md`, `tests/test_template_parity.py`; скиллы и адаптеры не затронуты.
+- [x] 4-State UI / скриншоты: не применимо (правка Markdown-шаблонов, GUI/TUI отсутствует).
+- [x] Замеры $\ge 3$ прогонов: не применимо.
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] 16 `*.md` в `templates/` и `docs/00_Templates/` побайтово совпадают (после нормализации CRLF).
-- [ ] `templates/TEMPLATE_PLAN.md` содержит 4-State UI Matrix; `docs/00_Templates/TEMPLATE_INDEX.md` содержит `Zero_To_Hero_Guide`, `06_Memory/`, `Inbox/`, «16 шаблонов».
-- [ ] Tier 1 parity-тест добавлен, зелёный на синхронизированных копиях и красный при искусственном расхождении.
-- [ ] Бюджет шаблонов ≤ 30 000 байт не нарушен.
-- [ ] Статус задачи обновляется в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] 16 `*.md` в `templates/` и `docs/00_Templates/` побайтово совпадают (после нормализации CRLF).
+- [x] `templates/TEMPLATE_PLAN.md` содержит 4-State UI Matrix; `docs/00_Templates/TEMPLATE_INDEX.md` содержит `Zero_To_Hero_Guide`, `06_Memory/`, `Inbox/`, «16 шаблонов».
+- [x] Tier 1 parity-тест добавлен, зелёный на синхронизированных копиях и красный при искусственном расхождении.
+- [x] Бюджет шаблонов ≤ 30 000 байт не нарушен.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
