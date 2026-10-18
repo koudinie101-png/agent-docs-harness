@@ -879,6 +879,107 @@ date: 2026-10-15
         warnings = kb_lint.check_asset_layout(self.docs_dir)
         self.assertEqual(warnings, [])
 
+    def test_check_untracked_todos_accepts_debt_xxx_reference(self):
+        """Verifies TODO/FIXME comments tagged with DEBT-XXX are accepted like ROADMAP-<ID> (TASK-082)."""
+        scripts_dir = self.temp_dir / "scripts"
+        scripts_dir.mkdir(parents=True, exist_ok=True)
+        py_script = scripts_dir / "sample.py"
+        py_script.write_text(
+            "# TODO(DEBT-001): fix regex\n"
+            "// TODO: bare hanging todo\n",
+            encoding="utf-8"
+        )
+
+        warnings = kb_lint.check_untracked_todos(self.docs_dir)
+        # DEBT-001 tagged TODO must NOT be flagged
+        self.assertFalse(any("sample.py:1" in w for w in warnings))
+        # bare TODO must still be flagged
+        self.assertTrue(any("sample.py:2" in w for w in warnings))
+
+    def test_check_tech_debt_warns_when_techdebt_tagged_spec_has_empty_registry(self):
+        """Verifies WARN when a #techdebt spec exists but TechDebt.md registry is empty (TASK-082)."""
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        debt_file = tasks_dir / "TechDebt.md"
+        debt_content = (
+            "---\nid: TECHDEBT\ntitle: Tech Debt\ntype: techdebt\nstatus: active\n---\n"
+            "# Tech Debt\n"
+            "## 📋 Открытый технический долг (Active P3 Debt)\n"
+            "| ID | Приоритет | Модуль | Описание | Задача-источник | Дата | Статус |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+        )
+        debt_file.write_text(debt_content, encoding="utf-8")
+
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "21_TechDebt"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        spec_file = specs_dir / "TASK-100.md"
+        spec_file.write_text(
+            "---\n"
+            "id: TASK-100\n"
+            "title: Tech Debt Task\n"
+            "status: in-progress\n"
+            "type: task\n"
+            "phase: 21\n"
+            "parent_plan: PLAN-021\n"
+            "created: 2026-10-16\n"
+            "tags:\n"
+            "  - techdebt\n"
+            "---\n"
+            "# TASK-100\n"
+            "Refactor something.\n",
+            encoding="utf-8"
+        )
+
+        file_map = kb_lint.build_file_map(self.docs_dir)
+        res = kb_lint.check_tech_debt_integrity(self.docs_dir, file_map=file_map)
+        self.assertTrue(any(w.startswith("WARN:") and "TASK-100" in w for w in res))
+
+        # Non-blocking: run_linter returns exit code 0
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertIn("TASK-100", captured.getvalue())
+
+    def test_check_tech_debt_passes_when_techdebt_spec_references_debt_id(self):
+        """Verifies no warning when a #techdebt spec references a registered DEBT-XXX (TASK-082)."""
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        debt_file = tasks_dir / "TechDebt.md"
+        debt_content = (
+            "---\nid: TECHDEBT\ntitle: Tech Debt\ntype: techdebt\nstatus: active\n---\n"
+            "# Tech Debt\n"
+            "## 📋 Открытый технический долг (Active P3 Debt)\n"
+            "| ID | Приоритет | Модуль | Описание | Задача-источник | Дата | Статус |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| DEBT-001 | P3 | `core.py` | Refactor regex | [[00_Index]] | 2026-10-15 | open |\n"
+        )
+        debt_file.write_text(debt_content, encoding="utf-8")
+
+        specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "21_TechDebt"
+        specs_dir.mkdir(parents=True, exist_ok=True)
+        spec_file = specs_dir / "TASK-101.md"
+        spec_file.write_text(
+            "---\n"
+            "id: TASK-101\n"
+            "title: Tech Debt Task\n"
+            "status: in-progress\n"
+            "type: task\n"
+            "phase: 21\n"
+            "parent_plan: PLAN-021\n"
+            "created: 2026-10-16\n"
+            "tags:\n"
+            "  - techdebt\n"
+            "---\n"
+            "# TASK-101\n"
+            "Resolves DEBT-001 refactor.\n",
+            encoding="utf-8"
+        )
+
+        file_map = kb_lint.build_file_map(self.docs_dir)
+        res = kb_lint.check_tech_debt_integrity(self.docs_dir, file_map=file_map)
+        self.assertEqual(res, [])
+
 
 if __name__ == "__main__":
     unittest.main()

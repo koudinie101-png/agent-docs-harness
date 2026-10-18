@@ -16,6 +16,7 @@ dist/
 test_sandbox/
 tmp/
 temp/
+.tmp_*/
 
 # OS artifacts
 .DS_Store

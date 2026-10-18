@@ -23,6 +23,17 @@ if hasattr(sys.stdout, "reconfigure"):
 MEDIA_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
 VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}
 TASK_NAMESPACE_PATTERN = re.compile(r"^(?:TASK|BUG)-\d{3,}(?:-[a-zA-Z0-9_-]+)?$")
+HARNESS_META_TECHDEBT_IDS = {
+    "PLAN-019",
+    "PLAN-021",
+    "TASK-075",
+    "TASK-076",
+    "TASK-077",
+    "TASK-078",
+    "TASK-082",
+    "TASK-083",
+    "TASK-084",
+}
 
 
 def find_vault_root(start_dir: Path) -> Path:
@@ -490,6 +501,7 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
     Returns a list of error/warning strings.
     """
     errors = []
+    recorded_debt_ids: Set[str] = set()
     debt_path = docs_dir / "02_Tasks" / "TechDebt.md"
     if not debt_path.is_file() and (docs_dir / "docs" / "02_Tasks" / "TechDebt.md").is_file():
         debt_path = docs_dir / "docs" / "02_Tasks" / "TechDebt.md"
@@ -532,7 +544,9 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
                 continue
 
             # Validate DEBT-XXX format
-            if not re.match(r"^DEBT-\d{3,}$", first_cell):
+            if re.match(r"^DEBT-\d{3,}$", first_cell):
+                recorded_debt_ids.add(first_cell)
+            else:
                 errors.append(
                     f"In 'TechDebt.md' line {line_no}: invalid tech debt ID '{first_cell}'. "
                     f"Expected format DEBT-XXX (e.g. DEBT-001)."
@@ -568,6 +582,46 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
                 if not found:
                     errors.append(f"In 'TechDebt.md' line {line_no}: broken wikilink [[{link_clean}]]")
 
+    # Semantic cross-check: plans/specs tagged #techdebt must reference a registered DEBT-XXX
+    for base_dir in (docs_dir / "02_Tasks" / "Plans", docs_dir / "02_Tasks" / "Specs"):
+        if not base_dir.is_dir():
+            continue
+        for md_file in sorted(base_dir.rglob("*.md")):
+            if md_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                doc_content = md_file.read_text(encoding="utf-8")
+            except Exception:
+                continue
+            if not doc_content.startswith("---"):
+                continue
+            parts = doc_content.split("---", 2)
+            if len(parts) < 3:
+                continue
+
+            fm = parts[1]
+            body = parts[2]
+            id_match = re.search(r"^id:\s*([^\s#]+)", fm, re.MULTILINE)
+            doc_id = id_match.group(1).strip() if id_match else ""
+            if doc_id in HARNESS_META_TECHDEBT_IDS:
+                continue
+
+            if not re.search(r"\b(?:techdebt|tech-debt)\b", fm, re.IGNORECASE):
+                continue
+
+            rel_name = md_file.name
+            has_debt_ref = bool(re.search(r"DEBT-\d{3,}", body))
+            if not has_debt_ref:
+                errors.append(
+                    f"WARN: '{rel_name}' is tagged #techdebt but has no DEBT-XXX reference. "
+                    f"Register the debt in TechDebt.md and link it from this document."
+                )
+            elif not recorded_debt_ids:
+                errors.append(
+                    f"WARN: '{rel_name}' references DEBT-XXX but TechDebt.md registry is empty. "
+                    f"Register the referenced DEBT-XXX in the Active P3 Debt table."
+                )
+
     return errors
 
 
@@ -575,7 +629,8 @@ def check_untracked_todos(docs_dir: Path) -> List[str]:
     """
     Tier 1 / Tier 2 Non-blocking Quality Gate:
     Audits documentation files and scripts for untracked TODO/FIXME comments
-    that are not associated with a // ROADMAP-<ID> (or # ROADMAP-<ID> / <!-- ROADMAP-<ID>).
+    that are not associated with a // ROADMAP-<ID> or // DEBT-XXX
+    (or # ROADMAP-<ID> / <!-- ROADMAP-<ID> / <!-- DEBT-XXX).
     Returns a list of warning strings.
     """
     warnings = []
@@ -617,9 +672,9 @@ def check_untracked_todos(docs_dir: Path) -> List[str]:
         for line_no, line in enumerate(content.splitlines(), start=1):
             line_to_check = re.sub(r'`[^`]*`', '', line)
             if active_pattern.search(line_to_check):
-                if not re.search(r'ROADMAP-[A-Za-z0-9_-]+', line, re.IGNORECASE):
+                if not re.search(r'(?:ROADMAP-[A-Za-z0-9_-]+|DEBT-\d{3,})', line, re.IGNORECASE):
                     warnings.append(
-                        f"Untracked TODO without ROADMAP-<ID> reference in {rel_name}:{line_no}"
+                        f"Untracked TODO without ROADMAP-<ID> or DEBT-XXX reference in {rel_name}:{line_no}"
                     )
 
     return warnings
@@ -799,14 +854,21 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     asset_warnings = check_asset_weights(docs_dir)
     asset_layout_warnings = check_asset_layout(docs_dir)
     debt_results = check_tech_debt_integrity(docs_dir, file_map=file_map)
-    debt_errors = [e for e in debt_results if not e.startswith("Tech debt registry not found")]
+    debt_errors = [
+        e for e in debt_results
+        if not e.startswith("WARN:") and not e.startswith("Tech debt registry not found")
+    ]
     has_tasks_harness = (
         (docs_dir / "02_Tasks" / "Kanban.md").is_file()
         or (docs_dir / "02_Tasks" / "Roadmap.md").is_file()
         or (docs_dir / "docs" / "02_Tasks" / "Kanban.md").is_file()
         or (docs_dir / "docs" / "02_Tasks" / "Roadmap.md").is_file()
     )
-    debt_warnings = [e for e in debt_results if e.startswith("Tech debt registry not found") and has_tasks_harness]
+    debt_warnings = [
+        e for e in debt_results
+        if e.startswith("WARN:")
+        or (e.startswith("Tech debt registry not found") and has_tasks_harness)
+    ]
     todo_warnings = check_untracked_todos(docs_dir)
     has_errors = bool(broken_links or frontmatter_warnings or memory_errors or debt_errors)
 
@@ -911,7 +973,10 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
         for alw in asset_layout_warnings:
             print(f"⚠️  {alw}")
         for dw in debt_warnings:
-            print(f"⚠️  WARN: {dw}")
+            if dw.startswith("WARN:"):
+                print(f"⚠️  {dw}")
+            else:
+                print(f"⚠️  WARN: {dw}")
         for tw in todo_warnings:
             print(f"⚠️  WARN: {tw}")
         if not has_errors:

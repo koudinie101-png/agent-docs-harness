@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-16
+updated: 2026-10-18
 tags:
   - devlog
   - journal
@@ -15,6 +15,23 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-10-18] — Реализация TASK-082: Семантический кросс-чек TechDebt.md и поддержка кодовых тегов // DEBT-XXX в scripts/kb_lint.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]] — первая задача Фазы 21 «Сквозной жизненный цикл технического долга и кросс-режимная синхронизация» ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]):
+    1. `scripts/kb_lint.py`: `check_untracked_todos()` теперь принимает комментарии `// TODO(DEBT-XXX)` наравне с `// ROADMAP-<ID>` (regex `r'(?:ROADMAP-[A-Za-z0-9_-]+|DEBT-\d{3,})'`).
+    2. `scripts/kb_lint.py`: `check_tech_debt_integrity()` собирает множество `recorded_debt_ids` (активные и погашенные) и выполняет семантический кросс-чек планов/спецификаций с тегом `#techdebt`/`#tech-debt` (исключая мета-документы харнесса `HARNESS_META_TECHDEBT_IDS`): при отсутствии ссылки `DEBT-\d{3,}` в теле документа или пустом реестре выдает неблокирующее `WARN:`.
+    3. `scripts/kb_lint.py`: `run_linter()` маршрутизирует строки `WARN:` из `check_tech_debt_integrity()` в `debt_warnings` (неблокирующие), сохраняя синтаксические нарушения в `debt_errors` (Exit code 1), и избегает дублирования префикса `WARN: WARN:` в silent-режиме.
+    4. `tests/test_kb_lint.py`: добавлены 3 модульных теста — `test_check_untracked_todos_accepts_debt_xxx_reference`, `test_check_tech_debt_warns_when_techdebt_tagged_spec_has_empty_registry`, `test_check_tech_debt_passes_when_techdebt_spec_references_debt_id`.
+  - Зафиксирован процедурный инцидент песочницы DSH ([[06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]]) и паттерн `TRG-03` в [[06_Memory/patterns|patterns.md]].
+- **Результаты верификации:**
+  - `py -3 -m py_compile scripts/kb_lint.py tests/test_kb_lint.py` -> Exit code 0.
+  - `py -3 -m unittest tests/test_kb_lint.py` -> 42/42 тестов успешно пройдено (100% Pass, Exit code 0).
+  - `py -3 scripts/kb_lint.py --path docs` -> 215 файлов, 1974 викиссылки, 0 битых (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-083` (сквозной цикл `DEBT-XXX` в скиллах `kb-plan`/`kb-task`/`kb-triage`/`kb-complete`, правилах `AGENTS.md`, шаблонах и `install.py`).
+
+---
 
 ### [2026-10-16] — Выпуск официального релиза v0.20.0: Стандартизация хранилища визуальных ассетов и валидация топологии (Фаза 20)
 - **Что сделано:**

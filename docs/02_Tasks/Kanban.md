@@ -13,9 +13,14 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|План: Фаза 21 — Сквозной жизненный цикл технического долга и кросс-режимная синхронизация]] #plan #phase21 #techdebt #lint #skills
+  - [ ] [[Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py` #task #phase21 #techdebt #skills #agents
+  - [ ] [[Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) #task #phase21 #installer #e2e #spec
+
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py` (2026-10-18) #task #phase21 #techdebt #lint
 - [x] [[Plans/PLAN-020-asset-storage-hardening-and-layout-linting|План: Фаза 20 — Стандартизация хранилища визуальных ассетов, пространства имен TASK-XXX и валидация топологии]] (2026-10-16) #plan #phase20 #assets #ui-ux #lint
   - [x] [[Specs/20_AssetHardening/TASK-081-e2e-verification-bundle-rebuild-and-living-spec-sync|TASK-081]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-16) #task #phase20 #installer #e2e #spec
 - [x] [[Specs/20_AssetHardening/TASK-080-mockup-namespace-and-flows-convention-in-installer-and-templates|TASK-080]]: Пространства имен макетов `TASK-XXX/`, жизненный цикл `As-Is / To-Be` и каталог `mockups/flows/` в `install.py`, `TEMPLATE_TASK.md` и `AGENTS.md` (2026-10-16) #task #phase20 #installer #templates #agents

@@ -272,6 +272,17 @@ tags:
 
 ---
 
+## Фаза 21: Сквозной жизненный цикл технического долга и кросс-режимная синхронизация (Tech Debt Lifecycle & Cross-Mode Sync) — ⏳ В разработке
+**Цель:** Замкнуть сквозной жизненный цикл технического долга (`DEBT-XXX`) во всех режимах разработки (`/kb-plan`, `/kb-task`, `/kb-triage`, `/kb-complete`), разрешить кодовые комментарии `// DEBT-XXX` наравне с `// ROADMAP-<ID>`, унифицировать канонический тег `#techdebt` в таксономии/шаблонах и добавить семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` в `scripts/kb_lint.py`.  
+**Первоисточник плана:** [[Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]  
+**Нормативная база:** [[../04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023]], [[../03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]
+
+- [x] [[Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py`.
+- [ ] [[Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py`.
+- [ ] [[Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]]: Сборка монолита `build_installer.py`, E2E тестирование в `tests/test_installer.py` и синхронизация Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`).
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -284,6 +295,7 @@ tags:
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
+* 💡 **Символьные контракты скоупа задач и шаблоны спецификаций (Symbolic Scope & Fine-Grained Change Contracts):** внедрение иерархического контракта `Файл -> Символ/Метод -> Изменение` в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` взамен плоского списка файлов, исключение антипаттерна Line Drift и синхронизация в `install.py` — [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]].
 
 
 ---
@@ -295,3 +307,4 @@ tags:
 * ❌ **Встроенный генератор PDF-отчетов для руководства:** отклонен в пользу нативных возможностей агентов и экспорта Markdown — [[../../03_Decisions_ADR/ADR-0006-rejection-of-standalone-pdf-report-generator|ADR-0006]].
 * ❌ **Монолитный umbrella-скилл вместо модульных скиллов:** отклонен во избежание деградации слэш-команд в IDE и раздувания контекста — [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
 * ❌ **Отказ от автономного инсталлятора install.py и линтера kb_lint.py:** отклонен для сохранения Zero-Dependencies распространения и Tier 1 контроля — [[../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]].
+* ❌ **Фиксация диапазонов строк в задачах и микродетализация реализации в планах (Line Drift & Plan Overspecification):** отклонено из-за неизбежного дрейфа строк при коммитах, сбоев диффов у AI-агентов и нарушения уровней абстракции — [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]].

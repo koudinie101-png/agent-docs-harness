@@ -57,8 +57,9 @@ flowchart TD
 ### 2. Задачи и трекинг (`02_Tasks/`)
 * [[02_Tasks/Kanban|Канбан-доска]] — оперативные задачи (Backlog, In Progress, Done).
 * [[02_Tasks/Roadmap|Дорожная карта]] — стратегические фазы от MVP до релиза.
+* [[02_Tasks/TechDebt|Реестр техдолга (TechDebt.md)]] — централизованный учет технического долга `P3` (`DEBT-XXX`) и история его погашения.
 * `Inbox/` — буфер входящей обратной связи (`FB-*.md`) перед триажем (`/kb-triage`).
-* `Plans/` — концепции и планы фичей (Режим 1).
+* `Plans/` — концепции и планы фичей (Режим 1), включая [[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]].
 * `Specs/` — технические задания по фазам (Режим 2).
 * `Bugs/` — журнал дефектов и баг-репортов.
 * `Releases/` — журнал опубликованных релизов фаз по стандарту [[00_Templates/TEMPLATE_RELEASE|TEMPLATE_RELEASE]].
@@ -91,6 +92,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025: Архитектура самообучающегося контура дефектов (Defect Loop), слои надежности Quality Gates и фильтрация инициатив FB-GH-3]]
 * [[03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026: Контур UI/UX, управление визуальными ассетами и архитектура гетерогенных multi-target систем]]
 * [[03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027: Task-Scoped пространства имен визуальных макетов (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация топологии docs/assets/ в kb_lint.py]]
+* [[03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028: Сквозной жизненный цикл технического долга (DEBT-XXX), интеграция в режимы 1–3 и семантический контроль в kb_lint.py]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -115,6 +117,7 @@ flowchart TD
 * [[04_Research/RESEARCH-020-self-improving-defect-loop-and-quality-gates|RESEARCH-020: Самообучающийся контур дефектов, память об ошибках (Defect Loop) и слои качества Quality Gates (по мотивам FB-GH-3)]]
 * [[04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021: Архитектура UI/UX контура, визуальных ассетов и гетерогенных multi-target систем]]
 * [[04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022: Укрепление контура визуальных ассетов: Task-Scoped пространства имен (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация лейаута в kb_lint.py]]
+* [[04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023: Сквозной жизненный цикл технического долга (TechDebt.md), интеграция в режимы 1–3 и семантический контроль в kb_lint.py]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
