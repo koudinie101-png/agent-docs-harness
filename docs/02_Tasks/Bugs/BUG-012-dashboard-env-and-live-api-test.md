@@ -70,7 +70,7 @@ AssertionError: 'my-org/my-project (auto-detect)' not found in
 - [x] GREEN: после фикса оба теста проходят и с переменной, и без неё; реальных сетевых вызовов нет (`urlopen` замокан, тесты выполняются за ~0.01 с).
 - [x] Новый тест фиксирует приоритет `env` → `auto-detect` и отсутствие вызова `detect_github_repo` при наличии переменной.
 - [x] Полный сьют и линтер — 0 ошибок: 138 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 232 файла, 2183 ссылки, 0 битых.
-- [ ] Прогон `Rules Check` на GitHub Actions зелёный.
+- [x] Прогон `Rules Check` на GitHub Actions зелёный (run [39113878440](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/39113878440), коммит `6949cca`): шаг `Unit tests` успешен, 138 тестов на чистом `ubuntu-latest`.
 
 ## 7. Влияние и принятые решения
 * Продуктовое поведение дашборда менять не нужно: приоритет `env` корректен и нужен в CI/форках.

@@ -24,6 +24,7 @@ tags:
 - **Проверка:**
   - RED: с `GITHUB_REPOSITORY=koudinie101-png/agent-docs-harness` воспроизведён `AssertionError: 'my-org/my-project (auto-detect)' not found`; GREEN: оба теста зелёные и с переменной, и без неё, без реальной сети (~0.01 с).
   - Полный прогон: 138 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 0 битых ссылок.
+  - CI: `Rules Check` run 39113878440 на чистом `ubuntu-latest` — зелёный, шаг `Unit tests` успешен (138 тестов); Tier 1-гейт восстановлен после BUG-011 и BUG-012.
 - **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
   - `/kb-implement TASK-089` — Фаза 23 (Memory Integrity Guard); после зелёного `Rules Check` можно планировать `/kb-release` v0.23.0.
 
