@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: Пересборка бандла, E2E и Living Spec Sync (2026-10-18) #task #phase25 #symbolic-scope #installer #e2e #spec
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: Поведение Mode 2/3, `check_symbolic_scope()` и state-aware next step (2026-10-18) #task #phase25 #symbolic-scope #skills #lint #tests
