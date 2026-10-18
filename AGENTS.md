@@ -117,6 +117,7 @@ Every feature or architectural initiative follows structured stages:
 - **Output:** Approved plan file `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md`.
 - **Kanban:** Add task card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
 - **TechDebt Sync:** For a `#techdebt` phase/task, register the `DEBT-XXX` row in `docs/02_Tasks/TechDebt.md` (`Active P3 Debt`) and link it from `PLAN-XXX`.
+- **Research Evidence:** Промоушен из Icebox без `RESEARCH`/`ADR` требует явного `research_basis` в `PLAN-XXX` (`none` + однострочный `basis_note`); выбор между исследованием и планом остаётся за пользователем.
 
 ### 🟠 Mode 2: Task Specification (`/kb-task` or "Режим 2")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**

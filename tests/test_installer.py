@@ -1142,6 +1142,23 @@ class TestAgentDocsHarness(unittest.TestCase):
             inst_roadmap_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_ROADMAP.md").read_text(encoding="utf-8")
             self.assertIn("Отклоненные архитектурные идеи", inst_roadmap_tpl)
 
+    def test_evidence_nudge_source_guard(self):
+        """Tier 1: TASK-090 protects the Evidence Nudge wording from being lost again.
+
+        Reads the source skill file (not the bundled snapshot) so the guard stays
+        green until TASK-093 rebuilds the monolithic installer.
+        """
+        skill = (REPO_ROOT / ".agents" / "skills" / "kb-plan" / "SKILL.md").read_text(encoding="utf-8")
+        for marker in (
+            "Evidence Status",
+            "Evidence Nudge",
+            "🔬",
+            "🧪",
+            "⏸",
+            "Research Basis & Unvalidated Assumptions",
+        ):
+            self.assertIn(marker, skill, "kb-plan skill lost marker: %s" % marker)
+
     def test_19_undecided_preset_and_idea_flag(self):
         """Verify undecided preset, --idea CLI flag, SPEC.md discovery status, and kb_lint verification."""
         self.assertIn("undecided", install.STACK_PRESETS)

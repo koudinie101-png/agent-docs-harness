@@ -125,6 +125,7 @@ Output: `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR
 ### 🟡 Mode 1 -- Planning / RFC (`/kb-plan`)
 Planning phase. Focus on research and architecture; coordinate with user before implementation. Conceptual discussion, trade-offs, and Q&A.
 Output: approved plan `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card. For `#techdebt` plans, register `DEBT-XXX` in `docs/02_Tasks/TechDebt.md`.
+- **Research Evidence:** Promoting an Icebox item without `RESEARCH`/`ADR` requires an explicit `research_basis` in `PLAN-XXX` (`none` + one-line `basis_note`); research-vs-plan choice stays with the user.
 
 ### 🟠 Mode 2 -- Task Spec (`/kb-task`)
 Specification phase. Detailed file contracts, signatures, error handling, and Definition of Done (DoD).

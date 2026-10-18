@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-090: Evidence Status и Evidence Nudge в `/kb-plan` (Фаза 24)
+- **Что сделано:**
+  - [[02_Tasks/Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: ветка `No Argument` в `.agents/skills/kb-plan/SKILL.md` теперь ранжирует по Value Impact **и** Evidence Status (`🔬` валидировано / `🧪` гипотеза / `⏸` parked — вычисляется из ссылок `RESEARCH`/`ADR`, вручную в `Roadmap.md` не вносится) и содержит неблокирующий `Evidence Nudge` с опциями A/B/C и правилом рекомендации по обратимости (A — необратимые решения, B — обратимые).
+  - `rules/AGENTS_CORE.md`: строка `Research Evidence` добавлена в Mode 1 обоих документов корпуса (`client-agents` и `harness-agents`), без создания нового `RULE`-блока (инвентарь и пины `tests/test_rules_consistency.py` не менялись); `AGENTS.md` регенерирован через `scripts/gen_rules.py`.
+  - Регенерированы 12 golden-фикстур `client_agents__*` (адаптеры не изменились); добавлен Tier 1 `test_evidence_nudge_source_guard` в `tests/test_installer.py`, читающий файл-источник скилла (а не снимок бандла) — защита от повторной потери формулировки.
+  - Dry-run на текущем Icebox: 8 пунктов → 1 `🔬` («Символьные контракты», `RESEARCH-024`+`ADR-0029`), 7 `🧪`, 0 `⏸`.
+- **Проверка:**
+  - Полный прогон `python tmp/run_tests.py` — **147 тестов OK** (Exit code 0); `test_rules_golden`, `test_rules_consistency` и новый ассерт зелёные; `python scripts/gen_rules.py --check` — OK.
+  - Бюджет High-SNR: скиллы 30 654 байта (лимит 31 000, запас 346); лимит в тесте не менялся.
+  - `python scripts/kb_lint.py --path docs` — 238 файлов, 2283 ссылки, 0 битых.
+  - Первый точечный прогон `test_rules_consistency` упал на `PermissionError` в `tempfile.mkdtemp` — известный платформенный INC-003/TRG-03, повторён через sandbox-safe обёртку; новых дефектов и инцидентов нет.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-091`.
+
 ### [2026-10-18] — Релиз v0.23.0: Фаза 23 (Memory Integrity Guard)
 - **Что сделано:**
   - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.23.0|RELEASE-v0.23.0]] по завершении Фазы 23 ([[02_Tasks/Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]], [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]).

@@ -183,6 +183,7 @@ Output: `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR
 ### 🟡 Mode 1 -- Planning / RFC (`/kb-plan`)
 Planning phase. Focus on research and architecture; coordinate with user before implementation. Conceptual discussion, trade-offs, and Q&A.
 Output: approved plan `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card. For `#techdebt` plans, register `DEBT-XXX` in `docs/02_Tasks/TechDebt.md`.
+- **Research Evidence:** Promoting an Icebox item without `RESEARCH`/`ADR` requires an explicit `research_basis` in `PLAN-XXX` (`none` + one-line `basis_note`); research-vs-plan choice stays with the user.
 
 ### 🟠 Mode 2 -- Task Spec (`/kb-task`)
 Specification phase. Detailed file contracts, signatures, error handling, and Definition of Done (DoD).
@@ -403,6 +404,7 @@ Every feature or architectural initiative follows structured stages:
 - **Output:** Approved plan file `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md`.
 - **Kanban:** Add task card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
 - **TechDebt Sync:** For a `#techdebt` phase/task, register the `DEBT-XXX` row in `docs/02_Tasks/TechDebt.md` (`Active P3 Debt`) and link it from `PLAN-XXX`.
+- **Research Evidence:** Промоушен из Icebox без `RESEARCH`/`ADR` требует явного `research_basis` в `PLAN-XXX` (`none` + однострочный `basis_note`); выбор между исследованием и планом остаётся за пользователем.
 
 ### 🟠 Mode 2: Task Specification (`/kb-task` or "Режим 2")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**

@@ -1,7 +1,7 @@
 ---
 id: TASK-090
 title: "Evidence Status и Evidence Nudge в /kb-plan, Tier 2 правило в корпусе и Tier 1 защита формулировки"
-status: planned
+status: done
 type: task
 phase: 24
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-090 — Evidence Status и Evidence Nudge в `/kb-plan`
 
-> **ID:** TASK-090 | **Статус:** К реализации  
+> **ID:** TASK-090 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 24 | **План:** [[../../Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]] (R1, R2, R5), [[../../../03_Decisions_ADR/ADR-0011-intent-routing-and-icebox-prioritization-in-kb-plan|ADR-0011]] §2.2 (восстанавливаемый критерий), [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1/2/3), [[../../../04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025]]  
 > **Предшествующие задачи:** [[../22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]] (генерация `AGENTS.md`), [[../22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]] (Tier 1 структура корпуса)
@@ -147,23 +147,23 @@ def test_evidence_nudge_source_guard(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Компиляция: `python -m py_compile install.py scripts/gen_rules.py` (Exit code 0).
-- [ ] Дрейф корпуса: `python scripts/gen_rules.py --check` → `OK: AGENTS.md matches rules/AGENTS_CORE.md` (Exit code 0).
-- [ ] Golden-фикстуры: `python -m unittest tests.test_rules_golden -v` → OK (12 client + 12 adapter).
-- [ ] Структура корпуса: `python -m unittest tests.test_rules_consistency -v` → OK (инвентарь и пины не изменились).
-- [ ] Новый ассерт: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_evidence_nudge_source_guard -v` → OK.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → OK.
-- [ ] Бюджет скиллов: `python -c "from pathlib import Path; s=sum(f.stat().st_size for f in Path('.agents/skills').rglob('*.md')); print(s); assert s<=31000"` → OK.
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 broken links.
-- [ ] Dry-run §3.2 выполнен, таблица классификации зафиксирована в отчёте задачи.
-- [ ] 4-State UI / скриншоты: не применимо (интерфейс — текстовое сообщение Nudge в чате, GUI/TUI не затрагивается).
-- [ ] Замеры $\ge 3$ прогонов: не применимо (нет изменений производительности/токенов, кроме статического бюджета скиллов).
+- [x] Компиляция: `python -m py_compile install.py scripts/gen_rules.py` (Exit code 0).
+- [x] Дрейф корпуса: `python scripts/gen_rules.py --check` → `OK: AGENTS.md matches rules/AGENTS_CORE.md` (Exit code 0).
+- [x] Golden-фикстуры: `python -m unittest tests.test_rules_golden -v` → OK (3 теста; 12 client + 12 adapter).
+- [x] Структура корпуса: `python -m unittest tests.test_rules_consistency -v` → покрыто полным прогоном (13 тестов модуля OK).
+- [x] Новый ассерт: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_evidence_nudge_source_guard -v` → OK.
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **147 тестов OK**, Exit code 0.
+- [x] Бюджет скиллов: 30 654 байта ≤ 31 000 (запас 346), лимит теста не менялся.
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0 (238 файлов, 2283 ссылки, 0 broken).
+- [x] Dry-run §3.2 выполнен: 8 пунктов Icebox → **1 `🔬`** («Символьные контракты», `RESEARCH-024`+`ADR-0029`), **7 `🧪`**, **0 `⏸`**; Nudge срабатывает на любом из 7.
+- [x] 4-State UI / скриншоты: не применимо (интерфейс — текстовое сообщение Nudge в чате, GUI/TUI не затрагивается).
+- [x] Замеры $\ge 3$ прогонов: не применимо (нет изменений производительности/токенов, кроме статического бюджета скиллов).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Ветка `No Argument` ранжирует по Value Impact **+** Evidence Status и печатает `🔬`/`🧪`/`⏸` из ссылок.
-- [ ] `Evidence Nudge` содержит ровно 3 опции (A/B/C) и правило рекомендации по обратимости; Nudge не повторяется в сессии.
-- [ ] Строка `Research Evidence` присутствует в Mode 1 обоих документов корпуса; `AGENTS.md` регенерирован, `gen_rules.py --check` зелёный.
-- [ ] Tier 1 ассерт по файлу-источнику защищает маркеры от повторной потери; полный suite зелёный.
-- [ ] Бюджет скиллов ≤ 31 000 байт не нарушен; лимит в тесте не поднят.
-- [ ] Статус задачи обновляется в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] Ветка `No Argument` ранжирует по Value Impact **+** Evidence Status и печатает `🔬`/`🧪`/`⏸` из ссылок.
+- [x] `Evidence Nudge` содержит ровно 3 опции (A/B/C) и правило рекомендации по обратимости; Nudge не повторяется в сессии.
+- [x] Строка `Research Evidence` присутствует в Mode 1 обоих документов корпуса; `AGENTS.md` регенерирован, `gen_rules.py --check` зелёный.
+- [x] Tier 1 ассерт по файлу-источнику защищает маркеры от повторной потери; полный suite зелёный.
+- [x] Бюджет скиллов ≤ 31 000 байт не нарушен; лимит в тесте не поднят.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
