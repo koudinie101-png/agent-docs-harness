@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.23.0] - 2026-10-18
+
+### Added
+- **Memory Integrity Guard** (TASK-089, ADR-0025):
+  - `check_memory_consistency()` in `scripts/kb_lint.py`: referential integrity of `docs/06_Memory/` — every `INC-XXX` referenced from `patterns.md` exists in `Incidents/`, incident `id` matches the filename prefix, mandatory `target_pattern` is present in the index, and the `TRG ↔ INC` pair agrees. Advisory `WARN:` output in verbose and silent-on-success modes without changing the exit code.
+  - Incident procedure «Как завести инцидент» in `docs/Onboarding.md` §13 and 8 new unit tests in `tests/test_kb_lint.py`.
+
+### Changed
+- `patterns.md`: historical dangling `INC-001`/`INC-002` links replaced with the `seeded pattern (no archived report)` marker — the patterns stay, but no longer pass a non-existent report off as evidence.
+- Re-bundled standalone installer `install.py` / `dist/install.py` (167.1 KB / 171070 bytes).
+
+### Fixed
+- **CI test hermeticity (BUG-011, BUG-012):** `test_05_git_local_setup` now isolates `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and injects a deterministic identity (plus the `test_05b` graceful-degradation contract); `test_render_status_dashboard` no longer inherits `GITHUB_REPOSITORY` and mocks the GitHub HTTP boundary, with a new `env` → `auto-detect` priority test. `Rules Check` is green again.
+
 ## [0.22.0] - 2026-10-18
 
 ### Added
