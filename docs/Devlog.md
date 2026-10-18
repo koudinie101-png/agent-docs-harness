@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Релиз v0.26.0: Фаза 26 (Tech Debt Hardening)
+- **Что сделано:**
+  - Выпущен [[02_Tasks/Releases/RELEASE-v0.26.0|RELEASE-v0.26.0]] по завершении Фазы 26 (TASK-097–TASK-100).
+  - Собран монолит `install.py` / `dist/install.py`: **175 175 B**, SHA-256 `6eab6c96aae47a45af5e658560febbeab57c9d6801e1d27cf70a5bf4a6e57d8f`; тег `v0.26.0`.
+  - Dual-Export: внутренний `RELEASE-v0.26.0.md` и публичный `dist/RELEASE_NOTES.md` (Full Changelog `v0.25.0...v0.26.0`, без блока ADR).
+  - Закрыты DEBT-001…003; активный P3-долг пуст. `/kb-task` теперь автоматически линкует спеку в Roadmap.
+  - Синхронизированы `Roadmap.md` (ссылка на релиз) и `CHANGELOG.md` (`[0.26.0]`).
+- **Проверка:**
+  - Pre-flight: **166 тестов OK**; `kb_lint` — 250 файлов, 2448 ссылок, 0 битых; рабочее дерево чистое.
+  - GitHub-режим: `gh` аутентифицирован; публикация без silent-fallback.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-plan` — следующая инициатива из RESEARCH-027 (волна P0, например Docs Integrity Gate) или другой приоритет из Icebox.
+
 ### [2026-10-18] — TASK-100: выровнена нумерация разделов корпуса, закрыт DEBT-001; Фаза 26 завершена
 - **Что сделано:**
   - [[02_Tasks/Specs/26_TechDebt/TASK-100-align-rules-section-numbering|TASK-100]]: из шести заголовков `client-agents` убраны числовые префиксы 6–11; дисциплины 1–24 и `RULE`-маркеры не тронуты.

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.26.0] - 2026-10-18
+
+### Added
+- **Tech Debt Hardening** (TASK-097–TASK-100):
+  - `/kb-task` now links the new spec in the target phase's Roadmap line at creation (keeping `[ ]`); `/kb-complete` flips it to `[x]`.
+  - Tier 1 guards: `tests/test_ci_workflows.py` (Rules Check hardening) and `test_client_agents_sections_are_unnumbered` (no stale heading numbers).
+
+### Changed
+- `rules-check.yml` hardened: `permissions: contents: read`, `concurrency`/`cancel-in-progress`, branch-only trigger (no tags), `kb_lint` step, quiet tests.
+- `rules/AGENTS_CORE.md` (`client-agents`): removed stale numeric prefixes 6–11 from six section headings; 12 `client_agents` golden fixtures regenerated; `AGENTS.md` unchanged (no drift).
+- `docs/02_Tasks/Kanban.md`: removed two completed items from the Icebox duplicate.
+- Installer re-bundled: **175 175 B**, SHA-256 `6eab6c96aae47a45af5e658560febbeab57c9d6801e1d27cf70a5bf4a6e57d8f`; limits unchanged (176 000 / 31 000 / 30 000).
+
+### Fixed
+- Closed P3 debt: DEBT-001 (stale rules numbering), DEBT-002 (CI gate gaps), DEBT-003 (stale Kanban Icebox). Active P3 debt is empty.
+
 ## [0.25.0] - 2026-10-18
 
 ### Added
