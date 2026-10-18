@@ -1,7 +1,7 @@
 ---
 id: TASK-096
 title: "Пересборка бандла, E2E и Living Spec Sync для символьного скоупа"
-status: planned
+status: done
 type: task
 phase: 25
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-096 — Бандл, E2E и Living Spec Sync
 
-> **ID:** TASK-096 | **Статус:** К реализации  
+> **ID:** TASK-096 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 25 | **План:** [[../../Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]] (бюджеты), [[TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]], [[TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]
 
@@ -44,8 +44,14 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 * `[MODIFY]` `install.py`, `dist/install.py`:
   - Generated artifacts: только результат `python scripts/build_installer.py`; ручное редактирование `EMBEDDED_ASSETS_B64` запрещено.
+* `[MODIFY]` `.agents/skills/kb-complete/SKILL.md`:
+  - `10. **Next Step (State-Aware) & Stop & Yield Control:**`: восстановить фразу `Stop & Yield Control`, потерянную в TASK-095 (P2-регрессия, вскрытая пересборкой).
+* `[MODIFY]` `scripts/kb_lint.py`:
+  - `check_symbolic_scope()`: бюджетно-нейтральное сжатие (docstring, константы, разбор frontmatter) без изменения поведения.
 * `[MODIFY]` `tests/test_installer.py`:
   - `TestAgentDocsHarness.test_phase25_symbolic_scope_bundle_and_update()`: новый E2E (§3.3).
+  - `TestAgentDocsHarness.test_symbolic_scope_and_state_aware_skill_guards()`: + маркер `Stop & Yield Control` (Tier 1 защита от повторения регрессии).
+  - `TestAgentDocsHarness.test_16_high_snr_static_corpus_benchmarks()`: лимит `install.py` 175 000 → 176 000 (согласовано, §3.2).
 * `[MODIFY]` `SPEC.md`:
   - §2.3: пункт про `check_symbolic_scope`; §2.4: формулировки Режимов 2 и 3 (§3.4).
 * `[MODIFY]` `README.md`:
@@ -77,7 +83,9 @@ python scripts/build_installer.py
 1. Пересобрать и замерить.
 2. Если > 175 000 — сжать docstring/комментарии/константы `check_symbolic_scope()` без изменения поведения и пересобрать.
 3. Если всё ещё > 175 000 — **остановиться и согласовать** повышение лимита до 176 000 с записью причины в `Devlog.md` и ADR-0009. Молчаливое повышение запрещено.
-4. `test_16` проверяет `install ≤ 175 000`, `templates ≤ 30 000`, `skills ≤ 31 000`.
+4. `test_16` проверяет `install ≤ 176 000`, `templates ≤ 30 000`, `skills ≤ 31 000`.
+
+**Фактическое решение (2026-10-18, согласовано):** после двух проходов сжатия `install.py` = **175 083 B**; лимит повышен до **176 000** (запас 917 B). Шаблоны (29 826) и скиллы (30 610) остались в прежних лимитах. Причина повышения — новый Tier 1 `check_symbolic_scope()` (~3.6 KB исходного кода); это бюджет размера дистрибутива, а не контекстных токенов агента.
 
 ### 3.3. E2E в `tests/test_installer.py`
 
@@ -141,6 +149,8 @@ python scripts/build_installer.py
 ```
 
 Требования: герметичность (только `tempfile`, без сети/Git), проверка **установленного** артефакта, сохранение пользовательского ТЗ.
+
+**P2-регрессия, вскрытая пересборкой:** при слиянии шагов 10–11 в TASK-095 из `kb-complete` пропала фраза `Stop & Yield Control`; `test_20` оставался зелёным, потому что читал устаревший бандл. Фраза восстановлена в заголовке шага 10; source-guard расширен маркером, чтобы разрыв между источником и бандлом больше не маскировал потерю.
 
 ### 3.4. `SPEC.md`
 
@@ -218,20 +228,20 @@ python scripts/build_installer.py
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py`.
-- [ ] Бюджеты: `install.py ≤ 175 000`, шаблоны ≤ 30 000, скиллы ≤ 31 000 (или согласованное повышение по §3.2); `test_16` зелёный.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **163 теста OK** (162 + 1 E2E), Exit code 0.
-- [ ] E2E установленного артефакта: `test_phase25_symbolic_scope_bundle_and_update` → OK (свежая установка + `--update` + сохранение пользовательского ТЗ).
-- [ ] Living Spec: `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизированы (§3.4–§3.6).
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок, 0 `Symbolic Scope Warnings`.
-- [ ] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
-- [ ] Замеры $\ge 3$ прогонов: не применимо — статические байтовые бюджеты детерминированы.
+- [x] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py` = **175 083 B**.
+- [x] Бюджеты: `install.py` 175 083 ≤ 176 000 (лимит согласованно повышен), шаблоны 29 826 ≤ 30 000, скиллы 30 610 ≤ 31 000; `test_16` зелёный.
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **163 теста OK** (162 + 1 E2E), Exit code 0.
+- [x] E2E установленного артефакта: `test_phase25_symbolic_scope_bundle_and_update` → OK (свежая установка + `--update` + сохранение пользовательского ТЗ).
+- [x] Living Spec: `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизированы (§3.4–§3.6).
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок, 0 `Symbolic Scope Warnings`.
+- [x] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
+- [x] Замеры $\ge 3$ прогонов: не применимо — статические байтовые бюджеты детерминированы.
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `install.py` и `dist/install.py` пересобраны, идентичны, содержат новые шаблоны, скиллы и `check_symbolic_scope`.
-- [ ] Бюджеты зафиксированы; при превышении 175 000 — согласованное решение, а не молчаливый рост.
-- [ ] E2E свежей установки и `--update` зелёный; пользовательское ТЗ не перезаписано.
-- [ ] `SPEC.md` §2.3/§2.4, `README.md`, `docs/Onboarding.md` синхронизированы.
-- [ ] Полный suite и `kb_lint` зелёные.
-- [ ] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] `install.py` и `dist/install.py` пересобраны, идентичны (175 083 B), содержат новые шаблоны, скиллы и `check_symbolic_scope`.
+- [x] Бюджеты зафиксированы: `install.py` 175 083 ≤ 176 000 (лимит повышен согласованно), шаблоны и скиллы — без изменений лимитов.
+- [x] E2E свежей установки и `--update` зелёный; пользовательское ТЗ не перезаписано.
+- [x] `SPEC.md` §2.3/§2.4, `README.md`, `docs/Onboarding.md` синхронизированы.
+- [x] Полный suite (163 теста) и `kb_lint` зелёные; P2-регрессия `Stop & Yield Control` исправлена и закрыта source-guard маркером.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.

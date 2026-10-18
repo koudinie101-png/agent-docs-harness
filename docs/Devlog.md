@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-096: бандл, E2E и Living Spec Sync; Фаза 25 завершена
+- **Что сделано:**
+  - [[02_Tasks/Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: `scripts/build_installer.py` пересобрал `install.py` / `dist/install.py` — **175 083 B**, файлы идентичны. В бандл вошли символьный контракт шаблонов, скиллы Mode 2/3 и `check_symbolic_scope()`.
+  - Пересборка вскрыла P2-регрессию TASK-095: в `kb-complete` пропала фраза `Stop & Yield Control`, а `test_20` оставался зелёным на устаревшем бандле. Фраза восстановлена; source-guard расширен маркером. Инцидент не заводился: дефект пойман до релиза и механизирован.
+  - Бюджет: 175 083 > 175 000; по согласованию лимит `install.py` повышен до **176 000** (запас 917 B). Шаблоны 29 826 и скиллы 30 610 — лимиты не менялись. Это бюджет размера дистрибутива, а не контекстных токенов.
+  - E2E `test_phase25_symbolic_scope_bundle_and_update`: свежая установка содержит контракт, state-aware правило и линтер; `--update` обновляет устаревшие шаблон/скилл, пользовательское ТЗ сохраняется.
+  - Living Spec Sync: `SPEC.md` §2.3/§2.4, `README.md`, `docs/Onboarding.md`.
+- **Проверка:**
+  - `python tmp/run_tests.py` — **163 теста OK** (Exit code 0); `install.py` ≡ `dist/install.py` = 175 083 B.
+  - `kb_lint` — 243 файла, 0 битых ссылок, 0 `Symbolic Scope Warnings`; бюджеты: install 175 083 ≤ 176 000, templates 29 826, skills 30 610.
+  - P2-регрессия закрыта; инцидентов не заводилось.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 25 завершена: приёмочное тестирование по `docs/05_Testing/` и `/kb-release v0.25.0`; техдолг (DEBT-001…003) — после релиза.
+
 ### [2026-10-18] — TASK-095: поведение Mode 2/3, advisory-контракт и state-aware next step (Фаза 25)
 - **Что сделано:**
   - [[02_Tasks/Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: `/kb-task` теперь требует вложенные символы для кода и запрещает номера строк; `/kb-implement` локализует по именам символов. В `kb-complete` добавлен state-aware next step: `/kb-implement TASK-YYY` предлагается только при существующей спеке, иначе `/kb-task TASK-YYY`; Devlog-шаблон больше не хардкодит implement, шаги 10–11 объединены.

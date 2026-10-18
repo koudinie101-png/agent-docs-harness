@@ -10,13 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-024-symbolic-scope-and-task-contracts|План: Фаза 25 — Символьные контракты скоупа задач (Symbolic Scope)]] #plan #phase25 #symbolic-scope #task-spec #templates #lint
-
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: Пересборка бандла, E2E и Living Spec Sync (2026-10-18) #task #phase25 #symbolic-scope #installer #e2e #spec
-
 ## ✅ Готово (Done)
+
+- [x] [[Plans/PLAN-024-symbolic-scope-and-task-contracts|План: Фаза 25 — Символьные контракты скоупа задач (Symbolic Scope)]] (2026-10-18) #plan #phase25 #symbolic-scope #task-spec #templates #lint
+- [x] [[Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: Пересборка бандла, E2E и Living Spec Sync (2026-10-18) #task #phase25 #symbolic-scope #installer #e2e #spec
 
 - [x] [[Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: Поведение Mode 2/3, `check_symbolic_scope()` и state-aware next step (2026-10-18) #task #phase25 #symbolic-scope #skills #lint #tests
 

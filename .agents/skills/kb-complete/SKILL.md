@@ -42,7 +42,7 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
    - **Task Commit:** `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`.
    - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.
    - Push to remote if origin exists.
-10. **Next Step (State-Aware) & Stop & Yield:**
+10. **Next Step (State-Aware) & Stop & Yield Control:**
    - If all tasks in the current phase are `[x]`: recommend acceptance testing in `docs/05_Testing/` and `/kb-release <vX.Y.Z>`.
    - Else propose `/kb-implement TASK-YYY` only if its spec exists in `docs/02_Tasks/Specs/`; otherwise `/kb-task TASK-YYY`.
    - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets) and STOP.

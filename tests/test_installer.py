@@ -1066,9 +1066,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = canonical_size(skills_dir / "kb-onboard" / "SKILL.md")
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 175 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity audit)
+            # Installer size check (budget <= 176 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity audit, Phase 25 symbolic scope)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 175000, f"install.py exceeded budget: {installer_size} bytes (budget <= 175 KB)")
+            self.assertLessEqual(installer_size, 176000, f"install.py exceeded budget: {installer_size} bytes (budget <= 176 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -1203,8 +1203,63 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn("ADR-0029", task_skill)
         self.assertIn("symbol names", impl_skill)
         self.assertIn("ADR-0029", impl_skill)
-        for marker in ("State-Aware", "only if its spec exists", "/kb-task TASK-YYY", "<next command>"):
+        for marker in ("State-Aware", "only if its spec exists", "/kb-task TASK-YYY", "<next command>", "Stop & Yield Control"):
             self.assertIn(marker, complete_skill, "kb-complete lost marker: %s" % marker)
+
+    def test_phase25_symbolic_scope_bundle_and_update(self):
+        """TASK-096: symbol-scope contract and state-aware skill ship in the bundle."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "SymbolicApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="SymbolicApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            task_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_TASK.md").read_text(encoding="utf-8")
+            self.assertIn("Затрагиваемые файлы и скоуп символов", task_tpl)
+            self.assertIn("ClassName.method_name()", task_tpl)
+            micro_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_TASK_MICRO.md").read_text(encoding="utf-8")
+            self.assertNotIn("строка или блок", micro_tpl)
+            self.assertIn("символ(ы)", micro_tpl)
+
+            task_skill = (target / ".agents" / "skills" / "kb-task" / "SKILL.md").read_text(encoding="utf-8")
+            impl_skill = (target / ".agents" / "skills" / "kb-implement" / "SKILL.md").read_text(encoding="utf-8")
+            complete_skill = (target / ".agents" / "skills" / "kb-complete" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("nested symbols", task_skill)
+            self.assertIn("symbol names", impl_skill)
+            self.assertIn("only if its spec exists", complete_skill)
+
+            deployed_lint = (target / "scripts" / "kb_lint.py").read_text(encoding="utf-8")
+            self.assertIn("def check_symbolic_scope", deployed_lint)
+
+            # Simulate stale harness artifacts and a user-owned spec.
+            task_tpl_path = target / "docs" / "00_Templates" / "TEMPLATE_TASK.md"
+            task_tpl_path.write_text("# Legacy task template\n", encoding="utf-8")
+            complete_path = target / ".agents" / "skills" / "kb-complete" / "SKILL.md"
+            complete_path.write_text("# Legacy complete skill\n", encoding="utf-8")
+
+            user_spec = target / "docs" / "02_Tasks" / "Specs" / "01_MVP" / "TASK-099-user.md"
+            user_spec.parent.mkdir(parents=True, exist_ok=True)
+            user_body = (
+                "---\nid: TASK-099\ntitle: User Task\nstatus: planned\ntype: task\n"
+                "phase: 1\nparent_plan: PLAN-001\ncreated: 2026-10-18\n---\n"
+                "# User TASK-099\nCustom content\n"
+            )
+            user_spec.write_text(user_body, encoding="utf-8")
+
+            self.assertEqual(install.update_harness(target, backup=False), 0)
+
+            refreshed_tpl = task_tpl_path.read_text(encoding="utf-8")
+            self.assertIn("Затрагиваемые файлы и скоуп символов", refreshed_tpl)
+            refreshed_complete = complete_path.read_text(encoding="utf-8")
+            self.assertIn("only if its spec exists", refreshed_complete)
+            self.assertEqual(user_spec.read_text(encoding="utf-8"), user_body)
 
     def test_19_undecided_preset_and_idea_flag(self):
         """Verify undecided preset, --idea CLI flag, SPEC.md discovery status, and kb_lint verification."""

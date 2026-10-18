@@ -138,9 +138,9 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
 | **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. Ranks Icebox by value impact **and evidence status** (`🔬`/`🧪`/`⏸`), emits a non-blocking Evidence Nudge (A/B/C) for unvalidated items, and records `research_basis` provenance in the plan. Read-only planning; guides user with clear options and next steps. |
-| **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. Read-only specification; focuses on contracts before implementation. |
-| **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict execution of ONE task spec (TASK-XXX) or defect fix (BUG-XXX via TDD), verification, auto-completion, and Stop & Yield Control. |
-| **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
+| **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file and symbol contracts (`[NEW]`/`[MODIFY]`/`[DELETE]` with nested `Class.method()`, no line numbers), DoD, verification plan. Read-only specification; focuses on contracts before implementation. |
+| **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict execution of ONE task spec (TASK-XXX) or defect fix (BUG-XXX via TDD), locating code by symbol names rather than line numbers, verification, auto-completion, and Stop & Yield Control. |
+| **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`, and derives the next step from artifact state: `/kb-implement` only when the next spec exists, otherwise `/kb-task`. |
 | **`/kb-release`** | 🚀 Release Mgmt | Pre-flight checks, build hook execution to `dist/`, SHA-256 calculation, `RELEASE-vX.Y.Z.md` notes, defect release targeting, blocker validation, Roadmap sync, Dual-Mode publishing (GitHub / Local-Only). |
 | **`/kb-bug`** | 🐞 Mode 2B (Triage) | Isolated defect logging, root cause analysis (RCA), release targeting & blocker triage. Read-only analysis; enforces Stop & Yield Control. |
 | **`/kb-triage`** | 📥 Mode 2C (Triage) | Two-stage screening of `docs/02_Tasks/Inbox/` items, dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ with in-place status updates. Read-only triage; enforces Stop & Yield Control. |
@@ -157,6 +157,7 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
   python3 scripts/kb_lint.py --path docs
   ```
   It also performs an advisory plan-provenance check: a plan declaring `research_basis: none` without `basis_note` prints a `WARN:` without failing the build.
+  It also performs an advisory symbolic-scope check: an active task spec that lists a code file without a nested symbol, or uses `:L10-L20` anchors, prints a `WARN:` without failing the build (ADR-0029).
 * **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1

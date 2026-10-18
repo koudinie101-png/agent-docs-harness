@@ -23,12 +23,7 @@ if hasattr(sys.stdout, "reconfigure"):
 MEDIA_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
 VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}
 TASK_NAMESPACE_PATTERN = re.compile(r"^(?:TASK|BUG)-\d{3,}(?:-[a-zA-Z0-9_-]+)?$")
-CODE_FILE_EXTENSIONS = {
-    ".py", ".pyi", ".js", ".jsx", ".ts", ".tsx", ".swift", ".cs",
-    ".go", ".rs", ".java", ".kt", ".rb", ".php",
-    ".c", ".h", ".cpp", ".hpp", ".m", ".mm",
-}
-ACTIVE_SCOPE_STATUSES = {"planned", "in-progress", "in_progress"}
+CODE_FILE_EXTENSIONS = {".py", ".pyi", ".js", ".jsx", ".ts", ".tsx", ".swift", ".cs", ".go", ".rs", ".java", ".kt", ".rb", ".php", ".c", ".h", ".cpp", ".hpp", ".m", ".mm"}
 LINE_ANCHOR_RE = re.compile(
     r"(?:\b[\w./\\-]+\.\w+:L\d{1,5}\b|\bL\d{1,5}\s*[-–]\s*L?\d{1,5}\b)"
 )
@@ -603,53 +598,37 @@ def check_research_basis(docs_dir: Path) -> List[str]:
 
 
 def check_symbolic_scope(docs_dir: Path) -> List[str]:
-    """
-    Tier 1 Quality Gate (Non-blocking): active task specs must name nested code symbols.
-
-    ADR-0029: for [NEW]/[MODIFY] code files the spec must list a nested symbol
-    (Class.method(), function()) instead of line numbers. Historical `done`
-    specs and fast-track micro-specs are intentionally ignored.
-    Returns a list of warning strings (never blocks the linter).
-    """
-    warnings: List[str] = []
+    """ADR-0029: active task specs must name nested code symbols."""
+    warnings = []
     specs_dir = docs_dir / "02_Tasks" / "Specs"
     if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
         specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
     if not specs_dir.is_dir():
         return warnings
 
-    for spec_file in sorted(specs_dir.rglob("*.md")):
-        if spec_file.name.startswith("TEMPLATE_"):
-            continue
+    for spec_file in specs_dir.rglob("*.md"):
         try:
-            text = spec_file.read_text(encoding="utf-8", errors="replace")
+            text = spec_file.read_text(encoding="utf-8")
         except OSError:
             continue
-        if not text.startswith("---"):
-            continue
+
         parts = text.split("---", 2)
-        if len(parts) < 3:
+        if not text.startswith("---") or len(parts) < 3:
             continue
         frontmatter = parts[1]
 
-        type_match = re.search(r"^type:\s*([^\s#]+)", frontmatter, re.MULTILINE)
-        if not type_match or type_match.group(1).strip().lower() != "task":
-            continue
-        status_match = re.search(r"^status:\s*([^\s#]+)", frontmatter, re.MULTILINE)
-        if not status_match or status_match.group(1).strip().lower() not in ACTIVE_SCOPE_STATUSES:
+        if "type: task" not in frontmatter or not re.search(
+            r"^status:\s*(?:planned|in-progress|in_progress)\b", frontmatter, re.MULTILINE
+        ):
             continue
 
-        section_match = re.search(
-            r"^##\s+2\.[^\n]*\n([\s\S]*?)(?=^##\s|\Z)", text, re.MULTILINE
-        )
-        if not section_match:
+        section = re.search(r"^##\s+2\.[^\n]*\n([\s\S]*?)(?=^##\s|\Z)", text, re.MULTILINE)
+        if not section:
             continue
-        section = section_match.group(1)
+        section = section.group(1)
 
         if LINE_ANCHOR_RE.search(section):
-            warnings.append(
-                "WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name
-            )
+            warnings.append("WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name)
 
         lines = section.splitlines()
         for idx, line in enumerate(lines):
@@ -659,7 +638,7 @@ def check_symbolic_scope(docs_dir: Path) -> List[str]:
             marker, raw_path = item.group(1), item.group(2).strip()
             if marker not in ("NEW", "MODIFY"):
                 continue
-            if Path(raw_path).suffix.lower() not in CODE_FILE_EXTENSIONS:
+            if Path(raw_path).suffix not in CODE_FILE_EXTENSIONS:
                 continue
 
             has_symbol = False
@@ -1200,9 +1179,8 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print()
 
         if symbolic_warnings:
-            print(f"⚠️ Symbolic Scope Warnings ({len(symbolic_warnings)}):")
-            for sw in symbolic_warnings:
-                print(f"   • {sw}")
+            print("⚠️ Symbolic Scope Warnings (%d):" % len(symbolic_warnings))
+            print("\n".join("   • " + sw for sw in symbolic_warnings))
             print()
 
         if asset_warnings:
@@ -1257,10 +1235,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             else:
                 print(f"⚠️  WARN: {rw}")
         for sw in symbolic_warnings:
-            if sw.startswith("WARN:"):
-                print(f"⚠️  {sw}")
-            else:
-                print(f"⚠️  WARN: {sw}")
+            print(f"⚠️  {sw}" if sw.startswith("WARN:") else f"⚠️  WARN: {sw}")
         for aw in asset_warnings:
             print(f"⚠️  {aw}")
         for alw in asset_layout_warnings:
