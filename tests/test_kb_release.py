@@ -263,6 +263,48 @@ status: done
                 self.assertEqual(status_token["mode"], "github")
                 self.assertEqual(status_token.get("publish_provider"), "rest_api")
 
+    def test_regression_remote_credentials_not_leaked_into_release_outputs(self):
+        """P1: PATs embedded in the git remote must never reach release docs or public notes."""
+        cred_url = "https://owner:gho_SECRETTOKEN123@github.com/myorg/myproject.git"
+        self.assertEqual(
+            kb_release.sanitize_repo_url(cred_url),
+            "https://github.com/myorg/myproject",
+        )
+        self.assertEqual(
+            kb_release.sanitize_repo_url("git@github.com:myorg/myproject.git"),
+            "https://github.com/myorg/myproject",
+        )
+        self.assertEqual(kb_release.sanitize_repo_url(""), "")
+
+        env_info = {"has_git": True, "mode": "github", "branch": "main", "remote_url": cred_url}
+        artifacts = [{
+            "name": "install.py",
+            "path": "dist/install.py",
+            "size": "1.00 KB",
+            "sha256": "a" * 64,
+        }]
+        phase_data = {
+            "tasks": [{"id": "TASK-082", "title": "Lint", "link": "../Specs/21_TechDebtLifecycle/TASK-082"}],
+            "bugs": [],
+            "adrs": [],
+        }
+
+        doc = kb_release.generate_release_markdown(
+            version="0.21.0", phase_num=21, env_info=env_info,
+            artifacts=artifacts, phase_data=phase_data, summary="Summary",
+        )
+        notes = kb_release.generate_public_release_notes(
+            version="0.21.0", phase_num=21, env_info=env_info,
+            artifacts=artifacts, phase_data=phase_data, summary="Summary",
+            repo_root=self.test_root,
+        )
+
+        for output in (doc, notes):
+            self.assertNotIn("gho_SECRETTOKEN123", output)
+            self.assertIn("https://github.com/myorg/myproject/", output)
+        self.assertIn("https://github.com/myorg/myproject/releases/tag/v0.21.0", doc)
+        self.assertIn("https://github.com/myorg/myproject/blob/main/docs/", notes)
+
     def test_cli_execution_with_dry_run_and_output(self):
         dist_dir = self.test_root / "dist"
         dist_dir.mkdir()

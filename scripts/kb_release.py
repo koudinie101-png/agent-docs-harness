@@ -52,6 +52,27 @@ def load_env_local(repo_root: Optional[Path] = None):
         pass
 
 
+def sanitize_repo_url(url: str) -> str:
+    """
+    Normalizes a Git remote URL into a public HTTPS repository URL.
+
+    Strips embedded credentials (https://user:token@host/...) that would otherwise
+    leak into RELEASE-vX.Y.Z.md frontmatter and public dist/RELEASE_NOTES.md,
+    converts scp-style SSH remotes to HTTPS, and drops a trailing '.git'.
+    """
+    if not url:
+        return ""
+    cleaned = url.strip()
+    # scp-like syntax: git@github.com:owner/repo.git -> https://github.com/owner/repo.git
+    cleaned = re.sub(r"^[A-Za-z0-9._-]+@([A-Za-z0-9.-]+):(?!//)", r"https://\1/", cleaned)
+    # Strip userinfo from scheme URLs: https://user:token@host/... -> https://host/...
+    cleaned = re.sub(r"^([A-Za-z][A-Za-z0-9+.-]*://)[^/@]+@", r"\1", cleaned)
+    cleaned = cleaned.rstrip("/")
+    if cleaned.endswith(".git"):
+        cleaned = cleaned[:-4]
+    return cleaned
+
+
 def detect_release_environment(repo_root: Optional[Path] = None, explicit_mode: str = "auto") -> Dict[str, Any]:
     """
     Detects repository and environment capabilities:
@@ -132,7 +153,8 @@ def detect_release_environment(repo_root: Optional[Path] = None, explicit_mode: 
                 )
                 if res_remote.returncode == 0:
                     status["has_remote"] = True
-                    remote_url = res_remote.stdout.strip()
+                    # Never persist credentials embedded in the remote URL (e.g. PATs).
+                    remote_url = sanitize_repo_url(res_remote.stdout)
                     status["remote_url"] = remote_url
                     if "github.com" in remote_url.lower():
                         status["is_github"] = True
@@ -734,10 +756,7 @@ def generate_release_markdown(
     remote_url = env_info.get("remote_url", "")
     gh_release_url = ""
     if mode == "github" and remote_url:
-        # Convert git url to https
-        clean_url = remote_url.replace("git@github.com:", "https://github.com/")
-        if clean_url.endswith(".git"):
-            clean_url = clean_url[:-4]
+        clean_url = sanitize_repo_url(remote_url)
         gh_release_url = f"{clean_url}/releases/tag/{tag}"
 
     is_cumulative = phases is not None and len(phases) > 1
@@ -888,9 +907,7 @@ def convert_wikilinks_to_github_markdown(text: str, repo_url: str = "", branch: 
     """
     clean_repo_url = ""
     if repo_url:
-        clean_repo_url = repo_url.replace("git@github.com:", "https://github.com/").rstrip("/")
-        if clean_repo_url.endswith(".git"):
-            clean_repo_url = clean_repo_url[:-4]
+        clean_repo_url = sanitize_repo_url(repo_url)
 
     def replace_wikilink(match):
         is_embed = bool(match.group(1))
@@ -1034,9 +1051,7 @@ def generate_public_release_notes(
     diff_url = ""
 
     if remote_url:
-        clean_repo_url = remote_url.replace("git@github.com:", "https://github.com/").rstrip("/")
-        if clean_repo_url.endswith(".git"):
-            clean_repo_url = clean_repo_url[:-4]
+        clean_repo_url = sanitize_repo_url(remote_url)
         if "github.com/" in clean_repo_url:
             repo_path = clean_repo_url.split("github.com/", 1)[1]
             raw_install_url = f"https://raw.githubusercontent.com/{repo_path}/{branch}/install.py"
