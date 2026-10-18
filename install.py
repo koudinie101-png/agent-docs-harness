@@ -1124,6 +1124,17 @@ def get_agent_rule_specs(target_dir: Path, project_name: str, stack_key: str, do
     ]
 
 
+def client_safe_memory_patterns(content: str) -> str:
+    """Strip harness incident links from the seed patterns deployed to client projects.
+
+    Incident reports in docs/06_Memory/Incidents/ are harness-internal and are not
+    shipped with the installer, so seed patterns must not reference INC ids the
+    client archive cannot contain. The maintainer copy of patterns.md keeps its
+    real links; only the deployed seed is neutralized.
+    """
+    return re.sub(r"\s*->\s*INC-\d{3}", " seeded pattern (no archived report)", content)
+
+
 def deploy_infrastructure(target_dir: Path, assets: dict, stack_key: str, today_str: str, project_name: str = "") -> tuple:
     docs_dir = target_dir / "docs"
     tpl_dir = docs_dir / "00_Templates"
@@ -1171,7 +1182,7 @@ def deploy_infrastructure(target_dir: Path, assets: dict, stack_key: str, today_
             target_file.parent.mkdir(parents=True, exist_ok=True)
             # Never overwrite existing patterns.md to protect procedural memory!
             if not target_file.is_file():
-                target_file.write_text(content, encoding="utf-8")
+                target_file.write_text(client_safe_memory_patterns(content), encoding="utf-8")
     return tpl_count, skills_count
 
 

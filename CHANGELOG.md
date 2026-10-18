@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `patterns.md`: historical dangling `INC-001`/`INC-002` links replaced with the `seeded pattern (no archived report)` marker — the patterns stay, but no longer pass a non-existent report off as evidence.
-- Re-bundled standalone installer `install.py` / `dist/install.py` (167.1 KB / 171070 bytes).
+- Installer now deploys a client-safe seed copy of `patterns.md`: harness-only `-> INC-XXX` links are neutralized because incident reports are not shipped, so a fresh client project lints with zero memory warnings while the maintainer copy keeps its real traceability. Covered by `test_30`.
+- Re-bundled standalone installer `install.py` / `dist/install.py` (167.6 KB / 171639 bytes).
 
 ### Fixed
 - **CI test hermeticity (BUG-011, BUG-012):** `test_05_git_local_setup` now isolates `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and injects a deterministic identity (plus the `test_05b` graceful-degradation contract); `test_render_status_dashboard` no longer inherits `GITHUB_REPOSITORY` and mocks the GitHub HTTP boundary, with a new `env` → `auto-detect` priority test. `Rules Check` is green again.

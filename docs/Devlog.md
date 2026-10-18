@@ -19,12 +19,14 @@ tags:
 ### [2026-10-18] — Релиз v0.23.0: Фаза 23 (Memory Integrity Guard)
 - **Что сделано:**
   - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.23.0|RELEASE-v0.23.0]] по завершении Фазы 23 ([[02_Tasks/Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]], [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]).
-  - Собран монолит `install.py` / `dist/install.py` через `scripts/build_release.py` (167.1 KB / 171 070 байт, SHA-256 `29881fa8c7a33bae47a18ce99f382f881b0a22378125d33a3d030957f5ecb423`); хэши `install.py` и `dist/install.py` совпадают.
+  - Собран монолит `install.py` / `dist/install.py` через `scripts/build_release.py` (167.6 KB / 171 639 байт, SHA-256 `985871c5c255719e285b21aad06df20ec13cf6ca12b99e4baf9225a4fcb0c222`); хэши `install.py` и `dist/install.py` совпадают.
   - Сгенерированы Dual-Export артефакты: внутренний `RELEASE-v0.23.0.md` (со scoped-блоком ADR) и публичный `dist/RELEASE_NOTES.md` (High-SNR GFM без ADR, Quick Install, таблица SHA-256, Full Changelog `v0.22.0...v0.23.0`).
   - Синхронизирована база знаний: `Roadmap.md` (Фаза 23 помечена завершённой, ссылка на релиз), `CHANGELOG.md` (секция `[0.23.0]`, включая BUG-011/BUG-012) и `Devlog.md`.
+  - Устранён регресс, выявленный первым прогоном Release Automation: свежий клиентский проект получал memory-WARN из-за harness-only `-> INC-003/004/005` в seed-копии `patterns.md`. Добавлена deploy-санитизация `client_safe_memory_patterns()` (repo-копия сохраняет реальную трассировку), бюджет High-SNR бандла поднят до 175 KB, в `test_30` добавлены регрессионные проверки (0 memory-предупреждений у клиента, `-> INC-003` у мейнтейнера).
 - **Проверка:**
   - Pre-flight: 146 тестов OK; `kb_lint` — 232 файла, 2185 ссылок, 0 битых; tracked-дерево чистое; phase-23 задачи `[x]`; README/SPEC актуальны.
-  - Опубликован GitHub Release `v0.23.0` с артефактом `dist/install.py`; `Rules Check` для релизного коммита — зелёный.
+  - Первый tag `v0.23.0` был пересоздан после красного `Rules Check` (устаревший размерный бюджет и клиентские seed-ссылки в пересобранном бандле); финальный прогон после фикса — зелёный.
+  - Опубликован GitHub Release `v0.23.0` с артефактом `dist/install.py`.
 - **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
   - `/kb-research` или `/kb-plan` для следующей инициативы из Icebox (например, автоматизированная ротация процедурной памяти).
 

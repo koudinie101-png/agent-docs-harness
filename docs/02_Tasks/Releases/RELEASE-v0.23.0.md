@@ -11,8 +11,8 @@ mode: "github"
 artifacts:
   - name: "install.py"
     path: "dist/install.py"
-    size: "167.1 KB"
-    sha256: "29881fa8c7a33bae47a18ce99f382f881b0a22378125d33a3d030957f5ecb423"
+    size: "167.6 KB"
+    sha256: "985871c5c255719e285b21aad06df20ec13cf6ca12b99e4baf9225a4fcb0c222"
 tags:
   - release
   - changelog
@@ -56,7 +56,7 @@ roadmap: "[[../Roadmap|Дорожная карта]]"
 
 | Файл | Размер | Контрольная сумма (SHA-256) | Расположение |
 | :--- | :--- | :--- | :--- |
-| `install.py` | 167.1 KB | `29881fa8c7a33bae47a18ce99f382f881b0a22378125d33a3d030957f5ecb423` | `dist/install.py` |
+| `install.py` | 167.6 KB | `985871c5c255719e285b21aad06df20ec13cf6ca12b99e4baf9225a4fcb0c222` | `dist/install.py` |
 
 ---
 

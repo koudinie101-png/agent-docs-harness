@@ -1055,9 +1055,9 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 170 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle)
+            # Installer size check (budget <= 175 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity audit)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 170000, f"install.py exceeded budget: {installer_size} bytes (budget <= 170 KB)")
+            self.assertLessEqual(installer_size, 175000, f"install.py exceeded budget: {installer_size} bytes (budget <= 175 KB)")
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
@@ -2126,6 +2126,23 @@ class TestAgentDocsHarness(unittest.TestCase):
             content = patterns_file.read_text(encoding="utf-8")
             self.assertIn("Память процедурных ошибок: Активные паттерны", content)
             self.assertIn("[TRG-01]", content)
+            # Client seed must not point at harness-only incident reports (not shipped with the installer)
+            self.assertNotIn("-> INC-", content)
+            self.assertIn("seeded pattern (no archived report)", content)
+            repo_patterns = (REPO_ROOT / "docs" / "06_Memory" / "patterns.md").read_text(encoding="utf-8")
+            self.assertIn("-> INC-003", repo_patterns, "maintainer patterns.md must keep real incident traceability")
+
+            # Fresh client project must lint without memory-consistency warnings
+            early_lint = subprocess.run(
+                [sys.executable, str(target / "scripts" / "kb_lint.py"), "--path", str(target / "docs"), "--verbose"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=10,
+            )
+            self.assertEqual(early_lint.returncode, 0)
+            self.assertNotIn("Memory Consistency Warnings", early_lint.stdout)
 
             # 2. Modify patterns.md with user-accumulated pattern
             custom_pattern = "- [TRG-99] Custom Error | Description | Fix | (Count: 5, Sev: High) -> INC-099\n"
