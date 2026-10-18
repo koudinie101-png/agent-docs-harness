@@ -124,6 +124,7 @@ flowchart TD
 * [[04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024: Символьные контракты скоупа задач (Symbolic Scope) и отказ от фиксации номеров строк]]
 * [[04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025: Research-Evidence Gate при промоушене из Icebox: критерий зрелости в /kb-plan и поле research_basis в PLAN-XXX]]
 * [[04_Research/RESEARCH-026-competitive-landscape-and-differentiation|RESEARCH-026: Конкурентный ландшафт фреймворков для AI-агентов и дифференциация agent-docs-harness]]
+* [[04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027: Что перенять у конкурентов: аудит лучших практик и adoption-бэклог]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.

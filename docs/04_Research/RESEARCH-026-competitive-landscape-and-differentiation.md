@@ -26,6 +26,7 @@ related_adrs:
 
 > **Теги:** #research #competitive-analysis #market #differentiation #docs-as-code #spec-driven-development #ai-agents  
 > **Канбан:** [[../02_Tasks/Kanban|Канбан-доска]] | **Дорожная карта:** [[../02_Tasks/Roadmap|Roadmap.md]]  
+> **Продолжение:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027: Что перенять у конкурентов]]  
 > **Связанные ADR:** [[../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]], [[../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]], [[../03_Decisions_ADR/ADR-0016-single-task-execution-barrier-and-stop-on-complete-protocol|ADR-0016]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]], [[../03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]]
 
 ---
