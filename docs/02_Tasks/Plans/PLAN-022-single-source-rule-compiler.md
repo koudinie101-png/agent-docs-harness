@@ -152,7 +152,7 @@ graph LR
   * `.github/workflows/rules-check.yml`, шаг `--check` в префлайт `.github/workflows/release.yml`, exclusion workflow в `bundle_assets()`.
 - [x] [[../Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`).
   * Уникальность `RULE-ID`, канонический инвентарь, выводимость адаптеров, отсутствие маркеров в выводе, детерминизм, «hard error без корпуса», `--check` на чистом дереве.
-- [ ] [[../Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация, E2E-синхронизация, Living Spec и пересборка монолита.
+- [x] [[../Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация, E2E-синхронизация, Living Spec и пересборка монолита.
   * Удаление числового литерала из заголовка, достройка нумерованного индекса governance-правилами, обновление `tests/test_installer.py`, `SPEC.md`, `README.md`, `docs/Onboarding.md`, `dist/install.py`.
 
 ---

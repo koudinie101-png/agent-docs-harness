@@ -1,7 +1,7 @@
 ---
 id: TASK-088
 title: "Редакционная консолидация правил, E2E-синхронизация инсталлятора, Living Spec и пересборка dist/install.py"
-status: planned
+status: done
 type: task
 phase: 22
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-088 — Редакционная консолидация правил, E2E, Living Spec и пересборка `dist/install.py`
 
-> **ID:** TASK-088 | **Статус:** К реализации  
+> **ID:** TASK-088 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 22 | **План:** [[../../Plans/PLAN-022-single-source-rule-compiler|PLAN-022]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Предшественники:** [[../../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]], [[../../Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]], [[../../Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]  
 > **Нормативная база:** ADR-0030 (создаётся в [[../../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]), [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
@@ -99,17 +99,17 @@ python -c "import install; a=install.unpack_assets(); print('rules/AGENTS_CORE.m
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Гейт корпуса: `python scripts/gen_rules.py --check` (Exit code 0).
-- [ ] Полный прогон: `python -m unittest discover -s tests` (Exit code 0; включая `tests.test_rules_consistency` и `tests.test_rules_golden`).
-- [ ] E2E-установка: `python install.py --name Demo --stack python --agents all --no-git` во временном каталоге → `AGENTS.md` содержит `## Docs-as-Code Disciplines`, 24 пункта, `DEBT-XXX`; адаптеры ≤ 35 строк.
-- [ ] Сборка: `python scripts/build_installer.py` (Exit code 0), затем `python -c "print(open('dist/install.py',encoding='utf-8').read()==open('install.py',encoding='utf-8').read())"` → `True`.
-- [ ] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Гейт корпуса: `python scripts/gen_rules.py --check` (Exit code 0).
+- [x] Полный прогон: `python -m unittest discover -s tests` (Exit code 0; включая `tests.test_rules_consistency` и `tests.test_rules_golden`).
+- [x] E2E-установка: `python install.py --name Demo --stack python --agents all --no-git` во временном каталоге → `AGENTS.md` содержит `## Docs-as-Code Disciplines`, 24 пункта, `DEBT-XXX`; адаптеры ≤ 35 строк.
+- [x] Сборка: `python scripts/build_installer.py` (Exit code 0), затем `python -c "print(open('dist/install.py',encoding='utf-8').read()==open('install.py',encoding='utf-8').read())"` → `True`.
+- [x] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Заголовок без числового литерала; индекс содержит 24 пункта, ID каждого правила встречается ровно один раз.
-- [ ] `tests/test_installer.py` обновлён и зелёный; полный прогон — 100% pass.
-- [ ] `SPEC.md`, `README.md`, `docs/Onboarding.md` описывают новый порядок правки правил (Living Spec).
-- [ ] `install.py` и `dist/install.py` пересобраны и идентичны; бандл содержит корпус.
-- [ ] Статус обновлён в ТЗ, Канбане (`Done`), Плане (`PLAN-022`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.
+- [x] Заголовок без числового литерала; индекс содержит 24 пункта, ID каждого правила встречается ровно один раз.
+- [x] `tests/test_installer.py` обновлён и зелёный; полный прогон — 100% pass.
+- [x] `SPEC.md`, `README.md`, `docs/Onboarding.md` описывают новый порядок правки правил (Living Spec).
+- [x] `install.py` и `dist/install.py` пересобраны и идентичны; бандл содержит корпус.
+- [x] Статус обновлён в ТЗ, Канбане (`Done`), Плане (`PLAN-022`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.

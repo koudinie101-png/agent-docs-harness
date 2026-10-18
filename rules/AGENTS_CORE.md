@@ -10,7 +10,7 @@
 
 ---
 
-## Docs-as-Code (20 Disciplines)
+## Docs-as-Code Disciplines
 Language: {{lang_instruction}}
 <!-- RULE: SESSION-READ -->
 1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).
@@ -71,6 +71,19 @@ Language: {{lang_instruction}}
 <!-- /RULE: QUALITY-GATES -->
 <!-- RULE: FOUR-STATE-UI -->
 20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated), store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).
+<!-- /RULE: FOUR-STATE-UI -->
+<!-- RULE: TECH-DEBT -->
+21. **Tech Debt Governance:** Fix P1/P2 immediately; log every P3 finding and planned `#techdebt` refactoring as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md`; migrate resolved rows to Resolved Debt in `/kb-complete`.
+<!-- /RULE: TECH-DEBT -->
+<!-- RULE: PRIOR-ART -->
+22. **Prior-Art Gate:** Before designing new modules, classes, or subsystems, inspect the existing codebase and the standard library; reinventing wheels and duplicate parallel abstractions are prohibited.
+<!-- /RULE: PRIOR-ART -->
+<!-- RULE: TRACEABLE-TAGS -->
+23. **Traceable Backlog Tags:** Untracked `TODO` / `FIXME` comments are prohibited; annotate deferred work as `// ROADMAP-<ID>` or `// DEBT-XXX`.
+<!-- /RULE: TRACEABLE-TAGS -->
+<!-- RULE: BENCHMARKS -->
+24. **Benchmark Persistence:** Performance, latency, memory or token claims require >= 3 reproducible runs; discard the first (cold start) and record the command, environment and average metric.
+<!-- /RULE: BENCHMARKS -->
 
 ### 🎨 Obsidian Graph & Taxonomy
 Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
@@ -103,8 +116,6 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-<!-- /RULE: FOUR-STATE-UI -->
-<!-- RULE: TECH-DEBT -->
 ## 💳 8. Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
 
 - Code review findings and secondary defects are triaged into two strict tiers:
@@ -116,8 +127,6 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-<!-- /RULE: TECH-DEBT -->
-<!-- RULE: PRIOR-ART -->
 ## 🏛️ 9. Prior-Art Gate Invariant
 
 - Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and standard library for existing solutions.
@@ -125,8 +134,6 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-<!-- /RULE: PRIOR-ART -->
-<!-- RULE: TRACEABLE-TAGS -->
 ## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
 
 - Untracked 'hanging' TODO or FIXME comments without roadmap/debt linkage are strictly prohibited.
@@ -134,8 +141,6 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-<!-- /RULE: TRACEABLE-TAGS -->
-<!-- RULE: BENCHMARKS -->
 ## ⏱️ 11. Benchmark Persistence («Замер = артефакт»)
 
 - All performance, latency, memory, or token claims must be verified via a series of >= 3 reproducible runs.
@@ -143,7 +148,6 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-<!-- /RULE: BENCHMARKS -->
 <!-- RULE: ANTI-ECHO -->
 ## 🔇 Anti-Echo Response Protocol
 

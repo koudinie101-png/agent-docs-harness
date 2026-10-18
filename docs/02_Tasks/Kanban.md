@@ -10,15 +10,14 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-022-single-source-rule-compiler|План: Фаза 22 — Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler)]] (2026-10-18) #plan #phase22 #ssot #rules #codegen
-- [ ] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация правил, E2E-синхронизация, Living Spec и пересборка `dist/install.py` (2026-10-18) #task #phase22 #e2e #spec
-
 
 ## ⏳ В работе (In Progress)
 
 
 ## ✅ Готово (Done)
 
+- [x] [[Plans/PLAN-022-single-source-rule-compiler|План: Фаза 22 — Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler)]] (2026-10-18) #plan #phase22 #ssot #rules #codegen
+- [x] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация правил, E2E-синхронизация, Living Spec и пересборка `dist/install.py` (2026-10-18) #task #phase22 #e2e #spec
 - [x] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа правил (`tests/test_rules_consistency.py`) (2026-10-18) #task #phase22 #tests #quality-gates
 - [x] [[Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, CI-гейт и exclusion workflow (2026-10-18) #task #phase22 #codegen #ci
 - [x] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18) #task #phase22 #ssot #rules #installer
