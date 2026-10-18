@@ -15,6 +15,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: Целостность процедурной памяти: `check_memory_consistency()`, чистка висячих INC-ссылок и процедура заведения инцидента (2026-10-18) #task #phase23 #memory #lint
+
 
 ## ✅ Готово (Done)
 
