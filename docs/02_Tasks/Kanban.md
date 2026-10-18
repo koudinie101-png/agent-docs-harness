@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-022-single-source-rule-compiler|План: Фаза 22 — Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler)]] (2026-10-18) #plan #phase22 #ssot #rules #codegen
+
 
 ## ⏳ В работе (In Progress)
 
