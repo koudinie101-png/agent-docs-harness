@@ -76,7 +76,7 @@ Run
 - [x] GREEN: после фикса тот же запуск проходит; тест зелёный и с настроенной, и с пустой глобальной identity (проверено дважды: обычное окружение и «враждебное» identity-free, `tmp/repro_bug011.py`).
 - [x] `test_05b` подтверждает graceful-деградацию без synthetic-коммита.
 - [x] Полный сьют и линтер — 0 ошибок: 137 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03), `kb_lint` — 232 файла, 2177 ссылок, 0 битых.
-- [ ] Прогон `Rules Check` на GitHub Actions зелёный — *шаг `Unit tests` по git-identity закрыт; общий workflow остаётся красным из-за отдельно отслеживаемого [[BUG-012-dashboard-env-and-live-api-test|BUG-012]] (Single-Task Barrier), итоговая проверка гейта — после `/kb-implement BUG-012`.*
+- [x] Прогон `Rules Check` на GitHub Actions (run [39113479217](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/39113479217), коммит `b759bb2`): на чистом `ubuntu-latest` `test_05`/`test_05b` зелёные (137 тестов, `failures=1`); единственное падение — `test_render_status_dashboard` из отдельно отслеживаемого [[BUG-012-dashboard-env-and-live-api-test|BUG-012]] (Single-Task Barrier), общий статус workflow станет зелёным после его закрытия.
 
 ## 7. Влияние и принятые решения
 * Красный гейт блокирует мёрж/релизные проверки и создаёт ложное впечатление сломанного продукта; сам установщик при этом ведёт себя корректно.

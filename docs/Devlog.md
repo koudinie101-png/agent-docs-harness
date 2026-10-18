@@ -25,6 +25,7 @@ tags:
 - **Проверка:**
   - RED: пустые глобальный/системный конфиги без identity → `test_05` падает с `128 != 0`; GREEN: тест зелёный и с настроенной, и с пустой глобальной identity (включая «враждебное» identity-free окружение).
   - Полный прогон: 137 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 232 файла, 2177 ссылок, 0 битых.
+  - CI: `Rules Check` run 39113479217 на чистом `ubuntu-latest` — 137 тестов, `failures=1`, `test_05`/`test_05b` зелёные; единственное падение — `test_render_status_dashboard` из [[02_Tasks/Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]] (Single-Task Barrier).
 - **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
   - `/kb-implement BUG-012` — второй блокер `Rules Check` (`test_render_status_dashboard` и живой GitHub API).
 
