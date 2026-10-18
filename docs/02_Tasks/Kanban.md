@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Rules Check — `test_05_git_local_setup` зависит от глобальной Git identity, падает на чистом runner'е (`128 != 0`) — P1, блокер v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
+- [ ] [[Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: Rules Check — `test_render_status_dashboard` зависит от `GITHUB_REPOSITORY` и ходит в живой GitHub API — P1, блокер v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
 
 ## ⏳ В работе (In Progress)
 
