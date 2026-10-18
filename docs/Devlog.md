@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-095: поведение Mode 2/3, advisory-контракт и state-aware next step (Фаза 25)
+- **Что сделано:**
+  - [[02_Tasks/Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: `/kb-task` теперь требует вложенные символы для кода и запрещает номера строк; `/kb-implement` локализует по именам символов. В `kb-complete` добавлен state-aware next step: `/kb-implement TASK-YYY` предлагается только при существующей спеке, иначе `/kb-task TASK-YYY`; Devlog-шаблон больше не хардкодит implement, шаги 10–11 объединены.
+  - `scripts/kb_lint.py`: `check_symbolic_scope()` — неблокирующий аудит активных спек (`planned`/`in-progress`): кодовый `[MODIFY]`/`[NEW]` без вложенного символа и маркеры `:L10-L20` дают `WARN:` при Exit code 0; `done` и fast-track молчат.
+  - 6 unit-тестов в `tests/test_kb_lint.py` и Tier 1 `test_symbolic_scope_and_state_aware_skill_guards` в `tests/test_installer.py` (читает файлы-источники скиллов, не бандл).
+  - Бюджет скиллов: 30 610 B (−12 B к 30 622) — правка `kb-complete` оказалась компактнее старого блока; лимит 31 000 не тронут. `install.py` не пересобирался — TASK-096.
+- **Проверка:**
+  - Полный прогон `python tmp/run_tests.py` — **162 теста OK** (Exit code 0); `py_compile` — 0; `kb_lint` — 242 файла, 2346 ссылок, 0 битых, 0 `Symbolic Scope Warnings`.
+  - Точечный source-guard — OK; бюджетный `test_16` зелёный. Инцидентов нет.
+  - Living Spec Sync (`SPEC.md` §2.3, `README.md`, `Onboarding.md`) — в TASK-096 по плану: бандл ещё не пересобран.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-096` — спеки TASK-096 ещё нет (проверка состояния по новому правилу `kb-complete`), поэтому implement не предлагается.
+
 ### [2026-10-18] — TASK-094: символьный контракт в шаблонах и Tier 1 source-guard (Фаза 25)
 - **Что сделано:**
   - [[02_Tasks/Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: §2 `TEMPLATE_TASK.md` переведён на иерархический контракт «Файл → символ → изменение» (`ClassName.method_name()`, `function_name(arg: Type) -> Ret`) с явным запретом номеров строк; в `TEMPLATE_TASK_MICRO.md` подсказка «конкретная функция, строка или блок» заменена символьной. Обе копии (`templates/` и `docs/00_Templates/`) идентичны, parity зелёный.

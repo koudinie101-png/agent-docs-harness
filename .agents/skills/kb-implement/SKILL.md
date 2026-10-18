@@ -18,7 +18,7 @@ Use when the user runs `/kb-implement <TASK-XXX | BUG-XXX>` or begins implementa
    - Ознакомиться с `docs/06_Memory/patterns.md` (если существует) перед внесением правок.
    - Учесть защитные правила (Windows paths, mock leaks, API drifts).
 1. **Sync & Context:**
-   - If `TASK-XXX`: read `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`. Confirm affected files and Verification Plan.
+   - If `TASK-XXX`: read `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`. Confirm affected files, symbols, and Verification Plan.
    - If `BUG-XXX`: read `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md`. Confirm reproduction steps and Root Cause Analysis (RCA).
    - Sync base branch: `git pull --rebase` (if remote exists).
 2. **Branching Strategy:**
@@ -26,7 +26,7 @@ Use when the user runs `/kb-implement <TASK-XXX | BUG-XXX>` or begins implementa
    - **Feature Branch (Complex Target / Review):** `git checkout -b feat/<target>-<slug>`.
 3. **Execute Implementation:**
    - **For Tasks (`TASK-XXX`):**
-     * Modify and create only the files listed in section 2 of the specification (`[NEW]`, `[MODIFY]`, `[DELETE]`).
+     * Modify and create only the files and symbols listed in section 2; locate code by symbol names, never by line numbers (ADR-0029).
      * Adhere to project architecture, Zero Dependencies, and platform conventions.
    - **For Defects (`BUG-XXX` — Regression-First TDD Pipeline):**
      * **RED:** Create or run reproduction test (from `regression_test` in bug report). Verify test failure reproducing the defect.

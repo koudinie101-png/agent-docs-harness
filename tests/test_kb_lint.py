@@ -1157,6 +1157,112 @@ date: 2026-10-15
         self.assertEqual(res, [])
 
 
+    def _write_scope_spec(self, name, section2, status="planned", spec_type="task"):
+        spec = self.docs_dir / "02_Tasks" / "Specs" / f"{name}.md"
+        spec.write_text(
+            "---\n"
+            f"id: {name}\n"
+            "title: Scope Test\n"
+            f"status: {status}\n"
+            f"type: {spec_type}\n"
+            "phase: 1\n"
+            "parent_plan: PLAN-001\n"
+            "created: 2026-10-01\n"
+            "---\n"
+            f"# {name}\n\n{section2}\n",
+            encoding="utf-8",
+        )
+        return spec
+
+    def test_symbolic_scope_missing_nested_symbol_warns(self):
+        """TASK-095: active code contract without a nested symbol -> WARN, exit 0."""
+        self._write_scope_spec(
+            "TASK-200",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `scripts/core.py` — изменение без символа",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertIn("Symbolic Scope Warnings (1)", output)
+        self.assertIn("without a nested symbol", output)
+
+    def test_symbolic_scope_nested_symbol_passes(self):
+        """TASK-095: nested symbol satisfies the contract."""
+        self._write_scope_spec(
+            "TASK-201",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `scripts/core.py`:\n"
+            "  - `ConfigParser.load_env()` — изменение",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("without a nested symbol", captured.getvalue())
+
+    def test_symbolic_scope_done_task_is_silent(self):
+        """TASK-095: historical done specs are not audited."""
+        self._write_scope_spec(
+            "TASK-202",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `scripts/core.py` — без символа",
+            status="done",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("without a nested symbol", captured.getvalue())
+
+    def test_symbolic_scope_fast_track_is_silent(self):
+        """TASK-095: fast-track micro-specs are out of scope."""
+        self._write_scope_spec(
+            "TASK-203",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `scripts/core.py` — без символа\n"
+            "## 3. План верификации (Verification Plan)\n"
+            "- [ ] python -m unittest",
+            spec_type="fast-track",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("without a nested symbol", captured.getvalue())
+
+    def test_symbolic_scope_line_anchor_warns(self):
+        """TASK-095: :L10-L20 anchors are prohibited by ADR-0029."""
+        self._write_scope_spec(
+            "TASK-204",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `scripts/core.py`:\n"
+            "  - `ConfigParser.load_env()` — см. :L10-L20",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertIn("line-number anchors", output)
+        self.assertNotIn("without a nested symbol", output)
+
+    def test_symbolic_scope_non_code_file_is_silent(self):
+        """TASK-095: docs/config files do not require symbols."""
+        self._write_scope_spec(
+            "TASK-205",
+            "## 2. Затрагиваемые файлы и скоуп символов\n"
+            "* `[MODIFY]` `docs/README.md` — без символа",
+        )
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("without a nested symbol", captured.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()
 

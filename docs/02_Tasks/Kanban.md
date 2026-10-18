@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: Поведение Mode 2/3, `check_symbolic_scope()` и state-aware next step (2026-10-18) #task #phase25 #symbolic-scope #skills #lint #tests
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: Поведение Mode 2/3, `check_symbolic_scope()` и state-aware next step (2026-10-18) #task #phase25 #symbolic-scope #skills #lint #tests
 
 - [x] [[Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: Символьный контракт в шаблонах, Tier 1 source-guard и замер бюджетов (2026-10-18) #task #phase25 #symbolic-scope #templates #tests
 

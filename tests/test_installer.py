@@ -1192,6 +1192,20 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertNotIn("строка или блок", micro_tpl)
         self.assertIn("ADR-0029", micro_tpl)
 
+    def test_symbolic_scope_and_state_aware_skill_guards(self):
+        """Tier 1 (TASK-095): behavior wording must not be lost again."""
+        root = REPO_ROOT / ".agents" / "skills"
+        task_skill = (root / "kb-task" / "SKILL.md").read_text(encoding="utf-8")
+        impl_skill = (root / "kb-implement" / "SKILL.md").read_text(encoding="utf-8")
+        complete_skill = (root / "kb-complete" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("nested symbols", task_skill)
+        self.assertIn("ADR-0029", task_skill)
+        self.assertIn("symbol names", impl_skill)
+        self.assertIn("ADR-0029", impl_skill)
+        for marker in ("State-Aware", "only if its spec exists", "/kb-task TASK-YYY", "<next command>"):
+            self.assertIn(marker, complete_skill, "kb-complete lost marker: %s" % marker)
+
     def test_19_undecided_preset_and_idea_flag(self):
         """Verify undecided preset, --idea CLI flag, SPEC.md discovery status, and kb_lint verification."""
         self.assertIn("undecided", install.STACK_PRESETS)

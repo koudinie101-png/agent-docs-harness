@@ -23,7 +23,7 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
    - For `BUG-XXX`: if tracked in a Roadmap phase, mark milestone `[x]`.
 4. **Append Devlog:**
    - In `docs/Devlog.md`: record summary of changes and test verification results using semantic format:
-     * For tasks: `- **Рекомендуемый следующий шаг (Ожидает команды пользователя):** \`/kb-implement TASK-YYY\`.`
+     * For tasks: `- **Рекомендуемый следующий шаг (Ожидает команды пользователя):** \`<next command>\`.`
      * For bugs: note resolution via TDD with link to regression test.
 5. **Living Spec Sync:**
    - If task or fix modified public CLI flags, APIs, or system architecture: update `SPEC.md` and `README.md` in that same session.
@@ -42,9 +42,7 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
    - **Task Commit:** `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`.
    - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.
    - Push to remote if origin exists.
-10. **Phase Completion Nudge:**
-   - If all tasks in the current phase are now `[x]`, recommend running acceptance testing in `docs/05_Testing/` and executing `/kb-release <vX.Y.Z>`.
-11. **Terminal Step: Stop & Yield Control:**
-   - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets).
-   - Propose next command to user (e.g. `/kb-implement <NEXT>` or `/kb-release`).
-   - STRICTLY STOP calling tools. Yield control to user and wait for explicit prompt.
+10. **Next Step (State-Aware) & Stop & Yield:**
+   - If all tasks in the current phase are `[x]`: recommend acceptance testing in `docs/05_Testing/` and `/kb-release <vX.Y.Z>`.
+   - Else propose `/kb-implement TASK-YYY` only if its spec exists in `docs/02_Tasks/Specs/`; otherwise `/kb-task TASK-YYY`.
+   - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets) and STOP.

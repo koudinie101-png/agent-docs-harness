@@ -1,7 +1,7 @@
 ---
 id: TASK-095
 title: "Поведение Mode 2/3, advisory-контракт и state-aware next step"
-status: planned
+status: done
 type: task
 phase: 25
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-095 — Поведение Mode 2/3 и advisory-контракт
 
-> **ID:** TASK-095 | **Статус:** К реализации  
+> **ID:** TASK-095 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 25 | **План:** [[../../Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]], [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1 advisory), [[TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]] (P2-находка)
 
@@ -197,9 +197,8 @@ def check_symbolic_scope(docs_dir: Path) -> List[str]:
 
 Базовая линия: **30 654 B** по `tests/test_installer.py` (канонический LF-размер; мой прямой замер — 30 622 B). Лимит — 31 000 B.
 
-* Ожидаемый прирост: `kb-task` ~+55 B, `kb-implement` ~+35 B, `kb-complete` ~+95 B → **~+185 B**.
-* Цель: `≤ +300 B` (≤ 30 954 по тесту). Если не влезаем — сжимать существующие формулировки, лимит не поднимать.
-* Проверка — полный suite (`test_16_high_snr_static_corpus_benchmarks`), а не ручной замер.
+* Фактический итог: **30 610 B** (−12 B к прямому замеру 30 622): `kb-task` +51 B, `kb-implement` +30 B, `kb-complete` −93 B (объединение шагов 10–11 и generic Devlog-шаблон).
+* Лимит 31 000 B соблюдён; `test_16_high_snr_static_corpus_benchmarks` зелёный.
 
 ### 3.7. Совместимость
 
@@ -209,19 +208,19 @@ def check_symbolic_scope(docs_dir: Path) -> List[str]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → все тесты OK (6 новых lint + 1 source-guard), Exit code 0.
-- [ ] Точечный source-guard (без tempfile): `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_and_state_aware_skill_guards` → OK.
-- [ ] Синтаксис: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py tests/test_installer.py` → Exit code 0.
-- [ ] Бюджет скиллов: полный suite зелёный по `test_16`; фактический размер зафиксирован в отчёте (цель ≤ +300 B, лимит 31 000).
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок, 0 `Symbolic Scope Warnings`.
-- [ ] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
-- [ ] Замеры $\ge 3$ прогонов: не применимо — статический байтовый бюджет детерминирован.
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **162 теста OK**, Exit code 0 (6 новых lint + 1 source-guard).
+- [x] Точечный source-guard (без tempfile): `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_and_state_aware_skill_guards` → OK.
+- [x] Синтаксис: `python -m py_compile scripts/kb_lint.py tests/test_kb_lint.py tests/test_installer.py` → Exit code 0.
+- [x] Бюджет скиллов: прямой канонический замер **30 610 B** (≤ 31 000; −12 B к 30 622); `test_16` зелёный.
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок, 0 `Symbolic Scope Warnings`.
+- [x] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
+- [x] Замеры $\ge 3$ прогонов: не применимо — статический байтовый бюджет детерминирован.
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Три скилла обновлены; Tier 1 source-guard зелёный.
-- [ ] `check_symbolic_scope()` реализована, интегрирована в `run_linter()` и покрыта 6 тестами.
-- [ ] `kb-complete` предлагает implement только при существующей спеке; Devlog-шаблон больше не хардкодит `/kb-implement`.
-- [ ] `kb_lint` в репозитории: 0 битых ссылок и 0 symbolic-предупреждений.
-- [ ] Полный suite зелёный; бюджет скиллов ≤ 31 000 B (прирост ≤ +300 B).
-- [ ] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] Три скилла обновлены; Tier 1 source-guard зелёный.
+- [x] `check_symbolic_scope()` реализована, интегрирована в `run_linter()` и покрыта 6 тестами.
+- [x] `kb-complete` предлагает implement только при существующей спеке; Devlog-шаблон больше не хардкодит `/kb-implement`.
+- [x] `kb_lint` в репозитории: 0 битых ссылок и 0 symbolic-предупреждений.
+- [x] Полный suite зелёный (162 теста); бюджет скиллов 30 610 B ≤ 31 000 B.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.

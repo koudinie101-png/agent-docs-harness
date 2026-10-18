@@ -9,7 +9,7 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
 
 ## 🚨 Constraints
 * **READ-ONLY:** Modifying or creating project code files is STRICTLY PROHIBITED.
-* **Exact Contracts:** All file changes must be explicitly marked as `[NEW]`, `[MODIFY]`, or `[DELETE]`.
+* **Exact Contracts:** Mark changes as `[NEW]`, `[MODIFY]`, or `[DELETE]`; for code, name nested symbols (`Class.method()`), never line numbers (ADR-0029).
 
 ## Procedure
 1. **Spec Status Check (Zero-State Guard):**

@@ -23,6 +23,17 @@ if hasattr(sys.stdout, "reconfigure"):
 MEDIA_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".canvas", ".excalidraw"}
 VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}
 TASK_NAMESPACE_PATTERN = re.compile(r"^(?:TASK|BUG)-\d{3,}(?:-[a-zA-Z0-9_-]+)?$")
+CODE_FILE_EXTENSIONS = {
+    ".py", ".pyi", ".js", ".jsx", ".ts", ".tsx", ".swift", ".cs",
+    ".go", ".rs", ".java", ".kt", ".rb", ".php",
+    ".c", ".h", ".cpp", ".hpp", ".m", ".mm",
+}
+ACTIVE_SCOPE_STATUSES = {"planned", "in-progress", "in_progress"}
+LINE_ANCHOR_RE = re.compile(
+    r"(?:\b[\w./\\-]+\.\w+:L\d{1,5}\b|\bL\d{1,5}\s*[-–]\s*L?\d{1,5}\b)"
+)
+FILE_CONTRACT_RE = re.compile(r"^\s*[\*\-]\s*`?\[(NEW|MODIFY|DELETE)\]`?\s*`([^`]+)`")
+NESTED_SYMBOL_RE = re.compile(r"^\s{2,}[\*\-]\s+\S")
 HARNESS_META_TECHDEBT_IDS = {
     "PLAN-019",
     "PLAN-021",
@@ -591,6 +602,81 @@ def check_research_basis(docs_dir: Path) -> List[str]:
     return warnings
 
 
+def check_symbolic_scope(docs_dir: Path) -> List[str]:
+    """
+    Tier 1 Quality Gate (Non-blocking): active task specs must name nested code symbols.
+
+    ADR-0029: for [NEW]/[MODIFY] code files the spec must list a nested symbol
+    (Class.method(), function()) instead of line numbers. Historical `done`
+    specs and fast-track micro-specs are intentionally ignored.
+    Returns a list of warning strings (never blocks the linter).
+    """
+    warnings: List[str] = []
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
+        specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir():
+        return warnings
+
+    for spec_file in sorted(specs_dir.rglob("*.md")):
+        if spec_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            text = spec_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if not text.startswith("---"):
+            continue
+        parts = text.split("---", 2)
+        if len(parts) < 3:
+            continue
+        frontmatter = parts[1]
+
+        type_match = re.search(r"^type:\s*([^\s#]+)", frontmatter, re.MULTILINE)
+        if not type_match or type_match.group(1).strip().lower() != "task":
+            continue
+        status_match = re.search(r"^status:\s*([^\s#]+)", frontmatter, re.MULTILINE)
+        if not status_match or status_match.group(1).strip().lower() not in ACTIVE_SCOPE_STATUSES:
+            continue
+
+        section_match = re.search(
+            r"^##\s+2\.[^\n]*\n([\s\S]*?)(?=^##\s|\Z)", text, re.MULTILINE
+        )
+        if not section_match:
+            continue
+        section = section_match.group(1)
+
+        if LINE_ANCHOR_RE.search(section):
+            warnings.append(
+                "WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name
+            )
+
+        lines = section.splitlines()
+        for idx, line in enumerate(lines):
+            item = FILE_CONTRACT_RE.match(line)
+            if not item:
+                continue
+            marker, raw_path = item.group(1), item.group(2).strip()
+            if marker not in ("NEW", "MODIFY"):
+                continue
+            if Path(raw_path).suffix.lower() not in CODE_FILE_EXTENSIONS:
+                continue
+
+            has_symbol = False
+            for follow in lines[idx + 1:]:
+                if FILE_CONTRACT_RE.match(follow) or follow.startswith("## "):
+                    break
+                if NESTED_SYMBOL_RE.match(follow):
+                    has_symbol = True
+                    break
+            if not has_symbol:
+                warnings.append(
+                    "WARN: task '%s' modifies code '%s' without a nested symbol (ADR-0029)"
+                    % (spec_file.name, raw_path)
+                )
+    return warnings
+
+
 def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[str]:
     """
     Tier 1 Quality Gate (Non-blocking):
@@ -1027,6 +1113,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     fast_track_warnings = check_fast_track_specs(docs_dir)
     phase_warnings = check_phase_consistency(docs_dir)
     research_warnings = check_research_basis(docs_dir)
+    symbolic_warnings = check_symbolic_scope(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
     memory_warnings = check_memory_consistency(docs_dir)
     asset_warnings = check_asset_weights(docs_dir)
@@ -1112,6 +1199,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {rw}")
             print()
 
+        if symbolic_warnings:
+            print(f"⚠️ Symbolic Scope Warnings ({len(symbolic_warnings)}):")
+            for sw in symbolic_warnings:
+                print(f"   • {sw}")
+            print()
+
         if asset_warnings:
             print(f"⚠️ Asset Weight Warnings ({len(asset_warnings)}):")
             for aw in asset_warnings:
@@ -1163,6 +1256,11 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"⚠️  {rw}")
             else:
                 print(f"⚠️  WARN: {rw}")
+        for sw in symbolic_warnings:
+            if sw.startswith("WARN:"):
+                print(f"⚠️  {sw}")
+            else:
+                print(f"⚠️  WARN: {sw}")
         for aw in asset_warnings:
             print(f"⚠️  {aw}")
         for alw in asset_layout_warnings:
