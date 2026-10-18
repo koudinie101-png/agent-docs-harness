@@ -10,6 +10,7 @@
 - [TRG-01] Windows Path Compatibility | Сырые прямые/обратные слеши в регулярных выражениях ломают поиск на Windows | Использовать pathlib.Path или нормализацию .replace('\\', '/') | (Count: 3, Sev: High) -> INC-001
 - [TRG-02] Mock False Confidence | Мок-тест проверяет аргументы вызова вместо реального контракта CLI | Для внешних утилит обязателен живой smoke-тест без моков | (Count: 2, Sev: High) -> INC-002
 - [TRG-03] DSH Sandbox tempfile.mkdtemp Mode 0o700 | Под Windows-песочницей DSH `tempfile.mkdtemp()` (os.mkdir 0o700) создаёт каталог, в котором запрещено создавать дочерние файлы/папки (PermissionError WinError 5), ломая unittest/E2E | Прогонять тесты через обёртку, патчащую `tempfile.mkdtemp` на `os.mkdir(name, 0o777)` | (Count: 1, Sev: High) -> INC-003
+- [TRG-04] Path.write_text Invalid Newline Truncation | `Path.write_text(..., newline="<invalid>")` открывает файл на запись (усекая его) и только затем валидирует newline, поэтому `ValueError` оставляет целевой файл пустым | Для скриптовых перезаписей использовать `write_bytes(text.encode("utf-8"))`; после перезаписи проверять размер файла и `git status` | (Count: 1, Sev: High) -> INC-004
 
 ---
 

@@ -99,6 +99,13 @@ def bundle_assets() -> dict:
         assets["docs/06_Memory/patterns.md"] = memory_patterns.read_text(encoding="utf-8")
         print(f"  • Bundled memory patterns: patterns.md ({len(assets['docs/06_Memory/patterns.md'])} chars)")
 
+    # 8. Collect single-source rules corpus (TASK-085)
+    rules_corpus = REPO_ROOT / "rules" / "AGENTS_CORE.md"
+    if not rules_corpus.is_file():
+        raise RuntimeError(f"Rules corpus not found: {rules_corpus}")
+    assets["rules/AGENTS_CORE.md"] = rules_corpus.read_text(encoding="utf-8")
+    print(f"  • Bundled rules corpus: rules/AGENTS_CORE.md ({len(assets['rules/AGENTS_CORE.md'])} chars)")
+
     return assets
 
 

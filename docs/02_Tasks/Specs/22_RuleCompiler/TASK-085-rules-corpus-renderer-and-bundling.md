@@ -1,7 +1,7 @@
 ---
 id: TASK-085
 title: "Корпус правил rules/AGENTS_CORE.md, рендерер в install.py, упаковка в бандл и ADR-0030"
-status: planned
+status: done
 type: task
 phase: 22
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-085 — Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030
 
-> **ID:** TASK-085 | **Статус:** К реализации  
+> **ID:** TASK-085 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 22 | **План:** [[../../Plans/PLAN-022-single-source-rule-compiler|PLAN-022]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]] (Zero-Deps), [[../../../03_Decisions_ADR/ADR-0021-rules-layering-thin-forwarders-and-obsidian-taxonomy|ADR-0021]] (тонкие адаптеры), [[../../../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]] (символьный скоуп), [[../../../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]] (research_basis)
 
@@ -126,19 +126,19 @@ def _render_rules_document(name: str, values: dict) -> str:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Golden-тесты: `python -m unittest tests.test_rules_golden -v` (Exit code 0, 0 diff).
-- [ ] Полный прогон: `python -m unittest discover -s tests` (Exit code 0 — рефакторинг не меняет поведение).
-- [ ] Сборка бандла: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Корпус в бандле: `python -c "import install; print('rules/AGENTS_CORE.md' in install.unpack_assets())"` → `True`.
-- [ ] Отсутствие корпуса: временно переименовать `rules/AGENTS_CORE.md` → `install.generate_agents_md('D','python')` поднимает `RuntimeError` (проверка вручную, файл вернуть).
-- [ ] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Golden-тесты: `python -m unittest tests.test_rules_golden -v` (Exit code 0, 0 diff).
+- [x] Полный прогон: `python -m unittest discover -s tests` (Exit code 0 — рефакторинг не меняет поведение).
+- [x] Сборка бандла: `python scripts/build_installer.py` (Exit code 0).
+- [x] Корпус в бандле: `python -c "import install; print('rules/AGENTS_CORE.md' in install.unpack_assets())"` → `True`.
+- [x] Отсутствие корпуса: временно переименовать `rules/AGENTS_CORE.md` → `install.generate_agents_md('D','python')` поднимает `RuntimeError` (проверка вручную, файл вернуть).
+- [x] Линтер базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Корпус `rules/AGENTS_CORE.md` содержит три документа и маркеры `RULE` для каждого правила.
-- [ ] Golden-фикстуры совпадают побайтово; `_RULES_BODY` удалён из `install.py`.
-- [ ] Сигнатуры `generate_agents_md()`, `_gen_rule()`, `_rules()`, `get_agent_rule_specs()` не изменены.
-- [ ] Корпус упакован в бандл и доступен в local-fallback; в `docs/` клиента не попадает.
-- [ ] `ADR-0030` создан со `status: accepted` и отвергнутыми альтернативами.
-- [ ] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.
+- [x] Корпус `rules/AGENTS_CORE.md` содержит три документа и маркеры `RULE` для каждого правила.
+- [x] Golden-фикстуры совпадают побайтово; `_RULES_BODY` удалён из `install.py`.
+- [x] Сигнатуры `generate_agents_md()`, `_gen_rule()`, `_rules()`, `get_agent_rule_specs()` не изменены.
+- [x] Корпус упакован в бандл и доступен в local-fallback; в `docs/` клиента не попадает.
+- [x] `ADR-0030` создан со `status: accepted` и отвергнутыми альтернативами.
+- [x] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.

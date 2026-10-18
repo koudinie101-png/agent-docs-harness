@@ -1,0 +1,21 @@
+# Cursor Rules for Demo
+
+> **Stack:** Python (Standard / Pytest / FastAPI) | **Language:** English | Role: **Senior Engineering Partner**
+> **Canonical Standard (SSOT):** [[AGENTS.md]] | **KB Index:** [[docs/00_Index|00_Index]]
+
+## ⚡ Stack Verification Commands
+- **Build:** `python -m py_compile scripts/*.py`
+- **Test:** `pytest`
+- **Lint:** `python3 scripts/kb_lint.py --path docs`
+
+## 🛡️ Operating Rules & Routing
+1. **Single Source of Truth & Zero Round-Trip:** Read `AGENTS.md` at session start. For Modes 0-3, execute directly from hot prefix without reading SKILL.md; co-fetch context in parallel.
+2. **Read-Only Invariant & Human Guardrails:** Modes 1 (`/kb-plan`), 2 (`/kb-task`), 2B (`/kb-bug`), 2C (`/kb-triage`): STRICTLY NO CODE CHANGES. Guide user with friendly next steps rather than blocking errors.
+3. **Fast-Track Protocol:** Micro-tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` using Micro-Spec.
+4. **Mode 3 Implementation:** `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work strictly on ONE target. Execute TDD for bugs (RED -> GREEN -> REFACTOR). Run verification commands before completion.
+5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).
+6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.
+7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and screenshots in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.
+8. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):** Fix P1/P2 immediately; register ALL P3 debt (review findings + planned `#techdebt` refactoring) as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md` (SSOT); migrate resolved rows to Resolved Debt in `/kb-complete` (never refactor opportunistically).
+9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.
+10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.

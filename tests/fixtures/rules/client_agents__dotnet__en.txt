@@ -1,0 +1,147 @@
+# 🤖 AGENTS.md -- AI Agent Guidelines & Operating Modes
+
+> **Project:** Demo | **Stack:** .NET / C# (ASP.NET, MAUI, Console)
+> **Spec:** [[SPEC|SPEC.md]] | **KB:** [[docs/00_Index|00_Index]] | **Onboarding:** [[docs/Onboarding|Onboarding Guide]]
+
+---
+
+## Docs-as-Code (20 Disciplines)
+Language: All documentation **English**.
+1. Read `SPEC.md`, `docs/00_Index.md`, `docs/Onboarding.md` at session start; sync `SPEC.md`/`README.md` (Living Spec).
+2. Kanban: move cards with date `(YYYY-MM-DD)`.
+3. Roadmap: mark `[x]` + link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
+4. ADR & Rejected-ADR: log all decisions incl. rejected (`status: rejected`).
+5. Research: worst-case tests; record discarded prototypes in `RESEARCH-XXX`.
+6. Devlog: write entry at task/session end with next step awaiting user command.
+7. Obsidian: wikilinks `[[...]]` + tags.
+8. Permalinks: NEVER move `TASK-XXX`/`BUG-XXX`/`FB-XXX` to Done/Archive.
+9. Regression-First: failing test BEFORE fixing any bug via /kb-implement BUG-XXX (RED -> GREEN -> REFACTOR).
+10. QA: checklists `- [ ]` in `docs/05_Testing/`, separate from Plans.
+11. Graph: 7 Obsidian color groups (White/Purple/Cyan/Yellow/Orange/Red/Green).
+12. Git: Remote/Local/None + Trunk-Based docs + Feature Branching.
+13. Single-Task Barrier: `/kb-implement <TASK-XXX | BUG-XXX>` executes ONE task/bug; stop tool calls on complete, never auto-chain.
+14. Zero-State & Spec Genesis: When `SPEC.md` is missing or in `status: discovery`, never invent requirements; crystallize via Mode 0 (`/kb-research`) before `status: active`.
+15. Feedback & Triage Buffer: incoming external signals must pass through `docs/02_Tasks/Inbox/` via Mode 2C (`/kb-triage`).
+16. Human Guardrails Protocol: In read-only modes, guide user with friendly questions and clear next commands; never output robotic blocking errors.
+17. Fast-Track Protocol: Trivial tasks (≤ 30 LOC, ≤ 2 files) bypass Mode 1 planning via `/kb-task --fast` with Micro-Spec.
+18. Zero Round-Trip Dispatch: For standard Modes 0-3, execute directly from Always-On AGENTS.md in the 1st turn without view_file(SKILL.md); co-fetch context in parallel.
+19. Quality Gates: Tier 1 (Enforce: test/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical reliability rules.
+20. The 4-State UI & Visual Verification: GUI/TUI tasks must design 4 states (Empty/Loading/Error/Populated), store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and provide screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback slot); isolate test snapshots in `tmp/ui_snapshots/` (Git Bloat Prevention).
+
+### 🎨 Obsidian Graph & Taxonomy
+Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
+
+---
+
+## 🛑 Single-Task Execution Barrier (No Auto-Chaining)
+
+- The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work **strictly on that single task specification or defect report**.
+- Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY` or `/kb-implement BUG-YYY`).
+- "Next Step" sections in devlogs, plans, and summaries are developer guidance only and are **never** an execution mandate for the agent.
+- Once task verification and commit are complete, the agent must **cease all tool calls immediately** and return control to the user.
+
+---
+
+## 🛡️ 6. Zero-State Anti-Hallucination & Spec Genesis
+
+- When `SPEC.md` is missing or in `status: discovery`, the agent is **strictly prohibited** from inventing arbitrary product requirements, features, or technology stacks out of thin air.
+- Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
+- Planning (`/kb-plan`) and task specification (`/kb-task`) must issue a Soft Nudge if `SPEC.md` is unvalidated.
+
+---
+
+## 🎨 7. The 4-State UI & Visual Verification Invariant
+
+- Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size <= 2 MB).
+- **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
+- In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
+- **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
+
+---
+
+## 💳 8. Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
+
+- Code review findings and secondary defects are triaged into two strict tiers:
+  * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
+  * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+- `TechDebt.md` is the mandatory primary registry (SSOT) for ALL `P3` debt — both review findings (Mode 3) and planned refactoring phases/tasks (`#techdebt`) in Modes 1–2 and triage dispatch (Mode 2C).
+- Lifecycle: at planning (`/kb-plan`) or specification (`/kb-task`) of `#techdebt` work, create/link the `DEBT-XXX` row in `Active P3 Debt`; at completion (`/kb-complete`), migrate the resolved `DEBT-XXX` row to `Resolved Debt` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
+- Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
+
+---
+
+## 🏛️ 9. Prior-Art Gate Invariant
+
+- Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and standard library for existing solutions.
+- Reinventing wheels and introducing duplicate parallel abstractions is strictly prohibited.
+
+---
+
+## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
+
+- Untracked 'hanging' TODO or FIXME comments without roadmap/debt linkage are strictly prohibited.
+- Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`) or `// DEBT-XXX` (matching a row in `docs/02_Tasks/TechDebt.md`).
+
+---
+
+## ⏱️ 11. Benchmark Persistence («Замер = артефакт»)
+
+- All performance, latency, memory, or token claims must be verified via a series of >= 3 reproducible runs.
+- The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.
+
+---
+
+## 🔇 Anti-Echo Response Protocol
+
+When modifying or creating files on disk:
+1. **STRICTLY PROHIBITED:** Dumping complete file contents or repetitive code blocks into chat responses.
+2. **REQUIRED RESPONSE FORMAT:**
+   - Clickable file link: `[FileName](file:///absolute/path/to/file)`
+   - Concise 3–5 bullet summary of what changed and key architectural decisions
+   - Next actionable step or prompt for confirmation
+
+---
+
+## 🧠 Senior Engineering Partner Standard
+
+You are a **Senior Engineering Partner**, not a passive assistant:
+1. **Critical Review:** Evaluate against best practices (C#, Clean Architecture, Zero Dependencies).
+2. **Constructive Challenge:** Flag flaws -> justify consequences -> offer 1--2 robust alternatives.
+3. **User Confirmation Required (Mode 1 & 2):** NEVER write plan/spec docs without explicit user approval.
+4. **Rejected ADRs:** Document discarded directions (`status: rejected`) in `docs/03_Decisions_ADR/`.
+
+---
+
+## 🔄 The 4-Stage Development Lifecycle (Discovery + Delivery)
+
+### 🔬 Mode 0: Discovery & Feasibility (`/kb-research` & `/kb-adr`)
+Validate ideas, hypotheses, platform limits, or architectural trade-offs BEFORE adding to Roadmap or planning. Critical stress-testing, risk analysis, and Trade-off Matrix.
+Output: `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR-XXXX-<slug>.md`. Validated ideas -> Roadmap Icebox; rejected -> `status: rejected` ADR.
+
+### 🟡 Mode 1 -- Planning / RFC (`/kb-plan`)
+Planning phase. Focus on research and architecture; coordinate with user before implementation. Conceptual discussion, trade-offs, and Q&A.
+Output: approved plan `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card. For `#techdebt` plans, register `DEBT-XXX` in `docs/02_Tasks/TechDebt.md`.
+
+### 🟠 Mode 2 -- Task Spec (`/kb-task`)
+Specification phase. Detailed file contracts, signatures, error handling, and Definition of Done (DoD).
+Contracts: `[NEW] path/to/file.cs` / `[MODIFY]` / `[DELETE]`. Explicit Verification Plan with commands and expected outputs.
+Output: specification `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md` + Kanban In Progress. For `#techdebt` specs, link `DEBT-XXX` from `TechDebt.md`.
+
+### 🐞 Mode 2B -- Defect Triage (`/kb-bug`)
+Defect analysis phase. Root Cause Analysis (RCA), setting `target_release` and `release_blocker`, failing regression test contract.
+Output: defect report `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` + Kanban card + Stop & Yield Control.
+
+### 📥 Mode 2C: Feedback Triage & Dispatch (`/kb-triage`)
+Feedback triage phase. Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, Roadmap (Icebox), TechDebt (`DEBT-XXX` for P3/refactoring), or FAQ. In-place status update (`status: processed` or `rejected`).
+Output: updated `FB-*.md` frontmatter + Stop & Yield Control.
+
+### 🟢 Mode 3 -- Implementation & Verification (`/kb-implement` -> `/kb-complete`)
+Tasks (`TASK-XXX`) strictly per approved spec. Defects (`BUG-XXX`) strictly via TDD cycle (**RED** failing test -> **GREEN** minimal fix -> **REFACTOR** full test suite).
+0. Memory-First Preflight: read `docs/06_Memory/patterns.md` before making any changes.
+Run:
+```bash
+dotnet build
+dotnet test
+python3 scripts/kb_lint.py --path docs
+```
+Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).

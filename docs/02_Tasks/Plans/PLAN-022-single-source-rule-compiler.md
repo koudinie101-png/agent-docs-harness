@@ -142,7 +142,7 @@ graph LR
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] [[../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030.
+- [x] [[../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030.
   * Извлечение трёх представлений правил **без изменения вывода** (golden-фикстуры), маркеры `RULE`/`DOCUMENT`, плейсхолдеры.
   * `_load_rules_corpus()` (бандл → local-fallback → `RuntimeError`), `_render_rules_document()`; делегирование из `_rules()`, `_gen_rule()`, `generate_agents_md()` с сохранением сигнатур.
   * `scripts/build_installer.py`: ключ `rules/AGENTS_CORE.md` в бандле.

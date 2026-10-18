@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-085: компилятор правил (корпус `rules/AGENTS_CORE.md` и рендерер)
+- **Что сделано:**
+  - Три разрозненных инвентаря правил (`AGENTS.md`, `install.py: _RULES_BODY`, `install.py: _gen_rule`) извлечены в единый корпус `rules/AGENTS_CORE.md` (три документа: `client-agents`, `adapters`, `harness-agents`, семантические маркеры `RULE`, плейсхолдеры стека).
+  - В `install.py` добавлены `_load_rules_corpus()`, `_render_rules_document()` и `_rules_values()`; `_RULES_BODY` удалён, `generate_agents_md()` и `_gen_rule()` делегируют рендереру при неизменных сигнатурах.
+  - Корпус упакован в бандл (`scripts/build_installer.py`, ключ `rules/AGENTS_CORE.md`), добавлен local-fallback в `unpack_assets()`; в `docs/` клиента корпус не разворачивается.
+  - Зафиксировано архитектурное решение [[03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]] с отвергнутыми альтернативами (компиляция из `AGENTS.md`, Jinja2, две билингвальные копии, Python-структура, отдельный парсер).
+- **Проверка:**
+  - 24 golden-фикстуры (`tests/fixtures/rules/`): рендер совпал побайтово для 6 стеков × 2 языков и 6 адаптеров × 2 языков (`tests/test_rules_golden.py`).
+  - Полный прогон: 123 теста, `OK` (через `tmp/run_tests.py` из-за INC-003).
+  - Сборка `scripts/build_installer.py` — корпус в бандле; отсутствие корпуса даёт `RuntimeError` с actionable-подсказкой.
+  - `kb_lint`: 225 файлов, 2123 викиссылки, 0 битых.
+- **Инцидент:** зафиксирован [[06_Memory/Incidents/INC-004-path-write-text-newline-truncation|INC-004]] (усечение `install.py` при `write_text` с невалидным `newline`), паттерн `TRG-04` добавлен в `patterns.md`.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-086`: генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check` и CI-гейт.
+
 ### [2026-10-18] — Релиз v0.21.0: Фаза 21 (Tech Debt Lifecycle & Cross-Mode Sync)
 - **Что сделано:**
   - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.21.0|RELEASE-v0.21.0]] по завершении Фазы 21 ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]], [[03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]).

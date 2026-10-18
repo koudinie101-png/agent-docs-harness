@@ -94,6 +94,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027: Task-Scoped пространства имен визуальных макетов (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация топологии docs/assets/ в kb_lint.py]]
 * [[03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028: Сквозной жизненный цикл технического долга (DEBT-XXX), интеграция в режимы 1–3 и семантический контроль в kb_lint.py]]
 * [[03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029: Символьные контракты скоупа задач (Symbolic Scope) и отказ от фиксации номеров строк]]
+* [[03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030: Single-Source Rule Compiler — корпус rules/AGENTS_CORE.md и детерминированный рендер правил агента]]
 * [[03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031: Research-Evidence Gate при промоушене из Icebox, поле research_basis в PLAN-XXX и неблокирующий контроль]]
 
 ### 4. Исследования платформы (`04_Research/`)

@@ -18,11 +18,10 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18) #task #phase22 #ssot #rules #installer
-
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18) #task #phase22 #ssot #rules #installer
 - [x] [[Bugs/BUG-010-release-remote-credentials-leak|BUG-010]]: Утечка credentials из Git remote (PAT) в релизные артефакты и публичные Release Notes — P1, закрыт в v0.21.0 (2026-10-18) #bug #security #release #credentials #phase21
 - [x] [[Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py` (2026-10-18) #task #phase21 #techdebt #lint
 - [x] [[Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]]: Сквозной цикл `DEBT-XXX` в скиллах (`kb-plan`, `kb-task`, `kb-triage`, `kb-complete`), правилах `AGENTS.md`, шаблонах и `install.py` (2026-10-18) #task #phase21 #techdebt #skills #agents
