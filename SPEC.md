@@ -120,6 +120,12 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
 
 ---
 
+### 2.5. Компилятор правил агента (`rules/AGENTS_CORE.md`)
+Единый рукописный источник правил поведения агента ([ADR-0030](docs/03_Decisions_ADR/ADR-0030-single-source-rule-compiler.md)): три документа корпуса (`client-agents`, `adapters`, `harness-agents`) с семантическими маркерами `RULE` (устойчивые ключи `UPPER-KEBAB-CASE`) и плейсхолдерами стека (`{{project}}`, `{{build_cmd}}`, `{{lang_instruction}}` и др.).
+* Рендерер `install.py` (`_load_rules_corpus`, `_render_rules_document`) собирает `AGENTS.md` клиентского проекта и 6 тонких адаптеров; корпус упаковывается в `EMBEDDED_ASSETS` и **не** разворачивается в `docs/` целевого проекта.
+* Источник разрешается каскадом: локальный `rules/AGENTS_CORE.md` (разработка) → бандл (развёрнутый дистрибутив) → `RuntimeError` с actionable-подсказкой; тихий fallback отсутствует.
+* Контроль дрейфа: golden-фикстуры (`tests/test_rules_golden.py`), генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check` (TASK-086) и Tier 1 тесты структуры (TASK-087).
+
 ## 3. Архитектура инсталлятора `install.py`
 
 ### 3.1. Требования к рантайму
