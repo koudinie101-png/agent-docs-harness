@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Релиз v0.21.0: Фаза 21 (Tech Debt Lifecycle & Cross-Mode Sync)
+- **Что сделано:**
+  - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.21.0|RELEASE-v0.21.0]] по завершении Фазы 21 ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]], [[03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]).
+  - Собран монолит `install.py` / `dist/install.py` через `scripts/build_release.py` (162.7 KB / 166 650 байт).
+  - Сгенерированы Dual-Export артефакты: внутренний `docs/02_Tasks/Releases/RELEASE-v0.21.0.md` (со scoped-блоком ADR) и публичный `dist/RELEASE_NOTES.md` (High-SNR GFM без ADR).
+  - Закрыт дефект P1: `scripts/kb_release.py` протаскивал credentials из Git remote (PAT в `https://user:TOKEN@github.com/...`) во frontmatter релизного документа и в публичные Release Notes. Добавлена нормализация `sanitize_repo_url()` (стриппинг userinfo, ssh → https, снятие `.git`), покрытая регрессионным тестом (120/120 тестов).
+  - Синхронизирована база знаний: `Roadmap.md` (ссылка на релиз в шапке Фазы 21), `CHANGELOG.md` (секция `[0.21.0]`) и `Devlog.md`. Карточки Фазы 21 в `Kanban.md` уже находились в `Готово`.
+- **Артефакты и контрольные суммы (SHA-256):**
+  - `dist/install.py` — 162.7 KB (166 650 байт) — `f40c395e85fe1b17cf4d418def0bfc435fbc8484d3f3a68decd647960d9a66a9`.
+- **Результаты верификации:**
+  - `python scripts/kb_lint.py --path docs` -> 217 файлов, 0 битых викиссылок (Exit code 0).
+  - `python tmp/run_tests.py` (sandbox-safe wrapper, TRG-03/INC-003) -> 120/120 тестов (Exit code 0).
+  - `python scripts/kb_release.py --version 0.21.0 --phase 21 --require-github` -> Exit code 0 (mode: github).
+- **Git:** ветка `main`, аннотированный тег `v0.21.0`, публикация GitHub Release через `gh release create`.
+
+---
+
 ### [2026-10-18] — Реализация TASK-084: Пересборка монолита, E2E-тесты и синхронизация Living Spec (Финал Фазы 21)
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-084-bundle-rebuild-e2e-tests-and-living-spec-sync|TASK-084]] — финальная задача Фазы 21:

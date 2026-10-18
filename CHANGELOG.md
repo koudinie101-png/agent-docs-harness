@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.0] - 2026-10-18
+
+### Added
+- **End-to-End Tech Debt Lifecycle & Cross-Mode Sync** (PLAN-021, ADR-0028, RESEARCH-023, TASK-082–TASK-084):
+  - Semantic cross-check in `scripts/kb_lint.py` (`check_tech_debt_cross_check`) linking `TechDebt.md` entries with `#techdebt` phases/tasks in `Roadmap.md` and `PLAN-*` files, plus code-level `// DEBT-XXX` tag support alongside `// ROADMAP-<ID>`.
+  - End-to-end `DEBT-XXX` lifecycle across all modes: registration at `/kb-plan` and `/kb-task`, triage dispatch in `/kb-triage`, and migration from `Active P3 Debt` to `Resolved Debt` at `/kb-complete`.
+  - Synchronized `#techdebt` taxonomy in the Obsidian graph (`graph.json`), 6 thin agent adapters (`GEMINI.md`, `CLAUDE.md`, `.clinerules`, `.cursorrules`, `.windsurfrules`, Copilot instructions), 5 skills and both task/plan templates.
+  - E2E test `test_tech_debt_end_to_end_lifecycle_and_lint_cross_check` in `tests/test_installer.py` asserting 5 lifecycle invariants in the packaged bundle.
+  - Living Spec sync: `SPEC.md` (Rules 13/15, lint cross-check), `README.md` (debt governance) and `docs/Onboarding.md` (`Active P3 Debt -> Plan/Task -> Resolved Debt`).
+
+### Fixed
+- **Credential leak in release artifacts (P1):** `scripts/kb_release.py` propagated credentials embedded in the Git remote URL (e.g. `https://user:TOKEN@github.com/...`) into `RELEASE-vX.Y.Z.md` frontmatter and the public `dist/RELEASE_NOTES.md`. Added `sanitize_repo_url()` applied during environment detection and in all release generators, covered by regression test `test_regression_remote_credentials_not_leaked_into_release_outputs` (120 tests, 100% pass).
+
+### Changed
+- Re-bundled standalone installer `install.py` and `dist/install.py` (162.7 KB / 166650 bytes) with the updated linter, release utility, templates, skills and rules.
+
 ## [0.20.0] - 2026-10-16
 
 ### Added
