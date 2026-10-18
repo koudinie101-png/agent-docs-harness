@@ -1,7 +1,7 @@
 ---
 id: TASK-093
 title: "Пересборка install.py/dist/install.py, E2E установленного Evidence Gate и Living Spec Sync"
-status: planned
+status: done
 type: task
 phase: 24
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-093 — Пересборка бандла, E2E и Living Spec Sync
 
-> **ID:** TASK-093 | **Статус:** К реализации  
+> **ID:** TASK-093 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 24 | **План:** [[../../Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]] §5 (критерии приёмки), [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]] (бюджеты), `AGENTS.md` Правило 3 (Living Spec Invariant)  
 > **Предшествующие задачи:** [[TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]], [[TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]], [[TASK-092-template-copies-parity-sync-and-test|TASK-092]]
@@ -143,24 +143,30 @@ Evidence Status (`🔬`/`🧪`/`⏸`) с неблокирующим Evidence Nud
 * **Доказательная база (Evidence Gate):** при выборе пункта Icebox без `RESEARCH`/`ADR` агент показывает статус каждого кандидата (`🔬` валидировано, `🧪` гипотеза, `⏸` parked) и выдаёт один неблокирующий Nudge: **(A)** узкий `/kb-research`, **(B)** план с разделом «Research Basis & Unvalidated Assumptions», **(C)** сразу план. Выбор остаётся за пользователем и фиксируется в `PLAN-XXX` полем `research_basis` (ссылка на исследование либо `none` + `basis_note`); `scripts/kb_lint.py` предупреждает (`WARN:`), если `none` указан без причины.
 ```
 
+### 3.6. Находка при верификации: платформенная инфляция байтового бюджета (P2)
+
+Первый прогон полного suite на Windows упал в `test_16_high_snr_static_corpus_benchmarks`: установленные скиллы заняли **31 056** байт при лимите 31 000, хотя те же файлы в репозитории — 30 654 байта. Причина: `deploy_infrastructure()` пишет Markdown через `Path.write_text()`, и на Windows перевод LF → CRLF добавляет по байту на строку (12 скиллов → +402 байта). Это платформенный артефакт, а не рост токенов: на Linux CI тот же контент даёт 30 654 байта и гейт зелёный.
+
+Исправление (P2 — устраняется в том же проходе по протоколу TechDebt): измерение бюджета в `test_16` переведено на канонический LF-размер через локальный хелпер `canonical_size()` (`read_text` → `\r\n`→`\n` → UTF-8 `encode`). Лимиты 31 000 / 30 000 / 175 000 **не менялись**, текст скиллов не сокращался. Гейт стал детерминированным на Windows и Linux и больше не даёт ложного красного срабатывания.
+
 ## 4. План верификации (Verification Plan)
 
-- [ ] Пересборка: `python scripts/build_installer.py` → Exit code 0, обновлены `install.py` и `dist/install.py`.
-- [ ] Идентичность монолитов: `python -c "from pathlib import Path; assert Path('install.py').read_bytes()==Path('dist/install.py').read_bytes()"` → Exit code 0.
-- [ ] Новый E2E: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_phase24_research_basis_deploy_and_update -v` → OK.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → OK.
-- [ ] Дрейф корпуса: `python scripts/gen_rules.py --check` → Exit code 0.
-- [ ] Бюджеты High-SNR: `python -c "from pathlib import Path; i=Path('install.py').stat().st_size; s=sum(f.stat().st_size for f in Path('.agents/skills').rglob('*.md')); t=sum(f.stat().st_size for f in Path('templates').glob('*.md')); print(i,s,t); assert i<=175000 and s<=31000 and t<=30000"` → OK.
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 broken links.
-- [ ] `dist/install.py` smoke: установка в `tmp/` (`python dist/install.py --yes --stack python --target-dir tmp/smoke_task093`) → Exit code 0, `.agents/skills/kb-plan/SKILL.md` содержит `Evidence Nudge` (каталог `tmp/` вне Git).
-- [ ] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
-- [ ] Замеры $\ge 3$ прогонов: не применимо (фиксируются только статические байтовые бюджеты).
+- [x] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` = `dist/install.py` = **173 887 байт** (raw bundle 236 008 → 91 580 b64).
+- [x] Идентичность монолитов: `assert Path('install.py').read_bytes()==Path('dist/install.py').read_bytes()` → Exit code 0.
+- [x] Новый E2E: `test_phase24_research_basis_deploy_and_update` → **OK** (установленный скилл, шаблон, `TEMPLATE_INDEX.md`, `check_research_basis`, обновление через `--update`).
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **154 теста OK**, Exit code 0 (после P2-фикса §3.6).
+- [x] Дрейф корпуса: `python scripts/gen_rules.py --check` → `OK: AGENTS.md matches rules/AGENTS_CORE.md`.
+- [x] Бюджеты High-SNR: `install.py` **173 887** ≤ 175 000; скиллы **30 654** ≤ 31 000; шаблоны **29 579** ≤ 30 000; лимиты в тестах не менялись (измерение нормализовано по LF, §3.6).
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 broken links.
+- [x] `dist/install.py` smoke: `python dist/install.py --yes --stack python --target-dir tmp/smoke_task093` → Exit code 0; скилл содержит `Evidence Nudge`, шаблон — `research_basis` и секцию Research Basis; каталог удалён.
+- [x] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
+- [x] Замеры $\ge 3$ прогонов: не применимо (фиксируются только статические байтовые бюджеты).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `install.py` и `dist/install.py` пересобраны, идентичны и укладываются в бюджет ≤ 175 000 байт.
-- [ ] В свежей установке присутствуют `Evidence Nudge`, `research_basis`, секция Research Basis, `check_research_basis`, обновлённый `TEMPLATE_INDEX.md`.
-- [ ] `install.py --update` обновляет устаревший `TEMPLATE_PLAN.md`, не затрагивая пользовательские заметки.
-- [ ] `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизированы (Living Spec).
-- [ ] Бюджеты скиллов ≤ 31 000 и шаблонов ≤ 30 000 байт не нарушены; лимиты в тестах не поднимались.
-- [ ] Полный suite и `kb_lint` зелёные; статус задачи обновляется в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] `install.py` и `dist/install.py` пересобраны, идентичны и укладываются в бюджет ≤ 175 000 байт.
+- [x] В свежей установке присутствуют `Evidence Nudge`, `research_basis`, секция Research Basis, `check_research_basis`, обновлённый `TEMPLATE_INDEX.md`.
+- [x] `install.py --update` обновляет устаревший `TEMPLATE_PLAN.md`, не затрагивая пользовательские заметки.
+- [x] `SPEC.md`, `README.md`, `docs/Onboarding.md` синхронизированы (Living Spec).
+- [x] Бюджеты скиллов ≤ 31 000 и шаблонов ≤ 30 000 байт не нарушены; лимиты в тестах не поднимались.
+- [x] Полный suite и `kb_lint` зелёные; статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.

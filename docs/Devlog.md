@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-093: пересборка бандла, E2E Evidence Gate и Living Spec (Фаза 24 завершена)
+- **Что сделано:**
+  - [[02_Tasks/Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: `scripts/build_installer.py` пересобрал монолит — `install.py` и `dist/install.py` идентичны, **173 887 байт** (было 171 639). В бандл вошли Evidence Nudge, `research_basis`/Research Basis в шаблоне плана, `check_research_basis`, обновлённый `TEMPLATE_INDEX.md`.
+  - Новый E2E `test_phase24_research_basis_deploy_and_update`: свежая установка содержит все артефакты фазы, а `install.py --update` обновляет устаревший `TEMPLATE_PLAN.md`, не затрагивая пользовательские заметки.
+  - Living Spec Sync: `SPEC.md` §2.3 (advisory `check_research_basis`) и §2.4 (Mode 1: Evidence Status/Nudge/`research_basis`), `README.md` (строка `/kb-plan` и описание линтера), `docs/Onboarding.md` (Режим 1: доказательная база).
+  - **P2-находка:** первый полный прогон на Windows упал в `test_16` — установленные скиллы весили 31 056 байт при лимите 31 000 из-за CRLF-трансляции `Path.write_text()` (12 скиллов → +402 байта), хотя канонический LF-контент — 30 654. Измерение бюджета переведено на LF-нормализованный размер (`canonical_size()`); лимиты 31 000/30 000/175 000 не менялись, текст скиллов не сокращался.
+- **Проверка:**
+  - Полный прогон `python tmp/run_tests.py` — **154 теста OK** (Exit code 0); `gen_rules.py --check` — OK; бюджеты: install 173 887 / skills 30 654 / templates 29 579.
+  - `dist/install.py` smoke-установка — Exit code 0, Evidence Nudge и секция Research Basis на месте.
+  - `kb_lint` — 238 файлов, 0 битых ссылок; Kanban/Roadmap закрыты, PLAN-023 перенесён в Done.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 24 завершена: приёмочное тестирование по `docs/05_Testing/` и `/kb-release v0.24.0`.
+
 ### [2026-10-18] — TASK-092: паритет копий шаблонов и Tier 1 parity-тест (Фаза 24)
 - **Что сделано:**
   - [[02_Tasks/Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: устранён P2-дрейф `templates/` ↔ `docs/00_Templates/`. В `templates/TEMPLATE_PLAN.md` перенесены 4-State UI Matrix и комментарий про multi-target Mermaid (второе расхождение обнаружено при реализации); `docs/00_Templates/TEMPLATE_INDEX.md` синхронизирован с более полной копией из `templates/` (`Zero_To_Hero_Guide`, узел `06_Memory`, `Inbox/`, «16 шаблонов»).

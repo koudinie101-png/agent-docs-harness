@@ -137,7 +137,7 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 
 | Slash Command / Skill | Mode / Category | Purpose & Guardrails |
 | :--- | :--- | :--- |
-| **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. Read-only planning; guides user with clear options and next steps. |
+| **`/kb-plan`** | 🟡 Mode 1 (RFC) | Conceptual discussion, trade-off analysis, user confirmation. Ranks Icebox by value impact **and evidence status** (`🔬`/`🧪`/`⏸`), emits a non-blocking Evidence Nudge (A/B/C) for unvalidated items, and records `research_basis` provenance in the plan. Read-only planning; guides user with clear options and next steps. |
 | **`/kb-task`** | 🟠 Mode 2 (Spec) | Detailed file contracts (`[NEW]`/`[MODIFY]`/`[DELETE]`), DoD, verification plan. Read-only specification; focuses on contracts before implementation. |
 | **`/kb-implement`** | 🟢 Mode 3 (Code) | Strict execution of ONE task spec (TASK-XXX) or defect fix (BUG-XXX via TDD), verification, auto-completion, and Stop & Yield Control. |
 | **`/kb-complete`** | 🟢 Mode 3 (DoD) | Updates spec to `done` (or bug to `fixed`), moves Kanban card (with date), checks Roadmap, appends Devlog, verifies with `kb_lint.py`. |
@@ -156,6 +156,7 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
   ```bash
   python3 scripts/kb_lint.py --path docs
   ```
+  It also performs an advisory plan-provenance check: a plan declaring `research_basis: none` without `basis_note` prints a `WARN:` without failing the build.
 * **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1

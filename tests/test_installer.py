@@ -1041,18 +1041,29 @@ class TestAgentDocsHarness(unittest.TestCase):
             skills_dir = target / ".agents" / "skills"
             templates_dir = target / "docs" / "00_Templates"
 
-            total_skills_size = sum(f.stat().st_size for f in skills_dir.rglob("*.md"))
-            total_templates_size = sum(f.stat().st_size for f in templates_dir.glob("*.md"))
+            def canonical_size(path: Path) -> int:
+                """UTF-8 byte size of canonical LF content.
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups + Phase 21 tech-debt lifecycle)
+                On Windows Path.write_text applies CRLF translation. That is a
+                platform artifact, not High-SNR token bloat, so the budget must
+                be measured on normalized content to stay identical on CI (Linux)
+                and local Windows runs (TASK-093).
+                """
+                text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
+                return len(text.encode("utf-8"))
+
+            total_skills_size = sum(canonical_size(f) for f in skills_dir.rglob("*.md"))
+            total_templates_size = sum(canonical_size(f) for f in templates_dir.glob("*.md"))
+
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups + Phase 21 tech-debt lifecycle + Phase 24 research evidence)
             self.assertLessEqual(total_skills_size, 31000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 31000)")
             self.assertLessEqual(total_templates_size, 30000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 30000)")
 
             # Micro-benchmarks for critical files
-            onboarding_size = (templates_dir / "TEMPLATE_ONBOARDING.md").stat().st_size
+            onboarding_size = canonical_size(templates_dir / "TEMPLATE_ONBOARDING.md")
             self.assertLessEqual(onboarding_size, 5000, f"TEMPLATE_ONBOARDING.md exceeded budget: {onboarding_size} bytes (budget <= 5000)")
 
-            router_size = (skills_dir / "kb-onboard" / "SKILL.md").stat().st_size
+            router_size = canonical_size(skills_dir / "kb-onboard" / "SKILL.md")
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
             # Installer size check (budget <= 175 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity audit)
@@ -2627,6 +2638,44 @@ class TestAgentDocsHarness(unittest.TestCase):
             )
             self.assertEqual(res2.returncode, 0)
             self.assertNotIn("WARN:", res2.stdout)
+
+    def test_phase24_research_basis_deploy_and_update(self):
+        """TASK-093: Evidence Gate ships in the bundle and survives --update."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "EvidenceApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="EvidenceApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            skill = (target / ".agents" / "skills" / "kb-plan" / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("Evidence Nudge", skill)
+            self.assertIn("🧪", skill)
+
+            plan_tpl_path = target / "docs" / "00_Templates" / "TEMPLATE_PLAN.md"
+            plan_tpl = plan_tpl_path.read_text(encoding="utf-8")
+            self.assertIn("research_basis", plan_tpl)
+            self.assertIn("Research Basis & Unvalidated Assumptions", plan_tpl)
+
+            index_tpl = (target / "docs" / "00_Templates" / "TEMPLATE_INDEX.md").read_text(encoding="utf-8")
+            self.assertIn("06_Memory", index_tpl)
+            self.assertIn("Zero_To_Hero_Guide", index_tpl)
+
+            deployed_lint = (target / "scripts" / "kb_lint.py").read_text(encoding="utf-8")
+            self.assertIn("def check_research_basis", deployed_lint)
+
+            # Simulate a stale plan template from an earlier harness version, then update.
+            plan_tpl_path.write_text("# Legacy plan template\n", encoding="utf-8")
+            self.assertEqual(install.update_harness(target, backup=False), 0)
+            refreshed = plan_tpl_path.read_text(encoding="utf-8")
+            self.assertIn("Research Basis & Unvalidated Assumptions", refreshed)
+            self.assertIn("research_basis", refreshed)
 
 
 if __name__ == "__main__":

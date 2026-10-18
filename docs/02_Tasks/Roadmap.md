@@ -311,7 +311,7 @@ tags:
 
 ---
 
-## Фаза 24: Research-Evidence Gate при промоушене из Icebox (Research-Evidence Gate & Plan Provenance)
+## Фаза 24: Research-Evidence Gate при промоушене из Icebox (Research-Evidence Gate & Plan Provenance) — ✅ Завершена
 **Цель:** Восстановить критерий технической зрелости в ранжировании `/kb-plan` (утерянный при переносе ADR-0011 §2.2 в текст скилла) и сделать доказательную базу плана явной, durable и защищённой от повторной потери: пометки `🔬`/`🧪`/`⏸` в ранжировании, неблокирующий Evidence Nudge с тремя опциями, поля `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `PLAN-XXX`, advisory-`WARN` в `scripts/kb_lint.py`, правило Tier 2 в корпусе `rules/AGENTS_CORE.md` и Tier 1 тесты против повторной потери формулировки. Попутно устраняется P2-расхождение `templates/` ↔ `docs/00_Templates/` (клиенты получали план-шаблон без матрицы 4 состояний) с parity-тестом.
 **Первоисточник плана:** [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]]  
 **Нормативная база:** [[../04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025]], [[../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
@@ -319,7 +319,7 @@ tags:
 - [x] [[Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: Критерий Evidence Status (`🔬`/`🧪`/`⏸`), `Evidence Nudge` (A/B/C) в `.agents/skills/kb-plan/SKILL.md`, строка правила Mode 1 в `rules/AGENTS_CORE.md` (+ регенерация `AGENTS.md`) и Tier 1 ассерт против повторной потери формулировки (2026-10-18).
 - [x] [[Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` (2026-10-18).
 - [x] [[Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест копий шаблонов (P2-находка планирования) (2026-10-18).
-- [ ] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
+- [x] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-18).
 
 ---
 

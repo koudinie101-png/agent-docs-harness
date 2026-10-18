@@ -10,14 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|План: Фаза 24 — Research-Evidence Gate при промоушене из Icebox (критерий зрелости, Evidence Nudge, `research_basis`, advisory-линт и parity шаблонов)]] (2026-10-18) #plan #phase24 #research-evidence #kb-plan #templates #lint
-
 ## ⏳ В работе (In Progress)
-
-- [ ] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-18) #task #phase24 #research-evidence #installer #e2e #spec
 
 ## ✅ Готово (Done)
 
+- [x] [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|План: Фаза 24 — Research-Evidence Gate при промоушене из Icebox (критерий зрелости, Evidence Nudge, `research_basis`, advisory-линт и parity шаблонов)]] (2026-10-18) #plan #phase24 #research-evidence #kb-plan #templates #lint
+- [x] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py` (173 887 байт), E2E установленного скилла и `--update`, нормализация LF в High-SNR бюджете и Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-18) #task #phase24 #research-evidence #installer #e2e #spec
 - [x] [[Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix и multi-target комментарий в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест `tests/test_template_parity.py` (2026-10-18) #task #phase24 #templates #tests #quality-gates
 - [x] [[Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и 4 теста (2026-10-18) #task #phase24 #research-evidence #templates #lint
 - [x] [[Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: Evidence Status (`🔬`/`🧪`/`⏸`) и `Evidence Nudge` (A/B/C) в `/kb-plan`, Tier 2 правило в корпусе, регенерация `AGENTS.md` и Tier 1 ассерт формулировки (2026-10-18) #task #phase24 #research-evidence #kb-plan #rules #tests
