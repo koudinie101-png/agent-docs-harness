@@ -1,14 +1,14 @@
 ---
 id: BUG-011
 title: "Rules Check: test_05_git_local_setup зависит от глобальной Git identity (exit 128 на чистом runner)"
-status: open
+status: fixed
 severity: high
 type: bug
 target_release: "v0.23.0"
 target_phase: 22
-release_blocker: true
-fixed_in: null
-regression_test: "tests/test_installer.py::test_05_git_local_setup"
+release_blocker: false
+fixed_in: "v0.23.0"
+regression_test: "tests/test_installer.py::test_05_git_local_setup, tests/test_installer.py::test_05b_git_setup_without_identity_is_graceful"
 created: 2026-10-18
 updated: 2026-10-18
 tags:
@@ -24,8 +24,8 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 # 🐞 Дефект: BUG-011 — Rules Check: `test_05_git_local_setup` зависит от глобальной Git identity
 
-> **ID:** BUG-011 | **Критичность:** High | **Статус:** open  
-> **Релиз:** v0.23.0 | **Блокер:** Да  
+> **ID:** BUG-011 | **Критичность:** High | **Статус:** fixed  
+> **Релиз:** v0.23.0 | **Блокер:** Нет (устранён до создания тега)  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 
 ---
@@ -68,14 +68,15 @@ Run
 ## 5. План исправления
 * `[MODIFY]` `tests/test_installer.py` — обернуть установку в `test_05_git_local_setup` в контекст с детерминированной identity (`GIT_AUTHOR_NAME/EMAIL`, `GIT_COMMITTER_NAME/EMAIL`) и изолированным конфигом (`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` → пустые файлы во временном каталоге, `GIT_CONFIG_NOSYSTEM=1`); `git log` проверять в том же окружении.
 * `[NEW]` `tests/test_installer.py::test_05b_git_setup_without_identity_is_graceful` — зафиксировать продуктовый контракт деградации: без identity установка не падает, `.git/HEAD` создаётся, коммита нет, установщик печатает подсказку про identity.
+* **Реализовано:** общий контекст-менеджер `hermetic_git_env(identity: bool)`, вынесенные хелперы `find_git_executable()` / `remove_git_temp_tree()`; в no-identity профиле дополнительно `user.useConfigOnly=true` (через `GIT_CONFIG_COUNT/KEY_0/VALUE_0`), чтобы git не подхватывал identity из OS-аккаунта (gecos/hostname) и контракт был детерминирован на любой машине.
 * **Отклонено:** `git config --global user.name/user.email` в workflow — маскирует негерметичность; тест продолжит падать в Docker, форках и на чистых машинах.
 
 ## 6. Верификация (Regression-First)
-- [ ] RED: `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` указывают на пустые файлы, identity отсутствует → `test_05` падает с `128 != 0` (воспроизведено 2026-10-18).
-- [ ] GREEN: после фикса тот же запуск проходит; тест зелёный и с настроенной, и с пустой глобальной identity.
-- [ ] `test_05b` подтверждает graceful-деградацию без synthetic-коммита.
-- [ ] `python -m unittest discover -s tests` и `python scripts/kb_lint.py --path docs` — 0 ошибок.
-- [ ] Прогон `Rules Check` на GitHub Actions зелёный.
+- [x] RED: `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` указывают на пустые файлы, identity отсутствует → `test_05` падает с `128 != 0` (воспроизведено 2026-10-18).
+- [x] GREEN: после фикса тот же запуск проходит; тест зелёный и с настроенной, и с пустой глобальной identity (проверено дважды: обычное окружение и «враждебное» identity-free, `tmp/repro_bug011.py`).
+- [x] `test_05b` подтверждает graceful-деградацию без synthetic-коммита.
+- [x] Полный сьют и линтер — 0 ошибок: 137 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03), `kb_lint` — 232 файла, 2177 ссылок, 0 битых.
+- [ ] Прогон `Rules Check` на GitHub Actions зелёный — *шаг `Unit tests` по git-identity закрыт; общий workflow остаётся красным из-за отдельно отслеживаемого [[BUG-012-dashboard-env-and-live-api-test|BUG-012]] (Single-Task Barrier), итоговая проверка гейта — после `/kb-implement BUG-012`.*
 
 ## 7. Влияние и принятые решения
 * Красный гейт блокирует мёрж/релизные проверки и создаёт ложное впечатление сломанного продукта; сам установщик при этом ведёт себя корректно.

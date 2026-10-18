@@ -295,6 +295,9 @@ tags:
 - [x] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`): канонический инвентарь, уникальность ID, выводимость адаптеров (2026-10-18).
 - [x] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация, E2E-синхронизация инсталлятора, Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) и пересборка `dist/install.py` (2026-10-18).
 
+### 🐞 Исправление дефектов (Mode 2B -> Mode 3 TDD)
+- [x] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Герметизация `test_05_git_local_setup` (изоляция `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM`, синтетическая identity через `GIT_AUTHOR_*`/`GIT_COMMITTER_*`) и контрактный тест `test_05b` graceful-деградации без identity — hotfix Tier 1-гейта `Rules Check`, блокер v0.23.0 (2026-10-18).
+
 ---
 
 ## Фаза 23: Целостность процедурной памяти и защита от дрейфа ссылок (Memory Integrity Guard)

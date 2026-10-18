@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — BUG-011: герметизация git-identity теста (Tier 1-гейт Rules Check)
+- **Что сделано:**
+  - [[02_Tasks/Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: `test_05_git_local_setup` переведён на hermetic-окружение — пустые `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM`, `GIT_CONFIG_NOSYSTEM=1`, детерминированная identity через `GIT_AUTHOR_*`/`GIT_COMMITTER_*`; результат больше не зависит от `~/.gitconfig` машины или runner'а.
+  - Добавлен контекст-менеджер `hermetic_git_env(identity: bool)` и хелперы `find_git_executable()` / `remove_git_temp_tree()`; no-identity профиль включает `user.useConfigOnly=true`, чтобы git не подхватывал identity из OS-аккаунта (gecos/hostname).
+  - Новый контрактный тест `test_05b_git_setup_without_identity_is_graceful`: без identity установка не падает, `.git/HEAD` создаётся, коммита нет, печатается подсказка про `git config --global user.name/email`.
+  - Отклонено (по плану дефекта): `git config --global` в CI-workflow — маскирует негерметичность теста и не работает в Docker/форках/на чистых машинах.
+- **Проверка:**
+  - RED: пустые глобальный/системный конфиги без identity → `test_05` падает с `128 != 0`; GREEN: тест зелёный и с настроенной, и с пустой глобальной identity (включая «враждебное» identity-free окружение).
+  - Полный прогон: 137 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 232 файла, 2177 ссылок, 0 битых.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement BUG-012` — второй блокер `Rules Check` (`test_render_status_dashboard` и живой GitHub API).
+
 ### [2026-10-18] — Релиз v0.22.0: Фаза 22 (Single-Source Rule Compiler)
 - **Что сделано:**
   - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.22.0|RELEASE-v0.22.0]] по завершении Фазы 22 ([[02_Tasks/Plans/PLAN-022-single-source-rule-compiler|PLAN-022]], [[03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]]).

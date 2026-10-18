@@ -6,10 +6,12 @@ Zero external dependencies (uses standard library unittest, tempfile, pathlib).
 
 import sys
 import os
+import io
 import json
 import shutil
 import tempfile
 import unittest
+import contextlib
 import subprocess
 from unittest.mock import patch
 from pathlib import Path
@@ -30,6 +32,98 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 import install
+
+
+GIT_IDENTITY_ENV_KEYS = (
+    "GIT_AUTHOR_NAME",
+    "GIT_AUTHOR_EMAIL",
+    "GIT_COMMITTER_NAME",
+    "GIT_COMMITTER_EMAIL",
+    "EMAIL",
+)
+
+
+def find_git_executable():
+    """Locate git, including the standard Windows installation paths."""
+    git_cmd = shutil.which("git")
+    if not git_cmd and sys.platform == "win32":
+        win_path = r"C:\Program Files\Git\cmd\git.exe"
+        if os.path.isfile(win_path):
+            git_cmd = win_path
+    return git_cmd
+
+
+@contextlib.contextmanager
+def hermetic_git_env(identity: bool = True):
+    """Isolate Git from the ambient machine configuration (BUG-011).
+
+    ``GIT_CONFIG_GLOBAL``/``GIT_CONFIG_SYSTEM`` point at empty files so the
+    developer's (or runner's) ``~/.gitconfig`` can never decide the outcome.
+    Inherited author/committer identity variables are stripped as well.
+
+    With ``identity=True`` a deterministic synthetic identity is injected,
+    which makes the "initial commit exists" contract reproducible on clean CI
+    runners. With ``identity=False`` no identity is available and git is told
+    not to guess one from the OS account (``user.useConfigOnly``), so the
+    degradation contract is deterministic on every host.
+    """
+    saved_environ = dict(os.environ)
+    with tempfile.TemporaryDirectory() as cfg_dir:
+        cfg_path = Path(cfg_dir)
+        global_cfg = cfg_path / "global.gitconfig"
+        system_cfg = cfg_path / "system.gitconfig"
+        global_cfg.write_text("", encoding="utf-8")
+        system_cfg.write_text("", encoding="utf-8")
+
+        overrides = {
+            "GIT_CONFIG_GLOBAL": str(global_cfg),
+            "GIT_CONFIG_SYSTEM": str(system_cfg),
+            "GIT_CONFIG_NOSYSTEM": "1",
+        }
+        if identity:
+            overrides.update({
+                "GIT_AUTHOR_NAME": "Harness Test",
+                "GIT_AUTHOR_EMAIL": "harness-test@example.com",
+                "GIT_COMMITTER_NAME": "Harness Test",
+                "GIT_COMMITTER_EMAIL": "harness-test@example.com",
+            })
+        else:
+            overrides.update({
+                "GIT_CONFIG_COUNT": "1",
+                "GIT_CONFIG_KEY_0": "user.useConfigOnly",
+                "GIT_CONFIG_VALUE_0": "true",
+            })
+
+        try:
+            for key in GIT_IDENTITY_ENV_KEYS + ("GIT_CONFIG_COUNT", "GIT_CONFIG_KEY_0", "GIT_CONFIG_VALUE_0"):
+                os.environ.pop(key, None)
+            os.environ.update(overrides)
+            yield
+        finally:
+            os.environ.clear()
+            os.environ.update(saved_environ)
+
+
+def remove_git_temp_tree(temp_base):
+    """Remove a temp tree, tolerating read-only git objects on Windows."""
+    for root, dirs, files in os.walk(temp_base, topdown=False):
+        for f in files:
+            fp = os.path.join(root, f)
+            try:
+                os.chmod(fp, 0o777)
+                os.remove(fp)
+            except Exception:
+                pass
+        for d in dirs:
+            dp = os.path.join(root, d)
+            try:
+                os.rmdir(dp)
+            except Exception:
+                pass
+    try:
+        os.rmdir(temp_base)
+    except Exception:
+        pass
 
 
 class TestAgentDocsHarness(unittest.TestCase):
@@ -174,14 +268,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res.returncode, 0, f"kb_lint failed on Python installation:\n{res.stdout}")
 
     def test_05_git_local_setup(self):
-        """Verify local Git initialization and initial commit generation."""
-        # Check if git is available
-        git_cmd = shutil.which("git")
-        if not git_cmd and sys.platform == "win32":
-            win_path = r"C:\Program Files\Git\cmd\git.exe"
-            if os.path.isfile(win_path):
-                git_cmd = win_path
-
+        """Verify local Git initialization and initial commit generation in a hermetic environment."""
+        git_cmd = find_git_executable()
         if not git_cmd:
             self.skipTest("Git executable not found in test environment.")
 
@@ -191,54 +279,82 @@ class TestAgentDocsHarness(unittest.TestCase):
             target = Path(temp_base) / "GitApp"
             target.mkdir()
 
-            install.install_harness(
-                target_dir=target,
-                project_name="GitApp",
-                stack_key="generic",
-                agent_choice="generic",
-                git_choice="local",
-                force=True,
-            )
+            with hermetic_git_env(identity=True):
+                install.install_harness(
+                    target_dir=target,
+                    project_name="GitApp",
+                    stack_key="generic",
+                    agent_choice="generic",
+                    git_choice="local",
+                    force=True,
+                )
 
-            self.assertTrue((target / ".git").is_dir(), ".git folder was not created")
-            self.assertTrue((target / ".git" / "HEAD").is_file(), ".git/HEAD does not exist")
+                self.assertTrue((target / ".git").is_dir(), ".git folder was not created")
+                self.assertTrue((target / ".git" / "HEAD").is_file(), ".git/HEAD does not exist")
 
-            git_env = os.environ.copy()
-            git_env["GIT_DIR"] = str((target / ".git").resolve())
-            git_env["GIT_WORK_TREE"] = str(target.resolve())
+                git_env = os.environ.copy()
+                git_env["GIT_DIR"] = str((target / ".git").resolve())
+                git_env["GIT_WORK_TREE"] = str(target.resolve())
 
-            # Verify commit was created
-            res = subprocess.run(
-                [git_cmd, "log", "-n", "1", "--oneline"],
-                cwd=str(target),
-                env=git_env,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-            )
-            self.assertEqual(res.returncode, 0)
-            self.assertIn("feat: initialize docs-as-code harness", res.stdout)
+                # Verify commit was created (independent of the machine's global identity)
+                res = subprocess.run(
+                    [git_cmd, "log", "-n", "1", "--oneline"],
+                    cwd=str(target),
+                    env=git_env,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                self.assertEqual(res.returncode, 0, f"git log failed: {res.stderr}")
+                self.assertIn("feat: initialize docs-as-code harness", res.stdout)
         finally:
-            # Clean up read-only files on Windows
-            for root, dirs, files in os.walk(temp_base, topdown=False):
-                for f in files:
-                    fp = os.path.join(root, f)
-                    try:
-                        os.chmod(fp, 0o777)
-                        os.remove(fp)
-                    except Exception:
-                        pass
-                for d in dirs:
-                    dp = os.path.join(root, d)
-                    try:
-                        os.rmdir(dp)
-                    except Exception:
-                        pass
-            try:
-                os.rmdir(temp_base)
-            except Exception:
-                pass
+            remove_git_temp_tree(temp_base)
+
+    def test_05b_git_setup_without_identity_is_graceful(self):
+        """Product contract: without Git identity the installer warns, keeps .git/HEAD, and makes no commit (BUG-011)."""
+        git_cmd = find_git_executable()
+        if not git_cmd:
+            self.skipTest("Git executable not found in test environment.")
+
+        temp_base = tempfile.mkdtemp()
+        try:
+            target = Path(temp_base) / "GitAppNoIdentity"
+            target.mkdir()
+            stdout_capture = io.StringIO()
+
+            with hermetic_git_env(identity=False), contextlib.redirect_stdout(stdout_capture):
+                install.install_harness(
+                    target_dir=target,
+                    project_name="GitAppNoIdentity",
+                    stack_key="generic",
+                    agent_choice="generic",
+                    git_choice="local",
+                    force=True,
+                )
+
+                self.assertTrue((target / ".git").is_dir(), ".git folder was not created")
+                self.assertTrue((target / ".git" / "HEAD").is_file(), ".git/HEAD does not exist")
+
+                git_env = os.environ.copy()
+                git_env["GIT_DIR"] = str((target / ".git").resolve())
+                git_env["GIT_WORK_TREE"] = str(target.resolve())
+                res = subprocess.run(
+                    [git_cmd, "log", "-n", "1", "--oneline"],
+                    cwd=str(target),
+                    env=git_env,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+
+            self.assertNotEqual(res.returncode, 0, "No commit must exist without a Git identity")
+            installer_output = stdout_capture.getvalue()
+            self.assertIn("Initial commit could not be created automatically", installer_output)
+            self.assertIn("Configure Git identity: git config --global user.name", installer_output)
+        finally:
+            remove_git_temp_tree(temp_base)
 
     def test_06_install_deploys_all_11_skills(self):
         """E2E test: Verify that all 11 AI agent skills (.agents/skills/) are deployed."""

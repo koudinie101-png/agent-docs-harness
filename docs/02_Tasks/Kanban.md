@@ -10,7 +10,6 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Rules Check — `test_05_git_local_setup` зависит от глобальной Git identity, падает на чистом runner'е (`128 != 0`) — P1, блокер v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
 - [ ] [[Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: Rules Check — `test_render_status_dashboard` зависит от `GITHUB_REPOSITORY` и ходит в живой GitHub API — P1, блокер v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
 
 ## ⏳ В работе (In Progress)
@@ -20,6 +19,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Rules Check — `test_05_git_local_setup` изолирован от глобальной Git identity (`hermetic_git_env`, `test_05b` graceful-деградация) — P1, исправлен в v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
 - [x] [[Plans/PLAN-022-single-source-rule-compiler|План: Фаза 22 — Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler)]] (2026-10-18) #plan #phase22 #ssot #rules #codegen
 - [x] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация правил, E2E-синхронизация, Living Spec и пересборка `dist/install.py` (2026-10-18) #task #phase22 #e2e #spec
 - [x] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа правил (`tests/test_rules_consistency.py`) (2026-10-18) #task #phase22 #tests #quality-gates
