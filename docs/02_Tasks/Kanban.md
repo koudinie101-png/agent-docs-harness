@@ -11,7 +11,6 @@ kanban-plugin: basic
 ## 📥 Бэклог (Backlog)
 
 - [ ] [[Plans/PLAN-022-single-source-rule-compiler|План: Фаза 22 — Компилятор правил единого источника и защита от дрейфа SSOT (Single-Source Rule Compiler)]] (2026-10-18) #plan #phase22 #ssot #rules #codegen
-- [ ] [[Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, CI-гейт и exclusion workflow (2026-10-18) #task #phase22 #codegen #ci
 - [ ] [[Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа правил (`tests/test_rules_consistency.py`) (2026-10-18) #task #phase22 #tests #quality-gates
 - [ ] [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация правил, E2E-синхронизация, Living Spec и пересборка `dist/install.py` (2026-10-18) #task #phase22 #e2e #spec
 
@@ -21,6 +20,7 @@ kanban-plugin: basic
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, CI-гейт и exclusion workflow (2026-10-18) #task #phase22 #codegen #ci
 - [x] [[Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030 (2026-10-18) #task #phase22 #ssot #rules #installer
 - [x] [[Bugs/BUG-010-release-remote-credentials-leak|BUG-010]]: Утечка credentials из Git remote (PAT) в релизные артефакты и публичные Release Notes — P1, закрыт в v0.21.0 (2026-10-18) #bug #security #release #credentials #phase21
 - [x] [[Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]]: Семантический кросс-чек `TechDebt.md` с фазами/задачами `#techdebt` и поддержка кодовых тегов `// DEBT-XXX` в `scripts/kb_lint.py` (2026-10-18) #task #phase21 #techdebt #lint

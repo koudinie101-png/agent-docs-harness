@@ -147,7 +147,7 @@ graph LR
   * `_load_rules_corpus()` (бандл → local-fallback → `RuntimeError`), `_render_rules_document()`; делегирование из `_rules()`, `_gen_rule()`, `generate_agents_md()` с сохранением сигнатур.
   * `scripts/build_installer.py`: ключ `rules/AGENTS_CORE.md` в бандле.
   * ADR-0030 (`status: accepted`) с фиксацией отвергнутых вариантов.
-- [ ] [[../Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` и CI-гейт.
+- [x] [[../Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` и CI-гейт.
   * `scripts/gen_rules.py` (рендер документа `harness-agents`, `--check`, нормализация CRLF), шапка GENERATED.
   * `.github/workflows/rules-check.yml`, шаг `--check` в префлайт `.github/workflows/release.yml`, exclusion workflow в `bundle_assets()`.
 - [ ] [[../Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`).

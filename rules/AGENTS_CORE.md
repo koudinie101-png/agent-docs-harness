@@ -204,6 +204,7 @@ Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Don
 <!-- /DOCUMENT: adapters -->
 
 <!-- DOCUMENT: harness-agents -->
+<!-- GENERATED FILE: edit rules/AGENTS_CORE.md, then run: python scripts/gen_rules.py -->
 # 🤖 AGENTS.md — AI Agent Guidelines & Operating Modes
 
 > **Standard:** Docs-as-Code Harness for Antigravity & AI Agents  

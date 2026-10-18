@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-086: генерация корневого `AGENTS.md` и CI-гейт дрейфа правил
+- **Что сделано:**
+  - Добавлен `scripts/gen_rules.py` (`--check`, `--output`): рендер документа `harness-agents` из `rules/AGENTS_CORE.md`, нормализация CRLF, unified-diff при дрейфе, Exit code 2 при ошибке рендера.
+  - Корневой `AGENTS.md` переведён в генерируемый артефакт: единственное изменение — шапка GENERATED (дифф ровно +1 строка); ручные правки ловятся `--check`.
+  - Workflow `.github/workflows/rules-check.yml` (`push`/`pull_request`: `--check` + unittest) и шаг `Verify Rules Corpus Consistency` в префлайт `.github/workflows/release.yml`.
+  - `scripts/build_installer.py`: `EXCLUDED_WORKFLOWS = {"rules-check.yml"}` — харнесс-специфичный workflow не уезжает в клиентские проекты; в `tests/test_installer.py` закреплены ассерты исключения и наличия корпуса в бандле.
+  - `docs/Onboarding.md`: раздел 16 «Компилятор правил агента» — где править правила и как проверять.
+- **Проверка:**
+  - `python scripts/gen_rules.py --check` → 0 на чистом дереве, 1 при ручной правке (проверено с восстановлением файла).
+  - Полный прогон: 123 теста, OK; `compileall` — 0; `kb_lint` — 227 файлов, 2138 ссылок, 0 битых.
+  - `dist/install.py` пересобран: бандл содержит корпус и не содержит `rules-check.yml`.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-087`: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`).
+
 ### [2026-10-18] — TASK-085: компилятор правил (корпус `rules/AGENTS_CORE.md` и рендерер)
 - **Что сделано:**
   - Три разрозненных инвентаря правил (`AGENTS.md`, `install.py: _RULES_BODY`, `install.py: _gen_rule`) извлечены в единый корпус `rules/AGENTS_CORE.md` (три документа: `client-agents`, `adapters`, `harness-agents`, семантические маркеры `RULE`, плейсхолдеры стека).

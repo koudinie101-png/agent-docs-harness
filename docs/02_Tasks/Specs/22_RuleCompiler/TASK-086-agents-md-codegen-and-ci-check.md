@@ -1,7 +1,7 @@
 ---
 id: TASK-086
 title: "Генерация корневого AGENTS.md через scripts/gen_rules.py --check, CI-гейт и exclusion workflow в бандле"
-status: planned
+status: done
 type: task
 phase: 22
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-086 — Генерация корневого `AGENTS.md` через `scripts/gen_rules.py --check`, CI-гейт и exclusion workflow
 
-> **ID:** TASK-086 | **Статус:** К реализации  
+> **ID:** TASK-086 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 22 | **План:** [[../../Plans/PLAN-022-single-source-rule-compiler|PLAN-022]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Предшественник:** [[../../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]] (корпус и рендерер)  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1), [[../../../03_Decisions_ADR/ADR-0001-zero-dependencies-python-stdlib|ADR-0001]]
@@ -124,20 +124,20 @@ EXCLUDED_WORKFLOWS = {"rules-check.yml"}
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Генерация идемпотентна: `python scripts/gen_rules.py --check` (Exit code 0, вывод `OK`).
-- [ ] Дрейф ловится: `Add-Content AGENTS.md "<!-- test -->"` → `--check` возвращает 1 и печатает diff; затем `git checkout -- AGENTS.md`.
-- [ ] Diff миграции: `git diff --stat AGENTS.md` → ровно 1 вставка (шапка GENERATED).
-- [ ] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Полный прогон: `python -m unittest discover -s tests` (Exit code 0).
-- [ ] Сборка: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Exclusion: `python -c "import install; a=install.unpack_assets(); print('.github/workflows/rules-check.yml' in a, '.github/workflows/release.yml' in a)"` → `False True`.
-- [ ] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Генерация идемпотентна: `python scripts/gen_rules.py --check` (Exit code 0, вывод `OK`).
+- [x] Дрейф ловится: `Add-Content AGENTS.md "<!-- test -->"` → `--check` возвращает 1 и печатает diff; затем `git checkout -- AGENTS.md`.
+- [x] Diff миграции: `git diff --stat AGENTS.md` → ровно 1 вставка (шапка GENERATED).
+- [x] Компиляция: `python -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Полный прогон: `python -m unittest discover -s tests` (Exit code 0).
+- [x] Сборка: `python scripts/build_installer.py` (Exit code 0).
+- [x] Exclusion: `python -c "import install; a=install.unpack_assets(); print('.github/workflows/rules-check.yml' in a, '.github/workflows/release.yml' in a)"` → `False True`.
+- [x] Линтер: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `AGENTS.md` воспроизводится из корпуса побайтово (после нормализации переводов строк).
-- [ ] `--check` возвращает 0 на чистом дереве и 1 при любой ручной правке.
-- [ ] `rules-check.yml` работает на `push`/`pull_request` и **не** попадает в бандл.
-- [ ] `release.yml` падает на рассинхронизированном `AGENTS.md` до публикации.
-- [ ] `docs/Onboarding.md` объясняет новый порядок правки правил.
-- [ ] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.
+- [x] `AGENTS.md` воспроизводится из корпуса побайтово (после нормализации переводов строк).
+- [x] `--check` возвращает 0 на чистом дереве и 1 при любой ручной правке.
+- [x] `rules-check.yml` работает на `push`/`pull_request` и **не** попадает в бандл.
+- [x] `release.yml` падает на рассинхронизированном `AGENTS.md` до публикации.
+- [x] `docs/Onboarding.md` объясняет новый порядок правки правил.
+- [x] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.

@@ -42,6 +42,11 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn("scripts/kb_ingest.py", assets)
         self.assertIn(".agents/skills/kb-release/SKILL.md", assets)
         self.assertIn(".github/workflows/release.yml", assets)
+        self.assertNotIn(
+            ".github/workflows/rules-check.yml", assets,
+            "Harness-only rules workflow must not ship to client projects",
+        )
+        self.assertIn("rules/AGENTS_CORE.md", assets)
 
         expected_templates = [
             "TEMPLATE_ADR.md",

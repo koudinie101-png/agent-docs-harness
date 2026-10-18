@@ -32,6 +32,9 @@ DIST_DIR = REPO_ROOT / "dist"
 DIST_INSTALL_PY = DIST_DIR / "install.py"
 SKILLS_DIR = REPO_ROOT / ".agents" / "skills"
 
+# Harness-only workflows must never ship to client projects (no rules/ corpus there).
+EXCLUDED_WORKFLOWS = {"rules-check.yml"}
+
 
 def bundle_assets() -> dict:
     assets = {}
@@ -73,6 +76,8 @@ def bundle_assets() -> dict:
     workflows_dir = REPO_ROOT / ".github" / "workflows"
     if workflows_dir.is_dir():
         for wf in sorted(list(workflows_dir.glob("*.yml"))):
+            if wf.name in EXCLUDED_WORKFLOWS:
+                continue
             rel_key = f".github/workflows/{wf.name}"
             assets[rel_key] = wf.read_text(encoding="utf-8")
             print(f"  • Bundled workflow: {wf.name} ({len(assets[rel_key])} chars)")

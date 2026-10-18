@@ -357,5 +357,16 @@ flowchart LR
 * Успешное прохождение юнит-тестов и компиляция недостаточны для визуального кода.
 * В сценариях тестирования [[00_Templates/TEMPLATE_TEST|TEMPLATE_TEST]] обязательна интерактивная проверка: 4 состояния интерфейса, кликабельность элементов, верстка без обрезания и отсутствие зависаний основного потока ввода-вывода.
 
+---
+
+## 16. Компилятор правил агента (`rules/AGENTS_CORE.md`)
+
+Правила поведения агента и все IDE-адаптеры генерируются из одного корпуса ([[03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]]):
+
+* **Единственная точка правки —** `rules/AGENTS_CORE.md` (документы `client-agents`, `adapters`, `harness-agents`). Корневой `AGENTS.md` помечен как GENERATED и руками не правится: правка будет обнаружена CI-гейтом.
+* **Как добавить правило:** (1) изменение в корпусе, (2) `python scripts/gen_rules.py`, (3) `python scripts/gen_rules.py --check` и `python -m unittest discover -s tests`.
+* **Контроль дрейфа:** workflow `Rules Check` запускает `--check` на `push`/`pull_request`; `tests/test_rules_golden.py` фиксирует побайтовое совпадение сгенерированных `AGENTS.md` и 6 адаптеров.
+* **Дистрибутив:** корпус упаковывается в `EMBEDDED_ASSETS` и не разворачивается в `docs/` клиентского проекта.
+
 
 
