@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-091: `research_basis`/`basis_note` и advisory-контроль в `kb_lint` (Фаза 24)
+- **Что сделано:**
+  - [[02_Tasks/Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: в обе копии `TEMPLATE_PLAN.md` (`docs/00_Templates/` и `templates/`) добавлены закомментированные подсказки `research_basis`/`basis_note` и секция `### Research Basis & Unvalidated Assumptions` (известно / не проверено / как закрываем) — план получил durable-след доказательной базы (ADR-0031 R3).
+  - `scripts/kb_lint.py`: `check_research_basis()` + `_normalize_plan_value()` — неблокирующий `WARN:`, если `research_basis: none` указан без непустого `basis_note`; отсутствие поля молчит (обратная совместимость с 23 планами); `02_Tasks/Plans` **не** добавлен в `schemas`.
+  - Интеграция в `run_linter()`: verbose-блок `⚠️ Research Basis Warnings (N):` и silent-строки `⚠️  WARN: ...`; `has_errors` не меняется → Exit code 0.
+  - 4 теста в `tests/test_kb_lint.py`: `none` без заметки (с проверкой Exit code 0), `none` с заметкой и inline-комментарием, ссылка на `RESEARCH-025`, отсутствующее поле.
+- **Проверка:**
+  - `tests.test_kb_lint` — **54 теста OK** (было 50); полный прогон `python tmp/run_tests.py` — **151 тест OK** (Exit code 0).
+  - Негативный CLI-прогон: временный план с `research_basis: none` → `Research Basis Warnings (1)`, Exit code **0**, каталог удалён.
+  - Чистый репозиторий: `kb_lint --verbose` без блока Research Basis (238 файлов, 0 битых); бюджет шаблонов 28 599 ≤ 30 000.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-092`.
+
 ### [2026-10-18] — TASK-090: Evidence Status и Evidence Nudge в `/kb-plan` (Фаза 24)
 - **Что сделано:**
   - [[02_Tasks/Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: ветка `No Argument` в `.agents/skills/kb-plan/SKILL.md` теперь ранжирует по Value Impact **и** Evidence Status (`🔬` валидировано / `🧪` гипотеза / `⏸` parked — вычисляется из ссылок `RESEARCH`/`ADR`, вручную в `Roadmap.md` не вносится) и содержит неблокирующий `Evidence Nudge` с опциями A/B/C и правилом рекомендации по обратимости (A — необратимые решения, B — обратимые).

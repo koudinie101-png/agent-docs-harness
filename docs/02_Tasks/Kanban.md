@@ -14,12 +14,12 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py` (2026-10-18) #task #phase24 #research-evidence #templates #lint
 - [ ] [[Specs/24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]]: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест копий шаблонов (2026-10-18) #task #phase24 #templates #tests #quality-gates
 - [ ] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-18) #task #phase24 #research-evidence #installer #e2e #spec
 
 ## ✅ Готово (Done)
 
+- [x] [[Specs/24_ResearchEvidence/TASK-091-plan-research-basis-template-and-advisory-lint|TASK-091]]: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и 4 теста (2026-10-18) #task #phase24 #research-evidence #templates #lint
 - [x] [[Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]: Evidence Status (`🔬`/`🧪`/`⏸`) и `Evidence Nudge` (A/B/C) в `/kb-plan`, Tier 2 правило в корпусе, регенерация `AGENTS.md` и Tier 1 ассерт формулировки (2026-10-18) #task #phase24 #research-evidence #kb-plan #rules #tests
 - [x] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: Целостность процедурной памяти: `check_memory_consistency()`, чистка висячих INC-ссылок и процедура заведения инцидента в `Onboarding.md` §13 (2026-10-18) #task #phase23 #memory #lint
 

@@ -534,6 +534,63 @@ def check_memory_consistency(docs_dir: Path) -> List[str]:
     return warnings
 
 
+RESEARCH_BASIS_RE = re.compile(r"^research_basis:\s*(.*)$", re.MULTILINE)
+BASIS_NOTE_RE = re.compile(r"^basis_note:\s*(.*)$", re.MULTILINE)
+
+
+def _normalize_plan_value(raw: str) -> str:
+    """Strip quotes, inline comments and surrounding whitespace from a scalar."""
+    value = raw.strip().split("#", 1)[0].strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        value = value[1:-1].strip()
+    return value
+
+
+def check_research_basis(docs_dir: Path) -> List[str]:
+    """
+    Tier 1 Quality Gate (Non-blocking): audit plan provenance.
+
+    A plan that declares `research_basis: none` must explain why research was not
+    needed via a non-empty `basis_note`. Plans without the field are silently
+    accepted (backward compatible with plans created before ADR-0031).
+    Returns a list of warning strings (never blocks the linter).
+    """
+    warnings = []
+    plans_dir = docs_dir / "02_Tasks" / "Plans"
+    if not plans_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Plans").is_dir():
+        plans_dir = docs_dir / "docs" / "02_Tasks" / "Plans"
+    if not plans_dir.is_dir():
+        return warnings
+
+    for plan_file in sorted(plans_dir.rglob("*.md")):
+        if plan_file.name.startswith("TEMPLATE_"):
+            continue
+        try:
+            text = plan_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if not text.startswith("---"):
+            continue
+        parts = text.split("---", 2)
+        if len(parts) < 3:
+            continue
+        frontmatter = parts[1]
+
+        basis_match = RESEARCH_BASIS_RE.search(frontmatter)
+        if not basis_match:
+            continue
+        if _normalize_plan_value(basis_match.group(1)).lower() != "none":
+            continue
+
+        note_match = BASIS_NOTE_RE.search(frontmatter)
+        note = _normalize_plan_value(note_match.group(1)) if note_match else ""
+        if not note:
+            warnings.append(
+                "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name
+            )
+    return warnings
+
+
 def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[str]:
     """
     Tier 1 Quality Gate (Non-blocking):
@@ -969,6 +1026,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     devlog_warnings = check_devlog_semantic_guard(docs_dir)
     fast_track_warnings = check_fast_track_specs(docs_dir)
     phase_warnings = check_phase_consistency(docs_dir)
+    research_warnings = check_research_basis(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
     memory_warnings = check_memory_consistency(docs_dir)
     asset_warnings = check_asset_weights(docs_dir)
@@ -1048,6 +1106,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"   • {pw}")
             print()
 
+        if research_warnings:
+            print(f"⚠️ Research Basis Warnings ({len(research_warnings)}):")
+            for rw in research_warnings:
+                print(f"   • {rw}")
+            print()
+
         if asset_warnings:
             print(f"⚠️ Asset Weight Warnings ({len(asset_warnings)}):")
             for aw in asset_warnings:
@@ -1094,6 +1158,11 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"⚠️  WARN: {ftw}")
         for pw in phase_warnings:
             print(f"⚠️  WARN: {pw}")
+        for rw in research_warnings:
+            if rw.startswith("WARN:"):
+                print(f"⚠️  {rw}")
+            else:
+                print(f"⚠️  WARN: {rw}")
         for aw in asset_warnings:
             print(f"⚠️  {aw}")
         for alw in asset_layout_warnings:

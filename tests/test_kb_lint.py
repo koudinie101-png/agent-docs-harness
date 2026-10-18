@@ -624,6 +624,68 @@ tags:
         self.assertEqual(exit_code_verbose, 0)
         self.assertIn("⚠️ Memory Consistency Warnings (1):", captured_verbose.getvalue())
 
+    def _write_plan(self, name, frontmatter):
+        """Create a plan file with the given YAML frontmatter body."""
+        plans_dir = self.docs_dir / "02_Tasks" / "Plans"
+        plans_dir.mkdir(parents=True, exist_ok=True)
+        (plans_dir / name).write_text("---\n%s\n---\n# Plan\n" % frontmatter, encoding="utf-8")
+
+    def test_check_research_basis_none_without_basis_note(self):
+        """A plan declaring research_basis: none must explain why (advisory WARN)."""
+        self._write_plan("PLAN-001-test.md", "id: PLAN-001\nresearch_basis: none")
+
+        warnings = kb_lint.check_research_basis(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertEqual(
+            warnings[0],
+            "WARN: plan 'PLAN-001-test.md' sets research_basis: none without basis_note",
+        )
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        output = captured.getvalue()
+        self.assertIn("⚠️  WARN: plan 'PLAN-001-test.md' sets research_basis: none without basis_note", output)
+        self.assertIn("OK:", output)
+
+    def test_check_research_basis_none_with_basis_note(self):
+        """None plus a reason (with an inline comment) produces no warning."""
+        self._write_plan(
+            "PLAN-002-test.md",
+            "id: PLAN-002\n"
+            "research_basis: none  # reversible\n"
+            'basis_note: "Обратимое изменение текста правил; откат — 1 коммит."',
+        )
+        self.assertEqual(kb_lint.check_research_basis(self.docs_dir), [])
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("Research Basis", captured.getvalue())
+
+    def test_check_research_basis_research_link_is_clean(self):
+        """A quoted RESEARCH link is a declared evidence base, not a gap."""
+        self._write_plan(
+            "PLAN-003-test.md",
+            "id: PLAN-003\n"
+            'research_basis: "[[../../04_Research/RESEARCH-025-x|RESEARCH-025]]"',
+        )
+        self.assertEqual(kb_lint.check_research_basis(self.docs_dir), [])
+
+    def test_check_research_basis_absent_field_is_silent(self):
+        """Plans created before ADR-0031 have no field and must stay warning-free."""
+        self._write_plan("PLAN-004-test.md", "id: PLAN-004\nphase: 24")
+
+        self.assertEqual(kb_lint.check_research_basis(self.docs_dir), [])
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn("Research Basis", captured.getvalue())
+
     def test_bug_005_is_relative_to_python38_compatibility(self):
         """Simulate Python 3.8 where Path.is_relative_to does not exist (BUG-005)."""
         from pathlib import PurePath

@@ -1,7 +1,7 @@
 ---
 id: TASK-091
 title: "research_basis/basis_note и секция Research Basis в TEMPLATE_PLAN.md, неблокирующий check_research_basis() в kb_lint"
-status: planned
+status: done
 type: task
 phase: 24
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-091 — Поле `research_basis` и advisory-контроль в `kb_lint.py`
 
-> **ID:** TASK-091 | **Статус:** К реализации  
+> **ID:** TASK-091 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 24 | **План:** [[../../Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]] (R3, R4), [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (advisory Tier 1), [[../../../04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025]] §2.3–2.4  
 > **Предшествующая задача:** [[TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]] (Nudge и Tier 2 правило)
@@ -167,21 +167,21 @@ def _write_plan(self, name, frontmatter):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Новые тесты: `python -m unittest tests.test_kb_lint -v` → OK (4 новых, модуль без регрессий).
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → OK.
-- [ ] Чистый репозиторий: `python scripts/kb_lint.py --path docs --verbose` → Exit code 0, блок `Research Basis Warnings` **отсутствует** (`PLAN-022` имеет `basis_note`, `PLAN-023` — ссылку на `RESEARCH-025`).
-- [ ] Негативная ручная проверка: временный план с `research_basis: none` без заметки → `--verbose` печатает `Research Basis Warnings (1)`, Exit code 0; файл удалён после проверки (создавать только в `tmp/`, не в Git).
-- [ ] Компиляция: `python -m py_compile scripts/kb_lint.py` → Exit code 0.
-- [ ] Бюджет шаблонов: `python -c "from pathlib import Path; s=sum(f.stat().st_size for f in Path('templates').glob('*.md')); print(s); assert s<=30000"` → OK (текущий запас 2 092 байта; подсказки frontmatter + секция Research Basis добавляют ≈ 690 байт к копии `templates/`, итог ≈ 28 598 байт).
-- [ ] 4-State UI / скриншоты: не применимо (нет GUI/TUI).
-- [ ] Замеры $\ge 3$ прогонов: не применимо (нет изменений производительности).
+- [x] Новые тесты: `tests.test_kb_lint` — **54 теста OK** (50 + 4 новых, регрессий нет; sandbox-safe прогон через `tmp/run_task091_tests.py`).
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **151 тест OK**, Exit code 0.
+- [x] Чистый репозиторий: `python scripts/kb_lint.py --path docs --verbose` → Exit code 0, блок `Research Basis Warnings` **отсутствует** (`PLAN-022` имеет `basis_note`, `PLAN-023` — ссылку на `RESEARCH-025`).
+- [x] Негативная ручная проверка: временный `PLAN-001-negative.md` (`research_basis: none`) в `tmp/neg091/` → `--verbose` печатает `Research Basis Warnings (1)` и `WARN: plan '...' sets research_basis: none without basis_note`, Exit code **0**; каталог удалён.
+- [x] Компиляция: `python -m py_compile scripts/kb_lint.py` → Exit code 0.
+- [x] Бюджет шаблонов: **28 599 байт** ≤ 30 000 (запас 1 401); лимит теста не менялся.
+- [x] 4-State UI / скриншоты: не применимо (нет GUI/TUI).
+- [x] Замеры $\ge 3$ прогонов: не применимо (нет изменений производительности).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `research_basis` и `basis_note` задокументированы (закомментированы) в обеих копиях `TEMPLATE_PLAN.md`.
-- [ ] Секция `Research Basis & Unvalidated Assumptions` присутствует в обеих копиях шаблона.
-- [ ] `check_research_basis()` возвращает только строки `WARN:` и не влияет на Exit code.
-- [ ] Покрыты 4 сценария §3.5, включая интеграцию `run_linter()` с Exit code 0.
-- [ ] `02_Tasks/Plans` **не** добавлен в `schemas` обязательных полей.
-- [ ] Существующие 23 плана не порождают предупреждений.
-- [ ] Статус задачи обновляется в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] `research_basis` и `basis_note` задокументированы (закомментированы) в обеих копиях `TEMPLATE_PLAN.md`.
+- [x] Секция `Research Basis & Unvalidated Assumptions` присутствует в обеих копиях шаблона.
+- [x] `check_research_basis()` возвращает только строки `WARN:` и не влияет на Exit code.
+- [x] Покрыты 4 сценария §3.5, включая интеграцию `run_linter()` с Exit code 0.
+- [x] `02_Tasks/Plans` **не** добавлен в `schemas` обязательных полей.
+- [x] Существующие 23 плана не порождают предупреждений.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
