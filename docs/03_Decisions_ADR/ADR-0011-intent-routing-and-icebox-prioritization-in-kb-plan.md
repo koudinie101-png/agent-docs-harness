@@ -23,6 +23,7 @@ tags:
 > **Теги:** #adr #architecture #planning #kb-plan #roadmap #icebox #value-impact #intent-routing #docs-as-code  
 > **Первоисточник исследования:** [[../../04_Research/RESEARCH-006-kb-plan-icebox-prioritization-and-intent-routing|RESEARCH-006: Маршрутизация намерений и приоритизация бэклога идей]]  
 > **Связанные решения:** [[ADR-0001-zero-dependencies-python-stdlib|ADR-0001: Zero Dependencies]], [[ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009: Оптимизация токенов и High-SNR]]  
+> **Дополнено:** [[ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031: Research-Evidence Gate]] (2026-10-18) — критерий технической зрелости из §2.2 восстановлен в тексте скилла и усилен явным полем `research_basis` в плане.  
 
 ---
 

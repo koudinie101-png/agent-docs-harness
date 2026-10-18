@@ -93,6 +93,8 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0026-heterogeneous-ui-ux-and-visual-asset-management|ADR-0026: Контур UI/UX, управление визуальными ассетами и архитектура гетерогенных multi-target систем]]
 * [[03_Decisions_ADR/ADR-0027-task-scoped-asset-namespaces-and-layout-linting|ADR-0027: Task-Scoped пространства имен визуальных макетов (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация топологии docs/assets/ в kb_lint.py]]
 * [[03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028: Сквозной жизненный цикл технического долга (DEBT-XXX), интеграция в режимы 1–3 и семантический контроль в kb_lint.py]]
+* [[03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029: Символьные контракты скоупа задач (Symbolic Scope) и отказ от фиксации номеров строк]]
+* [[03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031: Research-Evidence Gate при промоушене из Icebox, поле research_basis в PLAN-XXX и неблокирующий контроль]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -118,6 +120,8 @@ flowchart TD
 * [[04_Research/RESEARCH-021-heterogeneous-ui-ux-and-visual-asset-management|RESEARCH-021: Архитектура UI/UX контура, визуальных ассетов и гетерогенных multi-target систем]]
 * [[04_Research/RESEARCH-022-asset-storage-hardening-and-task-scoped-namespaces|RESEARCH-022: Укрепление контура визуальных ассетов: Task-Scoped пространства имен (TASK-XXX/), жизненный цикл As-Is/To-Be и валидация лейаута в kb_lint.py]]
 * [[04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023: Сквозной жизненный цикл технического долга (TechDebt.md), интеграция в режимы 1–3 и семантический контроль в kb_lint.py]]
+* [[04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024: Символьные контракты скоупа задач (Symbolic Scope) и отказ от фиксации номеров строк]]
+* [[04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025: Research-Evidence Gate при промоушене из Icebox: критерий зрелости в /kb-plan и поле research_basis в PLAN-XXX]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
