@@ -510,6 +510,120 @@ tags:
         self.assertEqual(exit_code, 1)
         self.assertIn("Memory patterns limit exceeded", captured.getvalue())
 
+    def _write_memory_files(self, patterns_content, incidents=None):
+        """Create a synthetic procedural-memory contour for consistency tests."""
+        memory_dir = self.docs_dir / "06_Memory"
+        incidents_dir = memory_dir / "Incidents"
+        incidents_dir.mkdir(parents=True, exist_ok=True)
+        (memory_dir / "patterns.md").write_text(patterns_content, encoding="utf-8")
+        for filename, content in (incidents or {}).items():
+            (incidents_dir / filename).write_text(content, encoding="utf-8")
+
+    @staticmethod
+    def _incident_report(incident_id, target_pattern):
+        lines = [
+            "---",
+            f"id: {incident_id}",
+            'title: "Test incident"',
+            "status: active",
+            "type: incident",
+            "severity: high",
+            "tag: test",
+            'root_cause: "test root cause"',
+        ]
+        if target_pattern is not None:
+            lines.append(f'target_pattern: "{target_pattern}"')
+        lines.extend(["created: 2026-10-18", "---", "# Incident", ""])
+        return "\n".join(lines)
+
+    def test_check_memory_consistency_clean_index(self):
+        """A consistent patterns.md <-> Incidents/ pair produces no warnings."""
+        self._write_memory_files(
+            "# Patterns\n\n- [TRG-01] Pattern | Desc | Fix | (Count: 1, Sev: High) -> INC-001\n",
+            {"INC-001-test.md": self._incident_report("INC-001", "TRG-01")},
+        )
+        self.assertEqual(kb_lint.check_memory_consistency(self.docs_dir), [])
+
+    def test_check_memory_consistency_missing_incident_report(self):
+        """A dangling INC reference in patterns.md yields a WARN."""
+        self._write_memory_files(
+            "- [TRG-01] Pattern | Desc | Fix | (Count: 1, Sev: High) -> INC-999\n"
+        )
+        warnings = kb_lint.check_memory_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("patterns.md references missing incident report 'INC-999'", warnings[0])
+
+    def test_check_memory_consistency_id_filename_mismatch(self):
+        """Incident frontmatter id must match the INC-XXX filename prefix."""
+        self._write_memory_files(
+            "- [TRG-05] Pattern | Desc | Fix | (Count: 1, Sev: High)\n",
+            {"INC-004-test.md": self._incident_report("INC-005", "TRG-05")},
+        )
+        warnings = kb_lint.check_memory_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("incident 'INC-005' id does not match filename 'INC-004-test.md'", warnings[0])
+
+    def test_check_memory_consistency_missing_target_pattern(self):
+        """An incident without target_pattern violates the mandatory contract."""
+        self._write_memory_files(
+            "- [TRG-03] Pattern | Desc | Fix | (Count: 1, Sev: High)\n",
+            {"INC-003-test.md": self._incident_report("INC-003", None)},
+        )
+        warnings = kb_lint.check_memory_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("incident 'INC-003' is missing required 'target_pattern'", warnings[0])
+
+    def test_check_memory_consistency_target_pattern_absent_from_index(self):
+        """Incident target_pattern must exist in patterns.md as [TRG-XX]."""
+        self._write_memory_files(
+            "- [TRG-01] Pattern | Desc | Fix | (Count: 1, Sev: High)\n",
+            {"INC-004-test.md": self._incident_report("INC-004", "TRG-99")},
+        )
+        warnings = kb_lint.check_memory_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("incident 'INC-004' targets 'TRG-99' which is absent from patterns.md", warnings[0])
+
+    def test_check_memory_consistency_pair_mismatch(self):
+        """A pattern link and the incident target_pattern must agree."""
+        self._write_memory_files(
+            "- [TRG-01] Pattern | Desc | Fix | (Count: 1, Sev: High) -> INC-001\n"
+            "- [TRG-02] Pattern | Desc | Fix | (Count: 1, Sev: High)\n",
+            {"INC-001-test.md": self._incident_report("INC-001", "TRG-02")},
+        )
+        warnings = kb_lint.check_memory_consistency(self.docs_dir)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn(
+            "pattern 'TRG-01' links 'INC-001' whose target_pattern is 'TRG-02'", warnings[0]
+        )
+
+    def test_check_memory_consistency_seeded_pattern_is_not_a_reference(self):
+        """Seeded patterns keep their place in the index but are not incident links."""
+        self._write_memory_files(
+            "- [TRG-01] Pattern | Desc | Fix | (Count: 3, Sev: High) "
+            "seeded pattern (no archived report) -> INC-999\n"
+        )
+        self.assertEqual(kb_lint.check_memory_consistency(self.docs_dir), [])
+
+    def test_memory_consistency_warnings_do_not_fail_linter(self):
+        """Memory consistency is advisory: it warns but never changes Exit code."""
+        self._write_memory_files(
+            "- [TRG-01] Pattern | Desc | Fix | (Count: 1, Sev: High) -> INC-999\n"
+        )
+
+        captured = io.StringIO()
+        with patch("sys.stdout", captured):
+            exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
+        self.assertEqual(exit_code, 0)
+        silent_output = captured.getvalue()
+        self.assertIn("⚠️  WARN: patterns.md references missing incident report 'INC-999'", silent_output)
+        self.assertIn("OK:", silent_output)
+
+        captured_verbose = io.StringIO()
+        with patch("sys.stdout", captured_verbose):
+            exit_code_verbose = kb_lint.run_linter(self.docs_dir, verbose=True)
+        self.assertEqual(exit_code_verbose, 0)
+        self.assertIn("⚠️ Memory Consistency Warnings (1):", captured_verbose.getvalue())
+
     def test_bug_005_is_relative_to_python38_compatibility(self):
         """Simulate Python 3.8 where Path.is_relative_to does not exist (BUG-005)."""
         from pathlib import PurePath

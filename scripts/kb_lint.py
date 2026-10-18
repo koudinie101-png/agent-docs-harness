@@ -415,6 +415,125 @@ def check_memory_limits(docs_dir: Path) -> list:
     return errors
 
 
+MEMORY_SEEDED_MARKER = "seeded pattern (no archived report)"
+
+
+def _parse_memory_frontmatter(text: str) -> Dict[str, str]:
+    """Extract scalar YAML frontmatter fields used by procedural-memory reports."""
+    fields: Dict[str, str] = {}
+    if not text.startswith("---"):
+        return fields
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return fields
+    for line in parts[1].splitlines():
+        match = re.match(r"^([A-Za-z_][\w-]*):\s*(.*)$", line)
+        if not match:
+            continue
+        key, raw_value = match.group(1), match.group(2).strip()
+        if not raw_value or raw_value.startswith("#"):
+            continue
+        if len(raw_value) >= 2 and raw_value[0] == raw_value[-1] and raw_value[0] in "\"'":
+            raw_value = raw_value[1:-1]
+        fields[key] = raw_value
+    return fields
+
+
+def check_memory_consistency(docs_dir: Path) -> List[str]:
+    """
+    Tier 1 Quality Gate (Non-blocking, advisory):
+    Validates referential integrity of the procedural memory contour docs/06_Memory/:
+    1. Every INC-XXX referenced from patterns.md has an incident report file.
+    2. Incident frontmatter `id` matches the INC-XXX filename prefix.
+    3. Incident `target_pattern` exists in patterns.md as [TRG-XX].
+    4. A pattern [TRG-XX] linking INC-YYY agrees with that incident's target_pattern.
+
+    Seeded patterns marked 'seeded pattern (no archived report)' keep their place in
+    the index but are not treated as incident references.
+    Returns a list of non-blocking 'WARN:' strings (never blocks the linter).
+    """
+    warnings: List[str] = []
+    memory_dir = docs_dir / "06_Memory"
+    if not memory_dir.is_dir() and (docs_dir / "docs" / "06_Memory").is_dir():
+        memory_dir = docs_dir / "docs" / "06_Memory"
+    if not memory_dir.is_dir():
+        return warnings
+
+    patterns_file = memory_dir / "patterns.md"
+    if not patterns_file.is_file():
+        return warnings
+
+    try:
+        patterns_content = patterns_file.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return warnings
+
+    pattern_entries: List[tuple] = []
+    for line in patterns_content.splitlines():
+        match = re.match(r"^\s*-\s*\[(TRG-\d{2,})\]\s*(.*)$", line)
+        if match:
+            pattern_entries.append((match.group(1), line))
+    pattern_tags = {tag for tag, _ in pattern_entries}
+
+    incidents_dir = memory_dir / "Incidents"
+    incident_reports_by_prefix: Dict[str, Dict[str, str]] = {}
+    incident_warnings: List[str] = []
+    if incidents_dir.is_dir():
+        for incident_file in sorted(incidents_dir.glob("*.md")):
+            if incident_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                incident_text = incident_file.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                continue
+            frontmatter = _parse_memory_frontmatter(incident_text)
+            incident_id = frontmatter.get("id", "").strip()
+            prefix_match = re.match(r"^(INC-\d{3})", incident_file.stem)
+            filename_prefix = prefix_match.group(1) if prefix_match else ""
+            if not incident_id:
+                incident_warnings.append(
+                    f"WARN: incident '{incident_file.name}' has no 'id' in frontmatter"
+                )
+            elif not filename_prefix or incident_id != filename_prefix:
+                incident_warnings.append(
+                    f"WARN: incident '{incident_id}' id does not match filename '{incident_file.name}'"
+                )
+            lookup_prefix = filename_prefix or incident_id
+            if lookup_prefix:
+                incident_reports_by_prefix[lookup_prefix] = {
+                    "target_pattern": frontmatter.get("target_pattern", "").strip(),
+                }
+
+    for tag, line in pattern_entries:
+        if MEMORY_SEEDED_MARKER in line:
+            continue
+        for incident_id in sorted(set(re.findall(r"INC-\d{3}", line))):
+            if incident_id not in incident_reports_by_prefix:
+                warnings.append(
+                    f"WARN: patterns.md references missing incident report '{incident_id}'"
+                )
+                continue
+            target_pattern = incident_reports_by_prefix[incident_id]["target_pattern"]
+            if target_pattern and target_pattern != tag:
+                warnings.append(
+                    f"WARN: pattern '{tag}' links '{incident_id}' whose target_pattern is '{target_pattern}'"
+                )
+
+    for incident_id, report in sorted(incident_reports_by_prefix.items()):
+        target_pattern = report["target_pattern"]
+        if not target_pattern:
+            incident_warnings.append(
+                f"WARN: incident '{incident_id}' is missing required 'target_pattern'"
+            )
+        elif target_pattern not in pattern_tags:
+            incident_warnings.append(
+                f"WARN: incident '{incident_id}' targets '{target_pattern}' which is absent from patterns.md"
+            )
+
+    warnings.extend(incident_warnings)
+    return warnings
+
+
 def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[str]:
     """
     Tier 1 Quality Gate (Non-blocking):
@@ -851,6 +970,7 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
     fast_track_warnings = check_fast_track_specs(docs_dir)
     phase_warnings = check_phase_consistency(docs_dir)
     memory_errors = check_memory_limits(docs_dir)
+    memory_warnings = check_memory_consistency(docs_dir)
     asset_warnings = check_asset_weights(docs_dir)
     asset_layout_warnings = check_asset_layout(docs_dir)
     debt_results = check_tech_debt_integrity(docs_dir, file_map=file_map)
@@ -896,6 +1016,12 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             print(f"❌ Memory Limit Errors ({len(memory_errors)}):")
             for me in memory_errors:
                 print(f"   • {me}")
+            print()
+
+        if memory_warnings:
+            print(f"⚠️ Memory Consistency Warnings ({len(memory_warnings)}):")
+            for mw in memory_warnings:
+                print(f"   • {mw}")
             print()
 
         if drift_warnings:
@@ -977,6 +1103,11 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
                 print(f"⚠️  {dw}")
             else:
                 print(f"⚠️  WARN: {dw}")
+        for mw in memory_warnings:
+            if mw.startswith("WARN:"):
+                print(f"⚠️  {mw}")
+            else:
+                print(f"⚠️  WARN: {mw}")
         for tw in todo_warnings:
             print(f"⚠️  WARN: {tw}")
         if not has_errors:

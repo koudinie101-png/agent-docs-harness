@@ -297,6 +297,14 @@ flowchart LR
 * **Архив `Incidents/`:** подробные разборы инцидентов (`INC-XXX`) по шаблону `TEMPLATE_INCIDENT.md`.
 * **Двухосевой промоушен:** при повторении ошибки ($\text{count} \ge 2$) или критичности ($\text{severity} = \text{high}$) паттерн заносится в `patterns.md`. При воспроизводимости на всем стеке — переносится в автотест (Tier 1) или норматив `AGENTS.md` (Tier 2).
 
+### 🗂️ Как завести инцидент
+* **Когда:** процедурная ошибка, сорванная итерация или систематический near-miss в Режиме 3 (`/kb-implement`).
+* **ID:** следующий свободный `INC-XXX` (не переиспользовать); файл `docs/06_Memory/Incidents/INC-XXX-<slug>.md` по [[00_Templates/TEMPLATE_INCIDENT|TEMPLATE_INCIDENT.md]].
+* **Обязательные поля:** `id`, `title`, `status`, `severity`, `tag`, `root_cause`, `target_pattern`.
+* **Связи:** `target_pattern` обязателен и должен существовать в `patterns.md`; в отчёте укажите источник `TASK-XXX`/`BUG-XXX`.
+* **Промоушен:** частота/тяжесть → запись в индекс; охват → Tier 1 тест/линтер или Tier 2 `AGENTS.md`.
+* **Контроль:** `check_memory_consistency` предупреждает о разрывах ссылок (`WARN`, не блокирует), `check_memory_limits` блокирует превышение лимита 15.
+
 ---
 
 ## 14. Контур UI/UX, управление визуальными ассетами и гетерогенные multi-target системы

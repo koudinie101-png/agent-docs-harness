@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-089: целостность процедурной памяти (Фаза 23)
+- **Что сделано:**
+  - [[02_Tasks/Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: в `scripts/kb_lint.py` добавлена `check_memory_consistency()` — неблокирующий аудит ссылочной целостности `docs/06_Memory/` (4 проверки: ссылки `patterns.md` → `Incidents/`, совпадение `id` с префиксом имени файла, наличие `target_pattern` в индексе, согласованность пары `TRG↔INC`).
+  - Интеграция в `run_linter()`: verbose-блок `⚠️ Memory Consistency Warnings (N):` и silent-строки `⚠️  WARN: ...`; `has_errors` не включает предупреждения, Exit code не меняется (прецедент `debt_warnings`, ADR-0025 Tier 1 advisory).
+  - `patterns.md`: у `TRG-01`/`TRG-02` сняты висячие ссылки `INC-001`/`INC-002` (отчётов никогда не существовало) и заменены маркером `seeded pattern (no archived report)`; seeded-паттерны сохраняются в индексе, но не считаются ссылками.
+  - `docs/Onboarding.md` §13: подраздел «Как завести инцидент» (когда, ID, обязательные поля, связи, промоушен, контроль). `SPEC.md` §2.3 синхронизирован (Living Spec).
+- **Проверка:**
+  - 8 новых тестов в `tests/test_kb_lint.py` (50 тестов модуля OK); полный прогон — 146 тестов OK (обёртка INC-003); `compileall` — 0.
+  - Чистый репозиторий: `kb_lint --verbose` без блока Memory Consistency Warnings. Негативный прогон с `-> INC-999`: WARN напечатан, Exit code 0, `patterns.md` восстановлен копией (SHA-256 совпал, TRG-05).
+  - `kb_lint --path docs`: 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-release` — выпуск v0.23.0 (Фаза 23 завершена, оба блокера `Rules Check` закрыты).
+
 ### [2026-10-18] — BUG-012: герметизация dashboard-теста (Tier 1-гейт Rules Check закрыт)
 - **Что сделано:**
   - [[02_Tasks/Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: `test_render_status_dashboard` больше не наследует `GITHUB_REPOSITORY` от CI (`patch.dict(..., {"GITHUB_REPOSITORY": ""})`) и не ходит в живой GitHub API — HTTP-граница `kb_ingest.urllib.request.urlopen` замокана (`OSError("network disabled")`), проверяется fallback-строка квоты.

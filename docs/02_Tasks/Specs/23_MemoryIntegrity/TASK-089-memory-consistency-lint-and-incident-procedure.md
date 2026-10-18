@@ -1,7 +1,7 @@
 ---
 id: TASK-089
 title: "Целостность процедурной памяти: check_memory_consistency() в kb_lint, чистка висячих INC-ссылок и процедура заведения инцидента"
-status: planned
+status: done
 type: task
 phase: 23
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-089 — Целостность процедурной памяти
 
-> **ID:** TASK-089 | **Статус:** К реализации  
+> **ID:** TASK-089 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 23 | **План:** нет (одна задача, обоснование в `Roadmap.md`) | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1–3), [[../../../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]] (символьный скоуп)
 
@@ -106,18 +106,18 @@ WARN: pattern 'TRG-01' links 'INC-001' whose target_pattern is 'TRG-02'
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Модульные тесты: `python -m unittest tests.test_kb_lint -v` (Exit code 0; ≥ 5 новых тестов).
-- [ ] Полный прогон: `python -m unittest discover -s tests` (Exit code 0; в песочнице DSH — через обёртку INC-003).
-- [ ] Чистый репозиторий не даёт предупреждений: `python scripts/kb_lint.py --path docs --verbose` — блок `Memory Consistency Warnings` отсутствует.
-- [ ] Негативная проверка (вручную): временно дописать в `patterns.md` ссылку `-> INC-999` → `--verbose` печатает `WARN`, Exit code остаётся 0; файл восстановить из копии (TRG-05).
-- [ ] Компиляция: `python -m compileall -q scripts` (Exit code 0).
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
+- [x] Модульные тесты: `python -m unittest tests.test_kb_lint -v` (Exit code 0; 8 новых тестов: 4 сценария ссылочной целостности, seeded-паттерны, чистая пара, интеграция в `run_linter`; модуль — 50 тестов OK через sandbox-safe обёртку INC-003).
+- [x] Полный прогон: 146 тестов OK (Exit code 0; в песочнице DSH — через обёртку INC-003 `tmp/run_tests.py`).
+- [x] Чистый репозиторий не даёт предупреждений: `python scripts/kb_lint.py --path docs --verbose` — блок `Memory Consistency Warnings` отсутствует, `🎉 Knowledge base is healthy and consistent!`.
+- [x] Негативная проверка (вручную): временно дописана ссылка `-> INC-999` → `--verbose` печатает `Memory Consistency Warnings (1)` и `WARN: patterns.md references missing incident report 'INC-999'`, Exit code остался 0; файл восстановлен копией из `tmp/` с совпадением SHA-256 (`7492dd60…f272d2`, TRG-05).
+- [x] Компиляция: `python -m compileall -q scripts` (Exit code 0).
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` (232 файла, 2185 wikilinks, 0 broken; Exit code 0).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `check_memory_consistency()` реализована и интегрирована в `run_linter()` без изменения exit code.
-- [ ] Покрыты 4 сценария: отсутствующий отчёт, несовпадение `id`/имени, отсутствующий `target_pattern`, рассогласованная пара `TRG↔INC`.
-- [ ] Висячие ссылки `INC-001`/`INC-002` устранены; репозиторий даёт 0 memory-предупреждений.
-- [ ] Процедура «Как завести инцидент» зафиксирована в `Onboarding.md` §13.
-- [ ] `SPEC.md` синхронизирован (Living Spec).
-- [ ] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.
+- [x] `check_memory_consistency()` реализована и интегрирована в `run_linter()` без изменения exit code.
+- [x] Покрыты 4 сценария: отсутствующий отчёт, несовпадение `id`/имени, отсутствующий `target_pattern`, рассогласованная пара `TRG↔INC`.
+- [x] Висячие ссылки `INC-001`/`INC-002` устранены; репозиторий даёт 0 memory-предупреждений.
+- [x] Процедура «Как завести инцидент» зафиксирована в `Onboarding.md` §13.
+- [x] `SPEC.md` синхронизирован (Living Spec).
+- [x] Статус обновлён в ТЗ, Канбане (`Done`) и Дорожной карте (`[x]`); запись добавлена в `Devlog.md`.

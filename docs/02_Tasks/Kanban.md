@@ -12,10 +12,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: Целостность процедурной памяти: `check_memory_consistency()`, чистка висячих INC-ссылок и процедура заведения инцидента (2026-10-18) #task #phase23 #memory #lint
-
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: Целостность процедурной памяти: `check_memory_consistency()`, чистка висячих INC-ссылок и процедура заведения инцидента в `Onboarding.md` §13 (2026-10-18) #task #phase23 #memory #lint
 
 - [x] [[Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: Rules Check — `test_render_status_dashboard` изолирован от `GITHUB_REPOSITORY` и живого GitHub API (`urlopen` замокан, контракт приоритета `env` → `auto-detect`) — P1, исправлен в v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22
 - [x] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Rules Check — `test_05_git_local_setup` изолирован от глобальной Git identity (`hermetic_git_env`, `test_05b` graceful-деградация) — P1, исправлен в v0.23.0 (2026-10-18) #bug #ci #tests #quality-gates #phase22

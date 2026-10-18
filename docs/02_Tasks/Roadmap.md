@@ -306,7 +306,7 @@ tags:
 **Обоснование:** аудит 2026-10-18 показал, что `check_memory_limits()` контролирует только лимит 15 записей, а ссылочная целостность индекса не механизирована — нарушение инварианта Quality Gates (Tier 1), из-за которого дрейф памяти остаётся незамеченным. Выделено в отдельную фазу, чтобы не размывать релизный нарратив Фазы 22 (Single-Source Rule Compiler) и не менять её DoD.  
 **Спецификация:** [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]
 
-- [ ] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: `check_memory_consistency()` в `scripts/kb_lint.py` (неблокирующий `WARN:`), тесты в `tests/test_kb_lint.py`, чистка висячих ссылок в `patterns.md` и раздел «Как завести инцидент» в `docs/Onboarding.md` (2026-10-18).
+- [x] [[Specs/23_MemoryIntegrity/TASK-089-memory-consistency-lint-and-incident-procedure|TASK-089]]: `check_memory_consistency()` в `scripts/kb_lint.py` (неблокирующий `WARN:`), тесты в `tests/test_kb_lint.py`, чистка висячих ссылок в `patterns.md` и раздел «Как завести инцидент» в `docs/Onboarding.md` (2026-10-18).
 
 ---
 

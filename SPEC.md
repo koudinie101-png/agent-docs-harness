@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-15
+updated: 2026-10-18
 tags:
   - spec
   - master
@@ -70,6 +70,7 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Механический контроль топологии визуальных ассетов (`check_asset_layout`): неблокирующий аудит корневых каталогов `docs/assets/` (`VALID_ASSET_ROOTS = {"mockups", "screenshots", "diagrams", "design"}`), отсутствия неразмеченных файлов в корне и контроль пространств имен `docs/assets/mockups/<target>/TASK-XXX/` и `docs/assets/mockups/flows/TASK-XXX/` с запретом невалидного fallback'а по `file_map` для относительных медиа-путей.
   * Проверка наличия и валидности YAML frontmatter в задачах, багах, планах, ADR, элементах обратной связи (`FB-XXX`) и отчетах об инцидентах (`INC-XXX`).
   * Механический Tier 1 контроль лимита процедурной памяти (`check_memory_limits`): строгая проверка лимита активных записей ($\le 15$) в `docs/06_Memory/patterns.md` с блокировкой сборки (Exit code 1).
+  * Контроль целостности процедурной памяти (`check_memory_consistency`): ссылки `patterns.md` → `Incidents/`, совпадение `id` с именем файла, наличие `target_pattern` в индексе (неблокирующие `WARN`).
   * Silent-on-Success CLI и кроссплатформенный UTF-8 вывод.
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
