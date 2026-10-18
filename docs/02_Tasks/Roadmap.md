@@ -297,6 +297,7 @@ tags:
 
 ### 🐞 Исправление дефектов (Mode 2B -> Mode 3 TDD)
 - [x] [[Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: Герметизация `test_05_git_local_setup` (изоляция `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM`, синтетическая identity через `GIT_AUTHOR_*`/`GIT_COMMITTER_*`) и контрактный тест `test_05b` graceful-деградации без identity — hotfix Tier 1-гейта `Rules Check`, блокер v0.23.0 (2026-10-18).
+- [x] [[Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: Изоляция `test_render_status_dashboard` от `GITHUB_REPOSITORY` и живого GitHub API (замоканный `urlopen`, контракт приоритета `env` → `auto-detect`) — второй блокер Tier 1-гейта `Rules Check`, v0.23.0 (2026-10-18).
 
 ---
 

@@ -306,14 +306,17 @@ class TestKbIngest(unittest.TestCase):
             self.assertIn("⚠️ Warning: Канал Email пропущен: не настроены переменные FEEDBACK_IMAP_HOST", stdout_cap3.getvalue())
 
     def test_render_status_dashboard(self):
-        """Test status dashboard rendering with Inbox state."""
+        """Test status dashboard rendering with Inbox state (hermetic: no ambient repo, no network)."""
         # Create some sample inbox items
         (self.inbox_dir / "FB-001.md").write_text("---\nstatus: new\n---\nBody", encoding="utf-8")
         (self.inbox_dir / "FB-002.md").write_text("---\nstatus: processed\n---\nBody", encoding="utf-8")
         (self.inbox_dir / "FB-003.md").write_text("---\nstatus: rejected\n---\nBody", encoding="utf-8")
 
         stdout_cap = io.StringIO()
-        with patch("sys.stdout", stdout_cap), patch("kb_ingest.detect_github_repo", return_value="my-org/my-project"):
+        with patch.dict("os.environ", {"GITHUB_REPOSITORY": ""}), \
+             patch("sys.stdout", stdout_cap), \
+             patch("kb_ingest.detect_github_repo", return_value="my-org/my-project") as mock_detect, \
+             patch("kb_ingest.urllib.request.urlopen", side_effect=OSError("network disabled")) as mock_urlopen:
             code = kb_ingest.render_status_dashboard(self.inbox_dir, self.temp_dir)
             self.assertEqual(code, 0)
 
@@ -325,6 +328,26 @@ class TestKbIngest(unittest.TestCase):
         self.assertIn("[Буфер обращений: docs/02_Tasks/Inbox/]", output)
         self.assertIn("Всего тикетов:      3", output)
         self.assertIn("new: 1 | processed: 1 | rejected: 1", output)
+        # No live network: the HTTP boundary is mocked and degrades to the fallback quota string.
+        mock_detect.assert_called_once()
+        mock_urlopen.assert_called_once()
+        self.assertIn("unknown/unknown req/h", output)
+
+    def test_render_status_dashboard_prefers_env_repository(self):
+        """Explicit priority contract: GITHUB_REPOSITORY wins and auto-detection is skipped (BUG-012)."""
+        stdout_cap = io.StringIO()
+        with patch.dict("os.environ", {"GITHUB_REPOSITORY": "ci-org/ci-project"}), \
+             patch("sys.stdout", stdout_cap), \
+             patch("kb_ingest.detect_github_repo", return_value="my-org/my-project") as mock_detect, \
+             patch("kb_ingest.urllib.request.urlopen", side_effect=OSError("network disabled")) as mock_urlopen:
+            code = kb_ingest.render_status_dashboard(self.inbox_dir, self.temp_dir)
+            self.assertEqual(code, 0)
+
+        output = stdout_cap.getvalue()
+        self.assertIn("ci-org/ci-project (env)", output)
+        self.assertNotIn("(auto-detect)", output)
+        mock_detect.assert_not_called()
+        mock_urlopen.assert_called_once()
 
     def test_bug_007_paste_inline_argument_support(self):
         """Verifies that --paste accepts inline text without unrecognized arguments error (BUG-007)."""

@@ -16,6 +16,17 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — BUG-012: герметизация dashboard-теста (Tier 1-гейт Rules Check закрыт)
+- **Что сделано:**
+  - [[02_Tasks/Bugs/BUG-012-dashboard-env-and-live-api-test|BUG-012]]: `test_render_status_dashboard` больше не наследует `GITHUB_REPOSITORY` от CI (`patch.dict(..., {"GITHUB_REPOSITORY": ""})`) и не ходит в живой GitHub API — HTTP-граница `kb_ingest.urllib.request.urlopen` замокана (`OSError("network disabled")`), проверяется fallback-строка квоты.
+  - Новый контрактный тест `test_render_status_dashboard_prefers_env_repository`: при заданном `GITHUB_REPOSITORY` дашборд показывает `(env)`, `detect_github_repo` не вызывается, `urlopen` вызывается ровно один раз (и только как мок).
+  - Продуктовое поведение дашборда не менялось: приоритет `env` → `auto-detect` корректен для GitHub Actions и форков.
+- **Проверка:**
+  - RED: с `GITHUB_REPOSITORY=koudinie101-png/agent-docs-harness` воспроизведён `AssertionError: 'my-org/my-project (auto-detect)' not found`; GREEN: оба теста зелёные и с переменной, и без неё, без реальной сети (~0.01 с).
+  - Полный прогон: 138 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-089` — Фаза 23 (Memory Integrity Guard); после зелёного `Rules Check` можно планировать `/kb-release` v0.23.0.
+
 ### [2026-10-18] — BUG-011: герметизация git-identity теста (Tier 1-гейт Rules Check)
 - **Что сделано:**
   - [[02_Tasks/Bugs/BUG-011-ci-git-identity-hermetic-test|BUG-011]]: `test_05_git_local_setup` переведён на hermetic-окружение — пустые `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM`, `GIT_CONFIG_NOSYSTEM=1`, детерминированная identity через `GIT_AUTHOR_*`/`GIT_COMMITTER_*`; результат больше не зависит от `~/.gitconfig` машины или runner'а.

@@ -1,14 +1,14 @@
 ---
 id: BUG-012
 title: "Rules Check: test_render_status_dashboard зависит от GITHUB_REPOSITORY и ходит в живой GitHub API"
-status: open
+status: fixed
 severity: high
 type: bug
 target_release: "v0.23.0"
 target_phase: 22
-release_blocker: true
-fixed_in: null
-regression_test: "tests/test_kb_ingest.py::test_render_status_dashboard"
+release_blocker: false
+fixed_in: "v0.23.0"
+regression_test: "tests/test_kb_ingest.py::test_render_status_dashboard, tests/test_kb_ingest.py::test_render_status_dashboard_prefers_env_repository"
 created: 2026-10-18
 updated: 2026-10-18
 tags:
@@ -24,8 +24,8 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 # 🐞 Дефект: BUG-012 — Rules Check: `test_render_status_dashboard` зависит от `GITHUB_REPOSITORY` и ходит в живой GitHub API
 
-> **ID:** BUG-012 | **Критичность:** High | **Статус:** open  
-> **Релиз:** v0.23.0 | **Блокер:** Да  
+> **ID:** BUG-012 | **Критичность:** High | **Статус:** fixed  
+> **Релиз:** v0.23.0 | **Блокер:** Нет (устранён до создания тега)  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 
 ---
@@ -62,13 +62,14 @@ AssertionError: 'my-org/my-project (auto-detect)' not found in
 ## 5. План исправления
 * `[MODIFY]` `tests/test_kb_ingest.py::test_render_status_dashboard` — в `patch.dict(os.environ, {"GITHUB_REPOSITORY": ""})`; `patch("kb_ingest.urllib.request.urlopen", side_effect=OSError("network disabled"))`; сохранить проверки счётчиков Inbox и `(auto-detect)`.
 * `[NEW]` `tests/test_kb_ingest.py::test_render_status_dashboard_prefers_env_repository` — задать `GITHUB_REPOSITORY`, замокать `urlopen`, проверить `(env)` и что `detect_github_repo` не вызывается (явный контракт приоритета).
+* **Реализовано:** оба теста работают в hermetic-профиле; HTTP-граница всегда замокана (`urlopen` → `OSError`), добавлены утверждения `mock_urlopen.assert_called_once()`, `mock_detect.assert_not_called()` и fallback-строка `unknown/unknown req/h` — тест доказывает отсутствие реального сетевого вызова и корректную деградацию квоты.
 * **Отклонено:** убрать env-ветку из продукта — сломает реальный сценарий GitHub Actions, где репозиторий известен только из переменной.
 
 ## 6. Верификация (Regression-First)
-- [ ] RED: с `GITHUB_REPOSITORY=...` тест падает с текущим `AssertionError` (воспроизведено в 4 прогонах CI).
-- [ ] GREEN: после фикса тест проходит и с переменной, и без неё; оба запуска не делают сетевых вызовов.
-- [ ] Новый тест фиксирует приоритет `env` → `auto-detect` и отсутствие вызова detect при наличии переменной.
-- [ ] `python -m unittest discover -s tests` и `python scripts/kb_lint.py --path docs` — 0 ошибок.
+- [x] RED: с `GITHUB_REPOSITORY=koudinie101-png/agent-docs-harness` `test_render_status_dashboard` падает с `AssertionError: 'my-org/my-project (auto-detect)' not found` (воспроизведено локально 2026-10-18 и в 4 прогонах CI).
+- [x] GREEN: после фикса оба теста проходят и с переменной, и без неё; реальных сетевых вызовов нет (`urlopen` замокан, тесты выполняются за ~0.01 с).
+- [x] Новый тест фиксирует приоритет `env` → `auto-detect` и отсутствие вызова `detect_github_repo` при наличии переменной.
+- [x] Полный сьют и линтер — 0 ошибок: 138 тестов OK (sandbox-safe обёртка `tmp/run_tests.py`, TRG-03); `kb_lint` — 232 файла, 2183 ссылки, 0 битых.
 - [ ] Прогон `Rules Check` на GitHub Actions зелёный.
 
 ## 7. Влияние и принятые решения
