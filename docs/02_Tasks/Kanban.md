@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|План: Фаза 24 — Research-Evidence Gate при промоушене из Icebox (критерий зрелости, Evidence Nudge, `research_basis`, advisory-линт и parity шаблонов)]] (2026-10-18) #plan #phase24 #research-evidence #kb-plan #templates #lint
+
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)

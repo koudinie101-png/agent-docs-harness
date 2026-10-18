@@ -311,6 +311,18 @@ tags:
 
 ---
 
+## Фаза 24: Research-Evidence Gate при промоушене из Icebox (Research-Evidence Gate & Plan Provenance)
+**Цель:** Восстановить критерий технической зрелости в ранжировании `/kb-plan` (утерянный при переносе ADR-0011 §2.2 в текст скилла) и сделать доказательную базу плана явной, durable и защищённой от повторной потери: пометки `🔬`/`🧪`/`⏸` в ранжировании, неблокирующий Evidence Nudge с тремя опциями, поля `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `PLAN-XXX`, advisory-`WARN` в `scripts/kb_lint.py`, правило Tier 2 в корпусе `rules/AGENTS_CORE.md` и Tier 1 тесты против повторной потери формулировки. Попутно устраняется P2-расхождение `templates/` ↔ `docs/00_Templates/` (клиенты получали план-шаблон без матрицы 4 состояний) с parity-тестом.
+**Первоисточник плана:** [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|PLAN-023]]  
+**Нормативная база:** [[../04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025]], [[../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]], [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]
+
+- [ ] TASK-090: Критерий Evidence Status (`🔬`/`🧪`/`⏸`), `Evidence Nudge` (A/B/C) в `.agents/skills/kb-plan/SKILL.md`, строка правила Mode 1 в `rules/AGENTS_CORE.md` (+ регенерация `AGENTS.md`) и Tier 1 ассерт против повторной потери формулировки.
+- [ ] TASK-091: `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `TEMPLATE_PLAN.md` (обе копии), неблокирующий `check_research_basis()` в `scripts/kb_lint.py` и тесты в `tests/test_kb_lint.py`.
+- [ ] TASK-092: Синхронизация `templates/` ↔ `docs/00_Templates/` (4-State Matrix в `TEMPLATE_PLAN.md`, карта заметок в `TEMPLATE_INDEX.md`) и Tier 1 parity-тест копий шаблонов (P2-находка планирования).
+- [ ] TASK-093: Пересборка `install.py` / `dist/install.py`, E2E установленного скилла и `--update`, Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`).
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -323,7 +335,6 @@ tags:
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
 * 💡 **Символьные контракты скоупа задач и шаблоны спецификаций (Symbolic Scope & Fine-Grained Change Contracts):** внедрение иерархического контракта `Файл -> Символ/Метод -> Изменение` в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` взамен плоского списка файлов, исключение антипаттерна Line Drift и синхронизация в `install.py` — [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]].
-* 💡 **Research-Evidence Gate при промоушене из Icebox (🔥 высокий Value Impact / S-Effort):** восстановление критерия технической зрелости в ранжировании `/kb-plan` (утерян при переносе ADR-0011 §2.2 в текст скилла), неблокирующий Evidence Nudge с тремя опциями для неподтверждённых направлений, поле `research_basis`/`basis_note` и секция «Research Basis & Unvalidated Assumptions» в `PLAN-XXX`, advisory-`WARN` в `kb_lint.py` и тест против повторной потери формулировки. Внедрять **после Фазы 22**, чтобы правило попало в корпус `rules/AGENTS_CORE.md`, а не в четвёртую точку ручной правки — [[../04_Research/RESEARCH-025-research-evidence-gate-for-icebox-promotion|RESEARCH-025]], [[../03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]].
 
 
 ---
