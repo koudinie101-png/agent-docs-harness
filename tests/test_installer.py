@@ -1449,7 +1449,7 @@ class TestAgentDocsHarness(unittest.TestCase):
         agents_content = install.generate_agents_md("TestApp", "generic", "ru")
         self.assertIn("14. Zero-State & Spec Genesis", agents_content)
         self.assertIn("Zero-State Anti-Hallucination & Spec Genesis", agents_content)
-        self.assertIn("6. Zero-State Anti-Hallucination & Spec Genesis", agents_content)
+        self.assertIn("## 🛡️ Zero-State Anti-Hallucination & Spec Genesis", agents_content)
         self.assertIn("## Docs-as-Code Disciplines", agents_content)
         self.assertNotIn("(20 Disciplines)", agents_content)
         self.assertIn("20. The 4-State UI & Visual Verification", agents_content)

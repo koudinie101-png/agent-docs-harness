@@ -1,7 +1,7 @@
 ---
 id: TASK-100
 title: "Выравнивание нумерации разделов корпуса правил (DEBT-001)"
-status: planned
+status: done
 type: task
 phase: 26
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-100 — Выравнивание нумерации разделов корпуса правил
 
-> **ID:** TASK-100 | **Статус:** К реализации  
+> **ID:** TASK-100 | **Статус:** Выполнено (Режим 3)
 > **Фаза:** 26 (Tech Debt Hardening) | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Долг:** [[../../TechDebt|DEBT-001]] — закрывается этой задачей.  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]] (единый корпус), [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1)
@@ -45,6 +45,8 @@ kanban: "[[../../Kanban|Канбан-доска]]"
   - 12 golden-фикстур перегенерируются из `install.generate_agents_md("Demo", <stack>, <lang>)`.
 * `[MODIFY]` `tests/test_rules_consistency.py`:
   - `RulesConsistencyTest.test_client_agents_sections_are_unnumbered()`: Tier 1 guard.
+* `[MODIFY]` `tests/test_installer.py`:
+  - `TestAgentDocsHarness.test_21_spec_genesis_and_high_snr_release_notes()`: заменить устаревший ассерт `6. Zero-State…` на `## 🛡️ Zero-State…`.
 * `[MODIFY]` `install.py`, `dist/install.py`:
   - Generated artifacts: `python scripts/build_installer.py` (manual symbols not applicable).
 
@@ -88,6 +90,8 @@ python -c "import sys; from pathlib import Path; sys.path.insert(0,'.'); import 
 
 Тест читает корпус через уже существующий `self.corpus` (setUp сбрасывает кэш `install._RULES_CORPUS_CACHE`).
 
+**Сопутствующая правка теста:** `test_21_spec_genesis_and_high_snr_release_notes` в `tests/test_installer.py` пиновал старую строку `6. Zero-State…`; ассерт заменяется на `## 🛡️ Zero-State…`. Это единственный тест, завязанный на устаревший номер (проверено grep по `6.`–`11.`).
+
 ### 3.4. `AGENTS.md` и бандл
 
 * `python scripts/gen_rules.py --check` → OK; при неожиданном диффе выполнить `python scripts/gen_rules.py` и включить `AGENTS.md` в задачу.
@@ -95,21 +99,21 @@ python -c "import sys; from pathlib import Path; sys.path.insert(0,'.'); import 
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Golden: `python -m unittest tests.test_rules_golden` → 3 теста OK (12 клиентских подтестов).
-- [ ] Структура: `python -m unittest tests.test_rules_consistency` → все тесты OK (+1 новый guard).
-- [ ] Дрейф корпуса: `python scripts/gen_rules.py --check` → Exit code 0.
-- [ ] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py`; размер ≤ 176 000 B.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **166 тестов OK** (165 + 1), Exit code 0.
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок.
-- [ ] `git diff --check` → без trailing whitespace.
-- [ ] 4-State UI / скриншоты: не применимо.
-- [ ] Замеры $\ge 3$ прогонов: не применимо (статические байтовые бюджеты).
+- [x] Golden: `python -m unittest tests.test_rules_golden` → 3 теста OK (12 клиентских подтестов).
+- [x] Структура: `python -m unittest tests.test_rules_consistency` → все тесты OK (+1 новый guard).
+- [x] Дрейф корпуса: `python scripts/gen_rules.py --check` → Exit code 0 (`AGENTS.md matches rules/AGENTS_CORE.md`).
+- [x] Пересборка: `python scripts/build_installer.py` → Exit code 0; `install.py` ≡ `dist/install.py` = **175 175 B** (≤ 176 000).
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **166 тестов OK** (165 + 1), Exit code 0.
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок.
+- [x] `git diff --check` → без trailing whitespace.
+- [x] 4-State UI / скриншоты: не применимо.
+- [x] Замеры $\ge 3$ прогонов: не применимо (статические байтовые бюджеты).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Шесть заголовков `client-agents` без числовых префиксов; дисциплины 1–24 и `RULE`-маркеры не изменены.
-- [ ] 12 golden-фикстур перегенерированы; `test_rules_golden` и новый Tier 1 guard зелёные.
-- [ ] `AGENTS.md` без дрейфа (`gen_rules.py --check`); `install.py` ≡ `dist/install.py` ≤ 176 000 B.
-- [ ] Полный suite (166) и `kb_lint` зелёные.
-- [ ] `DEBT-001` переведён в `Resolved Debt` со ссылкой на `TASK-100` на шаге `/kb-complete`.
-- [ ] Статус обновлён в Kanban, Roadmap и Devlog.
+- [x] Шесть заголовков `client-agents` без числовых префиксов; дисциплины 1–24 и `RULE`-маркеры не изменены.
+- [x] 12 golden-фикстур перегенерированы; `test_rules_golden` и новый Tier 1 guard зелёные.
+- [x] `AGENTS.md` без дрейфа (`gen_rules.py --check`); `install.py` ≡ `dist/install.py` = 175 175 B ≤ 176 000 B.
+- [x] Полный suite (166) и `kb_lint` зелёные.
+- [x] `DEBT-001` переведён в `Resolved Debt` со ссылкой на `TASK-100` на шаге `/kb-complete`.
+- [x] Статус обновлён в Kanban, Roadmap и Devlog.

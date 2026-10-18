@@ -46,7 +46,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 🛡️ 6. Zero-State Anti-Hallucination & Spec Genesis
+## 🛡️ Zero-State Anti-Hallucination & Spec Genesis
 
 - When `SPEC.md` is missing or in `status: discovery`, the agent is **strictly prohibited** from inventing arbitrary product requirements, features, or technology stacks out of thin air.
 - Requirements must be crystallized through interactive dialogue with the user or Mode 0 (`/kb-research`) resulting in an approved `ADR-0001` before transitioning `SPEC.md` to `status: active`.
@@ -54,7 +54,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 🎨 7. The 4-State UI & Visual Verification Invariant
+## 🎨 The 4-State UI & Visual Verification Invariant
 
 - Tasks modifying graphical (GUI) or terminal (TUI) interfaces must design the 4-State UI Matrix (`Empty`, `Loading`, `Error`, `Populated`) in specs/plans and provide visual confirmation via permanent screenshot in `docs/assets/screenshots/<target>/TASK-XXX.png` (size <= 2 MB).
 - **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
@@ -63,7 +63,7 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 💳 8. Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
+## 💳 Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
 
 - Code review findings and secondary defects are triaged into two strict tiers:
   * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
@@ -74,21 +74,21 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 🏛️ 9. Prior-Art Gate Invariant
+## 🏛️ Prior-Art Gate Invariant
 
 - Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and standard library for existing solutions.
 - Reinventing wheels and introducing duplicate parallel abstractions is strictly prohibited.
 
 ---
 
-## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
+## 🏷️ Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
 
 - Untracked 'hanging' TODO or FIXME comments without roadmap/debt linkage are strictly prohibited.
 - Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`) or `// DEBT-XXX` (matching a row in `docs/02_Tasks/TechDebt.md`).
 
 ---
 
-## ⏱️ 11. Benchmark Persistence («Замер = артефакт»)
+## ⏱️ Benchmark Persistence («Замер = артефакт»)
 
 - All performance, latency, memory, or token claims must be verified via a series of >= 3 reproducible runs.
 - The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.

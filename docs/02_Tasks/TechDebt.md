@@ -30,7 +30,6 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| DEBT-001 | P3 | `rules/AGENTS_CORE.md` (`client-agents`) | Устаревшая нумерация развёрнутых секций (`## 🛡️ 6. Zero-State`, `## 🎨 7. The 4-State UI`, `## 💳 8. Tech Debt`, `## 🏛️ 9. Prior-Art`, `## 🏷️ 10. Traceable`, `## ⏱️ 11. Benchmark`) не совпадает с индексом 1–24 после редакционной консолидации; числа в заголовках вводят в заблуждение | [[Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec\|TASK-088]] | 2026-10-18 | Открыт |
 
 ---
 
@@ -40,3 +39,4 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | DEBT-003 | P3 | `docs/02_Tasks/Kanban.md` | Секция «Идеи и гипотезы (Icebox / Future Ideas)» дублировала Icebox из `Roadmap.md` и содержала выполненные пункты (TASK-059, Фаза 14); два пункта удалены, оставлены Continue/Aider и отклонённые ADR | [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox\|TASK-097]] | 2026-10-18 |
 | DEBT-002 | P3 | `.github/workflows/rules-check.yml` | Не было `permissions: contents: read` и `concurrency`; `on: push` запускался на тегах параллельно с релизом; гейт не запускал `kb_lint`; тесты шумели в логах. Исправлено: read-only permissions, `concurrency`/`cancel-in-progress`, branch-фильтр без тегов, шаг `kb_lint`, `-q` | [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening\|TASK-098]] | 2026-10-18 |
+| DEBT-001 | P3 | `rules/AGENTS_CORE.md` (`client-agents`) | Устаревшая нумерация заголовков 6–11 не совпадала с индексом 1–24. Исправлено: шесть заголовков без числовых префиксов, 12 golden-фикстур перегенерированы, Tier 1 guard против возврата номеров | [[Specs/26_TechDebt/TASK-100-align-rules-section-numbering\|TASK-100]] | 2026-10-18 |

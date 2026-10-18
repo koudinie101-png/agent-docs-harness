@@ -16,6 +16,17 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-100: выровнена нумерация разделов корпуса, закрыт DEBT-001; Фаза 26 завершена
+- **Что сделано:**
+  - [[02_Tasks/Specs/26_TechDebt/TASK-100-align-rules-section-numbering|TASK-100]]: из шести заголовков `client-agents` убраны числовые префиксы 6–11; дисциплины 1–24 и `RULE`-маркеры не тронуты.
+  - 12 golden-фикстур `client_agents` перегенерированы; `test_21` обновлён (старый ассерт `6. Zero-State`); добавлен Tier 1 `test_client_agents_sections_are_unnumbered`.
+  - `AGENTS.md` без дрейфа (`gen_rules.py --check`); `install.py` / `dist/install.py` = **175 175 B**.
+  - `DEBT-001` переведён в `Resolved Debt`; активный P3-долг пуст.
+- **Проверка:**
+  - Полный suite — **166 тестов OK**; `kb_lint` — 0 битых; `git diff --check` чистый.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 26 завершена: приёмочное тестирование и `/kb-release v0.26.0`.
+
 ### [2026-10-18] — TASK-099: /kb-task добавляет пермалинк спеки в Roadmap
 - **Что сделано:**
   - [[02_Tasks/Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]: `.agents/skills/kb-task/SKILL.md` — шаг 5 теперь `Update Kanban & Roadmap`: подставляет `[[Specs/...|TASK-XXX]]` в строку фазы, сохраняя `[ ]`; `/kb-complete` меняет на `[x]`. Staging Roadmap добавлен.

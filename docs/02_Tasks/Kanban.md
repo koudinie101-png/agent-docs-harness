@@ -12,9 +12,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/26_TechDebt/TASK-100-align-rules-section-numbering|TASK-100]]: DEBT-001 — выравнивание нумерации разделов корпуса правил (2026-10-18) #task #phase26 #techdebt #rules #tests
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/26_TechDebt/TASK-100-align-rules-section-numbering|TASK-100]]: DEBT-001 — выравнивание нумерации разделов корпуса правил (2026-10-18) #task #phase26 #techdebt #rules #tests
 
 - [x] [[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]: Пермалинк спеки в Roadmap при `/kb-task` (2026-10-18) #task #fast-track #phase26 #process #roadmap
 

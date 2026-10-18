@@ -83,6 +83,11 @@ class RulesConsistencyTest(unittest.TestCase):
     def test_client_inventory_matches_pin(self):
         self.assertEqual(set(self.ids("client-agents")), set(CLIENT_RULES))
 
+    def test_client_agents_sections_are_unnumbered(self):
+        body = self.corpus["client-agents"]
+        numbered = re.findall(r"^##\s+[^\n]*\b\d{1,2}\.\s", body, re.MULTILINE)
+        self.assertEqual(numbered, [], "client-agents section headings must not carry stale numbers")
+
     def test_adapters_are_derived_subset(self):
         adapters = set(self.ids("adapters"))
         self.assertEqual(adapters, set(ADAPTER_RULES), "adapter inventory drifted")
