@@ -4,6 +4,8 @@ title: "Фаза 22: Компилятор правил единого источ
 status: accepted
 type: plan
 phase: 22
+research_basis: none
+basis_note: "Решение обратимо (корпус и рендерер изолированы за генераторами install.py) и не добавляет внешних зависимостей; доказательная база собрана инспекцией кода в Режиме 1 и зафиксирована в §1, ADR-0030 оформляется в TASK-085."
 created: 2026-10-18
 updated: 2026-10-18
 tags:
@@ -34,14 +36,14 @@ kanban: "[[../Kanban|Канбан-доска]]"
 | Артефакт | Инвентарь | Язык | Фактическое состояние |
 | :--- | :--- | :--- | :--- |
 | Корневой `AGENTS.md` | 16 нумерованных принципов + lifecycle | RU | Эталон разработки харнесса |
-| `install.py: _RULES_BODY` | 20 дисциплин + 11 присоединяемых секций | EN | **4 правила дублируются дословно** (Single-Task Barrier, Zero-State/Spec Genesis, The 4-State UI, Anti-Echo) |
+| `install.py: _RULES_BODY` | 20 дисциплин + 11 присоединяемых секций | EN | Правила 13, 14, 20 **пересказаны дважды** — кратко в индексе и подробно в секции ниже |
 | `install.py: _gen_rule()` | 10 компактных правил для 6 адаптеров | EN | Третий, независимый инвентарь |
 | Governance-контур | `TechDebt`, `Prior-Art Gate`, `Traceable tags`, `Benchmarks` | EN | **Отсутствуют** в нумерованном списке 20 — живут только секциями |
 
 Дополнительные дефекты, выявленные при инспекции:
 
 1. **Числовой литерал в заголовке.** Заголовок `## Docs-as-Code (20 Disciplines)` хардкодит количество правил: добавление 21-го правила делает заголовок ложью, а тесты — зелёными только потому, что ассертят ту же строку.
-2. **Правила-сироты.** Правила 13, 14, 20 из `_RULES_BODY` повторяют одноимённые секции ниже в теле `generate_agents_md()`, но в сокращённой редакции — правка одной копии не доезжает до второй.
+2. **Параллельные редакции.** Правила 13, 14, 20 из `_RULES_BODY` и одноимённые секции в теле `generate_agents_md()` описывают одно требование в двух редакциях (краткая + развёрнутая). Это не дословный дубль, но две точки правки, которые расходятся молча: правка краткой версии не доезжает до развёрнутой.
 3. **Ручная синхронизация как источник регрессий.** Каждая фаза, добавлявшая правило (TASK-069, TASK-070, TASK-083, TASK-084), порождала отдельную задачу «синхронизировать правила в `install.py`», то есть стоимость правила = 3–4 правки в разных файлах.
 
 ### Цель Фазы 22
@@ -53,7 +55,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 * Новое правило = **1 правка** (корпус), а не 3–4.
 * **0** дублирующихся формулировок в сгенерированных артефактах (проверяется тестом).
 * `python scripts/gen_rules.py --check` → exit 0 на чистом дереве, exit 1 после ручной правки `AGENTS.md`.
-* Паритет RU/EN: идентичный набор `RULE-ID` в обеих языковых ветках.
+* Канонический инвентарь: полный набор `RULE-ID`, каждый идентификатор встречается в документе ровно один раз (пин в `tests/test_rules_consistency.py`).
 * `deploy_infrastructure()` не кладёт корпус в `docs/` клиентского проекта (корпус не является шаблоном заметки).
 
 ---
@@ -61,10 +63,10 @@ kanban: "[[../Kanban|Канбан-доска]]"
 ## 2. Обсуждение и решения (Q&A)
 
 * **Q1: Где живёт канонический источник?**
-  * **Решение:** новый файл `rules/AGENTS_CORE.md` — Markdown с блоками `<!-- RULE:<ID> | adapter: "..." --> ... <!-- /RULE -->`, языковыми ветками `<!-- LANG:ru -->` / `<!-- LANG:en -->` и плейсхолдерами `{{project}}`, `{{stack_name}}`, `{{build_cmd}}`, `{{test_cmd}}`, `{{lang_instruction}}`.
+  * **Решение:** новый файл `rules/AGENTS_CORE.md` — Markdown с тремя документами (`client-agents`, `adapters`, `harness-agents`), служебными маркерами `<!-- DOCUMENT: … -->` / `<!-- RULE: UPPER-KEBAB -->` (удаляются при рендере) и плейсхолдерами `{{project}}`, `{{stack_name}}`, `{{build_cmd}}`, `{{test_cmd}}`, `{{lang_instruction}}`.
   * **Отклонено:** компиляция напрямую из корневого `AGENTS.md` (исходная формулировка Icebox). Причины: файл целиком русскоязычный и содержит контекст разработки самого харнесса; его дословный рендер утёк бы в клиентские проекты, а обрезка «лишнего» строковыми заменами — тот же хрупкий дрейф, только перенесённый в код.
 * **Q2: Где живёт рендерер?**
-  * **Решение:** внутри `install.py` как приватный слой (`_load_rules_corpus()`, `_render_rules()`, `_render_adapter_rules()`); `generate_agents_md()` и `_gen_rule()` сохраняют публичные сигнатуры и делегируют ему. Монолит обязан остаться single-file (Zero-Deps-распространение).
+  * **Решение:** внутри `install.py` как приватный слой (`_load_rules_corpus()`, `_render_rules_document()`); `generate_agents_md()` и `_gen_rule()` сохраняют публичные сигнатуры и делегируют ему. Монолит обязан остаться single-file (Zero-Deps-распространение).
   * **Отклонено:** вынесение парсера в `scripts/kb_rules.py` — дистрибутив запускает `install.py` до развёртывания `scripts/`, импорт недоступен; копия парсера в двух файлах воспроизвела бы устраняемую проблему.
 * **Q3: Является ли корневой `AGENTS.md` генерируемым артефактом?**
   * **Решение (Вариант A, полный SSOT):** да. `scripts/gen_rules.py` рендерит корневой `AGENTS.md` из корпуса в профиле `harness` (RU); ручные правки запрещены, файл помечается шапкой «GENERATED — edit `rules/AGENTS_CORE.md`». Идемпотентность контролируется флагом `--check`.
@@ -79,22 +81,32 @@ kanban: "[[../Kanban|Канбан-доска]]"
 * **Q8: Ломается ли обратная совместимость `install.py --update`?**
   * **Решение:** нет. `update_agent_rules_safe()` уже сравнивает содержимое и создаёт `.bak` при расхождении; рендер детерминирован, поэтому при неизменном корпусе `.bak` не появляется. Регрессия покрывается существующим E2E-тестом update-механизма.
 
+### 2.1. Research Basis & Unvalidated Assumptions (ADR-0031, R3)
+
+* **Известно (проверено):** инвентарь трёх представлений правил и их расхождения (инспекция `install.py`, `AGENTS.md`, `tests/test_installer.py`); `generate_agents_md()` вызывает `_rules()` и дописывает секции; `deploy_infrastructure()` маршрутизирует ассеты по префиксам и игнорирует неизвестные ключи; `--update` создаёт `.bak` при расхождении.
+* **Не проверено (гипотезы) и как закрываем:**
+  * **H1:** корпус воспроизводит текущий вывод байт-в-байт → golden-фикстуры в TASK-085 (оракул — вывод до рефакторинга).
+  * **H2:** `--check` не даёт ложных срабатываний на CRLF (Windows `core.autocrlf`) → нормализация переводов строк в TASK-086.
+  * **H3:** `rules/` не утекает в `docs/` клиента → тест в TASK-087.
+  * **H4:** `rules-check.yml` не попадает в клиентский бандл → exclusion + тест в TASK-086/087.
+* **Обратимость:** решение локально (генераторы + новый data-файл), внешних зависимостей не добавляет; откат = вернуть `_RULES_BODY` из истории. Поэтому полноценный Режим 0 не требуется (осознанный выбор пользователя 2026-10-18).
+
 ---
 
 ## 3. Архитектурное влияние и риски
 
 ### Затрагиваемые компоненты
 
-`rules/AGENTS_CORE.md` (новый), `scripts/gen_rules.py` (новый), `install.py` (`_RULES_BODY`, `_gen_rule`, `generate_agents_md`, `unpack_assets`, `deploy_infrastructure`), `scripts/build_installer.py`, `AGENTS.md` (становится генерируемым), `.github/workflows/rules-check.yml` (новый), `.github/workflows/release.yml`, `tests/test_rules_consistency.py` (новый), `tests/test_installer.py`, `SPEC.md`, `README.md`, `docs/Onboarding.md`, `docs/00_Templates/*` (упоминания «20 disciplines» при наличии).
+`rules/AGENTS_CORE.md` (новый), `scripts/gen_rules.py` (новый), `install.py` (`_RULES_BODY`, `_gen_rule`, `generate_agents_md`, `unpack_assets`, `deploy_infrastructure`), `scripts/build_installer.py`, `AGENTS.md` (становится генерируемым), `.github/workflows/rules-check.yml` (новый), `.github/workflows/release.yml`, `tests/test_rules_golden.py` (новый), `tests/test_rules_consistency.py` (новый), `tests/test_installer.py`, `SPEC.md`, `README.md`, `docs/Onboarding.md`.
 
 ### Поток данных
 
 ```mermaid
 graph LR
-    A["rules/AGENTS_CORE.md<br/>(единственный рукописный источник)"] --> B["install.py: _render_rules()"]
+    A["rules/AGENTS_CORE.md<br/>(единственный рукописный источник)"] --> B["install.py: _render_rules_document()"]
     A --> C["scripts/gen_rules.py"]
     C -->|"--check в CI"| D["AGENTS.md (харнесс, RU)"]
-    B --> E["AGENTS.md (клиент, RU/EN)"]
+    B --> E["AGENTS.md (клиент, EN + language line)"]
     B --> F["6 тонких адаптеров"]
     A -.->|"bundle_assets()"| G["dist/install.py"]
 ```
@@ -109,7 +121,7 @@ graph LR
 | Риск | Влияние | Митигация |
 | :--- | :--- | :--- |
 | Миграция корневого `AGENTS.md` теряет нюанс (Always-On префикс меняет поведение агента) | Высокое | Дифф мигрированного файла ревьюится в сессии до коммита; корпус собирается как объединение 16 + 20 + 11 формулировок с дедупликацией |
-| Рассинхронизация RU/EN-веток корпуса | Среднее | Tier 1 тест паритета `RULE-ID` |
+| Дубль `RULE-ID` внутри документа (правило живёт в двух редакциях) | Среднее | Tier 1 тест уникальности + пин канонического инвентаря (`tests/test_rules_consistency.py`) |
 | Ручная правка `AGENTS.md` агентом в будущей сессии | Среднее | `--check` в CI (exit 1) + шапка GENERATED + запись в `docs/Onboarding.md` |
 | `rules-check.yml` утекает в клиентские проекты | Среднее | Явный exclusion в `bundle_assets()` + E2E-тест «в бандле нет rules-check.yml» |
 | Python 3.8-совместимость (парсер блоков) | Низкое | Только `re`/`str`; прогон тестов на 3.8-совместимом синтаксисе |
@@ -130,18 +142,18 @@ graph LR
 
 ## 4. Декомпозиция задач (Task Breakdown)
 
-- [ ] **TASK-085:** Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py` и упаковка в бандл.
-  * Блоки `RULE`/`LANG`/`adapter:`, плейсхолдеры, дедупликация 16 + 20 + 11 формулировок.
-  * `_load_rules_corpus()` (бандл → local-fallback → `RuntimeError`), `_render_rules()`, `_render_adapter_rules()`; рефакторинг `_RULES_BODY`, `_gen_rule()`, `generate_agents_md()`.
-  * `scripts/build_installer.py`: ключ `rules/AGENTS_CORE.md` в бандле + exclusion `rules-check.yml`.
+- [ ] [[../Specs/22_RuleCompiler/TASK-085-rules-corpus-renderer-and-bundling|TASK-085]]: Корпус правил `rules/AGENTS_CORE.md`, рендерер в `install.py`, упаковка в бандл и ADR-0030.
+  * Извлечение трёх представлений правил **без изменения вывода** (golden-фикстуры), маркеры `RULE`/`DOCUMENT`, плейсхолдеры.
+  * `_load_rules_corpus()` (бандл → local-fallback → `RuntimeError`), `_render_rules_document()`; делегирование из `_rules()`, `_gen_rule()`, `generate_agents_md()` с сохранением сигнатур.
+  * `scripts/build_installer.py`: ключ `rules/AGENTS_CORE.md` в бандле.
   * ADR-0030 (`status: accepted`) с фиксацией отвергнутых вариантов.
-- [ ] **TASK-086:** Генерация корневого `AGENTS.md` и CI-гейт.
-  * `scripts/gen_rules.py` (рендер профиля `harness`, `--check`), миграция `AGENTS.md` с ревью диффа.
-  * `.github/workflows/rules-check.yml` + шаг `--check` в префлайт `.github/workflows/release.yml`.
-- [ ] **TASK-087:** Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`).
-  * Уникальность `RULE-ID`, паритет RU/EN, отсутствие дублей в отрендеренных артефактах, выводимость адаптеров, идемпотентность `--check`, «hard error без корпуса».
-- [ ] **TASK-088:** E2E-синхронизация, Living Spec и пересборка монолита.
-  * `tests/test_installer.py` (замена ассертов «20 Disciplines»), `build_installer.py`, `dist/install.py`, `SPEC.md`, `README.md`, `docs/Onboarding.md`.
+- [ ] [[../Specs/22_RuleCompiler/TASK-086-agents-md-codegen-and-ci-check|TASK-086]]: Генерация корневого `AGENTS.md` и CI-гейт.
+  * `scripts/gen_rules.py` (рендер документа `harness-agents`, `--check`, нормализация CRLF), шапка GENERATED.
+  * `.github/workflows/rules-check.yml`, шаг `--check` в префлайт `.github/workflows/release.yml`, exclusion workflow в `bundle_assets()`.
+- [ ] [[../Specs/22_RuleCompiler/TASK-087-rules-drift-consistency-tests|TASK-087]]: Tier 1 тесты дрейфа (`tests/test_rules_consistency.py`).
+  * Уникальность `RULE-ID`, канонический инвентарь, выводимость адаптеров, отсутствие маркеров в выводе, детерминизм, «hard error без корпуса», `--check` на чистом дереве.
+- [ ] [[../Specs/22_RuleCompiler/TASK-088-editorial-consolidation-e2e-and-living-spec|TASK-088]]: Редакционная консолидация, E2E-синхронизация, Living Spec и пересборка монолита.
+  * Удаление числового литерала из заголовка, достройка нумерованного индекса governance-правилами, обновление `tests/test_installer.py`, `SPEC.md`, `README.md`, `docs/Onboarding.md`, `dist/install.py`.
 
 ---
 
