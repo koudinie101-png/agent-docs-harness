@@ -12,6 +12,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening|TASK-098]]: DEBT-002 — харденинг CI-гейта Rules Check (2026-10-18) #task #phase26 #techdebt #ci #tests
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — очистка устаревшего Icebox в Kanban.md (2026-10-18) #task #fast-track #techdebt #phase26
