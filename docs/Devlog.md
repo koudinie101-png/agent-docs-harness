@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Релиз v0.24.0: Фаза 24 (Research-Evidence Gate & Plan Provenance)
+- **Что сделано:**
+  - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.24.0|RELEASE-v0.24.0]] по завершении Фазы 24 ([[02_Tasks/Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]–[[02_Tasks/Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]], [[03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]], [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]).
+  - Собран монолит `install.py` / `dist/install.py`: **173 887 байт (169.8 KB)**, SHA-256 `27166e7df194476fdafa4993eebf61a85d4c296acf3df04dc1faa69ef44eb4e1`; хэши обоих файлов совпадают.
+  - Dual-Export: внутренний `RELEASE-v0.24.0.md` (фазовая изоляция ADR) и публичный `dist/RELEASE_NOTES.md` (High-SNR GFM: Highlights, Quick Install, Features, SHA-256, Full Changelog `v0.23.0...v0.24.0`, без блока ADR).
+  - Синхронизирована база знаний: `Roadmap.md` (ссылка на релиз в заголовке Фазы 24), `CHANGELOG.md` (секция `[0.24.0]`) и `Devlog.md`.
+- **Проверка:**
+  - Pre-flight: **154 теста OK**; `kb_lint` — 238 файлов, 2286 ссылок, 0 битых; рабочее дерево чистое; все задачи фазы `[x]`; `SPEC.md`/`README.md` актуальны (Living Spec Sync выполнен в TASK-093).
+  - Окружение: GitHub-режим (`gh` CLI аутентифицирован), публикация без silent-fallback.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-research` или `/kb-plan` для следующей инициативы из Icebox (например, автоматизированная ротация процедурной памяти).
+
 ### [2026-10-18] — TASK-093: пересборка бандла, E2E Evidence Gate и Living Spec (Фаза 24 завершена)
 - **Что сделано:**
   - [[02_Tasks/Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: `scripts/build_installer.py` пересобрал монолит — `install.py` и `dist/install.py` идентичны, **173 887 байт** (было 171 639). В бандл вошли Evidence Nudge, `research_basis`/Research Basis в шаблоне плана, `check_research_basis`, обновлённый `TEMPLATE_INDEX.md`.

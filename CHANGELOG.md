@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.24.0] - 2026-10-18
+
+### Added
+- **Research-Evidence Gate & Plan Provenance** (PLAN-023, ADR-0031, TASK-090–TASK-093):
+  - `/kb-plan` ranks Icebox candidates by Value Impact **and** Evidence Status (`🔬` validated / `🧪` hypothesis / `⏸` parked — derived from `RESEARCH`/`ADR` links, never hand-edited) and emits a single non-blocking Evidence Nudge (A: narrow `/kb-research`, B: plan with a Research Basis section, C: proceed), recommending A for irreversible and B for reversible decisions.
+  - `TEMPLATE_PLAN.md` (both copies): commented `research_basis`/`basis_note` hints and a `Research Basis & Unvalidated Assumptions` section (known / unvalidated / how we close).
+  - `check_research_basis()` in `scripts/kb_lint.py`: advisory `WARN:` when `research_basis: none` has no `basis_note`; plans without the field stay silent, and the exit code never changes.
+  - Tier 1 guards: `Evidence Nudge` source assertion in `tests/test_installer.py`, 4 lint tests in `tests/test_kb_lint.py`, and `tests/test_template_parity.py` (all 16 templates, CRLF-normalized).
+
+### Changed
+- Tier 2 rule `Research Evidence` added to Mode 1 of both `rules/AGENTS_CORE.md` documents; root `AGENTS.md` regenerated via `scripts/gen_rules.py`.
+- `templates/TEMPLATE_PLAN.md` and `docs/00_Templates/TEMPLATE_INDEX.md` synchronized: the two template stores are now byte-identical (P2 drift closed), so clients receive the 4-State Matrix and the current map of notes.
+- `test_16` now measures High-SNR budgets on LF-normalized content, making the gate deterministic on Windows and Linux (CRLF is a platform artifact, not token bloat).
+- Re-bundled standalone installer `install.py` / `dist/install.py` (169.8 KB / 173 887 bytes, SHA-256 `27166e7df194476fdafa4993eebf61a85d4c296acf3df04dc1faa69ef44eb4e1`).
+
 ## [0.23.0] - 2026-10-18
 
 ### Added
