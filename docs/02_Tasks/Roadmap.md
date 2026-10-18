@@ -327,7 +327,8 @@ tags:
 ## Фаза 25: Символьные контракты скоупа задач и защита от дрейфа строк (Symbolic Scope & Line Drift Prevention) — ✅ Завершена
 **Цель:** Заменить плоский список файлов в спецификациях задач иерархическим контрактом `Файл → символ/метод → изменение`, запретить номера строк как ориентир, дать Режиму 3 устойчивую локализацию по именам символов и неблокирующий контроль в `scripts/kb_lint.py` без выхода за бюджеты High-SNR.  
 **Первоисточник плана:** [[Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]]  
-**Нормативная база:** [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]]
+**Нормативная база:** [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.25.0|RELEASE-v0.25.0]]
 
 - [x] [[Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: Символьный контракт в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` (обе копии), Tier 1 source-guard тест и замер бюджетов (2026-10-18).
 - [x] [[Specs/25_SymbolicScope/TASK-095-symbolic-behavior-and-advisory-lint|TASK-095]]: Поведение `/kb-task` и `/kb-implement`, `check_symbolic_scope()` в `scripts/kb_lint.py`, state-aware next step в `/kb-complete` и unit-тесты (2026-10-18).

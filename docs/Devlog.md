@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Релиз v0.25.0: Фаза 25 (Symbolic Scope & Line Drift Prevention)
+- **Что сделано:**
+  - Выпущен [[02_Tasks/Releases/RELEASE-v0.25.0|RELEASE-v0.25.0]] по завершении Фазы 25 (TASK-094–TASK-096, ADR-0029, RESEARCH-024).
+  - Собран монолит `install.py` / `dist/install.py`: **175 083 B**, SHA-256 `533f279f80e31eb2feb7ec5229c3b7c8ac0900732022b7436fa558b6454f7dac`; тег `v0.25.0`.
+  - Dual-Export: внутренний `RELEASE-v0.25.0.md` и публичный `dist/RELEASE_NOTES.md` (High-SNR GFM, Full Changelog `v0.24.0...v0.25.0`, без блока ADR).
+  - Бюджет `install.py` согласованно повышен 175 000 → 176 000; шаблоны (29 826) и скиллы (30 610) — без изменений. P2-регрессия `Stop & Yield Control` исправлена и закрыта source-guard.
+  - Синхронизированы `Roadmap.md` (ссылка на релиз) и `CHANGELOG.md` (`[0.25.0]`).
+- **Проверка:**
+  - Pre-flight: **163 теста OK**; `kb_lint` — 246 файлов, 2413 ссылок, 0 битых; все задачи Фазы 25 `[x]`; `SPEC.md`/`README.md` актуальны.
+  - GitHub-режим: `gh` аутентифицирован; публикация без silent-fallback.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Техдолг после релиза: `/kb-task --fast "DEBT-003: очистить устаревший Icebox в Kanban.md"`, затем DEBT-002 и DEBT-001.
+
 ### [2026-10-18] — TASK-096: бандл, E2E и Living Spec Sync; Фаза 25 завершена
 - **Что сделано:**
   - [[02_Tasks/Specs/25_SymbolicScope/TASK-096-bundle-e2e-and-living-spec|TASK-096]]: `scripts/build_installer.py` пересобрал `install.py` / `dist/install.py` — **175 083 B**, файлы идентичны. В бандл вошли символьный контракт шаблонов, скиллы Mode 2/3 и `check_symbolic_scope()`.

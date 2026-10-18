@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.25.0] - 2026-10-18
+
+### Added
+- **Symbolic Scope & Line Drift Prevention** (PLAN-024, ADR-0029, TASK-094–TASK-096):
+  - `TEMPLATE_TASK.md` (both copies): hierarchical contract `File → symbol → change` with nested `Class.method()` / `func(args) -> Ret`; line-number anchors are prohibited.
+  - `TEMPLATE_TASK_MICRO.md`: symbol hint replaces the legacy “function, line or block” wording; Fast-Track keeps a single-line contract.
+  - `/kb-task` requires nested symbols for code files; `/kb-implement` locates code by symbol names, never by line numbers.
+  - `check_symbolic_scope()` in `scripts/kb_lint.py`: advisory `WARN:` for active specs (`planned`/`in-progress`) with code `[MODIFY]`/`[NEW]` lacking a nested symbol, and for `:L10-L20` anchors; `done` specs and fast-track are silent.
+  - `/kb-complete` is state-aware: proposes `/kb-implement TASK-YYY` only when the spec exists, otherwise `/kb-task TASK-YYY`.
+  - 6 lint tests, Tier 1 source guards, and E2E fresh-install/`--update` coverage.
+
+### Changed
+- Installer budget raised from 175 000 to **176 000 B** by explicit agreement: the new Tier 1 lint adds real code (`install.py` = **175 083 B**). Template (29 826) and skill (30 610) budgets are unchanged.
+- `install.py` / `dist/install.py` re-bundled: 175 083 B, SHA-256 `533f279f80e31eb2feb7ec5229c3b7c8ac0900732022b7436fa558b6454f7dac`.
+- `SPEC.md` §2.3/§2.4, `README.md`, `docs/Onboarding.md` synchronized with the symbolic-scope contract and state-aware next step.
+
+### Fixed
+- **P2 (TASK-096):** restored the `Stop & Yield Control` phrase in `/kb-complete` after the TASK-095 regression; the source guard now asserts the preserved phrase so a stale bundle cannot mask its loss again.
+
 ## [0.24.0] - 2026-10-18
 
 ### Added
