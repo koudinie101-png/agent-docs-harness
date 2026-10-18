@@ -350,13 +350,43 @@ tags:
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
 
-* 💡 **Детерминированный синтаксический автофикс (kb_lint.py --fix):** опциональный флаг для безопасного автоматического экранирования неэкранированных пайпов `\|` в табличных викиссылках и нормализации пробелов без эвристического вмешательства в семантику ссылок.
+> **Источник:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] — аудит лучших практик конкурентов и adoption-бэклог.  
+> **Плановый старт:** после завершения Фазы 26 (Tech Debt Hardening). Порядок: P0 → P1 → P2.
+
+### 🌊 Волна 1 — Docs Integrity Gate (P0)
+
+* 💡 **[P0] Продуктизация `kb_lint` (JSON/SARIF, `--fix`, CI):** `--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, безопасный `--fix` (включая экранирование пайпов `\|`), `action.yml` и `.pre-commit-hooks.yaml`; линт становится самостоятельным продуктом, а не внутренним скриптом.
+* 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`; закрывает разрыв с `bmad status`, `openspec status`, `task-master next`.
+* 💡 **[P0] Граф зависимостей задач (`depends_on`):** frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`; защита от преждевременного старта.
+* 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan.
+
+### 🌊 Волна 2 — Quality & Evidence (P1)
+
+* 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта.
+* 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (WARN → ERROR для deep-трека).
+* 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations.
+* 💡 **[P1] Delta-спеки для brownfield:** `ADDED/MODIFIED/REMOVED` в ТЗ, синхронизация `SPEC.md`/архитектуры при завершении; закрывает разрыв с OpenSpec delta + archive.
+
+### 🌊 Волна 3 — Context & Ops (P2)
+
+* 💡 **[P2] Контекстный манифест (`kb_state context TASK-XXX`):** релевантные ADR/research/patterns/techdebt/prior tasks по ссылкам, путям, символам и тегам; компактный вывод «почему включено»; борьба с амнезией без embeddings.
+* 💡 **[P2] `doctor` и upgrade diff:** `install.py --doctor` (версия, дрейф шаблонов/скиллов, адаптеры, lint, CI), `--update --dry-run` с diff и inventory артефактов.
+* 💡 **[P2] Resumable state:** `## Current State` / `next_action` в задаче, продолжение после сбоя; снижает потерю контекста в длинных задачах.
+* 💡 **[P2] Assess go/clarify/kill в `/kb-research`:** явное решение и критерии в `TEMPLATE_RESEARCH`; формализует воронку Icebox vs отказной ADR.
+
+### 💡 Прочие идеи (без изменения приоритета)
+
 * 💡 **Автоматизированная ротация процедурной памяти (Compaction):** процедурный механизм в `kb-complete` или встроенный хелпер для ротации старейших паттернов `[TRG-XX]` из `patterns.md` в архив `docs/06_Memory/Incidents/` при приближении к лимиту 15 записей.
 * 💡 **Расширенные пресеты стеков (Go, Rust, JVM):** автодетект стеков (`Cargo.toml`, `go.mod`, `build.gradle.kts`, `pom.xml`) и базовые команды верификации для `install.py`.
 * 💡 **Контроль архитектурной преемственности в исследованиях (Codebase Continuity & Invariant Guard в kb-research):** формализация инварианта скилла `/kb-research`: обязательная опора на существующую кодовую базу (скрипты, линтер, инсталлятор, правила), запрет скрытого разрушения ранее принятых архитектурных контрактов (Permalinks, Zero-Deps) и требование явного обоснования рефакторинга через статус `superseded/amended`.
 * 💡 **Обязательное Spike-прототипирование в Режиме 0 (Executable Research):** требование создания запускаемого проверочного прототипа в `scratch/` перед фиксацией вердикта в ADR для исключения рисков «бумажной архитектуры».
 * 💡 **Пакетный триаж обращений (Batch Triage в kb-triage):** режим `/kb-triage --batch` для массовой дедупликации, кластеризации и классификации потока тикетов в `Inbox/` без поштучной остановки на каждом обращении.
 * 💡 **Конфигурации для нишевых агентов:** Continue.dev (`.continue/config.json`), Aider (`.aider.conf.yml`).
+
+### ⏸ Отложено / не берём сейчас
+
+* ⏸ **Отложено:** evals скиллов на LLM (ломает zero-deps CI), extensions/schemas, stores/монорепо, plugin marketplace — вернуться после появления массовой аудитории.
+* ❌ **Не копируем:** autonomy-first субагенты (противоречит Stop & Yield и ADR-0016), persona-heavy роли, web UI/approval dashboard (ADR-0005), telemetry, 14 языков документации, полный EARS-формализм.
 
 
 ---
