@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: Символьный контракт в шаблонах, Tier 1 source-guard и замер бюджетов (2026-10-18) #task #phase25 #symbolic-scope #templates #tests
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: Символьный контракт в шаблонах, Tier 1 source-guard и замер бюджетов (2026-10-18) #task #phase25 #symbolic-scope #templates #tests
 
 - [x] [[Plans/PLAN-023-research-evidence-gate-and-plan-provenance|План: Фаза 24 — Research-Evidence Gate при промоушене из Icebox (критерий зрелости, Evidence Nudge, `research_basis`, advisory-линт и parity шаблонов)]] (2026-10-18) #plan #phase24 #research-evidence #kb-plan #templates #lint
 - [x] [[Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]]: Пересборка `install.py` / `dist/install.py` (173 887 байт), E2E установленного скилла и `--update`, нормализация LF в High-SNR бюджете и Living Spec Sync (`SPEC.md`, `README.md`, `docs/Onboarding.md`) (2026-10-18) #task #phase24 #research-evidence #installer #e2e #spec

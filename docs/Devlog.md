@@ -16,6 +16,20 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-094: символьный контракт в шаблонах и Tier 1 source-guard (Фаза 25)
+- **Что сделано:**
+  - [[02_Tasks/Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: §2 `TEMPLATE_TASK.md` переведён на иерархический контракт «Файл → символ → изменение» (`ClassName.method_name()`, `function_name(arg: Type) -> Ret`) с явным запретом номеров строк; в `TEMPLATE_TASK_MICRO.md` подсказка «конкретная функция, строка или блок» заменена символьной. Обе копии (`templates/` и `docs/00_Templates/`) идентичны, parity зелёный.
+  - Новый Tier 1 `test_symbolic_scope_template_source_guard` в `tests/test_installer.py` читает файл-источник `templates/`, а не снимок бандла; проверяет маркеры контракта, отсутствие `:L\d+` и чистоту micro-шаблона.
+  - Бюджет: первый вариант дал +272 B и превысил цель +250 B; подсказка сжата до «суть изменения и сигнатура» → **+247 B** (29 579 → 29 826). Лимит 30 000 не менялся. `install.py` намеренно не пересобирался — это TASK-096.
+  - Living Spec Sync (SPEC/README/Onboarding) по плану отложен в TASK-096: публичные CLI/API и архитектура этой задачей не менялись.
+- **Проверка:**
+  - `test_symbolic_scope_template_source_guard` — OK; `tests.test_template_parity` — 2 теста OK; `py_compile` — Exit code 0.
+  - Полный прогон `python tmp/run_tests.py` — **155 тестов OK** (Exit code 0); `kb_lint` — 241 файл, 2333 ссылки, 0 битых.
+  - Бюджеты: шаблоны 29 826 ≤ 29 829 (цель) и ≤ 30 000; `TEMPLATE_TASK.md` 2 845 B; `TEMPLATE_TASK_MICRO.md` 1 641 B.
+  - Инцидентов нет; отклонение оценки бюджета (+272 вместо ожидаемых +150…200) устранено сжатием подсказки в том же проходе.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-095`.
+
 ### [2026-10-18] — Релиз v0.24.0: Фаза 24 (Research-Evidence Gate & Plan Provenance)
 - **Что сделано:**
   - Выпущен официальный релиз [[02_Tasks/Releases/RELEASE-v0.24.0|RELEASE-v0.24.0]] по завершении Фазы 24 ([[02_Tasks/Specs/24_ResearchEvidence/TASK-090-evidence-status-nudge-and-tier2-rule|TASK-090]]–[[02_Tasks/Specs/24_ResearchEvidence/TASK-093-bundle-rebuild-e2e-and-living-spec-sync|TASK-093]], [[03_Decisions_ADR/ADR-0031-research-evidence-gate-for-icebox-promotion|ADR-0031]], [[03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]]).

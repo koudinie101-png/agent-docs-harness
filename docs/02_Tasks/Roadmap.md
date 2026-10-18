@@ -329,7 +329,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]]  
 **Нормативная база:** [[../04_Research/RESEARCH-024-fine-grained-task-scope-and-symbol-contracts|RESEARCH-024]], [[../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]]
 
-- [ ] `TASK-094`: Символьный контракт в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` (обе копии), Tier 1 source-guard тест и замер бюджетов.
+- [x] [[Specs/25_SymbolicScope/TASK-094-symbolic-contract-templates-and-source-guard|TASK-094]]: Символьный контракт в `TEMPLATE_TASK.md` и `TEMPLATE_TASK_MICRO.md` (обе копии), Tier 1 source-guard тест и замер бюджетов (2026-10-18).
 - [ ] `TASK-095`: Поведение `/kb-task` и `/kb-implement`, `check_symbolic_scope()` в `scripts/kb_lint.py` и unit-тесты.
 - [ ] `TASK-096`: Пересборка `install.py` / `dist/install.py`, E2E свежей установки и `--update`, Living Spec Sync.
 

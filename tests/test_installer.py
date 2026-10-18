@@ -1170,6 +1170,28 @@ class TestAgentDocsHarness(unittest.TestCase):
         ):
             self.assertIn(marker, skill, "kb-plan skill lost marker: %s" % marker)
 
+    def test_symbolic_scope_template_source_guard(self):
+        """Tier 1 (TASK-094): the symbol-scope contract must not be lost again.
+
+        Reads the bundle source templates, not the built snapshot, so the guard
+        stays green until TASK-096 rebuilds the monolithic installer.
+        """
+        task_tpl = (REPO_ROOT / "templates" / "TEMPLATE_TASK.md").read_text(encoding="utf-8")
+        micro_tpl = (REPO_ROOT / "templates" / "TEMPLATE_TASK_MICRO.md").read_text(encoding="utf-8")
+
+        for marker in (
+            "Затрагиваемые файлы и скоуп символов",
+            "ClassName.method_name()",
+            "function_name(arg: Type) -> Ret",
+            "ADR-0029",
+        ):
+            self.assertIn(marker, task_tpl, "TASK template lost symbol-scope marker: %s" % marker)
+
+        self.assertNotRegex(task_tpl, r":L\d+", "Line-number anchors are prohibited (ADR-0029)")
+        self.assertIn("символ(ы)", micro_tpl)
+        self.assertNotIn("строка или блок", micro_tpl)
+        self.assertIn("ADR-0029", micro_tpl)
+
     def test_19_undecided_preset_and_idea_flag(self):
         """Verify undecided preset, --idea CLI flag, SPEC.md discovery status, and kb_lint verification."""
         self.assertIn("undecided", install.STACK_PRESETS)

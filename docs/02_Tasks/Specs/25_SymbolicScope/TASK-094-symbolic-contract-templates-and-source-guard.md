@@ -1,7 +1,7 @@
 ---
 id: TASK-094
 title: "Символьный контракт в шаблонах задач, Tier 1 source-guard и замер бюджетов"
-status: planned
+status: done
 type: task
 phase: 25
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-094 — Символьный контракт в шаблонах и source-guard
 
-> **ID:** TASK-094 | **Статус:** К реализации  
+> **ID:** TASK-094 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 25 | **План:** [[../../Plans/PLAN-024-symbolic-scope-and-task-contracts|PLAN-024]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0029-fine-grained-task-symbol-contracts-and-line-drift-rejection|ADR-0029]], [[../../../03_Decisions_ADR/ADR-0009-high-snr-token-architecture-and-context-efficiency|ADR-0009]] (бюджеты), [[../24_ResearchEvidence/TASK-092-template-copies-parity-sync-and-test|TASK-092]] (parity)
 
@@ -60,7 +60,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 ```markdown
 ## 2. Затрагиваемые файлы и скоуп символов
 * `[MODIFY]` `path/to/file.ext`:
-  - `ClassName.method_name()` — <!-- суть изменения; сигнатура, если меняется -->
+  - `ClassName.method_name()` — <!-- суть изменения и сигнатура -->
 * `[NEW]` `path/to/new_file.ext`:
   - `function_name(arg: Type) -> Ret` — <!-- контракт нового символа -->
 * `[DELETE]` `path/to/file.ext` — <!-- причина удаления -->
@@ -70,7 +70,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 Требования:
 * Для `[DELETE]` и не-кодовых файлов (`.md`, `.yml`, `.json`, `.toml`) вложенные символы не требуются — это фиксирует пример и комментарий.
 * Никаких `:L42` / `L10-L20` в шаблоне (проверяется тестом §3.3).
-* Ожидаемый прирост: ~+150…200 B; верхняя граница — +250 B.
+* Фактический прирост: **+247 B** (29 579 → 29 826); верхняя граница +250 B соблюдена.
 
 ### 3.2. `TEMPLATE_TASK_MICRO.md` — целевой текст §2
 
@@ -132,20 +132,20 @@ python -c "from pathlib import Path; fs=sorted(Path('templates').glob('*.md')); 
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Tier 1 source-guard: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_template_source_guard` → OK.
-- [ ] Parity копий: `python -m unittest tests.test_template_parity` → 2 теста OK.
-- [ ] Синтаксис теста: `python -m py_compile tests/test_installer.py` → Exit code 0.
-- [ ] Бюджет (§3.5): `templates ≤ 29 829` и `≤ 30 000`, `TEMPLATE_TASK` / `TEMPLATE_TASK_MICRO` — фактические числа записаны в отчёт.
-- [ ] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → все тесты OK, Exit code 0.
-- [ ] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
-- [ ] Замеры $\ge 3$ прогонов: не применимо — статический байтовый бюджет детерминирован; фиксируется один канонический замер.
+- [x] Tier 1 source-guard: `python -m unittest tests.test_installer.TestAgentDocsHarness.test_symbolic_scope_template_source_guard` → OK (1 тест).
+- [x] Parity копий: `python -m unittest tests.test_template_parity` → 2 теста OK.
+- [x] Синтаксис теста: `python -m py_compile tests/test_installer.py` → Exit code 0.
+- [x] Бюджет (§3.5): `templates` **29 826 ≤ 29 829** и `≤ 30 000`; `TEMPLATE_TASK.md` 2 845 B; `TEMPLATE_TASK_MICRO.md` 1 641 B.
+- [x] Целостность базы знаний: `python scripts/kb_lint.py --path docs` → Exit code 0, 241 файл, 2333 ссылки, 0 битых.
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **155 тестов OK**, Exit code 0.
+- [x] 4-State UI / скриншоты: не применимо (GUI/TUI отсутствует).
+- [x] Замеры $\ge 3$ прогонов: не применимо — статический байтовый бюджет детерминирован; зафиксирован один канонический замер.
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Все четыре шаблона обновлены, `tests/test_template_parity.py` зелёный.
-- [ ] В `TEMPLATE_TASK.md` есть иерархический контракт, нет номеров строк и есть ссылка на ADR-0029.
-- [ ] В `TEMPLATE_TASK_MICRO.md` нет фразы «строка или блок», есть символьная подсказка.
-- [ ] Tier 1 source-guard добавлен и зелёный; полный suite и `kb_lint` зелёные.
-- [ ] Бюджет замерен: `templates ≤ 29 829` (и `≤ 30 000`), фактические числа зафиксированы.
-- [ ] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
+- [x] Все четыре шаблона обновлены, `tests/test_template_parity.py` зелёный.
+- [x] В `TEMPLATE_TASK.md` есть иерархический контракт, нет номеров строк и есть ссылка на ADR-0029.
+- [x] В `TEMPLATE_TASK_MICRO.md` нет фразы «строка или блок», есть символьная подсказка.
+- [x] Tier 1 source-guard добавлен и зелёный; полный suite и `kb_lint` зелёные.
+- [x] Бюджет замерен: `templates` 29 826 (≤ 29 829 и ≤ 30 000), фактические числа зафиксированы.
+- [x] Статус задачи обновлён в [[../../Kanban|Kanban]] и [[../../Roadmap|Roadmap]] на шаге `/kb-complete`.
