@@ -29,6 +29,13 @@
       }
     },
     {
+      "query": "tag:#techdebt",
+      "color": {
+        "a": 1,
+        "rgb": 14009870
+      }
+    },
+    {
       "query": "path:02_Tasks",
       "color": {
         "a": 1,

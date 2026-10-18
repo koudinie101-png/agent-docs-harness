@@ -234,9 +234,9 @@ def _gen_rule(title: str, p: str, s: str, l: str = "ru", extra_header: str = "",
         f"5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).\n"
         f"6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.\n"
         f"7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and screenshots in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.\n"
-        f"8. **Tech Debt Governance (P1/P2 vs P3):** Fix P1/P2 immediately; log P3 in `docs/02_Tasks/TechDebt.md` (never refactor opportunistically).\n"
+        f"8. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):** Fix P1/P2 immediately; register ALL P3 debt (review findings + planned `#techdebt` refactoring) as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md` (SSOT); migrate resolved rows to Resolved Debt in `/kb-complete` (never refactor opportunistically).\n"
         f"9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.\n"
-        f"10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` (never hanging TODOs); verify benchmarks with >= 3 runs.\n"
+        f"10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.\n"
         f"{tail}"
     )
 
@@ -281,7 +281,7 @@ def generate_agents_md(project_name: str, stack_key: str, doc_lang: str = "ru") 
 
 {rules}
 ### 🎨 Obsidian Graph & Taxonomy
-Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`).
+Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
 
 ---
 
@@ -311,11 +311,13 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 💳 8. Tech Debt Governance & Review Triage (P1/P2 vs P3)
+## 💳 8. Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3)
 
 - Code review findings and secondary defects are triaged into two strict tiers:
   * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
-  * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged immediately in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+  * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+- `TechDebt.md` is the mandatory primary registry (SSOT) for ALL `P3` debt — both review findings (Mode 3) and planned refactoring phases/tasks (`#techdebt`) in Modes 1–2 and triage dispatch (Mode 2C).
+- Lifecycle: at planning (`/kb-plan`) or specification (`/kb-task`) of `#techdebt` work, create/link the `DEBT-XXX` row in `Active P3 Debt`; at completion (`/kb-complete`), migrate the resolved `DEBT-XXX` row to `Resolved Debt` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
 - Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
 
 ---
@@ -327,10 +329,10 @@ Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in de
 
 ---
 
-## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID>)
+## 🏷️ 10. Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX)
 
-- Untracked 'hanging' TODO or FIXME comments without roadmap linkage are strictly prohibited.
-- Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`).
+- Untracked 'hanging' TODO or FIXME comments without roadmap/debt linkage are strictly prohibited.
+- Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`) or `// DEBT-XXX` (matching a row in `docs/02_Tasks/TechDebt.md`).
 
 ---
 
@@ -370,19 +372,19 @@ Output: `docs/04_Research/RESEARCH-XXX-<slug>.md` and `docs/03_Decisions_ADR/ADR
 
 ### 🟡 Mode 1 -- Planning / RFC (`/kb-plan`)
 Planning phase. Focus on research and architecture; coordinate with user before implementation. Conceptual discussion, trade-offs, and Q&A.
-Output: approved plan `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card.
+Output: approved plan `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` + Kanban Backlog card. For `#techdebt` plans, register `DEBT-XXX` in `docs/02_Tasks/TechDebt.md`.
 
 ### 🟠 Mode 2 -- Task Spec (`/kb-task`)
 Specification phase. Detailed file contracts, signatures, error handling, and Definition of Done (DoD).
 Contracts: `[NEW] path/to/file{stack['file_ext']}` / `[MODIFY]` / `[DELETE]`. Explicit Verification Plan with commands and expected outputs.
-Output: specification `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md` + Kanban In Progress.
+Output: specification `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md` + Kanban In Progress. For `#techdebt` specs, link `DEBT-XXX` from `TechDebt.md`.
 
 ### 🐞 Mode 2B -- Defect Triage (`/kb-bug`)
 Defect analysis phase. Root Cause Analysis (RCA), setting `target_release` and `release_blocker`, failing regression test contract.
 Output: defect report `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md` + Kanban card + Stop & Yield Control.
 
 ### 📥 Mode 2C: Feedback Triage & Dispatch (`/kb-triage`)
-Feedback triage phase. Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, Roadmap (Icebox), or FAQ. In-place status update (`status: processed` or `rejected`).
+Feedback triage phase. Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, Roadmap (Icebox), TechDebt (`DEBT-XXX` for P3/refactoring), or FAQ. In-place status update (`status: processed` or `rejected`).
 Output: updated `FB-*.md` frontmatter + Stop & Yield Control.
 
 ### 🟢 Mode 3 -- Implementation & Verification (`/kb-implement` -> `/kb-complete`)
@@ -394,7 +396,7 @@ Run:
 {stack['test_cmd']}
 python3 scripts/kb_lint.py --path docs
 ```
-Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).
+Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).
 """
 
 # --- STARTER DOCS CUSTOMIZATION ---

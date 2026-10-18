@@ -53,7 +53,7 @@ tags:
 * `00_Templates/` (16 шаблонов):
   - **Core Essentials (4):** `ADR`, `PLAN`, `TASK`, `BUG` — регулярная разработка.
   - **Advanced Governance (12):** `RESEARCH`, `RELEASE`, `FEEDBACK`, `TEST`, `DEVLOG`, `INDEX`, `KANBAN`, `ROADMAP`, `ARCHITECTURE`, `ONBOARDING`, `INCIDENT`, `TASK_MICRO`.
-* `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (инциденты, паттерны).
+* `01_Architecture/`, `02_Tasks/` (задачи, планы, баги, инбокс, [[02_Tasks/TechDebt|реестр техдолга]], релизы), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (инциденты, паттерны).
 * `Devlog.md` (журнал сессий) и `00_Index.md` (карта заметок).
 
 ---

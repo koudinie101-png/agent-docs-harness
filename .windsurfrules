@@ -16,6 +16,6 @@
 5. **Anti-Echo & Single-Task Barrier:** Never reprint full files in chat responses. Stop tool calls upon task completion (Stop & Yield).
 6. **Quality Gates:** Tier 1 (Enforce: tests/lint) > Tier 2 (Always-On: AGENTS.md) > Tier 3 (Playbook: skills). Never rely on Tier 3 for critical rules.
 7. **The 4-State UI & Visual Verification:** Design 4 UI states (Empty/Loading/Error/Populated); store mockups in `docs/assets/mockups/<target>/TASK-XXX/` (asis.svg/tobe.svg or flows/TASK-XXX/) and screenshots in `docs/assets/screenshots/<target>/TASK-XXX.png` (or Headless fallback); isolate test snapshots in `tmp/ui_snapshots/`.
-8. **Tech Debt Governance (P1/P2 vs P3):** Fix P1/P2 immediately; log P3 in `docs/02_Tasks/TechDebt.md` (never refactor opportunistically).
+8. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):** Fix P1/P2 immediately; register ALL P3 debt (review findings + planned `#techdebt` refactoring) as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md` (SSOT); migrate resolved rows to Resolved Debt in `/kb-complete` (never refactor opportunistically).
 9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.
-10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` (never hanging TODOs); verify benchmarks with >= 3 runs.
+10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.

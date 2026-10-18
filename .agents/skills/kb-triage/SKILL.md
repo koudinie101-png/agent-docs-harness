@@ -26,6 +26,7 @@ Use when the user runs `/kb-triage`, wants to screen incoming feedback, or proce
      * **Defect:** Recommend launching `/kb-bug` to create `BUG-XXX` with RCA and regression test plan.
      * **Feature / Idea:** Register in `docs/02_Tasks/Roadmap.md` (`## 🔮 Перспективные направления (Icebox)`) with permanent link to `FB-*.md`.
      * **Question / FAQ:** Prepare answer for user and optionally update `docs/Onboarding.md`.
+     * **P3 / Refactoring (Tech Debt):** Register a `DEBT-XXX` row in `docs/02_Tasks/TechDebt.md` (`Active P3 Debt`) with a link to `FB-*.md`.
      * **Invalid / Spam:** Mark as rejected with explanation.
 3. **Update Feedback Metadata In-Place:**
    - Update frontmatter in `docs/02_Tasks/Inbox/FB-*.md`:

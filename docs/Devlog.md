@@ -16,6 +16,24 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — Реализация TASK-083: Сквозной цикл DEBT-XXX в скиллах, правилах AGENTS.md, шаблонах и install.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-083-skills-agents-and-templates-tech-debt-lifecycle|TASK-083]] — вторая задача Фазы 21 ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]):
+    1. `AGENTS.md`: шапка `02_Tasks/` дополнена `TechDebt.md`; Правило 4 (`#techdebt`), Правило 13 (SSOT-жизненный цикл `DEBT-XXX`), Правило 15 (`// DEBT-XXX`); точки синхронизации в Mode 1/2/2C/3.
+    2. `install.py`: синхронизированы генераторы `_gen_rule` (правила 8/10) и `generate_agents_md` (теги Obsidian, правила 8/10, Mode 1/2/2C/3).
+    3. 6 файлов-адаптеров (`GEMINI.md`, `CLAUDE.md`, `.clinerules`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`): правила 8/10 актуализированы.
+    4. Скиллы `kb-plan`/`kb-task`/`kb-triage`/`kb-complete`/`kb-lint`: сквозной цикл `DEBT-XXX` (регистрация, привязка, триаж, миграция в Resolved Debt, аудит).
+    5. `templates/graph.json` и `docs/.obsidian/graph.json`: цветовая группа `tag:#techdebt`.
+    6. `TEMPLATE_INDEX.md` и `TEMPLATE_ONBOARDING.md` (в `templates/` и `docs/00_Templates/`): ссылка на `[[02_Tasks/TechDebt|Реестр техдолга]]`.
+- **Результаты верификации:**
+  - `py -3 -m py_compile install.py scripts/*.py` -> Exit code 0 (6 файлов).
+  - Валидация JSON графа + бюджет шаблонов -> `templates/` 27 908 б, `docs/00_Templates/` 28 495 б (оба ≤ 28 672, Exit code 0).
+  - `py -3 scripts/kb_lint.py --path docs` -> 216 файлов, 1978 викиссылок, 0 битых (Exit code 0).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement TASK-084` (пересборка монолита `build_installer.py`, E2E-тесты в `tests/test_installer.py` и синхронизация Living Spec).
+
+---
+
 ### [2026-10-18] — Реализация TASK-082: Семантический кросс-чек TechDebt.md и поддержка кодовых тегов // DEBT-XXX в scripts/kb_lint.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/21_TechDebtLifecycle/TASK-082-kb-lint-tech-debt-cross-check-and-todo-tags|TASK-082]] — первая задача Фазы 21 «Сквозной жизненный цикл технического долга и кросс-режимная синхронизация» ([[02_Tasks/Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]):

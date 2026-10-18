@@ -18,6 +18,7 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
      - *Fast-Track Nudge:* If proposal is a trivial micro-change (≤ 30 LOC, 1–2 files, typo, parameter, config), issue a Soft Nudge: suggest running `/kb-task --fast <description>` directly, bypassing RFC planning.
      - *Pre-flight Nudge:* If proposal introduces new external dependencies (violating ADR-0001), platform uncertainties, or high risk, suggest running `/kb-research <idea>` (Mode 0) first to validate trade-offs and record ADR. If user confirms direct planning or idea is low-risk, proceed immediately.
    - **No Argument (`/kb-plan`):** Inspect Icebox in `docs/02_Tasks/Roadmap.md`. Rank candidates by value impact with 1-line rationale and top recommendation. If empty, ask user.
+   - **TechDebt Check:** Read `docs/02_Tasks/TechDebt.md` to surface existing `DEBT-XXX` rows relevant to the planned work.
 2. **Clarify & Challenge:** Identify requirements, edge cases, trade-offs. Critique flawed approaches.
 3. **Draft Plan:** Break down into potential tasks, affected modules, and risks.
 4. **User Approval (Mandatory):** Executive summary in chat; obtain explicit confirmation before writing files.
@@ -26,6 +27,7 @@ Use when the user runs `/kb-plan <name>`, plans a feature, or discusses architec
    - Create `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md` using `TEMPLATE_PLAN.md`.
    - Add card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
    - If from Icebox: promote to sequential Phase in `Roadmap.md` and link relevant ADR/Research notes.
+   - If the plan targets `#techdebt` refactoring: register a `DEBT-XXX` row in `docs/02_Tasks/TechDebt.md` (`Active P3 Debt`) and link it from `PLAN-XXX`.
 6. **Git Sync (Conditional):**
    - Stage: `git add docs/02_Tasks/Plans/ docs/02_Tasks/Kanban.md docs/02_Tasks/Roadmap.md`
    - Commit: `git commit -m "docs(plan): record PLAN-XXX <slug> and update backlog"`

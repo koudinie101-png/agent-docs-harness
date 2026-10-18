@@ -11,7 +11,7 @@
 All project knowledge, task tracking, and architectural decisions are maintained strictly inside `docs/`:
 - `docs/00_Templates/` — 16 canonical templates with YAML frontmatter (4 Core Essentials + 12 Advanced Governance).
 - `docs/01_Architecture/` — System architecture, module diagrams, and contracts.
-- `docs/02_Tasks/` — Backlog, Kanban (`Kanban.md`), Roadmap (`Roadmap.md`), Plans (`Plans/`), Task Specs (`Specs/`), Defect Reports (`Bugs/`), Feedback Buffer (`Inbox/`), and Releases (`Releases/`).
+- `docs/02_Tasks/` — Backlog, Kanban (`Kanban.md`), Roadmap (`Roadmap.md`), Plans (`Plans/`), Task Specs (`Specs/`), Defect Reports (`Bugs/`), Feedback Buffer (`Inbox/`), Tech Debt Registry (`TechDebt.md`), and Releases (`Releases/`).
 - `docs/03_Decisions_ADR/` — Architectural Decision Records (`ADR-XXXX`).
 - `docs/04_Research/` — Platform investigations, quirks, and trade-off matrices (`RESEARCH-XXX`).
 - `docs/05_Testing/` — Acceptance testing checklists (E2E UX) with interactive checkboxes (`- [ ]`).
@@ -22,7 +22,7 @@ All project knowledge, task tracking, and architectural decisions are maintained
 1. **Permalinks Principle (No Link Rot):** Task specs (`TASK-XXX`) and bug reports (`BUG-XXX`) are **NEVER** moved to `Done/` or `Archive/` folders when completed. Status is updated in YAML frontmatter, Kanban, and Roadmap.
 2. **Regression-First Principle:** Bugs (`BUG-XXX`) are closed only after creating an automated failing test that reproduces the defect, followed by the fix making the test pass. Bug fixing is executed strictly through `/kb-implement BUG-XXX` via the TDD cycle (RED $\to$ GREEN $\to$ REFACTOR).
 3. **Living Spec Invariant (No Documentation Drift):** `SPEC.md` is the Master Specification (Ground Truth), and `README.md` is the project storefront. When a task introduces new CLI arguments, APIs, or architectural modules, update `SPEC.md` and `README.md` in that same task session. Releases (`/kb-release`) cannot proceed if documentation is stale.
-4. **Obsidian Graph & Taxonomy:** Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#testing`).
+4. **Obsidian Graph & Taxonomy:** Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
 5. **Single-Task Execution Barrier (No Auto-Chaining):**
    - The command `/kb-implement <TASK-XXX | BUG-XXX>` authorizes work **strictly on that single task specification or defect report**.
    - Even if subsequent tasks are listed in plans, backlog, or Devlog, the agent is **strictly prohibited** from starting their implementation without an explicit user command (e.g. `/kb-implement TASK-YYY` or `/kb-implement BUG-YYY`).
@@ -57,17 +57,19 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - **Mockup Namespaces & Lifecycle (ADR-0027):** Project mockups are isolated in task-scoped directories `docs/assets/mockups/<target>/TASK-XXX/` (`asis.svg`, `tobe.svg`, `<surface>_tobe.svg`) and cross-device flows in `docs/assets/mockups/flows/TASK-XXX/`.
    - In headless/remote environments lacking display, agents prepare an ASCII/SVG mockup or `generative_ui` preview and leave a dedicated slot in the task summary (`![Screenshot](../../assets/screenshots/<target>/TASK-XXX.png)`).
    - **Git Bloat Prevention:** Ephemeral E2E snapshots must be isolated in `tmp/ui_snapshots/` and are strictly barred from Git tracking.
-13. **Tech Debt Governance & Review Triage (P1/P2 vs P3):**
+13. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):**
    - Code review findings and secondary defects are triaged into two strict tiers:
      * **P1/P2 (Critical Bugs & Regressions):** must be fixed immediately in the same implementation pass.
-     * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged immediately in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+     * **P3 (Cosmetic Debt, Style Nuances, Deferred Optimization):** strictly **prohibited** from opportunistic fixing during the current task (Single-Task Barrier Protection). Must be logged in `docs/02_Tasks/TechDebt.md` with a unique `DEBT-XXX` identifier.
+   - `TechDebt.md` is the mandatory primary registry (SSOT) for ALL `P3` debt — both review findings (Mode 3) and planned refactoring phases/tasks (`#techdebt`) in Modes 1–2 and triage dispatch (Mode 2C).
+   - Lifecycle: at planning (`/kb-plan`) or specification (`/kb-task`) of `#techdebt` work, create/link the `DEBT-XXX` row in `Active P3 Debt`; at completion (`/kb-complete`), migrate the resolved `DEBT-XXX` row to `Resolved Debt` with a link `[[Specs/.../TASK-XXX|TASK-XXX]]`.
    - Context Persistence Invariant: *«A code review finding left only in chat does not exist»*.
 14. **Prior-Art Gate Invariant:**
    - Before designing new modules, classes, or subsystems, the agent must inspect the repository codebase and the language's standard library for existing solutions.
    - Reinventing wheels and introducing duplicate parallel abstractions is strictly prohibited.
-15. **Traceable Backlog Tags (// ROADMAP-<ID>):**
-   - Untracked "hanging" `TODO` or `FIXME` comments without roadmap linkage are strictly prohibited.
-   - Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`).
+15. **Traceable Backlog Tags (// ROADMAP-<ID> and // DEBT-XXX):**
+   - Untracked "hanging" `TODO` or `FIXME` comments without roadmap/debt linkage are strictly prohibited.
+   - Any deferred capability, extension point, or non-critical debt in code must be annotated as `// ROADMAP-<ID>` (or `# ROADMAP-<ID>`, matching a Phase, Task, or Icebox ID in `Roadmap.md`) or `// DEBT-XXX` (matching a row in `docs/02_Tasks/TechDebt.md`).
 16. **Benchmark Persistence («Замер = артефакт»):**
    - All performance, latency, memory, or token claims must be verified via a series of $\ge 3$ reproducible runs.
    - The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.
@@ -113,6 +115,7 @@ Every feature or architectural initiative follows structured stages:
 - **Action:** Conceptual discussion, research, critical review, trade-off evaluation, and Q&A.
 - **Output:** Approved plan file `docs/02_Tasks/Plans/PLAN-XXX-<slug>.md`.
 - **Kanban:** Add task card to `## 📥 Бэклог (Backlog)` in `docs/02_Tasks/Kanban.md`.
+- **TechDebt Sync:** For a `#techdebt` phase/task, register the `DEBT-XXX` row in `docs/02_Tasks/TechDebt.md` (`Active P3 Debt`) and link it from `PLAN-XXX`.
 
 ### 🟠 Mode 2: Task Specification (`/kb-task` or "Режим 2")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
@@ -123,6 +126,7 @@ Every feature or architectural initiative follows structured stages:
   - Explicit **Verification Plan** with commands and expected outputs.
 - **Output:** Specification file `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`.
 - **Kanban:** Move task card to `## ⏳ В работе (In Progress)` in `docs/02_Tasks/Kanban.md`.
+- **TechDebt Sync:** For a `#techdebt` spec, link its `DEBT-XXX` from `docs/02_Tasks/TechDebt.md` (register the row first if missing).
 
 ### 🐞 Mode 2B: Defect Logging & Interactive Triage (`/kb-bug` or "Режим 2B")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
@@ -131,7 +135,7 @@ Every feature or architectural initiative follows structured stages:
 
 ### 📥 Mode 2C: Feedback Triage & Dispatch (`/kb-triage` or "Режим 2C")
 - **Hard Constraint:** **STRICTLY PROHIBITED FROM CHANGING CODE!**
-- **Action:** Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, `Roadmap.md` (Icebox), or FAQ. In-place status update (`status: processed` or `rejected`).
+- **Action:** Two-stage screening of `docs/02_Tasks/Inbox/` items, interactive dispatch to `/kb-bug`, `Roadmap.md` (Icebox), `TechDebt.md` (`DEBT-XXX` for P3/refactoring), or FAQ. In-place status update (`status: processed` or `rejected`).
 - **Output:** Updated `FB-*.md` frontmatter + **Stop & Yield Control**.
 
 ### 🟢 Mode 3: Implementation & Verification (`/kb-implement` & `/kb-complete` or "Режим 3")
@@ -139,6 +143,7 @@ Every feature or architectural initiative follows structured stages:
   - **Memory-First Preflight:** Read `docs/06_Memory/patterns.md` to avoid known procedural pitfalls and regression patterns before making any changes.
   - For tasks (`TASK-XXX`): implement code strictly adhering to the approved spec.
   - For defects (`BUG-XXX`): execute strict TDD cycle (**RED:** reproduction test fails $\to$ **GREEN:** fix passes $\to$ **REFACTOR:** full test suite passes).
+  - **TechDebt Sync:** For tasks tagged `#techdebt`, migrate the resolved `DEBT-XXX` row from `Active P3 Debt` to `## ✅ Погашенный технический долг (Resolved Debt)` during `/kb-complete`.
 - **Verification:** Run all commands from the Verification Plan:
   ```bash
   python scripts/kb_lint.py --path docs

@@ -24,6 +24,7 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
    - Specify file contracts (`[NEW]`, `[MODIFY]`, `[DELETE]`), data structures, API signatures, and exception handling.
    - Define explicit **Verification Plan** (compilation commands, automated test suites, manual verification).
    - Define **Definition of Done (DoD)**.
+   - If the spec carries the `#techdebt` tag: link its `DEBT-XXX` from `docs/02_Tasks/TechDebt.md` (register the row first if missing).
 5. **Update Kanban:**
    - Move or add task card in `docs/02_Tasks/Kanban.md` to `## ⏳ В работе (In Progress)`.
 6. **Git Sync (Conditional):**

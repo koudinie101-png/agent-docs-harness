@@ -1,7 +1,7 @@
 ---
 id: TASK-083
 title: "Сквозной цикл DEBT-XXX в скиллах (kb-plan, kb-task, kb-triage, kb-complete), правилах AGENTS.md, шаблонах и install.py"
-status: in-progress # planned | in-progress | done | cancelled
+status: done # planned | in-progress | done | cancelled
 type: task
 phase: 21
 component:
@@ -11,7 +11,7 @@ component:
   - installer
 parent_plan: "[[../../Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]]"
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-18
 tags:
   - task/spec
   - phase21
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-083 — Сквозной цикл DEBT-XXX в скиллах (kb-plan, kb-task, kb-triage, kb-complete), правилах AGENTS.md, шаблонах и install.py
 
-> **ID:** TASK-083 | **Статус:** В работе (Режим 2)  
+> **ID:** TASK-083 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 21 | **План:** [[../../Plans/PLAN-021-tech-debt-lifecycle-and-cross-mode-sync|PLAN-021]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-023-tech-debt-lifecycle-and-cross-mode-sync|RESEARCH-023]], [[../../../03_Decisions_ADR/ADR-0028-end-to-end-tech-debt-lifecycle-and-lint-enforcement|ADR-0028]]
 
@@ -75,15 +75,15 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка: `py -3 -m py_compile install.py scripts/*.py` (Exit code 0).
-- [ ] Бюджет шаблонов: `py -3 -c "from pathlib import Path; s = sum(p.stat().st_size for p in Path('Docs-As-Code/00_Templates').glob('*.md')); print(s); assert s <= 28672"` (Exit code 0).
-- [ ] Проверка базы знаний: `py -3 scripts/kb_lint.py --path Docs-As-Code` (0 broken links в `Docs-As-Code`).
+- [x] Сборка: `py -3 -m py_compile install.py scripts/*.py` (Exit code 0).
+- [x] Бюджет шаблонов: `py -3 -c "from pathlib import Path; s = sum(p.stat().st_size for p in Path('templates').glob('*.md')); print(s); assert s <= 28672"` (Exit code 0).
+- [x] Проверка базы знаний: `py -3 scripts/kb_lint.py --path docs` (0 broken links, Exit code 0).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Все скиллы, правила, шаблоны и `install.py` обновлены строго по ТЗ.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Все скиллы, правила, шаблоны и `install.py` обновлены строго по ТЗ.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

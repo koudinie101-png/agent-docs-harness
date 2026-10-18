@@ -20,6 +20,7 @@ Use when the user runs `/kb-lint` or asks to check the integrity of the document
 2. **Interpret Output:**
    - **Broken Wikilinks:** Identifies exact source file and missing target file.
    - **Frontmatter Errors:** Validates mandatory YAML properties (`id`, `title`, `status`, `type`, `tags`).
+   - **Tech Debt Integrity:** Validates `DEBT-XXX` rows in `docs/02_Tasks/TechDebt.md`, cross-checks `#techdebt`-tagged plans/specs, and accepts `// DEBT-XXX` / `// ROADMAP-<ID>` code tags.
 3. **Resolve Findings:**
    - If broken links are detected, fix typos, create missing placeholder specs, or adjust relative paths.
    - Exit code 0 confirms a healthy and consistent knowledge base.
