@@ -2,7 +2,18 @@ name: Rules Check
 
 on:
   push:
+    branches:
+      - '**'
   pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "rules-check-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   rules:
@@ -20,5 +31,8 @@ jobs:
       - name: Verify AGENTS.md is generated from corpus
         run: python scripts/gen_rules.py --check
 
+      - name: Knowledge Base Lint
+        run: python scripts/kb_lint.py --path docs
+
       - name: Unit tests
-        run: python -m unittest discover -s tests
+        run: python -m unittest discover -s tests -q

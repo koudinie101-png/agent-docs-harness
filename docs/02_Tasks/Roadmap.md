@@ -341,7 +341,7 @@ tags:
 **Первоисточник:** [[TechDebt|TechDebt.md (DEBT-001…DEBT-003)]]
 
 - [x] [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: DEBT-003 — удалить два выполненных пункта из Icebox в `Kanban.md` (fast-track) (2026-10-18).
-- [ ] [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening|TASK-098]]: DEBT-002 — `rules-check.yml`: permissions/concurrency, фильтр веток, `kb_lint`, тихие логи.
+- [x] [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening|TASK-098]]: DEBT-002 — `rules-check.yml`: permissions/concurrency, фильтр веток, `kb_lint`, тихие логи (2026-10-18).
 - [ ] `TASK-099`: DEBT-001 — выровнять нумерацию разделов 6–11 в `rules/AGENTS_CORE.md`, регенерировать `AGENTS.md` и golden-фикстуры.
 
 ---

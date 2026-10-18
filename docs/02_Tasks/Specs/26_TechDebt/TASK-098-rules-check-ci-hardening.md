@@ -1,7 +1,7 @@
 ---
 id: TASK-098
 title: "Харденинг CI-гейта Rules Check (DEBT-002)"
-status: planned
+status: done
 type: task
 phase: 26
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-098 — Харденинг CI-гейта Rules Check
 
-> **ID:** TASK-098 | **Статус:** К реализации  
+> **ID:** TASK-098 | **Статус:** Выполнено (Режим 3)
 > **Фаза:** 26 (Tech Debt Hardening) | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Долг:** [[../../TechDebt|DEBT-002]] — закрывается этой задачей.  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1), [[../../../03_Decisions_ADR/ADR-0030-single-source-rule-compiler|ADR-0030]] (правила)
@@ -151,17 +151,17 @@ class RulesCheckWorkflowTest(unittest.TestCase):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Tier 1 тест: `python -m unittest tests.test_ci_workflows` → 2 теста OK.
-- [ ] Синтаксис теста: `python -m py_compile tests/test_ci_workflows.py` → Exit code 0.
-- [ ] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → все тесты OK (163 + 2 новых).
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 0 битых ссылок, 0 Symbolic Scope Warnings.
-- [ ] `git diff --check` → нет trailing whitespace; YAML-отступы проверены вручную (Zero-Deps: PyYAML не используется).
-- [ ] 4-State UI / скриншоты: не применимо (CI-конфигурация).
-- [ ] Замеры $\ge 3$ прогонов: не применимо.
+- [x] Tier 1 тест: `python -m unittest tests.test_ci_workflows` → 2 теста OK.
+- [x] Синтаксис теста: `python -m py_compile tests/test_ci_workflows.py` → Exit code 0.
+- [x] Полный прогон (sandbox-safe, [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]] / TRG-03): `python tmp/run_tests.py` → **165 тестов OK** (163 + 2 новых), Exit code 0.
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit code 0, 248 файлов, 2431 ссылка, 0 битых, 0 Symbolic Scope Warnings.
+- [x] `git diff --check` → нет trailing whitespace; YAML-отступы проверены вручную (Zero-Deps: PyYAML не используется).
+- [x] 4-State UI / скриншоты: не применимо (CI-конфигурация).
+- [x] Замеры $\ge 3$ прогонов: не применимо.
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `rules-check.yml` содержит `permissions: contents: read`, `concurrency`/`cancel-in-progress`, branch-фильтр без тегов, шаг `kb_lint` и `-q` для тестов.
-- [ ] Tier 1 `tests/test_ci_workflows.py` добавлен и зелёный; полный suite и `kb_lint` зелёные.
-- [ ] `DEBT-002` переведён в `Resolved Debt` со ссылкой на `TASK-098` на шаге `/kb-complete`.
-- [ ] Статус обновлён в Kanban, Roadmap и Devlog.
+- [x] `rules-check.yml` содержит `permissions: contents: read`, `concurrency`/`cancel-in-progress`, branch-фильтр без тегов, шаг `kb_lint` и `-q` для тестов.
+- [x] Tier 1 `tests/test_ci_workflows.py` добавлен и зелёный; полный suite (165) и `kb_lint` зелёные.
+- [x] `DEBT-002` переведён в `Resolved Debt` со ссылкой на `TASK-098` на шаге `/kb-complete`.
+- [x] Статус обновлён в Kanban, Roadmap и Devlog.

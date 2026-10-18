@@ -16,6 +16,16 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-18] — TASK-098: харденинг CI-гейта Rules Check, закрыт DEBT-002
+- **Что сделано:**
+  - [[02_Tasks/Specs/26_TechDebt/TASK-098-rules-check-ci-hardening|TASK-098]]: `.github/workflows/rules-check.yml` — `permissions: contents: read`, `concurrency`/`cancel-in-progress`, `push.branches: ['**']` (без тегов), `pull_request.branches: [main]`, шаг `kb_lint`, тесты с `-q`.
+  - Новый Tier 1 `tests/test_ci_workflows.py`: маркеры харденинга и запрет `tags:`.
+  - `DEBT-002` переведён в `Resolved Debt` со ссылкой на TASK-098. Workflow исключён из бандла — `install.py` не пересобирался.
+- **Проверка:**
+  - `python -m unittest tests.test_ci_workflows` — 2 OK; `py_compile` — 0; полный suite — **165 тестов OK**; `kb_lint` — 248 файлов, 2431 ссылка, 0 битых; `git diff --check` — чисто.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task --fast "kb-task: пермалинк спеки в Roadmap"` — TASK-099; при создании строка DEBT-001 в Roadmap станет TASK-100, чтобы не сдвигать нумерацию.
+
 ### [2026-10-18] — TASK-097: закрыт DEBT-003 (устаревший Icebox в Kanban)
 - **Что сделано:**
   - [[02_Tasks/Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox|TASK-097]]: из секции Icebox в `docs/02_Tasks/Kanban.md` удалены два уже выполненных пункта — «Семантический контроль фаз» (TASK-059) и «Адаптация для вайбкодеров» (Фаза 14). Оставлены Continue/Aider и два отклонённых ADR.
