@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]]: решение по `DEBT-004` — probe-алерт в Code Scanning и закрытие долга (2026-10-25) #task #phase28 #techdebt #code-scanning
+
 
 
 
