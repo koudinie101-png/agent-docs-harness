@@ -31,7 +31,6 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF-результаты без `region.startLine`: находки привязываются к файлу, а не к строке, поэтому аннотации в GitHub Code Scanning не указывают место. Закрывается трекингом строк в `check_*`-функциях. Проверяется структурно (`TestLintOutputContract.test_sarif_contract_structure`), `region` отсутствует намеренно | [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization\|PLAN-025]] | 2026-10-25 | Открыт |
-| DEBT-005 | P3 | `tests/` (DSH Windows sandbox) | Обёртка, патчащая `tempfile.mkdtemp` на permissive-режим (TRG-03), живёт только в untracked `tmp/run_tests.py`: без неё `unittest discover` падает `PermissionError WinError 5`, а знание может быть потеряно вместе с каталогом. Промоушен TRG-03 в Tier 1 = перенос обёртки в `scripts/` | [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats\|TASK-101]] | 2026-10-25 | Открыт |
 
 ---
 
@@ -39,6 +38,7 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача погашения | Дата закрытия |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| DEBT-005 | P3 | `tests/` (DSH Windows sandbox) | Sandbox-обёртка (`TRG-03`) жила только в untracked `tmp/`: без неё `unittest` падал `PermissionError WinError 5`. Промоушен в Tier 1 — `scripts/run_tests_sandbox.py` | [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion\|TASK-104]] | 2026-10-25 |
 | DEBT-003 | P3 | `docs/02_Tasks/Kanban.md` | Секция «Идеи и гипотезы (Icebox / Future Ideas)» дублировала Icebox из `Roadmap.md` и содержала выполненные пункты (TASK-059, Фаза 14); два пункта удалены, оставлены Continue/Aider и отклонённые ADR | [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox\|TASK-097]] | 2026-10-18 |
 | DEBT-002 | P3 | `.github/workflows/rules-check.yml` | Не было `permissions: contents: read` и `concurrency`; `on: push` запускался на тегах параллельно с релизом; гейт не запускал `kb_lint`; тесты шумели в логах. Исправлено: read-only permissions, `concurrency`/`cancel-in-progress`, branch-фильтр без тегов, шаг `kb_lint`, `-q` | [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening\|TASK-098]] | 2026-10-18 |
 | DEBT-001 | P3 | `rules/AGENTS_CORE.md` (`client-agents`) | Устаревшая нумерация заголовков 6–11 не совпадала с индексом 1–24. Исправлено: шесть заголовков без числовых префиксов, 12 golden-фикстур перегенерированы, Tier 1 guard против возврата номеров | [[Specs/26_TechDebt/TASK-100-align-rules-section-numbering\|TASK-100]] | 2026-10-18 |

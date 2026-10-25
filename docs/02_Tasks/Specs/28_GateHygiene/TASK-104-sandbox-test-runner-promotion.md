@@ -1,7 +1,7 @@
 ---
 id: TASK-104
 title: "Промоушен sandbox-раннера тестов в scripts/ (DEBT-005)"
-status: in-progress
+status: done
 type: fast-track
 phase: 28
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # ⚡ Спецификация (Fast-Track): TASK-104 — Sandbox-раннер тестов в `scripts/`
 
-> **Тип:** Fast-Track (≤ 30 LOC) | **Статус:** К реализации (Режим 2)  
+> **Тип:** Fast-Track (≤ 30 LOC) | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 28 | **Долг:** [[../../TechDebt|DEBT-005]] (закрывается этой задачей) | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../06_Memory/patterns|TRG-03]] → [[../../../06_Memory/Incidents/INC-003-dsh-sandbox-tempfile-mkdtemp-mode|INC-003]]
 
@@ -52,17 +52,17 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксис: `python -m py_compile scripts/run_tests_sandbox.py` → Exit 0.
-- [ ] Полный прогон через новый вход: `python scripts/run_tests_sandbox.py` → **180 тестов OK**, 0 failures/errors.
-- [ ] Повторяемость: удалить `tmp/run_tests.py` (локальная копия) и повторить прогон — результат тот же (проверка, что зависимость от untracked-файла устранена).
-- [ ] Целостность: `python scripts/kb_lint.py --path docs` → Exit 0, 0 битых ссылок.
-- [ ] Бандл не тронут: `git status --short` не содержит `install.py` / `dist/install.py`.
-- [ ] 4-State UI / скриншоты: не применимо (dev-tooling, без пользовательской поверхности).
+- [x] Синтаксис: `python -m py_compile scripts/run_tests_sandbox.py` → Exit 0.
+- [x] Полный прогон через новый вход: `python scripts/run_tests_sandbox.py` → **180 тестов OK**, 0 failures/errors.
+- [x] Повторяемость: удалить `tmp/run_tests.py` (локальная копия) и повторить прогон — результат тот же (проверка, что зависимость от untracked-файла устранена).
+- [x] Целостность: `python scripts/kb_lint.py --path docs` → Exit 0, 0 битых ссылок.
+- [x] Бандл не тронут: `git status --short` не содержит `install.py` / `dist/install.py`.
+- [x] 4-State UI / скриншоты: не применимо (dev-tooling, без пользовательской поверхности).
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Изменения внесены строго в рамках скоупа (≤ 30 строк кода, ≤ 2 файлов); при выходе за лимит — стоп и переход на стандартную спеку.
-- [ ] `scripts/run_tests_sandbox.py` закоммичен и даёт зелёный прогон 180 тестов; прогон не зависит от `tmp/run_tests.py`.
-- [ ] `DEBT-005` переведён в `Resolved Debt`; `patterns.md` (TRG-03) помечен `promoted` с ссылкой на `INC-003`.
-- [ ] Все пункты Плана верификации пройдены без ошибок (Exit code 0).
-- [ ] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`), Roadmap и Devlog.
+- [x] Изменения внесены строго в рамках скоупа (≤ 30 строк кода, ≤ 2 файлов); при выходе за лимит — стоп и переход на стандартную спеку.
+- [x] `scripts/run_tests_sandbox.py` закоммичен и даёт зелёный прогон 180 тестов; прогон не зависит от `tmp/run_tests.py`.
+- [x] `DEBT-005` переведён в `Resolved Debt`; `patterns.md` (TRG-03) помечен `promoted` с ссылкой на `INC-003`.
+- [x] Все пункты Плана верификации пройдены без ошибок (Exit code 0).
+- [x] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`), Roadmap и Devlog.

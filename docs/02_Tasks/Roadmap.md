@@ -365,7 +365,7 @@ tags:
 **Первоисточник:** [[TechDebt|TechDebt.md (DEBT-005)]] и остаток [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]] (Волна 1, п.1–2)  
 **Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1), [[../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]
 
-- [ ] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
+- [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
 - [ ] `TASK-105`… — CI-доставка линта (`action.yml`, `.pre-commit-hooks.yaml`) и SARIF upload в собственный workflow.
 
 ---

@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-104: sandbox-раннер тестов промоутирован в `scripts/`; закрыт DEBT-005
+- **Что сделано:**
+  - [[02_Tasks/Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]] (Фаза 28, fast-track): `scripts/run_tests_sandbox.py` — закоммиченный вход прогона тестов, патчащий `tempfile.mkdtemp` на permissive-режим (TRG-03 / INC-003) и уводящий `TMP`/`TEMP` в `tmp/sandbox_temp/`.
+  - untracked `tmp/run_tests.py` удалён **до** прогона — набор зелёный без него, зависимость от `tmp/` устранена.
+  - `TRG-03` переведён в `promoted` (Tier 1), `DEBT-005` → `Resolved Debt`. Скрипт не входит в бандл (whitelist из трёх скриптов), `install.py` не пересобирался.
+- **Проверка:**
+  - `python scripts/run_tests_sandbox.py` — **180 тестов OK**; `py_compile` — 0.
+  - `kb_lint --path docs` — 258 файлов, 2541 ссылка, 0 битых.
+  - `git status` — единственное изменение исходников: новый скрипт.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-plan` — остаток Фазы 28: CI-доставка линта (`action.yml`, `.pre-commit-hooks.yaml`, SARIF upload в собственный workflow) и решение по `DEBT-004`.
+
 ### [2026-10-25] — Релиз v0.27.0: Фаза 27 (Docs Integrity Gate)
 - **Что сделано:**
   - Выпущен [[02_Tasks/Releases/RELEASE-v0.27.0|RELEASE-v0.27.0]] по завершении Фазы 27 (TASK-101–TASK-103).

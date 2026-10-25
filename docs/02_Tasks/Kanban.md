@@ -12,9 +12,10 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: DEBT-005 — промоушен sandbox-раннера тестов в `scripts/` (2026-10-25) #task #fast-track #phase28 #techdebt #tests
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: DEBT-005 — промоушен sandbox-раннера тестов в `scripts/` (2026-10-25) #task #fast-track #phase28 #techdebt #tests
 
 - [x] [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|План: Фаза 27 — Продуктизация линтера: машинно-читаемая диагностика (Docs Integrity Gate, P0)]] (2026-10-25) #plan #phase27 #docs-integrity-gate #lint #contracts
 
