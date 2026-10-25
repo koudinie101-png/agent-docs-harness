@@ -304,7 +304,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: koudinie101-png/agent-docs-harness@v0.27.0
+      - uses: koudinie101-png/agent-docs-harness@main
         with:
           path: docs
           format: sarif
@@ -314,6 +314,7 @@ jobs:
           sarif_file: kb-lint.sarif
 ```
 
+* **Version pinning:** `action.yml` ships with the `v0.28.0` release — until that tag exists, pin `@main`; afterwards pin the release tag (`@v0.28.0`) instead of a floating ref.
 * The action only **produces** the report; the SARIF upload stays a separate step of your workflow, because permissions (`security-events: write`) can only be granted by the calling workflow.
 * `format: text` prints findings to the job log; `json`/`sarif` write `output-file` and still fail the step on `error` findings — the exit code is identical in all formats.
 * SARIF locations are file-level only (no `region.startLine`, see `DEBT-004`); the message already names the broken link or invalid field.

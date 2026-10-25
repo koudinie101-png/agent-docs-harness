@@ -30,7 +30,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 1. Цель задачи
 
-Дать внешний вход в линт без установки харнесса: `uses: koudinie101-png/agent-docs-harness@v0.27.0` с входами `path`, `format`, `output-file`, `python-version`, `extra-args`. Действие — **тонкая обёртка** над `scripts/kb_lint.py`: своей логики проверок не содержит, только запускает скрипт из `$GITHUB_ACTION_PATH` и возвращает его exit-код.
+Дать внешний вход в линт без установки харнесса: `uses: koudinie101-png/agent-docs-harness@main` с входами `path`, `format`, `output-file`, `python-version`, `extra-args`. Действие — **тонкая обёртка** над `scripts/kb_lint.py`: своей логики проверок не содержит, только запускает скрипт из `$GITHUB_ACTION_PATH` и возвращает его exit-код.
 
 Действие **производит** SARIF/JSON-файл и не загружает его: права `security-events: write` объявляет только workflow вызывающего, composite-действие выдать их себе не может (PLAN-026 Q1). В `action.yml` не должно быть ни `upload-sarif`, ни `security-events` — это закрепляется Tier 1-тестом.
 
@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: koudinie101-png/agent-docs-harness@v0.27.0
+      - uses: koudinie101-png/agent-docs-harness@main
         with:
           path: docs
           format: sarif
