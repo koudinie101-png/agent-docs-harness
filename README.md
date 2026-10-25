@@ -309,7 +309,7 @@ jobs:
         with:
           path: docs
           format: sarif
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: kb-lint.sarif
