@@ -353,7 +353,8 @@ tags:
 **Цель:** Превратить `scripts/kb_lint.py` из внутреннего скрипта с текстовым выводом в продукт с машинно-читаемым контрактом: единая модель `Finding`, реестр стабильных `KB-001…KB-015` (`KB-010` зарезервирован под `depends_on`), `--format {text,json,sarif}` и `--version` — при неизменном text-выводе, неизменных exit-кодах и без новых проверок поведения. Фундамент для `KB-010`, right-sizing-предупреждений и CI-упаковки следующих фаз.  
 **Первоисточник плана:** [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]  
 **Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.1, §5.1); ADR-0032 (оформляется в рамках TASK-101)  
-**Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) в [[TechDebt|TechDebt.md]]
+**Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) в [[TechDebt|TechDebt.md]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.27.0|RELEASE-v0.27.0]]
 
 - [x] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25).
 - [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода: реестр `KB-XXX`, JSON-схема, SARIF-структура, exit-коды, `--version` (2026-10-25).

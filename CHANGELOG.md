@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.27.0] - 2026-10-25
+
+### Added
+- **Machine-readable lint diagnostics** (Phase 27, TASK-101–TASK-103):
+  - `scripts/kb_lint.py --format {text,json,sarif}`: JSON schema `version: 1` (`summary`, `errors[]`, `warnings[]`) and a minimal SARIF 2.1.0 document; exit codes stay `0`/`1` in every format.
+  - Stable rule registry `KB-001`–`KB-015`; `KB-010` is reserved for `depends_on` and emission is guarded by `ValueError`.
+  - `--version` prints the rule-set version (`kb_lint 1`).
+  - 13 output-contract tests (`TestLintOutputContract`) plus an installer E2E that runs the installed linter with `--format json` before and after `--update`.
+- [ADR-0032](docs/03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry.md) records the machine-readable lint contract and its rejected alternatives.
+
+### Changed
+- `scripts/kb_lint.py`: all 15 checks now return `Finding` objects (`rule_id`, `severity`, `file`, message) instead of pre-formatted strings; `text` output is byte-identical to v0.26.0 (verified against the previous script).
+- Installer re-bundled: **179 171 B**, SHA-256 `a4961bfe2599a6c0f898816e761ef28adbc4479de0ac9edf033ae405b1655a87`; installer budget re-baselined 176 000 → 180 000 B (marginal zlib ratio ≈1.6 source chars per byte). Template/skill token budgets unchanged.
+- `SPEC.md`, `README.md`, `docs/Onboarding.md`: documented the new CLI contract, stable rule ids and SARIF limitations.
+
+### Known Limitations
+- SARIF results carry file-level locations only, no `region.startLine` (`DEBT-004`).
+- DSH sandbox test wrapper still lives in untracked `tmp/` (`DEBT-005`).
+
 ## [0.26.0] - 2026-10-18
 
 ### Added
