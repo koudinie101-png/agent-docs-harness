@@ -1,0 +1,63 @@
+name: 'Docs-as-Code Knowledge Base Lint'
+description: 'Zero-dependency Docs-as-Code audit: broken wikilinks, YAML frontmatter, phases, tech debt, memory and assets'
+author: 'agent-docs-harness'
+branding:
+  icon: 'check-circle'
+  color: 'purple'
+inputs:
+  path:
+    description: 'Knowledge base directory or project root to audit'
+    required: false
+    default: 'docs'
+  format:
+    description: 'Output format: text (log), json or sarif (file)'
+    required: false
+    default: 'text'
+  output-file:
+    description: 'File written when format is json or sarif'
+    required: false
+    default: 'kb-lint.sarif'
+  python-version:
+    description: 'Python version used to run the linter'
+    required: false
+    default: '3.11'
+  extra-args:
+    description: 'Additional kb_lint.py arguments (space separated)'
+    required: false
+    default: ''
+outputs:
+  output-file:
+    description: 'Path to the machine-readable report (json/sarif only)'
+    value: ${{ steps.lint.outputs.output-file }}
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Run knowledge base lint
+      id: lint
+      shell: bash
+      env:
+        KB_PATH: ${{ inputs.path }}
+        KB_FORMAT: ${{ inputs.format }}
+        KB_OUTPUT: ${{ inputs.output-file }}
+        KB_EXTRA: ${{ inputs.extra-args }}
+      run: |
+        set -u
+        python_bin="$(command -v python3 || command -v python)"
+        lint="${GITHUB_ACTION_PATH}/scripts/kb_lint.py"
+        if [ "${KB_FORMAT}" = "text" ]; then
+          # shellcheck disable=SC2086
+          exec "${python_bin}" "${lint}" --path "${KB_PATH}" --format text ${KB_EXTRA}
+        fi
+        mkdir -p "$(dirname "${KB_OUTPUT}")"
+        rc=0
+        # shellcheck disable=SC2086
+        "${python_bin}" "${lint}" --path "${KB_PATH}" --format "${KB_FORMAT}" ${KB_EXTRA} > "${KB_OUTPUT}" || rc=$?
+        echo "output-file=${KB_OUTPUT}" >> "${GITHUB_OUTPUT}"
+        if [ "${rc}" -ne 0 ]; then
+          echo "::error::kb_lint reported errors (exit ${rc}); see ${KB_OUTPUT}"
+        fi
+        exit "${rc}"

@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-105: composite GitHub Action и раздел README
+- **Что сделано:**
+  - [[02_Tasks/Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]] (Фаза 28): добавлен корневой `action.yml` (composite) — тонкая обёртка над `$GITHUB_ACTION_PATH/scripts/kb_lint.py`; входы `path`, `format`, `output-file`, `python-version`, `extra-args`, выход `output-file`; exit-код линта пробрасывается (`rc=$?` + `exit`), SARIF/JSON пишется в файл, `GITHUB_OUTPUT` заполняется только для машинных форматов.
+  - Действие **не** загружает SARIF и не объявляет `permissions`: `upload-sarif` остаётся шагом потребителя (права выдаёт только его workflow). Инвариант закреплён Tier 1-тестом.
+  - README: раздел «Use as a GitHub Action» с примером (lint → `upload-sarif`), оговоркой про права и про file-level локации (`DEBT-004`).
+- **Проверка:**
+  - `tests.test_ci_workflows` — 5 тестов OK (2 старых + 3 новых); полный набор — **183 теста OK**.
+  - Эмуляция команды действия: `--format sarif` → валидный JSON 2.1.0, rc 0; на хранилище с битой ссылкой — rc 1, `KB-001`, `level: error`.
+  - `kb_lint --path docs` — 260 файлов, 2562 ссылки, 0 битых; `install.py` не пересобирался (действие не бандлится).
+  - Валидация YAML и поведения composite отложена в `TASK-107` (`uses: ./`) — код `action.yml` нигде локально не исполняется.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `TASK-106` — `.pre-commit-hooks.yaml` и два рецепта в README (`repo: local` и remote `rev:`).
+
 ### [2026-10-25] — TASK-104: sandbox-раннер тестов промоутирован в `scripts/`; закрыт DEBT-005
 - **Что сделано:**
   - [[02_Tasks/Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]] (Фаза 28, fast-track): `scripts/run_tests_sandbox.py` — закоммиченный вход прогона тестов, патчащий `tempfile.mkdtemp` на permissive-режим (TRG-03 / INC-003) и уводящий `TMP`/`TEMP` в `tmp/sandbox_temp/`.

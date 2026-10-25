@@ -30,5 +30,52 @@ class RulesCheckWorkflowTest(unittest.TestCase):
         self.assertNotIn("tags:", text, "rules-check.yml must not run on tag pushes (release.yml owns tags)")
 
 
+ACTION = REPO_ROOT / "action.yml"
+
+
+class ActionYmlContractTest(unittest.TestCase):
+    """TASK-105: Tier 1 guard for the composite lint action."""
+
+    def _action(self):
+        return ACTION.read_text(encoding="utf-8")
+
+    def test_action_metadata_and_composite_contract(self):
+        text = self._action()
+        for marker in (
+            "name:",
+            "description:",
+            "branding:",
+            "icon:",
+            "color:",
+            "using: composite",
+            "shell: bash",
+            "actions/setup-python@v5",
+            "${GITHUB_ACTION_PATH}/scripts/kb_lint.py",
+            "GITHUB_OUTPUT",
+            "rc=$?",
+            'exit "${rc}"',
+        ):
+            self.assertIn(marker, text, "action.yml lost composite contract marker: %s" % marker)
+        for input_name in ("path:", "format:", "output-file:", "python-version:", "extra-args:"):
+            self.assertIn("\n  " + input_name, text, "action.yml lost input: %s" % input_name)
+
+    def test_action_does_not_upload_sarif_or_request_permissions(self):
+        text = self._action()
+        for marker in ("upload-sarif", "codeql-action", "security-events", "permissions:"):
+            self.assertNotIn(
+                marker,
+                text,
+                "action.yml must only produce SARIF: '%s' belongs to the caller workflow" % marker,
+            )
+
+    def test_action_uses_action_path_not_workspace_scripts(self):
+        text = self._action()
+        self.assertNotIn(
+            "python scripts/kb_lint.py",
+            text,
+            "action.yml must resolve the linter from $GITHUB_ACTION_PATH, not from the workspace",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

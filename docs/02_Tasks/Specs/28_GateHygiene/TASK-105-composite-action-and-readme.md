@@ -1,7 +1,7 @@
 ---
 id: TASK-105
 title: "Composite GitHub Action для линта и раздел README"
-status: in-progress
+status: done
 type: task
 phase: 28
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-105 — Composite GitHub Action и README
 
-> **ID:** TASK-105 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-105 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 28 | **План:** [[../../Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]], [[../../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.2)  
 > **Следующая задача:** `TASK-107` потребляет это действие через `uses: ./` (смоук + Code Scanning)
@@ -158,13 +158,13 @@ jobs:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] `python -m unittest tests.test_ci_workflows -v` → все тесты OK, включая 2 новых.
-- [ ] Полный набор: `python scripts/run_tests_sandbox.py` → **182+ теста OK**.
-- [ ] Локальная эмуляция тела действия: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb-lint.sarif` → Exit 0, файл парсится `json.loads` (та же команда, что в `run:`).
-- [ ] Error-путь: во временном хранилище с битой ссылкой `--format sarif` → Exit 1 (действие пробросит код).
-- [ ] `git status --short` не содержит `install.py` / `dist/install.py` (действие не бандлится).
-- [ ] `python scripts/kb_lint.py --path docs --verbose` → 0 битых ссылок, 0 `WARN`.
-- [ ] README: раздел присутствует, пример валиден по маркерам, ссылка на `DEBT-004` на месте.
+- [x] `python -m unittest tests.test_ci_workflows -v` → все тесты OK, включая 2 новых.
+- [x] Полный набор: `python scripts/run_tests_sandbox.py` → **182+ теста OK**.
+- [x] Локальная эмуляция тела действия: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb-lint.sarif` → Exit 0, файл парсится `json.loads` (та же команда, что в `run:`).
+- [x] Error-путь: во временном хранилище с битой ссылкой `--format sarif` → Exit 1 (действие пробросит код).
+- [x] `git status --short` не содержит `install.py` / `dist/install.py` (действие не бандлится).
+- [x] `python scripts/kb_lint.py --path docs --verbose` → 0 битых ссылок, 0 `WARN`.
+- [x] README: раздел присутствует, пример валиден по маркерам, ссылка на `DEBT-004` на месте.
 
 * **Замеры $\ge 3$ прогонов:** не применимы (YAML-контракт, производительность не заявляется).
 * **Ограничение проверки:** синтаксис YAML и поведение composite локально не исполняются — первая настоящая проверка будет в TASK-107 (`uses: ./`); если действие окажется невалидным, дефект оформляется `BUG-XXX`.
@@ -175,8 +175,8 @@ jobs:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `action.yml` создан, содержит composite-шаг, `$GITHUB_ACTION_PATH`, `shell: bash`, все пять входов и один выход.
-- [ ] В `action.yml` нет `upload-sarif`, `security-events`, `permissions` (Tier 1-тест).
-- [ ] README-раздел «Use as a GitHub Action» с примером и оговоркой про `DEBT-004`.
-- [ ] Полный набор тестов зелёный; `kb_lint` — 0 битых.
-- [ ] Бандл не тронут (`install.py` / `dist/install.py` отсутствуют в диффе); статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] `action.yml` создан, содержит composite-шаг, `$GITHUB_ACTION_PATH`, `shell: bash`, все пять входов и один выход.
+- [x] В `action.yml` нет `upload-sarif`, `security-events`, `permissions` (Tier 1-тест).
+- [x] README-раздел «Use as a GitHub Action» с примером и оговоркой про `DEBT-004`.
+- [x] Полный набор тестов зелёный; `kb_lint` — 0 битых.
+- [x] Бандл не тронут (`install.py` / `dist/install.py` отсутствуют в диффе); статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.

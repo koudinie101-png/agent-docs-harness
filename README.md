@@ -291,6 +291,33 @@ Passing `--ci github` generates:
 * `.github/workflows/kb-lint.yml`: automated knowledge base link integrity audit on every Pull Request and Push to `main`/`master`.
 * `.github/workflows/release.yml`: automated build, verification, and publication of GitHub Releases with `dist/*` assets upon pushing `v*` tags.
 
+#### Use as a GitHub Action
+The repository is also a composite action, so you can lint **without installing the harness** into the project:
+
+```yaml
+permissions:
+  contents: read
+  security-events: write   # only needed for the SARIF upload step
+
+jobs:
+  kb-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: koudinie101-png/agent-docs-harness@v0.27.0
+        with:
+          path: docs
+          format: sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: kb-lint.sarif
+```
+
+* The action only **produces** the report; the SARIF upload stays a separate step of your workflow, because permissions (`security-events: write`) can only be granted by the calling workflow.
+* `format: text` prints findings to the job log; `json`/`sarif` write `output-file` and still fail the step on `error` findings — the exit code is identical in all formats.
+* SARIF locations are file-level only (no `region.startLine`, see `DEBT-004`); the message already names the broken link or invalid field.
+
 ### 🚀 Release Management & Dual-Mode Publishing (`/kb-release`)
 The harness provides a built-in release automation lifecycle:
 * **Dual-Mode Publishing:** Supports both online releases (GitHub Releases via `gh` CLI) and offline/local packages (cataloging build artifacts with SHA-256 in `RELEASE-vX.Y.Z.md`).

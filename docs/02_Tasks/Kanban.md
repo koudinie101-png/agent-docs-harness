@@ -14,10 +14,11 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README (2026-10-25) #task #phase28 #ci #distribution
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README (2026-10-25) #task #phase28 #ci #distribution
 
 - [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: DEBT-005 — промоушен sandbox-раннера тестов в `scripts/` (2026-10-25) #task #fast-track #phase28 #techdebt #tests
 
