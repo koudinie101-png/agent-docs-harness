@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-109: probe-алерт в Code Scanning; DEBT-004 закрыт, найден BUG-013
+- **Что сделано:**
+  - [[02_Tasks/Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]] (Фаза 28): временная ветка `probe/kb-001-alert` с намеренно битой ссылкой, запуск [40180541831](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180541831): шаг линта `failure` (ожидаемо), загрузка SARIF — `success`.
+  - Получен реальный алерт: `{"rule": "KB-001", "path": "99_probe_broken.md", "start_line": 1, "message": "In '99_probe_broken.md' -> target not found: [[MissingNote]]"}`; алерт закрыт как `used in tests`, ветка удалена, открытых алертов на `main` — 0.
+  - `DEBT-004` → `Resolved Debt`: file-level локации достаточны (правило + путь + имя битой ссылки), GitHub подставляет `start_line: 1` сам; трекинг строк потребовал бы переработки 15 проверок. Запись — ADR-0032 §5, README обновлён.
+  - **Найден дефект [[02_Tasks/Bugs/BUG-013-sarif-paths-are-docs-relative|BUG-013]]** (P2, блокер v0.28.0): `artifactLocation.uri` публикуется docs-relative, поэтому алерт ведёт на `99_probe_broken.md` вместо `docs/99_probe_broken.md`. Код в этой задаче не менялся — исправление через `/kb-implement BUG-013` (TDD).
+- **Проверка:**
+  - Локальное воспроизведение дефекта: `--format sarif` на `docs/nested.md` → `uri == "nested.md"`.
+  - Полный набор — **191 тест OK**; `kb_lint` — 0 битых; рабочее дерево чистое; `install.py` не менялся.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-implement BUG-013` — исправить пути SARIF (регрессионный тест RED → GREEN), затем `/kb-release` v0.28.0.
+
 ### [2026-10-25] — TASK-108: Code Scanning подключён, SARIF принят в Security
 - **Что сделано:**
   - [[02_Tasks/Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]] (Фаза 28): `.github/workflows/code-scanning.yml` — push/PR в `main` + `workflow_dispatch`, права `contents: read` + `security-events: write`, `uses: ./` (наше действие), загрузка SARIF с `if: always()` и fork-guard, `category: kb-lint`.

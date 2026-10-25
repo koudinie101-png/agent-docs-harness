@@ -1,7 +1,7 @@
 ---
 id: TASK-109
 title: "Решение по DEBT-004: проверка аннотаций и закрытие долга"
-status: in-progress
+status: done
 type: task
 phase: 28
 component:
@@ -20,7 +20,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-109 — Решение по `DEBT-004`
 
-> **ID:** TASK-109 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-109 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 28 | **План:** [[../../Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Долг:** [[../../TechDebt|DEBT-004]] — закрывается или переоформляется этой задачей  
 > **База:** [[28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]] (Code Scanning уже принимает наш SARIF)
@@ -101,14 +101,14 @@ git push origin --delete probe/kb-001-alert
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Probe-ветка создана, workflow запущен на ней: `gh run view` показывает `success` для шага «Upload SARIF» и `failure` для шага линта (ожидаемо: битая ссылка).
-- [ ] `code-scanning/alerts` содержит алерт с `rule.id = KB-001`, `path = docs/99_probe_broken.md`, `state = open`, `start_line = null` — JSON записан в `Devlog.md`.
-- [ ] Алерт закрыт (`state = dismissed`), ветка удалена локально и на remote; `git branch -a` не содержит `probe/`.
-- [ ] `code-scanning/alerts` на `main`: 0 открытых.
-- [ ] `python -m unittest tests.test_kb_lint tests.test_ci_workflows` → OK (регрессов нет; код не менялся).
-- [ ] Полный набор: `python scripts/run_tests_sandbox.py` → **191 тест OK**.
-- [ ] `python scripts/kb_lint.py --path docs` → 0 битых ссылок, 0 `WARN`.
-- [ ] `git status --porcelain` пуст; `install.py` не менялся.
+- [x] Probe-ветка создана, workflow запущен на ней: `gh run view` показывает `success` для шага «Upload SARIF» и `failure` для шага линта (ожидаемо: битая ссылка).
+- [x] `code-scanning/alerts` содержит алерт с `rule.id = KB-001`, `path = docs/99_probe_broken.md`, `state = open`, `start_line = null` — JSON записан в `Devlog.md`.
+- [x] Алерт закрыт (`state = dismissed`), ветка удалена локально и на remote; `git branch -a` не содержит `probe/`.
+- [x] `code-scanning/alerts` на `main`: 0 открытых.
+- [x] `python -m unittest tests.test_kb_lint tests.test_ci_workflows` → OK (регрессов нет; код не менялся).
+- [x] Полный набор: `python scripts/run_tests_sandbox.py` → **191 тест OK**.
+- [x] `python scripts/kb_lint.py --path docs` → 0 битых ссылок, 0 `WARN`.
+- [x] `git status --porcelain` пуст; `install.py` не менялся.
 
 * **Замеры $\ge 3$ прогонов:** не применимы.
 
@@ -118,8 +118,16 @@ git push origin --delete probe/kb-001-alert
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Наблюдение выполнено: реальный алерт `KB-001` получен, его форма (правило/путь/сообщение/отсутствие строки) записана в `Devlog.md`.
-- [ ] Уборка выполнена: ветка удалена, алерт dismissed, открытых алертов на `main` — 0.
-- [ ] `DEBT-004` либо в `Resolved Debt` с обоснованием, либо остаётся открытым с уточнённой формулировкой и записью в Icebox (исход B).
-- [ ] `ADR-0032` содержит Amendments-раздел; `README.md` описывает итоговое поведение без ссылки на открытый долг (исход A).
-- [ ] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] Наблюдение выполнено: реальный алерт `KB-001` получен, его форма (правило/путь/сообщение/отсутствие строки) записана в `Devlog.md`.
+- [x] Уборка выполнена: ветка удалена, алерт dismissed, открытых алертов на `main` — 0.
+- [x] `DEBT-004` либо в `Resolved Debt` с обоснованием, либо остаётся открытым с уточнённой формулировкой и записью в Icebox (исход B).
+- [x] `ADR-0032` содержит Amendments-раздел; `README.md` описывает итоговое поведение без ссылки на открытый долг (исход A).
+- [x] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+
+## 6. Результат probe и решение (2026-10-25)
+
+* **Наблюдение:** временная ветка `probe/kb-001-alert` с файлом `docs/99_probe_broken.md`; запуск [40180541831](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180541831) — шаг линта `failure` (ожидаемо), шаг «Upload SARIF» `success`.
+* **Алерт:** `{"number": 1, "rule": "KB-001", "severity": "error", "state": "open", "path": "99_probe_broken.md", "start_line": 1, "end_line": 1, "message": "In '99_probe_broken.md' -> target not found: [[MissingNote]]"}`.
+* **Уборка:** алерт переведён в `dismissed` (`used in tests`), ветка удалена локально и на remote, открытых алертов на `main` — 0.
+* **Решение по `DEBT-004`:** закрыт как принятое ограничение — правило, путь и сообщение с именем битой ссылки достаточны для навигации; GitHub сам подставляет `start_line: 1`, навигацию даёт текст сообщения. Трекинг строк потребовал бы переработки 15 проверок (`Resolved Debt`, ADR-0032 §5).
+* **Побочная находка → `BUG-013`:** путь в алерте `99_probe_broken.md` вместо `docs/99_probe_broken.md`. Причина: `artifactLocation.uri` публикуется docs-relative, тогда как SARIF и Code Scanning ожидают repo-relative. Дефект P2, блокер релиза v0.28.0; исправление — отдельным TDD-циклом через `/kb-implement BUG-013` (в этой задаче код не менялся).

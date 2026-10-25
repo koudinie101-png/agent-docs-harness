@@ -10,11 +10,12 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Bugs/BUG-013-sarif-paths-are-docs-relative|BUG-013]]: SARIF-путь docs-relative вместо repo-relative (2026-10-25) #bug #code-scanning #sarif
+
 - [ ] [[Plans/PLAN-026-ci-delivery-and-code-scanning|План: Фаза 28 (продолжение) — CI-доставка линта: action.yml, pre-commit, Code Scanning и решение по DEBT-004]] (2026-10-25) #plan #phase28 #ci #distribution #code-scanning
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]]: решение по `DEBT-004` — probe-алерт в Code Scanning и закрытие долга (2026-10-25) #task #phase28 #techdebt #code-scanning
 
 
 
@@ -22,6 +23,8 @@ kanban-plugin: basic
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]]: решение по `DEBT-004` — probe-алерт в Code Scanning и закрытие долга (2026-10-25) #task #phase28 #techdebt #code-scanning
 
 - [x] [[Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]]: Code Scanning — SARIF-workflow, `uses: ./`, исключение из бандла (2026-10-25) #task #phase28 #ci #code-scanning
 

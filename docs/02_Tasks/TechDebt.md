@@ -30,7 +30,6 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF-результаты без `region.startLine`: находки привязываются к файлу, а не к строке, поэтому аннотации в GitHub Code Scanning не указывают место. Закрывается трекингом строк в `check_*`-функциях. Проверяется структурно (`TestLintOutputContract.test_sarif_contract_structure`), `region` отсутствует намеренно | [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization\|PLAN-025]] | 2026-10-25 | Открыт |
 
 ---
 
@@ -38,6 +37,7 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача погашения | Дата закрытия |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF без `region.startLine`: Code Scanning принимает документ и показывает правило, файл и сообщение с именем битой ссылки (probe в TASK-109); строка 1 — дефолт GitHub, не наше значение. Трекинг строк потребовал бы переработки 15 проверок без соразмерного выигрыша | [[Specs/28_GateHygiene/TASK-109-debt004-decision\|TASK-109]] | 2026-10-25 |
 | DEBT-005 | P3 | `tests/` (DSH Windows sandbox) | Sandbox-обёртка (`TRG-03`) жила только в untracked `tmp/`: без неё `unittest` падал `PermissionError WinError 5`. Промоушен в Tier 1 — `scripts/run_tests_sandbox.py` | [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion\|TASK-104]] | 2026-10-25 |
 | DEBT-003 | P3 | `docs/02_Tasks/Kanban.md` | Секция «Идеи и гипотезы (Icebox / Future Ideas)» дублировала Icebox из `Roadmap.md` и содержала выполненные пункты (TASK-059, Фаза 14); два пункта удалены, оставлены Continue/Aider и отклонённые ADR | [[Specs/26_TechDebt/TASK-097-clean-stale-kanban-icebox\|TASK-097]] | 2026-10-18 |
 | DEBT-002 | P3 | `.github/workflows/rules-check.yml` | Не было `permissions: contents: read` и `concurrency`; `on: push` запускался на тегах параллельно с релизом; гейт не запускал `kb_lint`; тесты шумели в логах. Исправлено: read-only permissions, `concurrency`/`cancel-in-progress`, branch-фильтр без тегов, шаг `kb_lint`, `-q` | [[Specs/26_TechDebt/TASK-098-rules-check-ci-hardening\|TASK-098]] | 2026-10-18 |

@@ -369,7 +369,10 @@ tags:
 - [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README «Use as a GitHub Action» (2026-10-25).
 - [x] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25).
 - [x] [[Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]]: Code Scanning — собственный SARIF-workflow, `uses: ./`, исключение из бандла и Tier 1-тесты (2026-10-25).
-- [ ] [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]]: решение по `DEBT-004` — probe-алерт в Code Scanning, уборка, закрытие или переоформление долга (2026-10-25).
+- [x] [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]]: решение по `DEBT-004` — probe-алерт в Code Scanning, уборка, закрытие или переоформление долга (2026-10-25).
+### 🐞 Исправление дефектов (Mode 2B -> Mode 3 TDD)
+- [ ] [[Bugs/BUG-013-sarif-paths-are-docs-relative|BUG-013]]: SARIF `artifactLocation.uri` docs-relative вместо repo-relative — алерты Code Scanning ведут на несуществующий путь; блокер v0.28.0 (2026-10-25).
+
 
 ---
 
