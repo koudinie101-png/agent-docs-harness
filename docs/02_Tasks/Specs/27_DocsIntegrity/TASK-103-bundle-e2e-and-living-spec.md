@@ -54,7 +54,8 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 * `[MODIFY]` `tests/test_installer.py`:
   - `TestInstaller.test_16_high_snr_static_corpus_benchmarks()` — бюджет монолита `176000` → `178000` с комментарием-обоснованием (Фаза 27: `Finding` + `KB-XXX` + 3 рендерера).
   - `TestInstaller.test_35_task_101_machine_readable_lint_delivery()` — **новый** E2E: установка в temp-каталог, запуск установленного `scripts/kb_lint.py` с `--format json` и `--version`, проверка схемы и кода возврата; повторный прогон после `--update` (флаг сохраняется).
-* `[MODIFY]` `install.py`, `dist/install.py` — только регенерация `python scripts/build_installer.py` (embedded payload; ручных правок нет).
+* `[MODIFY]` `install.py`, `dist/install.py`:
+  - Generated artifacts only: `python scripts/build_installer.py` перезаписывает `EMBEDDED_ASSETS_B64`; ручных правок символов нет.
 * `[MODIFY]` `SPEC.md`:
   - `SPEC.md` frontmatter `updated:` → `2026-10-25`.
   - §2.3 `scripts/kb_lint.py` — два новых буллета: машинно-читаемый контракт (`Finding`, реестр `KB-001…KB-015`, `KB-010` зарезервирован) и CLI (`--format {text,json,sarif}`, `--version`, неизменные exit-коды).
