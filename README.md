@@ -320,6 +320,37 @@ jobs:
 * `format: text` prints findings to the job log; `json`/`sarif` write `output-file` and still fail the step on `error` findings — the exit code is identical in all formats.
 * SARIF locations are file-level only (no `region.startLine`, see `DEBT-004`); the message already names the broken link or invalid field.
 
+#### Use as a pre-commit hook
+If the harness is already installed in your project (`scripts/kb_lint.py` exists), add the hook to `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: kb-lint
+        name: Docs-as-Code knowledge base lint
+        entry: python3 scripts/kb_lint.py --path docs
+        language: system
+        files: '\.md$'
+        pass_filenames: false
+        require_serial: true
+```
+
+Or consume the shipped manifest by pinning a release that contains it:
+
+```yaml
+repos:
+  - repo: https://github.com/koudinie101-png/agent-docs-harness
+    rev: v0.28.0     # first release with .pre-commit-hooks.yaml; use rev: main until then
+    hooks:
+      - id: kb-lint
+```
+
+* The hook lints the **whole vault**, not a single file: link resolution compares documents with each other, so per-file runs would report false "broken links" — hence `pass_filenames: false` (~0.4 s per commit that touches Markdown).
+* It needs `scripts/kb_lint.py` in your project (pre-commit runs `entry` in your working copy). Without an installed harness use the GitHub Action above instead.
+* Custom docs directory: append `args: ['--path', 'documentation']` — the linter keeps the last `--path` value.
+* The hook does not check asset weights or emit SARIF: that is the CI action's job.
+
 ### 🚀 Release Management & Dual-Mode Publishing (`/kb-release`)
 The harness provides a built-in release automation lifecycle:
 * **Dual-Mode Publishing:** Supports both online releases (GitHub Releases via `gh` CLI) and offline/local packages (cataloging build artifacts with SHA-256 in `RELEASE-vX.Y.Z.md`).

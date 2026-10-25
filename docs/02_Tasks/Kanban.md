@@ -14,12 +14,13 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25) #task #phase28 #ci #distribution
 
 
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25) #task #phase28 #ci #distribution
 
 - [x] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: Принять правило `PLAIN-LANGUAGE`: ADR-0033, страж свежести бандла и бюджет (2026-10-25) #task #phase29 #rules #installer
 

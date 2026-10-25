@@ -1,7 +1,7 @@
 ---
 id: TASK-107
 title: "pre-commit hook для линта и два рецепта в README"
-status: in-progress
+status: done
 type: task
 phase: 28
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-107 — pre-commit hook и README
 
-> **ID:** TASK-107 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-107 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 28 | **План:** [[../../Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Предыдущая задача:** [[28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]] (действие для CI уже есть)  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.2), [[../../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]
@@ -120,13 +120,13 @@ repos:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] `python -m py_compile tests/test_pre_commit_hooks.py` → Exit 0.
-- [ ] `python -m unittest tests.test_pre_commit_hooks -v` → 4 теста OK.
-- [ ] Полный набор: `python scripts/run_tests_sandbox.py` → **188 тестов OK** (184 + 4).
-- [ ] Ручная проверка манифеста при наличии `pre-commit`: `pre-commit validate-manifest .pre-commit-hooks.yaml` → Exit 0. **В этом окружении `pre-commit` не установлен** — проверка структурная (Tier 1) + документированная команда для пользователя.
-- [ ] `git status --short` не содержит `install.py` / `dist/install.py` (манифест не бандлится).
-- [ ] `python scripts/kb_lint.py --path docs --verbose` → 0 битых ссылок, 0 `WARN`.
-- [ ] README: оба рецепта присутствуют, оговорки на месте, ссылка на действие TASK-105 есть.
+- [x] `python -m py_compile tests/test_pre_commit_hooks.py` → Exit 0.
+- [x] `python -m unittest tests.test_pre_commit_hooks -v` → 4 теста OK.
+- [x] Полный набор: `python scripts/run_tests_sandbox.py` → **188 тестов OK** (184 + 4).
+- [x] Ручная проверка манифеста при наличии `pre-commit`: `pre-commit validate-manifest .pre-commit-hooks.yaml` → Exit 0. **В этом окружении `pre-commit` не установлен** — проверка структурная (Tier 1) + документированная команда для пользователя.
+- [x] `git status --short` не содержит `install.py` / `dist/install.py` (манифест не бандлится).
+- [x] `python scripts/kb_lint.py --path docs --verbose` → 0 битых ссылок, 0 `WARN`.
+- [x] README: оба рецепта присутствуют, оговорки на месте, ссылка на действие TASK-105 есть.
 
 * **Замеры $\ge 3$ прогонов:** не применимы (YAML-контракт); если фиксируется время хука — 3 прогона и среднее в Devlog.
 
@@ -136,8 +136,8 @@ repos:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Манифест создан, структурные и семантические проверки зелёные (4 теста).
-- [ ] `files`-регексп матчит Markdown и не матчит код; `pass_filenames: false` зафиксирован тестом.
-- [ ] README содержит оба рецепта, оговорку про установленный харнесс, `rev`-пиннинг и `args`-переопределение пути.
-- [ ] Манифест отсутствует в бандле (Tier 1-тест на распакованном `EMBEDDED_ASSETS_B64`).
-- [ ] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] Манифест создан, структурные и семантические проверки зелёные (4 теста).
+- [x] `files`-регексп матчит Markdown и не матчит код; `pass_filenames: false` зафиксирован тестом.
+- [x] README содержит оба рецепта, оговорку про установленный харнесс, `rev`-пиннинг и `args`-переопределение пути.
+- [x] Манифест отсутствует в бандле (Tier 1-тест на распакованном `EMBEDDED_ASSETS_B64`).
+- [x] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.

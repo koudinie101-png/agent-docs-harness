@@ -1,0 +1,8 @@
+- id: kb-lint
+  name: Docs-as-Code knowledge base lint
+  description: Broken wikilinks, YAML frontmatter, phase/tech-debt/memory integrity (zero dependencies)
+  entry: python3 scripts/kb_lint.py --path docs
+  language: system
+  files: '\.md$'
+  pass_filenames: false
+  require_serial: true

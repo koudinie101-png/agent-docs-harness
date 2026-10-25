@@ -16,6 +16,17 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-107: pre-commit-хук для линта
+- **Что сделано:**
+  - [[02_Tasks/Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]] (Фаза 28): добавлен `.pre-commit-hooks.yaml` — хук `kb-lint` (`language: system`, `entry: python3 scripts/kb_lint.py --path docs`, `files: '\.md$'`, `pass_filenames: false`, `require_serial: true`); линтуется всё хранилище целиком, потому что проверка ссылок перекрёстная.
+  - `tests/test_pre_commit_hooks.py` — 4 Tier 1-теста: структура манифеста, существование скрипта по `entry`, корректность маски файлов, отсутствие манифеста в бандле (распаковка `EMBEDDED_ASSETS_B64` из `install.py`).
+  - README: раздел «Use as a pre-commit hook» — два рецепта (`repo: local` и удалённый `rev:`), оговорка про установленный харнесс, `rev`-пиннинг и `args`-переопределение пути.
+- **Проверка:**
+  - `tests.test_pre_commit_hooks` — 4 OK; полный набор — **188 тестов OK**; `kb_lint` — 0 битых; `install.py` не менялся (манифест не бандлится).
+  - Ограничение: `pre-commit` в окружении отсутствует, поэтому `pre-commit validate-manifest` не выполнялся — проверка структурная (Tier 1) + команда задокументирована.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `TASK-108` — Code Scanning: свой workflow, `uses: ./`, `upload-sarif`, исключение из бандла и Tier 1-тесты.
+
 ### [2026-10-25] — TASK-106: правило `PLAIN-LANGUAGE` принято формально (ADR-0033, страж бандла, бюджет)
 - **Что сделано:**
   - [[02_Tasks/Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]] (Фаза 29): унаследованный набор (корпус `rules/AGENTS_CORE.md`, 7 сгенерированных файлов правил, 24 golden-фикстуры, `SPEC`/`README`/`Onboarding`, `CHANGELOG`, бандл **179 979 B**) закоммичен как единое изменение.

@@ -367,7 +367,7 @@ tags:
 
 - [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
 - [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README «Use as a GitHub Action» (2026-10-25).
-- [ ] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25).
+- [x] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25).
 - [ ] `TASK-108`…`TASK-109` — CI-доставка по [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]: Code Scanning и решение по `DEBT-004`; пермалинки спек добавляются в момент их создания ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
 
 ---
