@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]]: Code Scanning — SARIF-workflow, `uses: ./`, исключение из бандла (2026-10-25) #task #phase28 #ci #code-scanning
+
 
 
 
