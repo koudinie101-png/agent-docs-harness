@@ -1,7 +1,7 @@
 ---
 id: TASK-101
 title: "Модель Finding, реестр KB-XXX и машинно-читаемые форматы линтера"
-status: in-progress
+status: done
 type: task
 phase: 27
 component:
@@ -22,7 +22,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-101 — Модель Finding, реестр KB-XXX и форматы вывода
 
-> **ID:** TASK-101 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-101 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 27 | **План:** [[../../Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Нормативная база:** [[../../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.1, §5.1); ADR-0032 (создаётся этой задачей)  
 > **Следующая задача фазы:** `TASK-102` (контрактные тесты) — блокирует релиз Фазы 27, но не эту задачу
@@ -153,16 +153,16 @@ class LintReport(NamedTuple):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Компиляция: `python -m py_compile scripts/kb_lint.py` → Exit code 0.
-- [ ] Полный набор тестов: `python -m unittest discover -s tests` → 0 failures/errors; **`git diff tests/test_kb_lint.py` пуст** (ассерты не правились).
-- [ ] Паритет text (silent): `python scripts/kb_lint.py --path docs` → ровно одна строка `OK: <N> files scanned, <M> wikilinks verified (0 broken).`, Exit 0.
-- [ ] Паритет text (verbose): `python scripts/kb_lint.py --path docs --verbose` → те же секции и порядок, что до правки; в выводе нет `WARN`, `❌`, `⚠️`.
-- [ ] JSON-контракт: `python scripts/kb_lint.py --path docs --format json > tmp/kb_lint.json` → `python -c "import json; d=json.load(open('tmp/kb_lint.json',encoding='utf-8')); print(d['version'], sorted(d), d['summary'])"` → `1 ['errors','summary','version','warnings'] {'files': N, …}`; повторный разбор stdin-вариантом (`| python -c ...`) подтверждает, что stdout не содержит ничего, кроме JSON.
-- [ ] SARIF-контракт: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb_lint.sarif` → `python -c "import json; d=json.load(open('tmp/kb_lint.sarif',encoding='utf-8')); r=d['runs'][0]; ids={x['id'] for x in r['tool']['driver']['rules']}; assert d['version']=='2.1.0' and all(x['ruleId'] in ids for x in r['results'])"` → без `AssertionError`.
-- [ ] Error-путь: во временном хранилище `tmp/lint_probe/` (gitignored) с одной битой ссылкой: `--format json` → `summary.errors == 1`, `errors[0].rule_id == "KB-001"`, Exit code 1; `--format text` → прежний блок `ERROR:`.
-- [ ] Exit-код `--version`: `python scripts/kb_lint.py --version` → `kb_lint 1`, Exit 0.
-- [ ] Отсутствие регрессий реестра: `python -c "import sys; sys.path.insert(0,'scripts'); import kb_lint as k; assert len(k.RULES)==15; assert 'KB-010' in k.RULES and 'KB-010' not in k.RULE_SEVERITY"` → без `AssertionError` (`KB-010` присутствует в реестре и не имеет severity, потому что не эмитится).
-- [ ] `python scripts/kb_lint.py --path docs` (после создания ADR-0032 и спеки) → 0 битых ссылок.
+- [x] Компиляция: `python -m py_compile scripts/kb_lint.py` → Exit code 0.
+- [x] Полный набор тестов: `python -m unittest discover -s tests` → 0 failures/errors; **`git diff tests/test_kb_lint.py` пуст** (ассерты не правились).
+- [x] Паритет text (silent): `python scripts/kb_lint.py --path docs` → ровно одна строка `OK: <N> files scanned, <M> wikilinks verified (0 broken).`, Exit 0.
+- [x] Паритет text (verbose): `python scripts/kb_lint.py --path docs --verbose` → те же секции и порядок, что до правки; в выводе нет `WARN`, `❌`, `⚠️`.
+- [x] JSON-контракт: `python scripts/kb_lint.py --path docs --format json > tmp/kb_lint.json` → `python -c "import json; d=json.load(open('tmp/kb_lint.json',encoding='utf-8')); print(d['version'], sorted(d), d['summary'])"` → `1 ['errors','summary','version','warnings'] {'files': N, …}`; повторный разбор stdin-вариантом (`| python -c ...`) подтверждает, что stdout не содержит ничего, кроме JSON.
+- [x] SARIF-контракт: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb_lint.sarif` → `python -c "import json; d=json.load(open('tmp/kb_lint.sarif',encoding='utf-8')); r=d['runs'][0]; ids={x['id'] for x in r['tool']['driver']['rules']}; assert d['version']=='2.1.0' and all(x['ruleId'] in ids for x in r['results'])"` → без `AssertionError`.
+- [x] Error-путь: во временном хранилище `tmp/lint_probe/` (gitignored) с одной битой ссылкой: `--format json` → `summary.errors == 1`, `errors[0].rule_id == "KB-001"`, Exit code 1; `--format text` → прежний блок `ERROR:`.
+- [x] Exit-код `--version`: `python scripts/kb_lint.py --version` → `kb_lint 1`, Exit 0.
+- [x] Отсутствие регрессий реестра: `python -c "import sys; sys.path.insert(0,'scripts'); import kb_lint as k; assert len(k.RULES)==15; assert 'KB-010' in k.RULES and 'KB-010' not in k.RULE_SEVERITY"` → без `AssertionError` (`KB-010` присутствует в реестре и не имеет severity, потому что не эмитится).
+- [x] `python scripts/kb_lint.py --path docs` (после создания ADR-0032 и спеки) → 0 битых ссылок.
 
 * **Замеры $\ge 3$ прогонов (без холодного старта):** производительность не заявляется; если фиксируется время `--format json`, то 3 прогона с командой и средним в Devlog (правило 16 `AGENTS.md`).
 
@@ -172,12 +172,19 @@ class LintReport(NamedTuple):
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код написан строго по ТЗ без заглушек; `Finding` — единственная форма результата (в файле не осталось `check_*`, возвращающих строки).
-- [ ] `git diff tests/test_kb_lint.py` пуст: 60 тестов зелёные **без** правки ассертов.
-- [ ] Text-вывод совпадает с эталоном до правки (silent и verbose), включая порядок секций и эмодзи.
-- [ ] `--format json` и `--format sarif` дают по одному валидному документу; stdout не содержит посторонних строк.
-- [ ] Реестр: 15 правил, `KB-010` зарезервирован и не эмитится.
-- [ ] `ADR-0032` создан (`status: accepted`) и содержит отклонённые альтернативы §3.5.
-- [ ] Все пункты Плана верификации пройдены; бюджет `install.py` **не проверяется в этой задаче** (пересборка и `test_16` — `TASK-103`).
+- [x] Код написан строго по ТЗ без заглушек; `Finding` — единственная форма результата (в файле не осталось `check_*`, возвращающих строки).
+- [x] `git diff tests/test_kb_lint.py` пуст: 60 тестов зелёные **без** правки ассертов.
+- [x] Text-вывод совпадает с эталоном до правки (silent и verbose), включая порядок секций и эмодзи.
+- [x] `--format json` и `--format sarif` дают по одному валидному документу; stdout не содержит посторонних строк.
+- [x] Реестр: 15 правил, `KB-010` зарезервирован и не эмитится.
+- [x] `ADR-0032` создан (`status: accepted`) и содержит отклонённые альтернативы §3.5.
+- [x] Все пункты Плана верификации пройдены; бюджет `install.py` **не проверяется в этой задаче** (пересборка и `test_16` — `TASK-103`).
 - [ ] Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) — `TASK-103` по плану Фазы 27; в этой задаче публичный контракт фиксируется только в ADR-0032.
-- [ ] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`), Дорожной карте (`[x]`); запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`), Дорожной карте (`[x]`); запись в `Devlog.md` — на шаге `/kb-complete`.
+
+## 6. Отклонения при реализации (2026-10-25)
+
+* **`Finding` реализован как подкласс `str`, а не `NamedTuple`** (отклонение от §3.1). Причина: `check_*` вызываются напрямую в **75** местах `tests/test_kb_lint.py` и сравниваются как строки (`assertIn("...", warnings[0])`, `assertEqual(..., [])`). `NamedTuple` потребовал бы править ассерты — прямое нарушение DoD этой задачи и обратной совместимости вспомогательного API, которым пользуются установленные проекты. Модель: `Finding(str)` с `__slots__ = ("rule_id", "severity", "file")` и свойством `message`; JSON/SARIF читают атрибуты, text-рендерер печатает `str(finding)`. Решение зафиксировано в [[../../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]] §2–§3.
+* **`file` заполняется для всех 14 эмитящих правил**, а не только для однофайловых: обёртка `make_finding(..., file=...)` применена в 28 точках эмиссии; `KB-013` и `KB-004` дополнительно получают имя своего файла (patterns/incidents/TechDebt/план). Поэтому `DEBT-004` остаётся только про отсутствие `region.startLine`.
+* **`by_rule_severity()`** добавлен в `LintReport` как вспомогательный селектор для JSON/SARIF (в §3.2 не перечислялся).
+* **Паритет text-вывода подтверждён байт-в-байт:** старый (`git show HEAD:scripts/kb_lint.py`) и новый скрипт дают идентичный stdout в silent и verbose на реальном репозитории; `git diff tests/` пуст, 166 тестов репозитория зелёные.

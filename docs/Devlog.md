@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-18
+updated: 2026-10-25
 tags:
   - devlog
   - journal
@@ -15,6 +15,20 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-10-25] — TASK-101: машинно-читаемый контракт линтера (`Finding`, `KB-XXX`, json/sarif)
+- **Что сделано:**
+  - [[02_Tasks/Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]] (Фаза 27): `scripts/kb_lint.py` переведён на единую модель находки `Finding(str)` с `rule_id`/`severity`/`file`; реестр `RULES`/`RULE_SEVERITY` на 15 правил, `KB-010` зарезервирован и не эмитится (попытка эмиссии даёт `ValueError`).
+  - 28 точек эмиссии переведены на `make_finding(...)` с указанием файла; `LintReport` + три рендерера: `render_text` (байт-в-байт прежний вывод), `render_json` (`version: 1`, `summary`, `errors[]`, `warnings[]`), `render_sarif` (SARIF 2.1.0 без `region.startLine` и `informationUri`).
+  - CLI: `--format {text,json,sarif}` и `--version` (`kb_lint 1`); при машинных форматах stdout содержит только документ, `--verbose` — no-op; exit-коды не изменились.
+  - [[03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]] фиксирует решение и отклонённые альтернативы; отклонение от спеки (`Finding` как `str`, а не `NamedTuple`) зафиксировано в §6 спеки.
+- **Проверка:**
+  - `python -m unittest discover -s tests` — **166 тестов OK** (включая 60 `test_kb_lint`); `git diff tests/` пуст.
+  - Паритет text: старый (`git show HEAD:scripts/kb_lint.py`) и новый скрипт дают байт-идентичный stdout в silent и verbose.
+  - `--format json` — 253 файла / 2484 ссылки / 0 ошибок; `--format sarif` — `2.1.0`, все `ruleId` присутствуют в `driver.rules[]`; на пробном хранилище с битой ссылкой — `KB-001`, `file: 00_Index.md`, exit 1.
+  - `kb_lint --path docs` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `TASK-102` — контрактные тесты машинно-читаемого вывода (JSON-схема, SARIF-структура, неэмиссия `KB-010`, exit-коды, ручная проверка Code Scanning).
 
 ### [2026-10-18] — Релиз v0.26.0: Фаза 26 (Tech Debt Hardening)
 - **Что сделано:**

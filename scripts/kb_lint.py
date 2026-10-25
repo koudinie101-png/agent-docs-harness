@@ -8,6 +8,7 @@ Zero external dependencies (uses standard Python 3 library only).
 import sys
 import os
 import re
+import json
 import argparse
 import urllib.parse
 from pathlib import Path
@@ -40,6 +41,104 @@ HARNESS_META_TECHDEBT_IDS = {
     "TASK-083",
     "TASK-084",
 }
+
+RULESET_VERSION = 1  # Ð²ÐµÑ€ÑÐ¸Ñ Ð½Ð°Ð±Ð¾Ñ€Ð° Ð¿Ñ€Ð°Ð²Ð¸Ð»/ÑÑ…ÐµÐ¼Ñ‹ Ð²Ñ‹Ð²Ð¾Ð´Ð°; Ð½Ðµ Ñ€ÐµÐ»Ð¸Ð·Ð½Ð°Ñ Ð²ÐµÑ€ÑÐ¸Ñ Ñ…Ð°Ñ€Ð½ÐµÑÑÐ°
+
+# Ð ÐµÐµÑÑ‚Ñ€ ÑÑ‚Ð°Ð±Ð¸Ð»ÑŒÐ½Ñ‹Ñ… Ð¸Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€Ð¾Ð² Ð¿Ñ€Ð°Ð²Ð¸Ð» (SSOT Ð´Ð»Ñ --format json/sarif).
+RULES: Dict[str, str] = {
+    "KB-001": "Broken or unresolved wikilink or markdown link",
+    "KB-002": "Missing or invalid YAML frontmatter",
+    "KB-003": "Procedural memory limit exceeded",
+    "KB-004": "Tech debt registry integrity",
+    "KB-005": "Asset layout violation",
+    "KB-006": "Phase consistency mismatch",
+    "KB-007": "Missing research basis for a plan",
+    "KB-008": "Devlog next-step semantics",
+    "KB-009": "Untracked TODO/FIXME without backlog reference",
+    "KB-010": "Task dependency cycle or unknown dependency",
+    "KB-011": "Living Spec drift",
+    "KB-012": "Fast-track scope or budget violation",
+    "KB-013": "Memory index consistency",
+    "KB-014": "Symbolic scope contract violation",
+    "KB-015": "Asset weight budget exceeded",
+}
+
+# KB-010 Ð·Ð°Ñ€ÐµÐ·ÐµÑ€Ð²Ð¸Ñ€Ð¾Ð²Ð°Ð½ Ð¿Ð¾Ð´ depends_on (Ð¤Ð°Ð·Ð° 28+): Ð² Ñ€ÐµÐµÑÑ‚Ñ€Ðµ ÐµÑÑ‚ÑŒ, severity Ð½ÐµÑ‚ â€”
+# Ð¿Ð¾Ð¿Ñ‹Ñ‚ÐºÐ° ÑÐ¼Ð¸ÑÑÐ¸Ð¸ Ð´Ð°Ñ‘Ñ‚ ValueError, Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð¾ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Â«Ð¿Ñ€Ð¾ÑÐ¾Ñ‡Ð¸Ñ‚ÑŒÑÑÂ» Ð·Ð°Ñ€Ð°Ð½ÐµÐµ.
+RULE_SEVERITY: Dict[str, str] = {
+    "KB-001": "error",
+    "KB-002": "error",
+    "KB-003": "error",
+    "KB-004": "error",
+    "KB-005": "warning",
+    "KB-006": "warning",
+    "KB-007": "warning",
+    "KB-008": "warning",
+    "KB-009": "warning",
+    "KB-011": "warning",
+    "KB-012": "warning",
+    "KB-013": "warning",
+    "KB-014": "warning",
+    "KB-015": "warning",
+}
+
+VALID_SEVERITIES = ("error", "warning")
+
+
+class Finding(str):
+    """ÐžÐ´Ð½Ð° Ð½Ð°Ñ…Ð¾Ð´ÐºÐ° Ð»Ð¸Ð½Ñ‚ÐµÑ€Ð°: Ñ‚ÐµÐºÑÑ‚ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ñ + ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð¼ÐµÑ‚Ð°Ð´Ð°Ð½Ð½Ñ‹Ðµ.
+
+    ÐÐ°ÑÐ»ÐµÐ´ÑƒÐµÑ‚ÑÑ Ð¾Ñ‚ ``str`` Ð½Ð°Ð¼ÐµÑ€ÐµÐ½Ð½Ð¾: ``check_*`` Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ‡ÐµÑÐºÐ¸ Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°Ð»Ð¸ ÑÐ¿Ð¸ÑÐºÐ¸
+    ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹, Ð¸ Ð¿Ð¾Ñ‚Ñ€ÐµÐ±Ð¸Ñ‚ÐµÐ»Ð¸ (Ñ‚ÐµÑÑ‚Ñ‹, ÐºÐ»Ð¸ÐµÐ½Ñ‚ÑÐºÐ¸Ðµ ÑÐºÑ€Ð¸Ð¿Ñ‚Ñ‹) ÑÑ€Ð°Ð²Ð½Ð¸Ð²Ð°ÑŽÑ‚ Ð¸Ñ… ÐºÐ°Ðº ÑÑ‚Ñ€Ð¾ÐºÐ¸.
+    JSON/SARIF-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€Ñ‹ Ñ‡Ð¸Ñ‚Ð°ÑŽÑ‚ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, text-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€ Ð¿ÐµÑ‡Ð°Ñ‚Ð°ÐµÑ‚ ``str(finding)``.
+    """
+
+    __slots__ = ("rule_id", "severity", "file")
+
+    def __new__(cls, rule_id: str, message: str, severity: str, file: str = ""):
+        obj = super().__new__(cls, message)
+        obj.rule_id = rule_id
+        obj.severity = severity
+        obj.file = file or ""
+        return obj
+
+    @property
+    def message(self) -> str:
+        return str(self)
+
+
+def make_finding(rule_id: str, message: str, file: str = "", severity: Optional[str] = None) -> Finding:
+    """Creates a finding after validating rule id and severity against the registry."""
+    if rule_id not in RULES:
+        raise ValueError("Unknown lint rule: %s" % rule_id)
+    resolved = severity or RULE_SEVERITY.get(rule_id)
+    if resolved not in VALID_SEVERITIES:
+        raise ValueError("Rule %s is reserved and cannot be emitted yet" % rule_id)
+    return Finding(rule_id, message, resolved, file)
+
+
+class LintReport(object):
+    """Ð ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚ Ð¿Ñ€Ð¾Ð³Ð¾Ð½Ð° Ð»Ð¸Ð½Ñ‚ÐµÑ€Ð°: ÑÑ‡Ñ‘Ñ‚Ñ‡Ð¸ÐºÐ¸ Ð¸ Ð½Ð°Ñ…Ð¾Ð´ÐºÐ¸ (ÐµÐ´Ð¸Ð½Ñ‹Ð¹ Ð¸ÑÑ‚Ð¾Ñ‡Ð½Ð¸Ðº Ð´Ð»Ñ Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€Ð¾Ð²)."""
+
+    __slots__ = ("files", "wikilinks", "findings")
+
+    def __init__(self, files: int, wikilinks: int, findings: List[Finding]):
+        self.files = files
+        self.wikilinks = wikilinks
+        self.findings = findings
+
+    def by_rule(self, rule_id: str, severity: Optional[str] = None) -> List[Finding]:
+        return [
+            f for f in self.findings
+            if f.rule_id == rule_id and (severity is None or f.severity == severity)
+        ]
+
+    def by_rule_severity(self, severity: str) -> List[Finding]:
+        return [f for f in self.findings if f.severity == severity]
+
+    def has_errors(self) -> bool:
+        return any(f.severity == "error" for f in self.findings)
+
 
 
 def find_vault_root(start_dir: Path) -> Path:
@@ -164,7 +263,7 @@ def check_file_frontmatter(file_path: Path):
     return True, "Valid YAML frontmatter"
 
 
-def check_spec_drift(docs_dir: Path) -> list:
+def check_spec_drift(docs_dir: Path) -> List[Finding]:
     """
     Heuristic audit for living spec drift.
     Checks if multiple phases in Roadmap.md are completed while SPEC.md remains un-updated.
@@ -208,15 +307,13 @@ def check_spec_drift(docs_dir: Path) -> list:
         updated_date = updated_match.group(1)
         created_date = created_match.group(1) if created_match else None
         if created_date and updated_date == created_date:
-            warnings.append(
-                f"Living Spec Drift: SPEC.md was never updated since creation ({created_date}), "
-                f"despite {completed_phases} completed phases in Roadmap.md. Consider syncing Master Spec."
-            )
+            warnings.append(make_finding("KB-011", f"Living Spec Drift: SPEC.md was never updated since creation ({created_date}), "
+                f"despite {completed_phases} completed phases in Roadmap.md. Consider syncing Master Spec.", file="02_Tasks/Roadmap.md"))
 
     return warnings
 
 
-def check_devlog_semantic_guard(docs_dir: Path) -> list:
+def check_devlog_semantic_guard(docs_dir: Path) -> List[Finding]:
     """
     Scans Devlog.md for bare 'Следующий шаг:' or 'Next Step:' triggers
     that lack explicit human-waiting markers, provoking eager auto-chaining.
@@ -245,14 +342,12 @@ def check_devlog_semantic_guard(docs_dir: Path) -> list:
     rel_name = devlog_path.name
     for i, line in enumerate(content.splitlines(), start=1):
         if pattern.search(line):
-            warnings.append(
-                f"In '{rel_name}' line {i}: bare step trigger detected without user guardrail. "
-                f"Prefer '- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**' to prevent auto-chaining."
-            )
+            warnings.append(make_finding("KB-008", f"In '{rel_name}' line {i}: bare step trigger detected without user guardrail. "
+                f"Prefer '- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**' to prevent auto-chaining.", file=rel_name))
     return warnings
 
 
-def check_fast_track_specs(docs_dir: Path) -> list:
+def check_fast_track_specs(docs_dir: Path) -> List[Finding]:
     """
     Audits Fast-Track task specifications (type: fast-track) for adherence to scope limits:
     - Maximum 2 files touched in file contracts ([NEW], [MODIFY], [DELETE]).
@@ -301,9 +396,7 @@ def check_fast_track_specs(docs_dir: Path) -> list:
 
         file_items = re.findall(r"^\s*[\*\-]\s*`?\[(?:NEW|MODIFY|DELETE)\]`?", contract_section, re.MULTILINE | re.IGNORECASE)
         if len(file_items) > 2:
-            warnings.append(
-                f"Fast-Track spec '{rel_name}' touches {len(file_items)} files (limit: <= 2). Consider full RFC."
-            )
+            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' touches {len(file_items)} files (limit: <= 2). Consider full RFC.", file=rel_name))
 
         # 2. Check Verification Plan
         has_verif = bool(
@@ -311,14 +404,12 @@ def check_fast_track_specs(docs_dir: Path) -> list:
             re.search(r"(?:python|pytest|dotnet|npm|cargo)\s+.*", content, re.IGNORECASE)
         )
         if not has_verif:
-            warnings.append(
-                f"Fast-Track spec '{rel_name}' is missing a Verification Plan."
-            )
+            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' is missing a Verification Plan.", file=rel_name))
 
     return warnings
 
 
-def check_phase_consistency(docs_dir: Path) -> list:
+def check_phase_consistency(docs_dir: Path) -> List[Finding]:
     """
     Scans docs/02_Tasks/Specs/ for task specifications and validates:
     1. Folder Phase vs Frontmatter Phase:
@@ -367,9 +458,7 @@ def check_phase_consistency(docs_dir: Path) -> list:
 
             # 1. Folder Phase vs Frontmatter Phase
             if fm_phase != folder_phase:
-                warnings.append(
-                    f"Spec '{rel_path}' declares phase {fm_phase}, but is located in folder '{folder.name}' (expected phase {folder_phase})."
-                )
+                warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but is located in folder '{folder.name}' (expected phase {folder_phase}).", file=rel_path))
 
             # 2. Frontmatter Phase vs Tags
             tags_block = ""
@@ -380,14 +469,12 @@ def check_phase_consistency(docs_dir: Path) -> list:
             for tag_phase_str in tag_matches:
                 tag_phase = int(tag_phase_str)
                 if tag_phase != fm_phase:
-                    warnings.append(
-                        f"Spec '{rel_path}' declares phase {fm_phase}, but contains mismatched tag 'phase{tag_phase}'."
-                    )
+                    warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but contains mismatched tag 'phase{tag_phase}'.", file=rel_path))
 
     return warnings
 
 
-def check_memory_limits(docs_dir: Path) -> list:
+def check_memory_limits(docs_dir: Path) -> List[Finding]:
     """
     Tier 1 Quality Gate: validates procedural memory limits and formats in docs/06_Memory/:
     1. Maximum 15 active patterns in docs/06_Memory/patterns.md (- [TRG-XX] ...)
@@ -410,11 +497,9 @@ def check_memory_limits(docs_dir: Path) -> list:
                     rel_p = patterns_file.relative_to(docs_dir).as_posix()
                 except ValueError:
                     rel_p = patterns_file.name
-                errors.append(
-                    f"Memory patterns limit exceeded: {len(pattern_matches)} active patterns found in "
+                errors.append(make_finding("KB-003", f"Memory patterns limit exceeded: {len(pattern_matches)} active patterns found in "
                     f"'{rel_p}' (maximum allowed: 15). "
-                    f"Archive or consolidate patterns to preserve token economy!"
-                )
+                    f"Archive or consolidate patterns to preserve token economy!", file=rel_p))
         except Exception:
             pass
 
@@ -445,7 +530,7 @@ def _parse_memory_frontmatter(text: str) -> Dict[str, str]:
     return fields
 
 
-def check_memory_consistency(docs_dir: Path) -> List[str]:
+def check_memory_consistency(docs_dir: Path) -> List[Finding]:
     """
     Tier 1 Quality Gate (Non-blocking, advisory):
     Validates referential integrity of the procedural memory contour docs/06_Memory/:
@@ -497,17 +582,14 @@ def check_memory_consistency(docs_dir: Path) -> List[str]:
             prefix_match = re.match(r"^(INC-\d{3})", incident_file.stem)
             filename_prefix = prefix_match.group(1) if prefix_match else ""
             if not incident_id:
-                incident_warnings.append(
-                    f"WARN: incident '{incident_file.name}' has no 'id' in frontmatter"
-                )
+                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_file.name}' has no 'id' in frontmatter", file=incident_file.name))
             elif not filename_prefix or incident_id != filename_prefix:
-                incident_warnings.append(
-                    f"WARN: incident '{incident_id}' id does not match filename '{incident_file.name}'"
-                )
+                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_id}' id does not match filename '{incident_file.name}'", file=incident_file.name))
             lookup_prefix = filename_prefix or incident_id
             if lookup_prefix:
                 incident_reports_by_prefix[lookup_prefix] = {
                     "target_pattern": frontmatter.get("target_pattern", "").strip(),
+                    "file": incident_file.name,
                 }
 
     for tag, line in pattern_entries:
@@ -515,26 +597,18 @@ def check_memory_consistency(docs_dir: Path) -> List[str]:
             continue
         for incident_id in sorted(set(re.findall(r"INC-\d{3}", line))):
             if incident_id not in incident_reports_by_prefix:
-                warnings.append(
-                    f"WARN: patterns.md references missing incident report '{incident_id}'"
-                )
+                warnings.append(make_finding("KB-013", f"WARN: patterns.md references missing incident report '{incident_id}'", file="06_Memory/patterns.md"))
                 continue
             target_pattern = incident_reports_by_prefix[incident_id]["target_pattern"]
             if target_pattern and target_pattern != tag:
-                warnings.append(
-                    f"WARN: pattern '{tag}' links '{incident_id}' whose target_pattern is '{target_pattern}'"
-                )
+                warnings.append(make_finding("KB-013", f"WARN: pattern '{tag}' links '{incident_id}' whose target_pattern is '{target_pattern}'", file="06_Memory/patterns.md"))
 
     for incident_id, report in sorted(incident_reports_by_prefix.items()):
         target_pattern = report["target_pattern"]
         if not target_pattern:
-            incident_warnings.append(
-                f"WARN: incident '{incident_id}' is missing required 'target_pattern'"
-            )
+            incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_id}' is missing required 'target_pattern'", file=report.get("file", "")))
         elif target_pattern not in pattern_tags:
-            incident_warnings.append(
-                f"WARN: incident '{incident_id}' targets '{target_pattern}' which is absent from patterns.md"
-            )
+            incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_id}' targets '{target_pattern}' which is absent from patterns.md", file=report.get("file", "")))
 
     warnings.extend(incident_warnings)
     return warnings
@@ -552,7 +626,7 @@ def _normalize_plan_value(raw: str) -> str:
     return value
 
 
-def check_research_basis(docs_dir: Path) -> List[str]:
+def check_research_basis(docs_dir: Path) -> List[Finding]:
     """
     Tier 1 Quality Gate (Non-blocking): audit plan provenance.
 
@@ -591,13 +665,11 @@ def check_research_basis(docs_dir: Path) -> List[str]:
         note_match = BASIS_NOTE_RE.search(frontmatter)
         note = _normalize_plan_value(note_match.group(1)) if note_match else ""
         if not note:
-            warnings.append(
-                "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name
-            )
+            warnings.append(make_finding("KB-007", "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name, file=plan_file.name))
     return warnings
 
 
-def check_symbolic_scope(docs_dir: Path) -> List[str]:
+def check_symbolic_scope(docs_dir: Path) -> List[Finding]:
     """ADR-0029: active task specs must name nested code symbols."""
     warnings = []
     specs_dir = docs_dir / "02_Tasks" / "Specs"
@@ -628,7 +700,7 @@ def check_symbolic_scope(docs_dir: Path) -> List[str]:
         section = section.group(1)
 
         if LINE_ANCHOR_RE.search(section):
-            warnings.append("WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name)
+            warnings.append(make_finding("KB-014", "WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name, file=spec_file.name))
 
         lines = section.splitlines()
         for idx, line in enumerate(lines):
@@ -649,14 +721,12 @@ def check_symbolic_scope(docs_dir: Path) -> List[str]:
                     has_symbol = True
                     break
             if not has_symbol:
-                warnings.append(
-                    "WARN: task '%s' modifies code '%s' without a nested symbol (ADR-0029)"
-                    % (spec_file.name, raw_path)
-                )
+                warnings.append(make_finding("KB-014", "WARN: task '%s' modifies code '%s' without a nested symbol (ADR-0029)"
+                    % (spec_file.name, raw_path), file=spec_file.name))
     return warnings
 
 
-def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[str]:
+def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> List[Finding]:
     """
     Tier 1 Quality Gate (Non-blocking):
     Audits docs/assets/ for media files exceeding size threshold (default 2 MB).
@@ -676,13 +746,13 @@ def check_asset_weights(docs_dir: Path, max_bytes: int = 2 * 1024 * 1024) -> Lis
                 if size > max_bytes:
                     mb = size / (1024 * 1024)
                     rel_p = p.relative_to(docs_dir).as_posix() if _is_relative_to(p, docs_dir) else p.name
-                    warnings.append(f"WARN: Asset '{rel_p}' exceeds size limit ({mb:.1f} MB > 2.0 MB)")
+                    warnings.append(make_finding("KB-015", f"WARN: Asset '{rel_p}' exceeds size limit ({mb:.1f} MB > 2.0 MB)", file=rel_p))
             except Exception:
                 pass
     return warnings
 
 
-def check_asset_layout(docs_dir: Path) -> List[str]:
+def check_asset_layout(docs_dir: Path) -> List[Finding]:
     """
     Tier 1 Quality Gate (Non-blocking):
     Validates docs/assets/ directory topology:
@@ -704,16 +774,12 @@ def check_asset_layout(docs_dir: Path) -> List[str]:
             continue
         if item.is_dir():
             if item.name not in VALID_ASSET_ROOTS:
-                warnings.append(
-                    f"WARN: Disallowed asset category directory 'assets/{item.name}'. "
+                warnings.append(make_finding("KB-005", f"WARN: Disallowed asset category directory 'assets/{item.name}'. "
                     f"Allowed root categories: {allowed_str}. "
-                    f"Move platform folders inside 'assets/mockups/{item.name}/' or 'assets/screenshots/{item.name}/'."
-                )
+                    f"Move platform folders inside 'assets/mockups/{item.name}/' or 'assets/screenshots/{item.name}/'.", file="assets/" + item.name))
         elif item.is_file():
-            warnings.append(
-                f"WARN: Unorganized file 'assets/{item.name}' in root of docs/assets/. "
-                f"Place assets inside mockups/, screenshots/, diagrams/, or design/."
-            )
+            warnings.append(make_finding("KB-005", f"WARN: Unorganized file 'assets/{item.name}' in root of docs/assets/. "
+                f"Place assets inside mockups/, screenshots/, diagrams/, or design/.", file="assets/" + item.name))
 
     mockups_dir = assets_dir / "mockups"
     if mockups_dir.is_dir():
@@ -725,14 +791,12 @@ def check_asset_layout(docs_dir: Path) -> List[str]:
                     continue
                 if not entry.is_dir() or not TASK_NAMESPACE_PATTERN.match(entry.name):
                     rel_entry = f"assets/mockups/{target_dir.name}/{entry.name}"
-                    warnings.append(
-                        f"WARN: Non-task mockup entry '{rel_entry}'. "
-                        f"Expected task-scoped directory 'assets/mockups/{target_dir.name}/TASK-XXX/' (ADR-0027)."
-                    )
+                    warnings.append(make_finding("KB-005", f"WARN: Non-task mockup entry '{rel_entry}'. "
+                        f"Expected task-scoped directory 'assets/mockups/{target_dir.name}/TASK-XXX/' (ADR-0027).", file=rel_entry))
     return warnings
 
 
-def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]] = None) -> List[str]:
+def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]] = None) -> List[Finding]:
     """
     Tier 1 / Tier 2 Quality Gate: validates tech debt registry docs/02_Tasks/TechDebt.md.
     Checks:
@@ -748,17 +812,17 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
         debt_path = docs_dir / "docs" / "02_Tasks" / "TechDebt.md"
 
     if not debt_path.is_file():
-        errors.append("Tech debt registry not found: expected 'TechDebt.md' in '02_Tasks'")
+        errors.append(make_finding("KB-004", "Tech debt registry not found: expected 'TechDebt.md' in '02_Tasks'", file="02_Tasks/TechDebt.md", severity="warning"))
         return errors
 
     try:
         content = debt_path.read_text(encoding="utf-8")
     except Exception as e:
-        errors.append(f"Could not read TechDebt.md: {e}")
+        errors.append(make_finding("KB-004", f"Could not read TechDebt.md: {e}", file="02_Tasks/TechDebt.md"))
         return errors
 
     if not content.startswith("---"):
-        errors.append("Malformed YAML frontmatter in TechDebt.md (starts without ---)")
+        errors.append(make_finding("KB-004", "Malformed YAML frontmatter in TechDebt.md (starts without ---)", file="02_Tasks/TechDebt.md"))
 
     if file_map is None:
         file_map = build_file_map(docs_dir)
@@ -788,10 +852,8 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
             if re.match(r"^DEBT-\d{3,}$", first_cell):
                 recorded_debt_ids.add(first_cell)
             else:
-                errors.append(
-                    f"In 'TechDebt.md' line {line_no}: invalid tech debt ID '{first_cell}'. "
-                    f"Expected format DEBT-XXX (e.g. DEBT-001)."
-                )
+                errors.append(make_finding("KB-004", f"In 'TechDebt.md' line {line_no}: invalid tech debt ID '{first_cell}'. "
+                    f"Expected format DEBT-XXX (e.g. DEBT-001).", file="02_Tasks/TechDebt.md"))
 
             # Validate wikilinks in this row
             row_links = parse_wikilinks(stripped)
@@ -821,7 +883,7 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
                     or link_stem in file_map
                 )
                 if not found:
-                    errors.append(f"In 'TechDebt.md' line {line_no}: broken wikilink [[{link_clean}]]")
+                    errors.append(make_finding("KB-004", f"In 'TechDebt.md' line {line_no}: broken wikilink [[{link_clean}]]", file="02_Tasks/TechDebt.md"))
 
     # Semantic cross-check: plans/specs tagged #techdebt must reference a registered DEBT-XXX
     for base_dir in (docs_dir / "02_Tasks" / "Plans", docs_dir / "02_Tasks" / "Specs"):
@@ -853,20 +915,16 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
             rel_name = md_file.name
             has_debt_ref = bool(re.search(r"DEBT-\d{3,}", body))
             if not has_debt_ref:
-                errors.append(
-                    f"WARN: '{rel_name}' is tagged #techdebt but has no DEBT-XXX reference. "
-                    f"Register the debt in TechDebt.md and link it from this document."
-                )
+                errors.append(make_finding("KB-004", f"WARN: '{rel_name}' is tagged #techdebt but has no DEBT-XXX reference. "
+                    f"Register the debt in TechDebt.md and link it from this document.", file=rel_name, severity="warning"))
             elif not recorded_debt_ids:
-                errors.append(
-                    f"WARN: '{rel_name}' references DEBT-XXX but TechDebt.md registry is empty. "
-                    f"Register the referenced DEBT-XXX in the Active P3 Debt table."
-                )
+                errors.append(make_finding("KB-004", f"WARN: '{rel_name}' references DEBT-XXX but TechDebt.md registry is empty. "
+                    f"Register the referenced DEBT-XXX in the Active P3 Debt table.", file=rel_name, severity="warning"))
 
     return errors
 
 
-def check_untracked_todos(docs_dir: Path) -> List[str]:
+def check_untracked_todos(docs_dir: Path) -> List[Finding]:
     """
     Tier 1 / Tier 2 Non-blocking Quality Gate:
     Audits documentation files and scripts for untracked TODO/FIXME comments
@@ -914,9 +972,7 @@ def check_untracked_todos(docs_dir: Path) -> List[str]:
             line_to_check = re.sub(r'`[^`]*`', '', line)
             if active_pattern.search(line_to_check):
                 if not re.search(r'(?:ROADMAP-[A-Za-z0-9_-]+|DEBT-\d{3,})', line, re.IGNORECASE):
-                    warnings.append(
-                        f"Untracked TODO without ROADMAP-<ID> or DEBT-XXX reference in {rel_name}:{line_no}"
-                    )
+                    warnings.append(make_finding("KB-009", f"Untracked TODO without ROADMAP-<ID> or DEBT-XXX reference in {rel_name}:{line_no}", file=rel_name))
 
     return warnings
 
@@ -959,8 +1015,165 @@ def build_file_map(docs_dir: Path, repo_root: Optional[Path] = None) -> Dict[str
     return file_map
 
 
-def run_linter(docs_dir: Path, verbose: bool = False) -> int:
+# Порядок секций silent-вывода (легаси-контракт: совпадает с допереходным выводом).
+_TEXT_WARNING_ORDER = (
+    "KB-011", "KB-008", "KB-012", "KB-006", "KB-007",
+    "KB-014", "KB-015", "KB-005", "KB-004", "KB-013", "KB-009",
+)
+# Правила, чей silent-вывод исторически печатался без префикса "WARN:".
+_TEXT_SILENT_PLAIN = ("KB-015", "KB-005")
+# Правила, чьё сообщение само может начинаться с "WARN:" (легаси-формат сохранён дословно).
+_TEXT_WARN_INSIDE = ("KB-007", "KB-014", "KB-004", "KB-013")
+
+
+def _silent_warning_line(finding: Finding) -> str:
+    if finding.rule_id in _TEXT_SILENT_PLAIN:
+        return "⚠️  %s" % finding.message
+    if finding.rule_id in _TEXT_WARN_INSIDE and finding.message.startswith("WARN:"):
+        return "⚠️  %s" % finding.message
+    return "⚠️  WARN: %s" % finding.message
+
+
+def render_text(report: LintReport, verbose: bool) -> str:
+    """Воспроизводит прежний человекочитаемый вывод байт-в-байт."""
+    lines: List[str] = []
+    broken = report.by_rule("KB-001")
+    frontmatter = report.by_rule("KB-002")
+    memory_errors = report.by_rule("KB-003")
+    debt_errors = report.by_rule("KB-004", "error")
+
     if verbose:
+        lines.append("📊 Total Markdown Files Scanned: %d" % report.files)
+        lines.append("🔗 Total Wikilinks Validated: %d" % report.wikilinks)
+        lines.append("")
+        if broken:
+            lines.append("❌ Broken Wikilinks Detected (%d):" % len(broken))
+            lines.extend("   • " + f.message for f in broken)
+            lines.append("")
+        else:
+            lines.append("✅ No broken wikilinks found!")
+            lines.append("")
+        if frontmatter:
+            lines.append("⚠️ Frontmatter / Property Warnings (%d):" % len(frontmatter))
+            lines.extend("   • " + f.file + ": " + f.message for f in frontmatter)
+            lines.append("")
+        else:
+            lines.append("✅ All inspected task/spec/plan files have valid YAML frontmatter!")
+            lines.append("")
+        sections = (
+            ("❌ Memory Limit Errors", memory_errors),
+            ("⚠️ Memory Consistency Warnings", report.by_rule("KB-013")),
+            ("⚠️ Spec Drift Warnings", report.by_rule("KB-011")),
+            ("⚠️ Devlog Semantic Guard Warnings", report.by_rule("KB-008")),
+            ("⚠️ Fast-Track Guard Warnings", report.by_rule("KB-012")),
+            ("⚠️ Phase Consistency Warnings", report.by_rule("KB-006")),
+            ("⚠️ Research Basis Warnings", report.by_rule("KB-007")),
+            ("⚠️ Symbolic Scope Warnings", report.by_rule("KB-014")),
+            ("⚠️ Asset Weight Warnings", report.by_rule("KB-015")),
+            ("⚠️ Asset Layout Warnings", report.by_rule("KB-005")),
+            ("⚠️ Tech Debt Warnings", report.by_rule("KB-004", "warning")),
+            ("❌ Tech Debt Integrity Errors", debt_errors),
+            ("⚠️ Untracked TODO Warnings", report.by_rule("KB-009")),
+        )
+        for title, items in sections:
+            if not items:
+                continue
+            lines.append("%s (%d):" % (title, len(items)))
+            lines.extend("   • " + f.message for f in items)
+            lines.append("")
+        if report.has_errors():
+            lines.append("❌ Linter failed: please resolve errors.")
+        else:
+            lines.append("🎉 Knowledge base is healthy and consistent!")
+        return "\n".join(lines) + "\n"
+
+    for rule_id in _TEXT_WARNING_ORDER:
+        for finding in report.by_rule(rule_id, "warning"):
+            lines.append(_silent_warning_line(finding))
+    if not report.has_errors():
+        lines.append(
+            "OK: %d files scanned, %d wikilinks verified (0 broken)." % (report.files, report.wikilinks)
+        )
+        return "\n".join(lines) + "\n"
+    lines.append(
+        "ERROR: %d broken links, %d frontmatter warnings, %d memory errors, %d tech debt errors."
+        % (len(broken), len(frontmatter), len(memory_errors), len(debt_errors))
+    )
+    lines.extend("   • " + f.message for f in broken)
+    lines.extend("   • " + f.file + ": " + f.message for f in frontmatter)
+    lines.extend("   • " + f.message for f in memory_errors)
+    lines.extend("   • " + f.message for f in debt_errors)
+    return "\n".join(lines) + "\n"
+
+
+def _finding_payload(finding: Finding) -> dict:
+    return {
+        "rule_id": finding.rule_id,
+        "severity": finding.severity,
+        "file": finding.file or None,
+        "message": finding.message,
+    }
+
+
+def render_json(report: LintReport) -> str:
+    """Machine-readable contract: schema version, summary counters, findings by severity."""
+    errors = sorted(report.by_rule_severity("error"), key=lambda f: (f.rule_id, f.file, f.message))
+    warnings = sorted(report.by_rule_severity("warning"), key=lambda f: (f.rule_id, f.file, f.message))
+    payload = {
+        "version": RULESET_VERSION,
+        "summary": {
+            "files": report.files,
+            "wikilinks": report.wikilinks,
+            "errors": len(errors),
+            "warnings": len(warnings),
+        },
+        "errors": [_finding_payload(f) for f in errors],
+        "warnings": [_finding_payload(f) for f in warnings],
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+def render_sarif(report: LintReport) -> str:
+    """Minimal valid SARIF 2.1.0 document (no line regions, no project-origin metadata)."""
+    used_rules: List[str] = []
+    for finding in report.findings:
+        if finding.rule_id not in used_rules:
+            used_rules.append(finding.rule_id)
+    rules = [{"id": rid, "shortDescription": {"text": RULES[rid]}} for rid in sorted(used_rules)]
+
+    ordered = sorted(report.findings, key=lambda f: (f.severity != "error", f.rule_id, f.file, f.message))
+    results = []
+    for finding in ordered:
+        result = {
+            "ruleId": finding.rule_id,
+            "level": "error" if finding.severity == "error" else "warning",
+            "message": {"text": finding.message},
+        }
+        if finding.file:
+            result["locations"] = [{"physicalLocation": {"artifactLocation": {"uri": finding.file}}}]
+        results.append(result)
+
+    payload = {
+        "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+        "version": "2.1.0",
+        "runs": [
+            {
+                "tool": {
+                    "driver": {
+                        "name": "kb_lint",
+                        "version": str(RULESET_VERSION),
+                        "rules": rules,
+                    }
+                },
+                "results": results,
+            }
+        ],
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+def run_linter(docs_dir: Path, verbose: bool = False, output_format: str = "text") -> int:
+    if verbose and output_format == "text":
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
     if not docs_dir.exists():
         print(f"❌ Directory does not exist: {docs_dir}", file=sys.stderr)
@@ -1087,196 +1300,66 @@ def run_linter(docs_dir: Path, verbose: bool = False) -> int:
             if not found:
                 broken_links.append((rel, link))
 
-    drift_warnings = check_spec_drift(docs_dir)
-    devlog_warnings = check_devlog_semantic_guard(docs_dir)
-    fast_track_warnings = check_fast_track_specs(docs_dir)
-    phase_warnings = check_phase_consistency(docs_dir)
-    research_warnings = check_research_basis(docs_dir)
-    symbolic_warnings = check_symbolic_scope(docs_dir)
-    memory_errors = check_memory_limits(docs_dir)
-    memory_warnings = check_memory_consistency(docs_dir)
-    asset_warnings = check_asset_weights(docs_dir)
-    asset_layout_warnings = check_asset_layout(docs_dir)
+    findings: List[Finding] = []
+    findings.extend(
+        make_finding("KB-001", "In '%s' -> target not found: [[%s]]" % (src, target), file=src)
+        for src, target in broken_links
+    )
+    findings.extend(make_finding("KB-002", msg, file=src) for src, msg in frontmatter_warnings)
+    findings.extend(check_spec_drift(docs_dir))
+    findings.extend(check_devlog_semantic_guard(docs_dir))
+    findings.extend(check_fast_track_specs(docs_dir))
+    findings.extend(check_phase_consistency(docs_dir))
+    findings.extend(check_research_basis(docs_dir))
+    findings.extend(check_symbolic_scope(docs_dir))
+    findings.extend(check_memory_limits(docs_dir))
+    findings.extend(check_memory_consistency(docs_dir))
+    findings.extend(check_asset_weights(docs_dir))
+    findings.extend(check_asset_layout(docs_dir))
+
     debt_results = check_tech_debt_integrity(docs_dir, file_map=file_map)
-    debt_errors = [
-        e for e in debt_results
-        if not e.startswith("WARN:") and not e.startswith("Tech debt registry not found")
-    ]
     has_tasks_harness = (
         (docs_dir / "02_Tasks" / "Kanban.md").is_file()
         or (docs_dir / "02_Tasks" / "Roadmap.md").is_file()
         or (docs_dir / "docs" / "02_Tasks" / "Kanban.md").is_file()
         or (docs_dir / "docs" / "02_Tasks" / "Roadmap.md").is_file()
     )
-    debt_warnings = [
-        e for e in debt_results
-        if e.startswith("WARN:")
-        or (e.startswith("Tech debt registry not found") and has_tasks_harness)
-    ]
-    todo_warnings = check_untracked_todos(docs_dir)
-    has_errors = bool(broken_links or frontmatter_warnings or memory_errors or debt_errors)
+    findings.extend(f for f in debt_results if f.severity == "error")
+    findings.extend(
+        f for f in debt_results
+        if f.severity == "warning"
+        and (not f.message.startswith("Tech debt registry not found") or has_tasks_harness)
+    )
+    findings.extend(check_untracked_todos(docs_dir))
 
-    if verbose:
-        print(f"📊 Total Markdown Files Scanned: {len(all_md_files)}")
-        print(f"🔗 Total Wikilinks Validated: {checked_links_count}\n")
+    report = LintReport(files=len(all_md_files), wikilinks=checked_links_count, findings=findings)
 
-        if broken_links:
-            print(f"❌ Broken Wikilinks Detected ({len(broken_links)}):")
-            for src, target in broken_links:
-                print(f"   • In '{src}' -> target not found: [[{target}]]")
-            print()
-        else:
-            print("✅ No broken wikilinks found!\n")
-
-        if frontmatter_warnings:
-            print(f"⚠️ Frontmatter / Property Warnings ({len(frontmatter_warnings)}):")
-            for src, msg in frontmatter_warnings:
-                print(f"   • {src}: {msg}")
-            print()
-        else:
-            print("✅ All inspected task/spec/plan files have valid YAML frontmatter!\n")
-
-        if memory_errors:
-            print(f"❌ Memory Limit Errors ({len(memory_errors)}):")
-            for me in memory_errors:
-                print(f"   • {me}")
-            print()
-
-        if memory_warnings:
-            print(f"⚠️ Memory Consistency Warnings ({len(memory_warnings)}):")
-            for mw in memory_warnings:
-                print(f"   • {mw}")
-            print()
-
-        if drift_warnings:
-            print(f"⚠️ Spec Drift Warnings ({len(drift_warnings)}):")
-            for dw in drift_warnings:
-                print(f"   • {dw}")
-            print()
-
-        if devlog_warnings:
-            print(f"⚠️ Devlog Semantic Guard Warnings ({len(devlog_warnings)}):")
-            for dw in devlog_warnings:
-                print(f"   • {dw}")
-            print()
-
-        if fast_track_warnings:
-            print(f"⚠️ Fast-Track Guard Warnings ({len(fast_track_warnings)}):")
-            for ftw in fast_track_warnings:
-                print(f"   • {ftw}")
-            print()
-
-        if phase_warnings:
-            print(f"⚠️ Phase Consistency Warnings ({len(phase_warnings)}):")
-            for pw in phase_warnings:
-                print(f"   • {pw}")
-            print()
-
-        if research_warnings:
-            print(f"⚠️ Research Basis Warnings ({len(research_warnings)}):")
-            for rw in research_warnings:
-                print(f"   • {rw}")
-            print()
-
-        if symbolic_warnings:
-            print("⚠️ Symbolic Scope Warnings (%d):" % len(symbolic_warnings))
-            print("\n".join("   • " + sw for sw in symbolic_warnings))
-            print()
-
-        if asset_warnings:
-            print(f"⚠️ Asset Weight Warnings ({len(asset_warnings)}):")
-            for aw in asset_warnings:
-                print(f"   • {aw}")
-            print()
-
-        if asset_layout_warnings:
-            print(f"⚠️ Asset Layout Warnings ({len(asset_layout_warnings)}):")
-            for alw in asset_layout_warnings:
-                print(f"   • {alw}")
-            print()
-
-        if debt_warnings:
-            print(f"⚠️ Tech Debt Warnings ({len(debt_warnings)}):")
-            for dw in debt_warnings:
-                print(f"   • {dw}")
-            print()
-
-        if debt_errors:
-            print(f"❌ Tech Debt Integrity Errors ({len(debt_errors)}):")
-            for de in debt_errors:
-                print(f"   • {de}")
-            print()
-
-        if todo_warnings:
-            print(f"⚠️ Untracked TODO Warnings ({len(todo_warnings)}):")
-            for tw in todo_warnings:
-                print(f"   • {tw}")
-            print()
-
-        if has_errors:
-            print("❌ Linter failed: please resolve errors.")
-            return 1
-        else:
-            print("🎉 Knowledge base is healthy and consistent!")
-            return 0
+    if output_format == "json":
+        sys.stdout.write(render_json(report) + "\n")
+    elif output_format == "sarif":
+        sys.stdout.write(render_sarif(report) + "\n")
     else:
-        # Silent-on-Success mode
-        for dw in drift_warnings:
-            print(f"⚠️  WARN: {dw}")
-        for dw in devlog_warnings:
-            print(f"⚠️  WARN: {dw}")
-        for ftw in fast_track_warnings:
-            print(f"⚠️  WARN: {ftw}")
-        for pw in phase_warnings:
-            print(f"⚠️  WARN: {pw}")
-        for rw in research_warnings:
-            if rw.startswith("WARN:"):
-                print(f"⚠️  {rw}")
-            else:
-                print(f"⚠️  WARN: {rw}")
-        for sw in symbolic_warnings:
-            print(f"⚠️  {sw}" if sw.startswith("WARN:") else f"⚠️  WARN: {sw}")
-        for aw in asset_warnings:
-            print(f"⚠️  {aw}")
-        for alw in asset_layout_warnings:
-            print(f"⚠️  {alw}")
-        for dw in debt_warnings:
-            if dw.startswith("WARN:"):
-                print(f"⚠️  {dw}")
-            else:
-                print(f"⚠️  WARN: {dw}")
-        for mw in memory_warnings:
-            if mw.startswith("WARN:"):
-                print(f"⚠️  {mw}")
-            else:
-                print(f"⚠️  WARN: {mw}")
-        for tw in todo_warnings:
-            print(f"⚠️  WARN: {tw}")
-        if not has_errors:
-            print(f"OK: {len(all_md_files)} files scanned, {checked_links_count} wikilinks verified (0 broken).")
-            return 0
-        else:
-            error_count = len(broken_links) + len(frontmatter_warnings) + len(memory_errors) + len(debt_errors)
-            print(f"ERROR: {len(broken_links)} broken links, {len(frontmatter_warnings)} frontmatter warnings, {len(memory_errors)} memory errors, {len(debt_errors)} tech debt errors.")
-            if broken_links:
-                for src, target in broken_links:
-                    print(f"   • In '{src}' -> target not found: [[{target}]]")
-            if frontmatter_warnings:
-                for src, msg in frontmatter_warnings:
-                    print(f"   • {src}: {msg}")
-            if memory_errors:
-                for me in memory_errors:
-                    print(f"   • {me}")
-            if debt_errors:
-                for de in debt_errors:
-                    print(f"   • {de}")
-            return 1
+        sys.stdout.write(render_text(report, verbose))
+    return 1 if report.has_errors() else 0
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Docs-as-Code Knowledge Base Linter")
     parser.add_argument("--path", "-p", type=str, default=".", help="Path to docs directory or project root")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose audit output")
+    parser.add_argument(
+        "--format", "-f",
+        dest="output_format",
+        choices=["text", "json", "sarif"],
+        default="text",
+        help="Output format: text (default), json (machine-readable), sarif (SARIF 2.1.0)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="kb_lint %d" % RULESET_VERSION,
+        help="Print the rule-set version and exit",
+    )
     args = parser.parse_args()
 
     start = Path(args.path).resolve()
@@ -1287,5 +1370,5 @@ if __name__ == "__main__":
     else:
         vault = find_vault_root(start)
 
-    exit_code = run_linter(vault, verbose=args.verbose)
+    exit_code = run_linter(vault, verbose=args.verbose, output_format=args.output_format)
     sys.exit(exit_code)
