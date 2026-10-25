@@ -357,7 +357,7 @@ tags:
 
 - [x] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25).
 - [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода: реестр `KB-XXX`, JSON-схема, SARIF-структура, exit-коды, `--version` (2026-10-25).
-- [ ] `TASK-103` — ставится в Режиме 2; пермалинк добавляется в момент создания спеки ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
+- [ ] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16` (176 000 → 178 000), E2E установленной копии и Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) (2026-10-25).
 
 ---
 

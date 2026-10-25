@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16`, E2E установленной копии и Living Spec (2026-10-25) #task #phase27 #installer #e2e #spec
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода (реестр, JSON, SARIF, exit-коды) (2026-10-25) #task #phase27 #lint #tests #contracts
