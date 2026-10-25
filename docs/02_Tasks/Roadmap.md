@@ -360,10 +360,11 @@ tags:
 - [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода: реестр `KB-XXX`, JSON-схема, SARIF-структура, exit-коды, `--version` (2026-10-25).
 - [x] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16` (176 000 → 180 000), E2E установленной копии и Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) (2026-10-25).
 
-## Фаза 28: Гигиена инженерных гейтов: воспроизводимость тестов и CI-доставка линта (Engineering Gate Hygiene)
+## Фаза 28: Гигиена инженерных гейтов: воспроизводимость тестов и CI-доставка линта (Engineering Gate Hygiene) — ✅ Завершена
 **Цель:** Сделать гейты воспроизводимыми и пригодными для внешнего CI: закоммитить sandbox-раннер тестов (TRG-03 → Tier 1), затем упаковать линт в `action.yml` / `.pre-commit-hooks.yaml` и получить реального потребителя SARIF (Code Scanning) — там же принимается решение по `DEBT-004`.  
 **Первоисточник:** [[TechDebt|TechDebt.md (DEBT-005)]] и остаток [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]] (Волна 1, п.1–2); продолжение — [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]  
-**Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1), [[../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]
+**Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1), [[../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]  
+**Официальный релиз:** [[Releases/RELEASE-v0.28.0|RELEASE-v0.28.0]]
 
 - [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
 - [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README «Use as a GitHub Action» (2026-10-25).
@@ -379,7 +380,8 @@ tags:
 ## Фаза 29: Контракт простого языка и свежесть бандла (Plain-Language Contract & Bundle Freshness) — ✅ Завершена
 **Цель:** Принять правило Tier 2 `PLAIN-LANGUAGE` (пользователь — не разработчик: результат простыми словами, жаргон объясняется или убирается, ошибки как «причина → следствие → исправление») как оформленное решение: запись ADR-0033, Tier 1-страж на присутствие правила в **установленной** копии и безопасный бюджет бандла вместо 21 байта запаса.  
 **Первоисточник:** прямой запрос пользователя вне фазового плана (зафиксирован в `Devlog.md` 2026-10-25); реализация правила уже лежит в рабочем дереве  
-**Нормативная база:** ADR-0033 (создаётся в TASK-106), [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1–2)
+**Нормативная база:** ADR-0033 (создаётся в TASK-106), [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1–2)  
+**Официальный релиз:** [[Releases/RELEASE-v0.28.0|RELEASE-v0.28.0]]
 
 - [x] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: ADR-0033, Tier 1-страж «правило в установленной копии», бюджет 180 000 → 182 000 и приёмка унаследованного набора (2026-10-25).
 

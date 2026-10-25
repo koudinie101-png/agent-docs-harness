@@ -5,16 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.28.0] - 2026-10-25
 
 ### Added
 - **Plain-Language Contract (Tier 2 rule `PLAIN-LANGUAGE`)** — the user is explicitly treated as a non-developer: outcome first, every unavoidable term glossed in 5–10 plain words (or dropped), failures translated as cause -> consequence -> fix, choices presented with their practical consequences, and deep detail kept optional behind a short "Technical details" block. Registered in all three corpus documents: client index #25, harness core rules #17, adapters #11.
+- [ADR-0033](docs/03_Decisions_ADR/ADR-0033-plain-language-contract.md) records the decision and its rejected alternatives; the installer E2E guard `test_36_task_106_installed_rules_contain_plain_language` fails when the bundle is stale.
+- **CI delivery of the linter** (Phase 28):
+  - composite GitHub Action ([`action.yml`](action.yml)) with `path`/`format`/`output-file`/`python-version`/`extra-args`; it produces the report and never uploads it, so permissions stay with the calling workflow;
+  - [`.pre-commit-hooks.yaml`](.pre-commit-hooks.yaml) hook `kb-lint` (`language: system`; whole-vault scan, because link resolution is cross-document);
+  - [`.github/workflows/code-scanning.yml`](.github/workflows/code-scanning.yml) — SARIF upload to GitHub Code Scanning with least privilege and a fork guard; harness-only workflows are excluded from the installer bundle;
+  - [`scripts/run_tests_sandbox.py`](scripts/run_tests_sandbox.py) — committed sandbox-safe test runner (DEBT-005).
 
 ### Changed
+- SARIF/JSON findings carry a repository-root-relative `location`; `file` keeps the knowledge-base-relative path for backward compatibility (BUG-013).
+- Installer re-bundled: **180 691 B**, SHA-256 `5d8a2493062d108874aa3a48aef6b3391a76dad8ee8a5735f02e6b5fa8641bad`; installer budget stays at **182 000 B** (re-baselined in Phase 29: 21 B of headroom is a tripwire, not headroom). Template/skill limits unchanged (31 000 / 30 000).
 - `AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md` regenerated from `rules/AGENTS_CORE.md`; 24 golden fixtures refreshed; `tests/test_rules_consistency.py` pins updated (adapters 10 → 11 rules).
-- Installer re-bundled: **179 979 B**, SHA-256 `15da1030f66530ef5e8c61cab712eacac36d275d71aace4151a42dcc5313f40b`; installer budget re-baselined 180 000 → 182 000 (Phase 29: the previous ceiling left only 21 B, a tripwire rather than headroom), template/skill limits unchanged (31 000 / 30 000).
-- [ADR-0033](docs/03_Decisions_ADR/ADR-0033-plain-language-contract.md) records the decision and its rejected alternatives; the new installer E2E guard `test_36_task_106_installed_rules_contain_plain_language` fails when the bundle is stale.
-- `SPEC.md` §2.4, `README.md` §4 and `docs/Onboarding.md` §17 document the contract; §16 documents adapter/fixture regeneration when adding a rule.
+- `SPEC.md` §2.3/§2.4, `README.md` §3–§4 and `docs/Onboarding.md` §4/§17 document the CLI contract, the CI entry points and the plain-language rule.
+
+### Fixed
+- **BUG-013:** Code Scanning alerts pointed at non-existent paths (`file.md` instead of `docs/file.md`). Locations are now repository-relative, and a new guard fails when `install.py` embeds a stale linter.
+- Closed `DEBT-004` (SARIF line numbers accepted as a deliberate limitation, verified by a real alert) and `DEBT-005` (sandbox runner promoted into `scripts/`).
 
 ## [0.27.0] - 2026-10-25
 
