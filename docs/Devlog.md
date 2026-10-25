@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-103: доставка машинно-читаемого линтера; Фаза 27 завершена
+- **Что сделано:**
+  - [[02_Tasks/Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]] (Фаза 27): пересобран монолит `install.py` / `dist/install.py` — **179 171 B**, SHA-256 `a4961bfe2599a6c0…` (артефакты идентичны); бюджет `test_16` пере-базирован 176 000 → **180 000 B** (маржинальный коэффициент компрессии ≈1.6 символа/байт, оценка в ТЗ была оптимистичной; обоснование в комментарии теста).
+  - Новый E2E `test_35_task_101_machine_readable_lint_delivery`: установленная копия отдаёт `--format json` (схема v1) и `--version` (`kb_lint 1`); контракт сохраняется после `install.update_harness(...)` (`--update`).
+  - Living Spec: `SPEC.md` §2.3 (модель `Finding`, реестр `KB-XXX`, CLI-контракт; `updated: 2026-10-25`), `README.md` §3 (примеры `json`/`sarif`/`--version`), `docs/Onboarding.md` §4 (машинно-читаемый вызов).
+- **Проверка:**
+  - `unittest` — **180 тестов OK**; `py_compile` всех скриптов — 0.
+  - Установка в песочницу: `kb_lint --format json` → `version: 1`, `--version` → `kb_lint 1`; после `--update` — то же.
+  - `kb_lint --path docs` — 256 файлов, 2515 ссылок, 0 битых.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-release` — выпуск v0.27.0 по завершении Фазы 27 (Docs Integrity Gate), либо следующая инициатива из Icebox.
+
 ### [2026-10-25] — TASK-102: контрактные тесты машинно-читаемого вывода (json/sarif)
 - **Что сделано:**
   - [[02_Tasks/Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]] (Фаза 27): в `tests/test_kb_lint.py` добавлен класс `TestLintOutputContract` — 13 тестов на реестр `KB-XXX`, JSON-схему (`version: 1`), SARIF 2.1.0 (перекрёстные `ruleId → rules[]`, `level`, `locations` без `region`), «stdout = только документ», no-op `--verbose`, детерминизм и единые exit-коды во всех трёх форматах, `--version`.

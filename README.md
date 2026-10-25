@@ -158,6 +158,13 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
   ```
   It also performs an advisory plan-provenance check: a plan declaring `research_basis: none` without `basis_note` prints a `WARN:` without failing the build.
   It also performs an advisory symbolic-scope check: an active task spec that lists a code file without a nested symbol, or uses `:L10-L20` anchors, prints a `WARN:` without failing the build (ADR-0029).
+  Machine-readable diagnostics for CI, pre-commit and code scanning ([ADR-0032](docs/03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry.md)):
+  ```bash
+  python3 scripts/kb_lint.py --path docs --format json     # structured findings, schema v1
+  python3 scripts/kb_lint.py --path docs --format sarif > kb.sarif
+  python3 scripts/kb_lint.py --version                     # rule-set version: kb_lint 1
+  ```
+  Every finding carries a stable rule id (`KB-001`…`KB-015`, `KB-010` reserved), a severity (`error`/`warning`) and the owning file. `text` output stays byte-identical for humans and exit codes (`0`/`1`) are identical in all formats; SARIF deliberately omits `region.startLine` (`DEBT-004`).
 * **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1

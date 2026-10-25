@@ -152,6 +152,15 @@ flowchart LR
   ```bash
   python scripts/kb_lint.py --path docs
   ```
+* **Машинно-читаемая диагностика (CI, pre-commit, code scanning):**
+  ```bash
+  # Стабильные KB-XXX и схема version: 1
+  python scripts/kb_lint.py --path docs --format json
+
+  # SARIF 2.1.0 для GitHub Code Scanning
+  python scripts/kb_lint.py --path docs --format sarif > kb.sarif
+  ```
+  `text` — для человека (байт-в-байт прежний вывод), `json`/`sarif` — для машин; exit-коды одинаковы (`0` — чисто или только warnings, `1` — есть errors).
 * **Формирование релиза:**
   ```bash
   python scripts/kb_release.py --version vX.Y.Z --phase N

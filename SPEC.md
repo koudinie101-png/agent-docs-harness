@@ -4,7 +4,7 @@ title: "Мастер-спецификация: agent-docs-harness"
 status: active
 type: specification
 created: 2026-09-30
-updated: 2026-10-18
+updated: 2026-10-25
 tags:
   - spec
   - master
@@ -77,6 +77,8 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Эвристический контроль дрифта спецификации (`check_spec_drift`) с неблокирующими предупреждениями при $\ge 2$ завершенных фазах.
   * Семантический аудит журнала разработки (`check_devlog_semantic_guard`) с неблокирующими предупреждениями при обнаружении триггеров авто-чейнинга без защитного маркера ожидания пользователя.
   * Семантический контроль структуры фаз (`check_phase_consistency`): сопоставление номера фазы в frontmatter (`phase: N`) с папкой размещения (`Specs/NN_<Slug>/`) и тегами (`phaseN`).
+  * Единая модель находки (`Finding`: `rule_id`, `severity`, `file`, `message`) и реестр стабильных правил `KB-001…KB-015` (`KB-010` зарезервирован под `depends_on` и не эмитится) — SSOT для машинно-читаемых отчётов и будущих ignore-политик (ADR-0032).
+  * CLI-контракт диагностики: `--format {text,json,sarif}` (text — байт-в-байт прежний человекочитаемый вывод), `--version` (версия набора правил, `kb_lint 1`) и неизменные exit-коды `0/1` во всех форматах; SARIF 2.1.0 без `region.startLine` и без метаданных происхождения проекта (`DEBT-004`).
 * **`scripts/kb_release.py`:**
   * Zero dependencies (хэширование SHA-256, парсинг артефактов).
   * High-SNR Dual-Export: экспорт `RELEASE-vX.Y.Z.md` во внутреннюю базу знаний с фазово-изолированными решениями ADR (`is_adr_for_phase`) и публичный `dist/RELEASE_NOTES.md` без внутренних технических протоколов ADR, с очищенными от викиссылок Markdown-текстами для потребителей и GitHub Releases.

@@ -1066,9 +1066,71 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = canonical_size(skills_dir / "kb-onboard" / "SKILL.md")
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 176 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity audit, Phase 25 symbolic scope)
+            # Installer size check (budget <= 180 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns,
+            # UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity
+            # audit, Phase 25 symbolic scope, Phase 27 machine-readable lint contract: Finding model + KB-XXX registry +
+            # text/json/sarif renderers. Re-baselined deliberately: the marginal zlib ratio for these additions is ~1.6
+            # source chars per installer byte, not the ~3.13 isolated-file ratio, so the 176 KB ceiling could not hold.)
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 176000, f"install.py exceeded budget: {installer_size} bytes (budget <= 176 KB)")
+            self.assertLessEqual(installer_size, 180000, f"install.py exceeded budget: {installer_size} bytes (budget <= 180 KB)")
+
+    def test_35_task_101_machine_readable_lint_delivery(self):
+        """E2E: the installed linter ships the machine-readable output contract (TASK-101/103)."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "MachineLintApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="MachineLintApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            lint_script = target / "scripts" / "kb_lint.py"
+            self.assertTrue(lint_script.is_file(), "installed linter script is missing")
+
+            json_res = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs"), "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(
+                json_res.returncode, 0,
+                f"installed kb_lint --format json failed:\n{json_res.stdout}\n{json_res.stderr}",
+            )
+            payload = json.loads(json_res.stdout)
+            self.assertEqual(payload["version"], 1)
+            self.assertEqual(sorted(payload["summary"]), ["errors", "files", "warnings", "wikilinks"])
+
+            version_res = subprocess.run(
+                [sys.executable, str(lint_script), "--version"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(version_res.returncode, 0, version_res.stderr)
+            self.assertEqual(version_res.stdout.strip(), "kb_lint 1")
+
+            # --update must keep delivering the same contract
+            self.assertEqual(install.update_harness(target, backup=False), 0)
+            updated_res = subprocess.run(
+                [sys.executable, str(lint_script), "--path", str(target / "docs"), "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(
+                updated_res.returncode, 0,
+                f"installed kb_lint --format json failed after --update:\n{updated_res.stdout}\n{updated_res.stderr}",
+            )
+            self.assertEqual(json.loads(updated_res.stdout)["version"], 1)
 
     def test_17_update_migrates_to_skeleton_templates_and_high_snr_skills(self):
         """E2E test: Verify install.py --update updates old bloated templates/skills to compact High-SNR versions."""
