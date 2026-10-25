@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-026-ci-delivery-and-code-scanning|План: Фаза 28 (продолжение) — CI-доставка линта: action.yml, pre-commit, Code Scanning и решение по DEBT-004]] (2026-10-25) #plan #phase28 #ci #distribution #code-scanning
+
 ## ⏳ В работе (In Progress)
 
 
