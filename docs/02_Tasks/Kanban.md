@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25) #task #phase27 #lint #contracts
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/26_TechDebt/TASK-100-align-rules-section-numbering|TASK-100]]: DEBT-001 — выравнивание нумерации разделов корпуса правил (2026-10-18) #task #phase26 #techdebt #rules #tests

@@ -355,7 +355,8 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.1, §5.1); ADR-0032 (оформляется в рамках TASK-101)  
 **Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) в [[TechDebt|TechDebt.md]]
 
-- Задачи фазы (`TASK-101`…`TASK-103`) ставятся в Режиме 2; пермалинки спек добавляются в момент их создания — [[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]].
+- [ ] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25).
+- [ ] `TASK-102` … `TASK-103` — ставятся в Режиме 2; пермалинки добавляются в момент создания спеки ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
 
 ---
 
