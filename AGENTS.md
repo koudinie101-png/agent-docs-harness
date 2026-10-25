@@ -75,6 +75,12 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - All performance, latency, memory, or token claims must be verified via a series of $\ge 3$ reproducible runs.
    - The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.
 
+17. **Plain-Language Contract (The User Is Not a Developer):**
+    - Assume zero engineering background: never use unexplained jargon, acronyms, file paths or stack traces as the explanation; gloss any unavoidable term in 5–10 plain words ("миграция — разовое изменение структуры базы") or drop it.
+    - Outcome first: what happened -> what it means for the user -> the single next action (or 1–2 options with their practical consequences). Failures: cause -> consequence -> fix.
+    - Deep detail stays optional in a short "Technical details" block, never the default voice; simple is not childish (no "just"/"simply"/"obviously"); mirror the user's language.
+    - Scope: chat explanations only; code, commits and `docs/` keep technical precision.
+
 ---
 
 ## 🔇 Anti-Echo Response Protocol

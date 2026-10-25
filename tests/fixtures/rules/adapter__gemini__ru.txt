@@ -19,5 +19,6 @@
 8. **Tech Debt Governance & End-to-End Lifecycle (P1/P2 vs P3):** Fix P1/P2 immediately; register ALL P3 debt (review findings + planned `#techdebt` refactoring) as `DEBT-XXX` in `docs/02_Tasks/TechDebt.md` (SSOT); migrate resolved rows to Resolved Debt in `/kb-complete` (never refactor opportunistically).
 9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.
 10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.
+11. **Plain-Language Contract (User Is Not a Developer):** Lead with the outcome, gloss or drop jargon ("миграция — разовое изменение структуры базы"), explain failures as cause -> fix, offer options with consequences; deep detail is optional.
 
 Skills: `/kb-plan` `/kb-task` `/kb-implement` `/kb-complete` `/kb-bug` `/kb-triage` `/kb-adr` `/kb-research` `/kb-release` `/kb-lint`

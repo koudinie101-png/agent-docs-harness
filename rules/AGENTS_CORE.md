@@ -84,6 +84,9 @@ Language: {{lang_instruction}}
 <!-- RULE: BENCHMARKS -->
 24. **Benchmark Persistence:** Performance, latency, memory or token claims require >= 3 reproducible runs; discard the first (cold start) and record the command, environment and average metric.
 <!-- /RULE: BENCHMARKS -->
+<!-- RULE: PLAIN-LANGUAGE -->
+25. **Plain-Language Contract (User Is Not a Developer):** Assume zero engineering background: lead with the outcome in one plain sentence, gloss or drop every technical term ("миграция — разовое изменение структуры базы"), translate failures as cause -> consequence -> fix, and offer 1–2 options with their practical consequences. Deep technical detail is optional, never the default voice.
+<!-- /RULE: PLAIN-LANGUAGE -->
 
 ### 🎨 Obsidian Graph & Taxonomy
 Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
@@ -243,6 +246,9 @@ Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Don
 <!-- RULE: TRACEABLE-TAGS -->
 10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.
 <!-- /RULE: TRACEABLE-TAGS -->
+<!-- RULE: PLAIN-LANGUAGE -->
+11. **Plain-Language Contract (User Is Not a Developer):** Lead with the outcome, gloss or drop jargon ("миграция — разовое изменение структуры базы"), explain failures as cause -> fix, offer options with consequences; deep detail is optional.
+<!-- /RULE: PLAIN-LANGUAGE -->
 <!-- /DOCUMENT: adapters -->
 
 <!-- DOCUMENT: harness-agents -->
@@ -356,9 +362,17 @@ All project knowledge, task tracking, and architectural decisions are maintained
    - All performance, latency, memory, or token claims must be verified via a series of $\ge 3$ reproducible runs.
    - The first run is discarded (cold-start mitigation). The task artifact must record execution commands, environment parameters, and the average metric.
 
+<!-- /RULE: BENCHMARKS -->
+<!-- RULE: PLAIN-LANGUAGE -->
+17. **Plain-Language Contract (The User Is Not a Developer):**
+    - Assume zero engineering background: never use unexplained jargon, acronyms, file paths or stack traces as the explanation; gloss any unavoidable term in 5–10 plain words ("миграция — разовое изменение структуры базы") or drop it.
+    - Outcome first: what happened -> what it means for the user -> the single next action (or 1–2 options with their practical consequences). Failures: cause -> consequence -> fix.
+    - Deep detail stays optional in a short "Technical details" block, never the default voice; simple is not childish (no "just"/"simply"/"obviously"); mirror the user's language.
+    - Scope: chat explanations only; code, commits and `docs/` keep technical precision.
+<!-- /RULE: PLAIN-LANGUAGE -->
+
 ---
 
-<!-- /RULE: BENCHMARKS -->
 <!-- RULE: ANTI-ECHO -->
 ## 🔇 Anti-Echo Response Protocol
 

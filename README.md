@@ -192,6 +192,7 @@ Depending on your preference, the installer configures:
   * **`.github/copilot-instructions.md`** — GitHub Copilot chat & completions.
   * *Each adapter links directly to `AGENTS.md` as SSOT, specifies stack verification commands (`Build`, `Test`, `Lint`), and enforces core Read-Only & TDD invariants without double prompt injection.*
 * **Single-Source Rule Corpus (`rules/AGENTS_CORE.md`):** agent rules and all adapters are rendered from one hand-edited corpus ([ADR-0030](docs/03_Decisions_ADR/ADR-0030-single-source-rule-compiler.md)); a new rule is one edit instead of three, and generated artifacts are pinned by golden tests.
+* **Plain-Language Contract:** every answer is written for a non-developer — outcome first, unavoidable terms glossed in a few plain words (or dropped), errors translated as cause -> consequence -> fix, with deep detail kept optional.
 
 ---
 

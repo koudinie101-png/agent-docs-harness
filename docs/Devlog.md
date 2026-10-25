@@ -16,6 +16,21 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — Правило `PLAIN-LANGUAGE`: общение с пользователем без технического жаргона (прямой запрос, вне фазового плана)
+- **Что сделано:**
+  - В корпус `rules/AGENTS_CORE.md` добавлено правило Tier 2 `PLAIN-LANGUAGE` во все три документа: `client-agents` (#25), `harness-agents` (#17, с раскрытием в подпунктах), `adapters` (#11).
+  - Суть контракта: сначала результат простыми словами, затем смысл для пользователя, затем одно следующее действие; неизбежный термин объясняется в 5–10 простых словах или убирается; ошибки переводятся как «причина -> последствие -> исправление»; глубокие детали — только в опциональном блоке «Technical details»; тон без снисходительности (`just` / `simply` / `obviously`).
+  - Регенерированы: корневой `AGENTS.md`, 6 адаптеров (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`), 24 golden-фикстуры.
+  - Пины `tests/test_rules_consistency.py` обновлены: новый ID в трёх инвентарях, адаптеры 10 → 11.
+  - `SPEC.md` §2.4, `README.md` §4, `docs/Onboarding.md` §17 — контракт задокументирован; §16 дополнен шагом перегенерации адаптеров и фикстур.
+- **Проверка:**
+  - `python scripts/run_tests_sandbox.py` — полный набор зелёный; `tests.test_rules_consistency` + `tests.test_rules_golden` — OK.
+  - `python scripts/gen_rules.py --check` — дрейфа нет.
+  - `python scripts/build_installer.py` — `install.py` 179 979 B (лимит 180 000 B), SHA-256 `15da1030f66530ef5e8c61cab712eacac36d275d71aace4151a42dcc5313f40b`.
+  - `python scripts/kb_lint.py --path docs` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - При следующем релизе поднять лимит инсталлятора (осталось 21 B запаса) и вынести правило в release notes.
+
 ### [2026-10-25] — TASK-105: composite GitHub Action и раздел README
 - **Что сделано:**
   - [[02_Tasks/Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]] (Фаза 28): добавлен корневой `action.yml` (composite) — тонкая обёртка над `$GITHUB_ACTION_PATH/scripts/kb_lint.py`; входы `path`, `format`, `output-file`, `python-version`, `extra-args`, выход `output-file`; exit-код линта пробрасывается (`rc=$?` + `exit`), SARIF/JSON пишется в файл, `GITHUB_OUTPUT` заполняется только для машинных форматов.

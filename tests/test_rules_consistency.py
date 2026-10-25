@@ -32,7 +32,7 @@ CLIENT_RULES = [
     "SINGLE-TASK", "ZERO-STATE", "FEEDBACK-TRIAGE", "HUMAN-GUARDRAILS", "FAST-TRACK",
     "ZERO-ROUNDTRIP", "QUALITY-GATES", "FOUR-STATE-UI",
     # governance
-    "TECH-DEBT", "PRIOR-ART", "TRACEABLE-TAGS", "BENCHMARKS",
+    "TECH-DEBT", "PRIOR-ART", "TRACEABLE-TAGS", "BENCHMARKS", "PLAIN-LANGUAGE",
     # document blocks
     "ANTI-ECHO", "SENIOR-PARTNER", "LIFECYCLE",
 ]
@@ -40,13 +40,14 @@ CLIENT_RULES = [
 ADAPTER_RULES = [
     "ZERO-ROUNDTRIP", "HUMAN-GUARDRAILS", "FAST-TRACK", "SINGLE-TASK", "ANTI-ECHO",
     "QUALITY-GATES", "FOUR-STATE-UI", "TECH-DEBT", "PRIOR-ART", "TRACEABLE-TAGS",
+    "PLAIN-LANGUAGE",
 ]
 
 HARNESS_RULES = [
     "PERMALINKS", "REGRESSION-FIRST", "LIVING-SPEC", "OBSIDIAN", "SINGLE-TASK",
     "ZERO-STATE", "FEEDBACK-TRIAGE", "HUMAN-GUARDRAILS", "FAST-TRACK",
     "ZERO-ROUNDTRIP", "QUALITY-GATES", "FOUR-STATE-UI", "TECH-DEBT", "PRIOR-ART",
-    "TRACEABLE-TAGS", "BENCHMARKS", "KB-STANDARD", "ANTI-ECHO", "SENIOR-PARTNER",
+    "TRACEABLE-TAGS", "BENCHMARKS", "PLAIN-LANGUAGE", "KB-STANDARD", "ANTI-ECHO", "SENIOR-PARTNER",
     "LIFECYCLE",
 ]
 
@@ -91,7 +92,7 @@ class RulesConsistencyTest(unittest.TestCase):
     def test_adapters_are_derived_subset(self):
         adapters = set(self.ids("adapters"))
         self.assertEqual(adapters, set(ADAPTER_RULES), "adapter inventory drifted")
-        self.assertEqual(len(self.ids("adapters")), 10, "adapters must stay at 10 rules")
+        self.assertEqual(len(self.ids("adapters")), 11, "adapters must stay at 11 rules")
         self.assertTrue(adapters.issubset(set(CLIENT_RULES)), "adapter rule missing in client document")
 
     def test_harness_inventory_matches_pin(self):

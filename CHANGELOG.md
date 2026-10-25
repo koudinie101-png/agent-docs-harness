@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Plain-Language Contract (Tier 2 rule `PLAIN-LANGUAGE`)** — the user is explicitly treated as a non-developer: outcome first, every unavoidable term glossed in 5–10 plain words (or dropped), failures translated as cause -> consequence -> fix, choices presented with their practical consequences, and deep detail kept optional behind a short "Technical details" block. Registered in all three corpus documents: client index #25, harness core rules #17, adapters #11.
+
+### Changed
+- `AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md` regenerated from `rules/AGENTS_CORE.md`; 24 golden fixtures refreshed; `tests/test_rules_consistency.py` pins updated (adapters 10 → 11 rules).
+- Installer re-bundled: **179 979 B**, SHA-256 `15da1030f66530ef5e8c61cab712eacac36d275d71aace4151a42dcc5313f40b`; limits unchanged (180 000 / 31 000 / 30 000), 21 B of headroom left.
+- `SPEC.md` §2.4, `README.md` §4 and `docs/Onboarding.md` §17 document the contract; §16 documents adapter/fixture regeneration when adding a rule.
+
 ## [0.27.0] - 2026-10-25
 
 ### Added

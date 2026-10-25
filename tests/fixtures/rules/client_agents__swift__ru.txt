@@ -31,6 +31,7 @@ Language: Documentation/Devlog **Russian**, code/commits **English**.
 22. **Prior-Art Gate:** Before designing new modules, classes, or subsystems, inspect the existing codebase and the standard library; reinventing wheels and duplicate parallel abstractions are prohibited.
 23. **Traceable Backlog Tags:** Untracked `TODO` / `FIXME` comments are prohibited; annotate deferred work as `// ROADMAP-<ID>` or `// DEBT-XXX`.
 24. **Benchmark Persistence:** Performance, latency, memory or token claims require >= 3 reproducible runs; discard the first (cold start) and record the command, environment and average metric.
+25. **Plain-Language Contract (User Is Not a Developer):** Assume zero engineering background: lead with the outcome in one plain sentence, gloss or drop every technical term ("миграция — разовое изменение структуры базы"), translate failures as cause -> consequence -> fix, and offer 1–2 options with their practical consequences. Deep technical detail is optional, never the default voice.
 
 ### 🎨 Obsidian Graph & Taxonomy
 Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
