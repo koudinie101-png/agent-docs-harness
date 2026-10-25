@@ -8,6 +8,7 @@ import sys
 import os
 import io
 import json
+import re
 import shutil
 import tempfile
 import unittest
@@ -2861,6 +2862,23 @@ class TestAgentDocsHarness(unittest.TestCase):
                 claude_md,
                 "installed CLAUDE.md lost the PLAIN-LANGUAGE rule: the bundle is stale, rerun scripts/build_installer.py",
             )
+
+
+    def test_37_bug_013_bundle_ships_current_linter(self):
+        """BUG-013 guard: the embedded linter must match scripts/kb_lint.py (no stale bundle)."""
+        import base64
+        import zlib
+
+        bundle_src = (REPO_ROOT / "install.py").read_text(encoding="utf-8")
+        match = re.search(r'EMBEDDED_ASSETS_B64 = "([^"]+)"', bundle_src)
+        self.assertIsNotNone(match, "embedded assets blob not found in install.py")
+        assets = json.loads(zlib.decompress(base64.b64decode(match.group(1))).decode("utf-8"))
+        source = (REPO_ROOT / "scripts" / "kb_lint.py").read_text(encoding="utf-8")
+        self.assertEqual(
+            assets.get("scripts/kb_lint.py"),
+            source,
+            "install.py embeds a stale kb_lint.py: rerun scripts/build_installer.py",
+        )
 
 
 if __name__ == "__main__":

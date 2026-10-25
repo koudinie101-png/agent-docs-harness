@@ -93,13 +93,14 @@ class Finding(str):
     JSON/SARIF-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€Ñ‹ Ñ‡Ð¸Ñ‚Ð°ÑŽÑ‚ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, text-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€ Ð¿ÐµÑ‡Ð°Ñ‚Ð°ÐµÑ‚ ``str(finding)``.
     """
 
-    __slots__ = ("rule_id", "severity", "file")
+    __slots__ = ("rule_id", "severity", "file", "location")
 
-    def __new__(cls, rule_id: str, message: str, severity: str, file: str = ""):
+    def __new__(cls, rule_id: str, message: str, severity: str, file: str = "", location: str = ""):
         obj = super().__new__(cls, message)
         obj.rule_id = rule_id
         obj.severity = severity
         obj.file = file or ""
+        obj.location = location or ""
         return obj
 
     @property
@@ -107,14 +108,15 @@ class Finding(str):
         return str(self)
 
 
-def make_finding(rule_id: str, message: str, file: str = "", severity: Optional[str] = None) -> Finding:
+def make_finding(rule_id: str, message: str, file: str = "", severity: Optional[str] = None,
+                 location: str = "") -> Finding:
     """Creates a finding after validating rule id and severity against the registry."""
     if rule_id not in RULES:
         raise ValueError("Unknown lint rule: %s" % rule_id)
     resolved = severity or RULE_SEVERITY.get(rule_id)
     if resolved not in VALID_SEVERITIES:
         raise ValueError("Rule %s is reserved and cannot be emitted yet" % rule_id)
-    return Finding(rule_id, message, resolved, file)
+    return Finding(rule_id, message, resolved, file, location)
 
 
 class LintReport(object):
@@ -168,6 +170,33 @@ def _relative_to(p: Path, base: Path) -> Path:
         return p.resolve().relative_to(base.resolve())
     except (AttributeError, ValueError):
         return Path(os.path.relpath(p.resolve(), base.resolve()))
+
+
+def _docs_rel(file_path: Path, docs_dir: Path) -> str:
+    """Path relative to the knowledge base root (kept for text/JSON ``file``)."""
+    try:
+        return _relative_to(file_path, docs_dir).as_posix()
+    except Exception:
+        return file_path.name
+
+
+def _repo_rel(file_path: Path, docs_dir: Path) -> str:
+    """Path relative to the repository root (BUG-013: required by SARIF / Code Scanning)."""
+    repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
+    try:
+        return _relative_to(file_path, repo_root).as_posix()
+    except Exception:
+        return file_path.name
+
+
+def resolve_location(file_value: str, docs_dir: Path) -> str:
+    """Repo-relative location for a finding whose ``file`` is knowledge-base relative."""
+    if not file_value:
+        return ""
+    candidate = docs_dir / file_value
+    if candidate.is_file():
+        return _repo_rel(candidate, docs_dir)
+    return file_value
 
 
 def parse_wikilinks(content: str) -> List[str]:
@@ -343,7 +372,7 @@ def check_devlog_semantic_guard(docs_dir: Path) -> List[Finding]:
     for i, line in enumerate(content.splitlines(), start=1):
         if pattern.search(line):
             warnings.append(make_finding("KB-008", f"In '{rel_name}' line {i}: bare step trigger detected without user guardrail. "
-                f"Prefer '- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**' to prevent auto-chaining.", file=rel_name))
+                f"Prefer '- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**' to prevent auto-chaining.", file=_docs_rel(devlog_path, docs_dir)))
     return warnings
 
 
@@ -396,7 +425,7 @@ def check_fast_track_specs(docs_dir: Path) -> List[Finding]:
 
         file_items = re.findall(r"^\s*[\*\-]\s*`?\[(?:NEW|MODIFY|DELETE)\]`?", contract_section, re.MULTILINE | re.IGNORECASE)
         if len(file_items) > 2:
-            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' touches {len(file_items)} files (limit: <= 2). Consider full RFC.", file=rel_name))
+            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' touches {len(file_items)} files (limit: <= 2). Consider full RFC.", file=_docs_rel(spec_file, docs_dir)))
 
         # 2. Check Verification Plan
         has_verif = bool(
@@ -404,7 +433,7 @@ def check_fast_track_specs(docs_dir: Path) -> List[Finding]:
             re.search(r"(?:python|pytest|dotnet|npm|cargo)\s+.*", content, re.IGNORECASE)
         )
         if not has_verif:
-            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' is missing a Verification Plan.", file=rel_name))
+            warnings.append(make_finding("KB-012", f"Fast-Track spec '{rel_name}' is missing a Verification Plan.", file=_docs_rel(spec_file, docs_dir)))
 
     return warnings
 
@@ -458,7 +487,7 @@ def check_phase_consistency(docs_dir: Path) -> List[Finding]:
 
             # 1. Folder Phase vs Frontmatter Phase
             if fm_phase != folder_phase:
-                warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but is located in folder '{folder.name}' (expected phase {folder_phase}).", file=rel_path))
+                warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but is located in folder '{folder.name}' (expected phase {folder_phase}).", file=_docs_rel(spec_file, docs_dir)))
 
             # 2. Frontmatter Phase vs Tags
             tags_block = ""
@@ -469,7 +498,7 @@ def check_phase_consistency(docs_dir: Path) -> List[Finding]:
             for tag_phase_str in tag_matches:
                 tag_phase = int(tag_phase_str)
                 if tag_phase != fm_phase:
-                    warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but contains mismatched tag 'phase{tag_phase}'.", file=rel_path))
+                    warnings.append(make_finding("KB-006", f"Spec '{rel_path}' declares phase {fm_phase}, but contains mismatched tag 'phase{tag_phase}'.", file=_docs_rel(spec_file, docs_dir)))
 
     return warnings
 
@@ -582,14 +611,14 @@ def check_memory_consistency(docs_dir: Path) -> List[Finding]:
             prefix_match = re.match(r"^(INC-\d{3})", incident_file.stem)
             filename_prefix = prefix_match.group(1) if prefix_match else ""
             if not incident_id:
-                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_file.name}' has no 'id' in frontmatter", file=incident_file.name))
+                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_file.name}' has no 'id' in frontmatter", file=_docs_rel(incident_file, docs_dir)))
             elif not filename_prefix or incident_id != filename_prefix:
-                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_id}' id does not match filename '{incident_file.name}'", file=incident_file.name))
+                incident_warnings.append(make_finding("KB-013", f"WARN: incident '{incident_id}' id does not match filename '{incident_file.name}'", file=_docs_rel(incident_file, docs_dir)))
             lookup_prefix = filename_prefix or incident_id
             if lookup_prefix:
                 incident_reports_by_prefix[lookup_prefix] = {
                     "target_pattern": frontmatter.get("target_pattern", "").strip(),
-                    "file": incident_file.name,
+                    "file": _docs_rel(incident_file, docs_dir),
                 }
 
     for tag, line in pattern_entries:
@@ -665,7 +694,7 @@ def check_research_basis(docs_dir: Path) -> List[Finding]:
         note_match = BASIS_NOTE_RE.search(frontmatter)
         note = _normalize_plan_value(note_match.group(1)) if note_match else ""
         if not note:
-            warnings.append(make_finding("KB-007", "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name, file=plan_file.name))
+            warnings.append(make_finding("KB-007", "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name, file=_docs_rel(plan_file, docs_dir)))
     return warnings
 
 
@@ -700,7 +729,7 @@ def check_symbolic_scope(docs_dir: Path) -> List[Finding]:
         section = section.group(1)
 
         if LINE_ANCHOR_RE.search(section):
-            warnings.append(make_finding("KB-014", "WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name, file=spec_file.name))
+            warnings.append(make_finding("KB-014", "WARN: task '%s' uses line-number anchors (ADR-0029)" % spec_file.name, file=_docs_rel(spec_file, docs_dir)))
 
         lines = section.splitlines()
         for idx, line in enumerate(lines):
@@ -722,7 +751,7 @@ def check_symbolic_scope(docs_dir: Path) -> List[Finding]:
                     break
             if not has_symbol:
                 warnings.append(make_finding("KB-014", "WARN: task '%s' modifies code '%s' without a nested symbol (ADR-0029)"
-                    % (spec_file.name, raw_path), file=spec_file.name))
+                    % (spec_file.name, raw_path), file=_docs_rel(spec_file, docs_dir)))
     return warnings
 
 
@@ -916,10 +945,10 @@ def check_tech_debt_integrity(docs_dir: Path, file_map: Optional[Dict[str, Path]
             has_debt_ref = bool(re.search(r"DEBT-\d{3,}", body))
             if not has_debt_ref:
                 errors.append(make_finding("KB-004", f"WARN: '{rel_name}' is tagged #techdebt but has no DEBT-XXX reference. "
-                    f"Register the debt in TechDebt.md and link it from this document.", file=rel_name, severity="warning"))
+                    f"Register the debt in TechDebt.md and link it from this document.", file=_docs_rel(md_file, docs_dir), severity="warning"))
             elif not recorded_debt_ids:
                 errors.append(make_finding("KB-004", f"WARN: '{rel_name}' references DEBT-XXX but TechDebt.md registry is empty. "
-                    f"Register the referenced DEBT-XXX in the Active P3 Debt table.", file=rel_name, severity="warning"))
+                    f"Register the referenced DEBT-XXX in the Active P3 Debt table.", file=_docs_rel(md_file, docs_dir), severity="warning"))
 
     return errors
 
@@ -972,7 +1001,7 @@ def check_untracked_todos(docs_dir: Path) -> List[Finding]:
             line_to_check = re.sub(r'`[^`]*`', '', line)
             if active_pattern.search(line_to_check):
                 if not re.search(r'(?:ROADMAP-[A-Za-z0-9_-]+|DEBT-\d{3,})', line, re.IGNORECASE):
-                    warnings.append(make_finding("KB-009", f"Untracked TODO without ROADMAP-<ID> or DEBT-XXX reference in {rel_name}:{line_no}", file=rel_name))
+                    warnings.append(make_finding("KB-009", f"Untracked TODO without ROADMAP-<ID> or DEBT-XXX reference in {rel_name}:{line_no}", file=_docs_rel(file_path, docs_dir)))
 
     return warnings
 
@@ -1111,6 +1140,7 @@ def _finding_payload(finding: Finding) -> dict:
         "rule_id": finding.rule_id,
         "severity": finding.severity,
         "file": finding.file or None,
+        "location": finding.location or None,
         "message": finding.message,
     }
 
@@ -1150,7 +1180,7 @@ def render_sarif(report: LintReport) -> str:
             "message": {"text": finding.message},
         }
         if finding.file:
-            result["locations"] = [{"physicalLocation": {"artifactLocation": {"uri": finding.file}}}]
+            result["locations"] = [{"physicalLocation": {"artifactLocation": {"uri": finding.location or finding.file}}}]
         results.append(result)
 
     payload = {
@@ -1331,6 +1361,9 @@ def run_linter(docs_dir: Path, verbose: bool = False, output_format: str = "text
         and (not f.message.startswith("Tech debt registry not found") or has_tasks_harness)
     )
     findings.extend(check_untracked_todos(docs_dir))
+
+    for finding in findings:
+        finding.location = resolve_location(finding.file, docs_dir)
 
     report = LintReport(files=len(all_md_files), wikilinks=checked_links_count, findings=findings)
 

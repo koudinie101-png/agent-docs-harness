@@ -1,13 +1,13 @@
 ---
 id: BUG-013
 title: "SARIF artifactLocation.uri относительный к docs/, а не к корню репозитория"
-status: open
+status: fixed
 severity: medium
 type: bug
 target_release: "v0.28.0"
 target_phase: 28
-release_blocker: true
-fixed_in: null
+release_blocker: false
+fixed_in: "v0.28.0"
 regression_test: "tests/test_kb_lint.py::TestLintOutputContract.test_sarif_paths_are_repo_relative"
 created: 2026-10-25
 updated: 2026-10-25
@@ -22,7 +22,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 # 🐞 Дефект: BUG-013 — SARIF-путь не совпадает с реальным путём файла
 
-> **ID:** BUG-013 | **Критичность:** Medium | **Статус:** open  
+> **ID:** BUG-013 | **Критичность:** Medium | **Статус:** fixed  
 > **Релиз:** v0.28.0 | **Блокер:** Да (Code Scanning — заголовочная функция релиза)  
 > **Канбан:** [[../Kanban|Канбан-доска]] | **Спецификация:** [[../../SPEC|SPEC.md]]  
 > **Обнаружен:** probe в [[Specs/28_GateHygiene/TASK-109-debt004-decision|TASK-109]] (2026-10-25)
@@ -72,7 +72,15 @@ $ gh api repos/koudinie101-png/agent-docs-harness/code-scanning/alerts/1 --jq '.
 
 ## 6. Верификация (Regression-First)
 
-- [ ] Падающий регрессионный тест воспроизводит дефект (RED).
-- [ ] Исправление применено в коде (GREEN).
-- [ ] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
-- [ ] Дефект закрыт через `/kb-implement BUG-013` или `kb-complete`.
+- [x] Падающий регрессионный тест воспроизводит дефект (RED).
+- [x] Исправление применено в коде (GREEN).
+- [x] Регрессионный тест и весь сьют проходят успешно (REFACTOR).
+- [x] Дефект закрыт через `/kb-implement BUG-013` или `kb-complete`.
+
+## 7. Результат исправления (2026-10-25)
+
+* **RED:** `TestLintOutputContract.test_sarif_paths_are_repo_relative` и обновлённые ожидания `test_sarif_contract_structure` / `test_json_reports_broken_link_as_kb_001` падали ровно с дефектом: `'broken.md' != 'docs/broken.md'` и отсутствующий ключ `location`.
+* **GREEN:** `Finding` получил поле `location` (repo-relative); добавлены хелперы `_docs_rel()` / `_repo_rel()` / `resolve_location()`; восемь мест эмиссии, отдававших только имя файла, теперь отдают путь относительно хранилища; `render_sarif` публикует `location`, `render_json` — новое поле `location` (аддитивное изменение контракта).
+* **REFACTOR:** полный набор — **192 теста OK**; текст-вывод остался байт-идентичным старому скрипту (silent и verbose, проверено на хранилище с находками через сравнение файлов); `kb_lint` — 0 битых ссылок.
+* **Доставка:** бандл пересобран — install.py = dist/install.py = **180 691 B** (≤ 182 000); добавлен Tier 1-страж 	est_37_bug_013_bundle_ships_current_linter, который падал на устаревшем бандле и зелёный после пересборки.
+* **Контракт:** `file` по-прежнему путь относительно хранилища (обратная совместимость), `location` — путь от корня репозитория (используется SARIF/Code Scanning). Зафиксировано в ADR-0032 §5.

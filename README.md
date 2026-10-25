@@ -318,7 +318,7 @@ jobs:
 * **Version pinning:** `action.yml` ships with the `v0.28.0` release — until that tag exists, pin `@main`; afterwards pin the release tag (`@v0.28.0`) instead of a floating ref.
 * The action only **produces** the report; the SARIF upload stays a separate step of your workflow, because permissions (`security-events: write`) can only be granted by the calling workflow.
 * `format: text` prints findings to the job log; `json`/`sarif` write `output-file` and still fail the step on `error` findings — the exit code is identical in all formats.
-* SARIF locations are file-level by design (no line numbers, see ADR-0032 §5); the message names the broken link or the invalid field, so the finding stays actionable.
+* SARIF locations are file-level by design (no line numbers, see ADR-0032 §5) and use repository-root paths (`docs/...`), so Code Scanning links to the real file; the message names the broken link or the invalid field.
 
 #### Use as a pre-commit hook
 If the harness is already installed in your project (`scripts/kb_lint.py` exists), add the hook to `.pre-commit-config.yaml`:

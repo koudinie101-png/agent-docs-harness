@@ -1369,11 +1369,30 @@ class TestLintOutputContract(unittest.TestCase):
         payload = json.loads(stdout)
         self.assertEqual(payload["summary"]["errors"], 1)
         finding = payload["errors"][0]
-        self.assertEqual(sorted(finding), ["file", "message", "rule_id", "severity"])
+        self.assertEqual(sorted(finding), ["file", "location", "message", "rule_id", "severity"])
         self.assertEqual(finding["rule_id"], "KB-001")
         self.assertEqual(finding["severity"], "error")
         self.assertEqual(finding["file"], "broken.md")
+        self.assertEqual(finding["location"], "docs/broken.md")
         self.assertIn("MissingTarget", finding["message"])
+
+    def test_sarif_paths_are_repo_relative(self):
+        """BUG-013: SARIF/Security locations must resolve from the repository root, not from docs/."""
+        nested = self.docs_dir / "02_Tasks"
+        nested.mkdir(parents=True, exist_ok=True)
+        (nested / "probe.md").write_text("# Probe\n[[MissingNestedTarget]]", encoding="utf-8")
+
+        exit_code, stdout = self._run_format("sarif")
+        self.assertEqual(exit_code, 1)
+        doc = json.loads(stdout)
+        results = doc["runs"][0]["results"]
+        self.assertTrue(results)
+        uris = [
+            result["locations"][0]["physicalLocation"]["artifactLocation"]["uri"]
+            for result in results
+            if result.get("locations")
+        ]
+        self.assertIn("docs/02_Tasks/probe.md", uris, "nested finding must carry a repo-relative path")
 
     def test_json_verbose_flag_is_noop(self):
         """--verbose must not break machine output."""
@@ -1413,7 +1432,7 @@ class TestLintOutputContract(unittest.TestCase):
         self.assertEqual(result["ruleId"], "KB-001")
         self.assertEqual(result["level"], "error")
         location = result["locations"][0]["physicalLocation"]
-        self.assertEqual(location["artifactLocation"]["uri"], "broken.md")
+        self.assertEqual(location["artifactLocation"]["uri"], "docs/broken.md")
         self.assertNotIn("region", location)
 
     def test_sarif_empty_results_on_clean_vault(self):
