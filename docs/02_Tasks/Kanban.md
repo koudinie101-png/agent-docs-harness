@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|План: Фаза 27 — Продуктизация линтера: машинно-читаемая диагностика (Docs Integrity Gate, P0)]] (2026-10-25) #plan #phase27 #docs-integrity-gate #lint #contracts
+
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)

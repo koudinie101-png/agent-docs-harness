@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-18
+updated: 2026-10-25
 tags:
   - roadmap
   - planning
@@ -349,6 +349,16 @@ tags:
 
 ---
 
+## Фаза 27: Продуктизация линтера — машинно-читаемая диагностика (Docs Integrity Gate, P0)
+**Цель:** Превратить `scripts/kb_lint.py` из внутреннего скрипта с текстовым выводом в продукт с машинно-читаемым контрактом: единая модель `Finding`, реестр стабильных `KB-001…KB-015` (`KB-010` зарезервирован под `depends_on`), `--format {text,json,sarif}` и `--version` — при неизменном text-выводе, неизменных exit-кодах и без новых проверок поведения. Фундамент для `KB-010`, right-sizing-предупреждений и CI-упаковки следующих фаз.  
+**Первоисточник плана:** [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]  
+**Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.1, §5.1); ADR-0032 (оформляется в рамках TASK-101)  
+**Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) в [[TechDebt|TechDebt.md]]
+
+- Задачи фазы (`TASK-101`…`TASK-103`) ставятся в Режиме 2; пермалинки спек добавляются в момент их создания — [[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]].
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -358,7 +368,7 @@ tags:
 
 ### 🌊 Волна 1 — Docs Integrity Gate (P0)
 
-* 💡 **[P0] Продуктизация `kb_lint` (JSON/SARIF, `--fix`, CI):** `--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, безопасный `--fix` (включая экранирование пайпов `\|`), `action.yml` и `.pre-commit-hooks.yaml`; линт становится самостоятельным продуктом, а не внутренним скриптом.
+* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** машинно-читаемый контракт (`--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, `--version`) промоутирован в Фазу 27 — [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]; остаток пункта: безопасный `--fix` (`--dry-run` по умолчанию, backup, только детерминированные правки) и упаковка линта для CI/pre-commit.
 * 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`; закрывает разрыв с `bmad status`, `openspec status`, `task-master next`.
 * 💡 **[P0] Граф зависимостей задач (`depends_on`):** frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`; защита от преждевременного старта.
 * 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan.

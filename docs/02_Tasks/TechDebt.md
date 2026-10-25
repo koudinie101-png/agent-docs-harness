@@ -4,7 +4,7 @@ title: "Реестр технического долга (Tech Debt Registry)"
 type: techdebt
 status: active
 created: 2026-10-15
-updated: 2026-10-18
+updated: 2026-10-25
 tags:
   - techdebt
   - governance
@@ -30,6 +30,7 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF-результаты без `region.startLine`: находки привязываются к файлу, а не к строке, поэтому аннотации в GitHub Code Scanning не указывают место. Закрывается трекингом строк в `check_*`-функциях | [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization\|PLAN-025]] | 2026-10-25 | Открыт |
 
 ---
 
