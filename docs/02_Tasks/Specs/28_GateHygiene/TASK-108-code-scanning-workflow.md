@@ -1,7 +1,7 @@
 ---
 id: TASK-108
 title: "Code Scanning: собственный SARIF-workflow и исключение из бандла"
-status: in-progress
+status: done
 type: task
 phase: 28
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-108 — Code Scanning в собственном репозитории
 
-> **ID:** TASK-108 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-108 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 28 | **План:** [[../../Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Зависимость:** [[28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]] (workflow использует действие через `uses: ./`)  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]], [[../../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1 п.2)
@@ -130,14 +130,14 @@ EXCLUDED_WORKFLOWS = {"rules-check.yml", "code-scanning.yml"}
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] `python -m py_compile scripts/build_installer.py tests/test_ci_workflows.py` → Exit 0.
-- [ ] `python -m unittest tests.test_ci_workflows -v` → 8 тестов OK (5 прежних + 3 новых).
-- [ ] Полный набор: `python scripts/run_tests_sandbox.py` → **191 тест OK** (188 + 3).
-- [ ] `git status --short` не содержит `install.py` / `dist/install.py` (пересборка не требуется: бандл и так не содержит новый workflow).
-- [ ] После пуша: `gh run list --workflow=code-scanning.yml -L 1` → последний запуск `completed/success`.
-- [ ] Приёмка SARIF: `gh api repos/koudinie101-png/agent-docs-harness/code-scanning/analyses` → есть анализ с `tool.name = kb_lint` и `results_count = 0` (чистая база — алертов нет, но документ принят). Это и есть доказательство H1.
-- [ ] Если API отвечает 403/404 (Code Scanning не включён) — зафиксировать в Devlog как блокер и **не** закрывать задачу «на глаз».
-- [ ] `python scripts/kb_lint.py --path docs` → 0 битых ссылок, 0 `WARN`.
+- [x] `python -m py_compile scripts/build_installer.py tests/test_ci_workflows.py` → Exit 0.
+- [x] `python -m unittest tests.test_ci_workflows -v` → 8 тестов OK (5 прежних + 3 новых).
+- [x] Полный набор: `python scripts/run_tests_sandbox.py` → **191 тест OK** (188 + 3).
+- [x] `git status --short` не содержит `install.py` / `dist/install.py` (пересборка не требуется: бандл и так не содержит новый workflow).
+- [x] После пуша: `gh run list --workflow=code-scanning.yml -L 1` → последний запуск `completed/success`.
+- [x] Приёмка SARIF: `gh api repos/koudinie101-png/agent-docs-harness/code-scanning/analyses` → есть анализ с `tool.name = kb_lint` и `results_count = 0` (чистая база — алертов нет, но документ принят). Это и есть доказательство H1.
+- [x] Если API отвечает 403/404 (Code Scanning не включён) — зафиксировать в Devlog как блокер и **не** закрывать задачу «на глаз».
+- [x] `python scripts/kb_lint.py --path docs` → 0 битых ссылок, 0 `WARN`.
 
 * **Замеры $\ge 3$ прогонов:** не применимы (конфигурация CI); если фиксируется длительность workflow, то 3 запуска и среднее в Devlog.
 
@@ -147,8 +147,15 @@ EXCLUDED_WORKFLOWS = {"rules-check.yml", "code-scanning.yml"}
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Workflow создан и содержит триггеры push/PR/dispatch, права `contents: read` + `security-events: write`, `uses: ./`, `if: always()` + fork-guard, `category: kb-lint`.
-- [ ] `code-scanning.yml` в `EXCLUDED_WORKFLOWS`; живой тест `bundle_assets()` подтверждает отсутствие `rules-check.yml` и `code-scanning.yml`, наличие `release.yml`.
-- [ ] В `rules-check.yml` нет `security-events` (least privilege зафиксирован тестом).
-- [ ] Запуск workflow зелёный, анализ `tool.name = kb_lint` виден в API Code Scanning (или зафиксирован блокер).
-- [ ] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] Workflow создан и содержит триггеры push/PR/dispatch, права `contents: read` + `security-events: write`, `uses: ./`, `if: always()` + fork-guard, `category: kb-lint`.
+- [x] `code-scanning.yml` в `EXCLUDED_WORKFLOWS`; живой тест `bundle_assets()` подтверждает отсутствие `rules-check.yml` и `code-scanning.yml`, наличие `release.yml`.
+- [x] В `rules-check.yml` нет `security-events` (least privilege зафиксирован тестом).
+- [x] Запуск workflow зелёный, анализ `tool.name = kb_lint` виден в API Code Scanning (или зафиксирован блокер).
+- [x] Полный набор тестов зелёный; `kb_lint` — 0 битых; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+
+## 6. Отклонения при реализации (2026-10-25)
+
+* **`upload-sarif` переведён на `v4`** (в §3.1 был `v3`): первый же запуск вывел предупреждение, что CodeQL Action v3 выводится из эксплуатации в декабре 2026. Правка сделана в этом же workflow и в примере README; повторный запуск зелёный.
+* **Приёмка SARIF подтверждена фактами, а не «на глаз»:** запуски [40180208774](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180208774) (v3) и [40180266228](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180266228) (v4) — `success`; `code-scanning/analyses` вернул `{"tool": "kb_lint", "version": "1", "results": 0, "ref": "refs/heads/main"}`; `code-scanning/alerts` — 0. Это закрывает H1 из PLAN-026 и «ручную приёмку», отложенную в TASK-102.
+* **Скриншот Security-панели не снимался** (работа без UI): эквивалентное доказательство — JSON-ответ API, записанный в `Devlog.md`.
+* **Пересборка установщика не потребовалась:** workflow не входит в бандл (живой тест `bundle_assets()`), `install.py` / `dist/install.py` не менялись.

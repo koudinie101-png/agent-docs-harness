@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-108: Code Scanning подключён, SARIF принят в Security
+- **Что сделано:**
+  - [[02_Tasks/Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]] (Фаза 28): `.github/workflows/code-scanning.yml` — push/PR в `main` + `workflow_dispatch`, права `contents: read` + `security-events: write`, `uses: ./` (наше действие), загрузка SARIF с `if: always()` и fork-guard, `category: kb-lint`.
+  - `scripts/build_installer.py`: `EXCLUDED_WORKFLOWS = {"rules-check.yml", "code-scanning.yml"}` — клиенты не получат workflow, требующий `security-events`.
+  - `tests/test_ci_workflows.py`: 3 Tier 1-теста, включая живой вызов `bundle_assets()` (в файле теперь 8 тестов).
+  - `upload-sarif` переведён на `v4` (в логе первого запуска — предупреждение о выводе v3 из эксплуатации в декабре 2026); пример в README синхронизирован.
+- **Проверка:**
+  - Полный набор — **191 тест OK**; `kb_lint` — 0 битых; `install.py` не менялся (workflow не бандлится).
+  - Запуски [40180208774](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180208774) и [40180266228](https://github.com/koudinie101-png/agent-docs-harness/actions/runs/40180266228) — `success`, все шаги зелёные.
+  - Приёмка SARIF: `code-scanning/analyses` → `{"tool": "kb_lint", "version": "1", "results": 0, "ref": "refs/heads/main"}`; `code-scanning/alerts` → 0. H1 из PLAN-026 подтверждена, «ручная приёмка» TASK-102 закрыта фактом.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `TASK-109` — решение по `DEBT-004`: аннотации в Code Scanning привязаны к файлу, `region` нет; закрыть как принятое ограничение или завести задачу на строки.
+
 ### [2026-10-25] — TASK-107: pre-commit-хук для линта
 - **Что сделано:**
   - [[02_Tasks/Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]] (Фаза 28): добавлен `.pre-commit-hooks.yaml` — хук `kb-lint` (`language: system`, `entry: python3 scripts/kb_lint.py --path docs`, `files: '\.md$'`, `pass_filenames: false`, `require_serial: true`); линтуется всё хранилище целиком, потому что проверка ссылок перекрёстная.

@@ -14,13 +14,14 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]]: Code Scanning — SARIF-workflow, `uses: ./`, исключение из бандла (2026-10-25) #task #phase28 #ci #code-scanning
 
 
 
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/28_GateHygiene/TASK-108-code-scanning-workflow|TASK-108]]: Code Scanning — SARIF-workflow, `uses: ./`, исключение из бандла (2026-10-25) #task #phase28 #ci #code-scanning
 
 - [x] [[Specs/28_GateHygiene/TASK-107-pre-commit-hooks-and-readme|TASK-107]]: `.pre-commit-hooks.yaml` и два рецепта подключения в README (2026-10-25) #task #phase28 #ci #distribution
 
