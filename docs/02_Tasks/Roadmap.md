@@ -358,7 +358,15 @@ tags:
 
 - [x] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25).
 - [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода: реестр `KB-XXX`, JSON-схема, SARIF-структура, exit-коды, `--version` (2026-10-25).
-- [x] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16` (176 000 → 178 000), E2E установленной копии и Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) (2026-10-25).
+- [x] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16` (176 000 → 180 000), E2E установленной копии и Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`) (2026-10-25).
+
+## Фаза 28: Гигиена инженерных гейтов: воспроизводимость тестов и CI-доставка линта (Engineering Gate Hygiene)
+**Цель:** Сделать гейты воспроизводимыми и пригодными для внешнего CI: закоммитить sandbox-раннер тестов (TRG-03 → Tier 1), затем упаковать линт в `action.yml` / `.pre-commit-hooks.yaml` и получить реального потребителя SARIF (Code Scanning) — там же принимается решение по `DEBT-004`.  
+**Первоисточник:** [[TechDebt|TechDebt.md (DEBT-005)]] и остаток [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]] (Волна 1, п.1–2)  
+**Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1), [[../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]
+
+- [ ] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
+- [ ] `TASK-105`… — CI-доставка линта (`action.yml`, `.pre-commit-hooks.yaml`) и SARIF upload в собственный workflow.
 
 ---
 

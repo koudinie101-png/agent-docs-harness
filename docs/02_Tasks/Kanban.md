@@ -10,11 +10,13 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|План: Фаза 27 — Продуктизация линтера: машинно-читаемая диагностика (Docs Integrity Gate, P0)]] (2026-10-25) #plan #phase27 #docs-integrity-gate #lint #contracts
-
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: DEBT-005 — промоушен sandbox-раннера тестов в `scripts/` (2026-10-25) #task #fast-track #phase28 #techdebt #tests
+
 ## ✅ Готово (Done)
+
+- [x] [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|План: Фаза 27 — Продуктизация линтера: машинно-читаемая диагностика (Docs Integrity Gate, P0)]] (2026-10-25) #plan #phase27 #docs-integrity-gate #lint #contracts
 
 - [x] [[Specs/27_DocsIntegrity/TASK-103-bundle-e2e-and-living-spec|TASK-103]]: Пересборка бандла, бюджет `test_16`, E2E установленной копии и Living Spec (2026-10-25) #task #phase27 #installer #e2e #spec
 
