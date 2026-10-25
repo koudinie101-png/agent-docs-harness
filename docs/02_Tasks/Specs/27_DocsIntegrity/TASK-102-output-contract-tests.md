@@ -1,7 +1,7 @@
 ---
 id: TASK-102
 title: "Контрактные тесты машинно-читаемого вывода линтера (json/sarif)"
-status: in-progress
+status: done
 type: task
 phase: 27
 component:
@@ -21,7 +21,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-102 — Контрактные тесты машинно-читаемого вывода
 
-> **ID:** TASK-102 | **Статус:** К реализации (Режим 2)  
+> **ID:** TASK-102 | **Статус:** Выполнено (Режим 3)  
 > **Фаза:** 27 | **План:** [[../../Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]] | **Канбан:** [[../../Kanban|Канбан]]  
 > **Предыдущая задача:** [[27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]] — реализовала `Finding`, реестр и рендереры  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]], [[../../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]]  
@@ -164,14 +164,14 @@ assert all("region" not in loc["physicalLocation"] for r in results for loc in r
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Компиляция: `python -m py_compile tests/test_kb_lint.py scripts/kb_lint.py` → Exit 0.
-- [ ] Только контрактные тесты: `python tmp/run_tests.py tests.test_kb_lint` (или `python -m unittest tests.test_kb_lint -v` вне sandbox) → все новые тесты зелёные.
-- [ ] Полный набор: `python tmp/run_tests.py` → **166 + N тестов OK**, 0 failures/errors.
-- [ ] Паритет с TASK-101: `git diff scripts/kb_lint.py` пуст (продакшн-код не тронут).
-- [ ] Ручная структурная проверка SARIF: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb_lint.sarif` + разбор ключей (`runs[0].tool.driver.rules`, `results[].ruleId`, отсутствие `region`/`informationUri`).
-- [ ] Детерминизм JSON: два прогона `--format json` дают побайтово одинаковый stdout.
-- [ ] `python scripts/kb_lint.py --path docs` → одна строка `OK: …`, Exit 0 (регресс text-вывода).
-- [ ] `python scripts/kb_lint.py --path docs` после правок документации → 0 битых ссылок.
+- [x] Компиляция: `python -m py_compile tests/test_kb_lint.py scripts/kb_lint.py` → Exit 0.
+- [x] Только контрактные тесты: `python tmp/run_tests.py tests.test_kb_lint` (или `python -m unittest tests.test_kb_lint -v` вне sandbox) → все новые тесты зелёные.
+- [x] Полный набор: `python tmp/run_tests.py` → **166 + N тестов OK**, 0 failures/errors.
+- [x] Паритет с TASK-101: `git diff scripts/kb_lint.py` пуст (продакшн-код не тронут).
+- [x] Ручная структурная проверка SARIF: `python scripts/kb_lint.py --path docs --format sarif > tmp/kb_lint.sarif` + разбор ключей (`runs[0].tool.driver.rules`, `results[].ruleId`, отсутствие `region`/`informationUri`).
+- [x] Детерминизм JSON: два прогона `--format json` дают побайтово одинаковый stdout.
+- [x] `python scripts/kb_lint.py --path docs` → одна строка `OK: …`, Exit 0 (регресс text-вывода).
+- [x] `python scripts/kb_lint.py --path docs` после правок документации → 0 битых ссылок.
 
 * **Замеры $\ge 3$ прогонов:** не требуются (производительность не заявляется); если фиксируется время, то 3 прогона и среднее в Devlog (правило 16 `AGENTS.md`).
 
@@ -181,9 +181,9 @@ assert all("region" not in loc["physicalLocation"] for r in results for loc in r
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Добавлено не менее **13** контрактных тестов (§2), каждый падает при регрессии соответствующего инварианта (проверено мысленным мутационным тестом: удаление `KB-010` из `RULES`, смена `version`, удаление `locations`).
-- [ ] `scripts/kb_lint.py`, `install.py`, `dist/install.py` не изменены (`git diff` пуст).
-- [ ] Полный набор тестов зелёный; регрессов в существующих 166 тестах нет.
-- [ ] SARIF проверен структурно; приёмка Code Scanning явно отложена до фазы CI-упаковки (не заявляется).
-- [ ] `DEBT-004` дополнен ссылкой на тест-политику.
-- [ ] `kb_lint --path docs` — 0 битых ссылок; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.
+- [x] Добавлено не менее **13** контрактных тестов (§2), каждый падает при регрессии соответствующего инварианта (проверено мысленным мутационным тестом: удаление `KB-010` из `RULES`, смена `version`, удаление `locations`).
+- [x] `scripts/kb_lint.py`, `install.py`, `dist/install.py` не изменены (`git diff` пуст).
+- [x] Полный набор тестов зелёный; регрессов в существующих 166 тестах нет.
+- [x] SARIF проверен структурно; приёмка Code Scanning явно отложена до фазы CI-упаковки (не заявляется).
+- [x] `DEBT-004` дополнен ссылкой на тест-политику.
+- [x] `kb_lint --path docs` — 0 битых ссылок; статусы обновлены (ТЗ/Канбан/Roadmap), запись в `Devlog.md` — на шаге `/kb-complete`.

@@ -30,7 +30,7 @@ parent_roadmap: "[[Roadmap|Дорожная карта]]"
 
 | ID | Приоритет | Модуль / Файл | Описание техдолга | Задача-источник | Дата обнаружения | Статус |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF-результаты без `region.startLine`: находки привязываются к файлу, а не к строке, поэтому аннотации в GitHub Code Scanning не указывают место. Закрывается трекингом строк в `check_*`-функциях | [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization\|PLAN-025]] | 2026-10-25 | Открыт |
+| DEBT-004 | P3 | `scripts/kb_lint.py` (`--format sarif`) | SARIF-результаты без `region.startLine`: находки привязываются к файлу, а не к строке, поэтому аннотации в GitHub Code Scanning не указывают место. Закрывается трекингом строк в `check_*`-функциях. Проверяется структурно (`TestLintOutputContract.test_sarif_contract_structure`), `region` отсутствует намеренно | [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization\|PLAN-025]] | 2026-10-25 | Открыт |
 | DEBT-005 | P3 | `tests/` (DSH Windows sandbox) | Обёртка, патчащая `tempfile.mkdtemp` на permissive-режим (TRG-03), живёт только в untracked `tmp/run_tests.py`: без неё `unittest discover` падает `PermissionError WinError 5`, а знание может быть потеряно вместе с каталогом. Промоушен TRG-03 в Tier 1 = перенос обёртки в `scripts/` | [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats\|TASK-101]] | 2026-10-25 | Открыт |
 
 ---

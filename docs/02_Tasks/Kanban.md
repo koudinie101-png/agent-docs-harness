@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода (реестр, JSON, SARIF, exit-коды) (2026-10-25) #task #phase27 #lint #tests #contracts
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]]: Контрактные тесты машинно-читаемого вывода (реестр, JSON, SARIF, exit-коды) (2026-10-25) #task #phase27 #lint #tests #contracts
 
 - [x] [[Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]]: Модель `Finding`, реестр `KB-001…KB-015`, рендереры `text/json/sarif`, `--format` и `--version`, ADR-0032 (2026-10-25) #task #phase27 #lint #contracts
 

@@ -6,7 +6,9 @@ Tests Silent-on-Success mode, verbose mode, error detection, and CLI argument pa
 
 import sys
 import io
+import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -1261,6 +1263,187 @@ date: 2026-10-15
             exit_code = kb_lint.run_linter(self.docs_dir, verbose=False)
         self.assertEqual(exit_code, 0)
         self.assertNotIn("without a nested symbol", captured.getvalue())
+
+
+class TestLintOutputContract(unittest.TestCase):
+    """TASK-102: machine-readable output contract (registry, JSON, SARIF, exit codes)."""
+
+    def setUp(self):
+        self.temp_dir = Path(tempfile.mkdtemp())
+        self.docs_dir = self.temp_dir / "docs"
+        self.docs_dir.mkdir(parents=True)
+        (self.docs_dir / "00_Index.md").write_text("# Index\n", encoding="utf-8")
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def _run_cli(self, *args):
+        res = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "kb_lint.py"), *args],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        return res.returncode, res.stdout
+
+    def _run_format(self, output_format, *extra):
+        return self._run_cli("--path", str(self.docs_dir), "--format", output_format, *extra)
+
+    def _add_broken_link(self):
+        (self.docs_dir / "broken.md").write_text("# Broken\n[[MissingTarget]]", encoding="utf-8")
+
+    def _add_warning_only_harness(self):
+        repo_root = self.docs_dir.parent
+        (repo_root / "SPEC.md").write_text(
+            "---\nid: SPEC\nstatus: active\ncreated: 2026-10-01\nupdated: 2026-10-01\n---\n# Spec",
+            encoding="utf-8",
+        )
+        tasks_dir = self.docs_dir / "02_Tasks"
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        (tasks_dir / "Roadmap.md").write_text(
+            "# Roadmap\n\n"
+            "## Фаза 1: First — ✅ Завершена\n- [x] Task 1\n\n"
+            "## Фаза 2: Second — ✅ Завершена\n- [x] Task 2\n",
+            encoding="utf-8",
+        )
+
+    # --- registry ---------------------------------------------------------------
+
+    def test_rule_registry_is_complete_and_unique(self):
+        """Registry holds KB-001..KB-015 in order; KB-010 is reserved (no severity)."""
+        expected = ["KB-%03d" % index for index in range(1, 16)]
+        self.assertEqual(list(kb_lint.RULES), expected)
+        self.assertEqual(set(kb_lint.RULE_SEVERITY), set(expected) - {"KB-010"})
+        self.assertTrue(set(kb_lint.RULE_SEVERITY.values()) <= {"error", "warning"})
+        for rule_id in expected:
+            self.assertTrue(kb_lint.RULES[rule_id].strip())
+
+    def test_make_finding_rejects_unknown_rule(self):
+        """Unknown rule ids must fail loudly instead of leaking into reports."""
+        with self.assertRaises(ValueError):
+            kb_lint.make_finding("KB-999", "unknown rule")
+
+    def test_make_finding_rejects_reserved_rule(self):
+        """KB-010 is reserved for depends_on and cannot be emitted yet."""
+        with self.assertRaises(ValueError):
+            kb_lint.make_finding("KB-010", "dependency cycle")
+
+    def test_finding_keeps_message_string_contract(self):
+        """A finding compares equal to its message (legacy helper API compatibility)."""
+        finding = kb_lint.make_finding("KB-001", "boom", file="x.md")
+        self.assertIsInstance(finding, str)
+        self.assertEqual(finding, "boom")
+        self.assertEqual(finding.message, "boom")
+        self.assertEqual((finding.rule_id, finding.severity, finding.file), ("KB-001", "error", "x.md"))
+        warning = kb_lint.make_finding("KB-004", "warn", severity="warning")
+        self.assertEqual(warning.severity, "warning")
+
+    # --- json -------------------------------------------------------------------
+
+    def test_json_contract_on_clean_vault(self):
+        """Clean vault: schema version, exact key set, integer summary, empty findings."""
+        exit_code, stdout = self._run_format("json")
+        self.assertEqual(exit_code, 0, stdout)
+        payload = json.loads(stdout)
+        self.assertEqual(sorted(payload), ["errors", "summary", "version", "warnings"])
+        self.assertEqual(payload["version"], 1)
+        self.assertEqual(sorted(payload["summary"]), ["errors", "files", "warnings", "wikilinks"])
+        self.assertEqual(payload["errors"], [])
+        self.assertEqual(payload["warnings"], [])
+        self.assertEqual(payload["summary"], {"files": 1, "wikilinks": 0, "errors": 0, "warnings": 0})
+
+    def test_json_stdout_contains_only_document(self):
+        """Machine formats must not mix emoji, the OK line or audit banners into stdout."""
+        exit_code, stdout = self._run_format("json")
+        self.assertEqual(exit_code, 0)
+        json.loads(stdout)  # raises on any prefix/suffix noise
+        self.assertNotIn("Auditing", stdout)
+        self.assertNotIn("OK:", stdout)
+
+    def test_json_reports_broken_link_as_kb_001(self):
+        """A broken link becomes a KB-001 error with rule, severity, file and message."""
+        self._add_broken_link()
+        exit_code, stdout = self._run_format("json")
+        self.assertEqual(exit_code, 1)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["summary"]["errors"], 1)
+        finding = payload["errors"][0]
+        self.assertEqual(sorted(finding), ["file", "message", "rule_id", "severity"])
+        self.assertEqual(finding["rule_id"], "KB-001")
+        self.assertEqual(finding["severity"], "error")
+        self.assertEqual(finding["file"], "broken.md")
+        self.assertIn("MissingTarget", finding["message"])
+
+    def test_json_verbose_flag_is_noop(self):
+        """--verbose must not break machine output."""
+        exit_code, stdout = self._run_format("json", "--verbose")
+        self.assertEqual(exit_code, 0)
+        json.loads(stdout)
+        self.assertNotIn("Auditing", stdout)
+        self.assertNotIn("📊", stdout)
+
+    def test_json_output_is_deterministic(self):
+        """Two consecutive runs produce byte-identical JSON."""
+        first = self._run_format("json")[1]
+        second = self._run_format("json")[1]
+        self.assertEqual(first, second)
+
+    # --- sarif ------------------------------------------------------------------
+
+    def test_sarif_contract_structure(self):
+        """SARIF: version, schema, tool driver, cross-referenced rule ids and locations."""
+        self._add_broken_link()
+        exit_code, stdout = self._run_format("sarif")
+        self.assertEqual(exit_code, 1)
+        doc = json.loads(stdout)
+        self.assertEqual(doc["version"], "2.1.0")
+        self.assertTrue(doc["$schema"].endswith("sarif-2.1.0.json"))
+        driver = doc["runs"][0]["tool"]["driver"]
+        self.assertEqual(driver["name"], "kb_lint")
+        self.assertEqual(driver["version"], "1")
+        self.assertNotIn("informationUri", driver)
+        rule_ids = [rule["id"] for rule in driver["rules"]]
+        self.assertEqual(len(rule_ids), len(set(rule_ids)))
+        results = doc["runs"][0]["results"]
+        self.assertTrue(results)
+        self.assertTrue(all(result["ruleId"] in rule_ids for result in results))
+        self.assertTrue(all(result["level"] in ("error", "warning") for result in results))
+        result = results[0]
+        self.assertEqual(result["ruleId"], "KB-001")
+        self.assertEqual(result["level"], "error")
+        location = result["locations"][0]["physicalLocation"]
+        self.assertEqual(location["artifactLocation"]["uri"], "broken.md")
+        self.assertNotIn("region", location)
+
+    def test_sarif_empty_results_on_clean_vault(self):
+        """Clean vault: valid document with an empty results array."""
+        exit_code, stdout = self._run_format("sarif")
+        self.assertEqual(exit_code, 0)
+        doc = json.loads(stdout)
+        self.assertEqual(doc["runs"][0]["results"], [])
+        self.assertIsInstance(doc["runs"][0]["tool"]["driver"]["rules"], list)
+
+    # --- cli --------------------------------------------------------------------
+
+    def test_exit_codes_consistent_across_formats(self):
+        """Warnings exit 0 and errors exit 1 identically in text, json and sarif."""
+        self._add_warning_only_harness()
+        for output_format in ("text", "json", "sarif"):
+            exit_code, stdout = self._run_format(output_format)
+            self.assertEqual(exit_code, 0, "%s: %s" % (output_format, stdout[-300:]))
+        self.assertTrue(json.loads(self._run_format("json")[1])["warnings"])
+
+        self._add_broken_link()
+        for output_format in ("text", "json", "sarif"):
+            exit_code, _ = self._run_format(output_format)
+            self.assertEqual(exit_code, 1, output_format)
+
+    def test_version_flag(self):
+        """--version prints the rule-set version and exits 0."""
+        exit_code, stdout = self._run_cli("--version")
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(stdout.strip(), "kb_lint 1")
 
 
 if __name__ == "__main__":

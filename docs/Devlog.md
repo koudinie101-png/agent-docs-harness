@@ -16,6 +16,18 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-10-25] — TASK-102: контрактные тесты машинно-читаемого вывода (json/sarif)
+- **Что сделано:**
+  - [[02_Tasks/Specs/27_DocsIntegrity/TASK-102-output-contract-tests|TASK-102]] (Фаза 27): в `tests/test_kb_lint.py` добавлен класс `TestLintOutputContract` — 13 тестов на реестр `KB-XXX`, JSON-схему (`version: 1`), SARIF 2.1.0 (перекрёстные `ruleId → rules[]`, `level`, `locations` без `region`), «stdout = только документ», no-op `--verbose`, детерминизм и единые exit-коды во всех трёх форматах, `--version`.
+  - Продакшн-код не изменён (`git diff scripts/ install.py dist/` пуст): контракт зафиксирован тестами поверх реализации TASK-101.
+  - `DEBT-004` дополнен: `region` отсутствует намеренно, SARIF проверяется структурно; приёмка GitHub Code Scanning перенесена в фазу CI-упаковки (там появится `upload-sarif`).
+- **Проверка:**
+  - `unittest` — **179 тестов OK** (166 + 13), 0 failures; `py_compile` — 0.
+  - `--format sarif` на реальном репозитории: `2.1.0`, `driver kb_lint 1`, 0 rules/results при чистой базе, `informationUri` отсутствует.
+  - `kb_lint --path docs` — 0 битых ссылок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `TASK-103` — пересборка бандла, бюджет `test_16` (176 000 → 178 000), E2E установленной копии и Living Spec (`SPEC.md`, `README.md`, `Onboarding.md`).
+
 ### [2026-10-25] — TASK-101: машинно-читаемый контракт линтера (`Finding`, `KB-XXX`, json/sarif)
 - **Что сделано:**
   - [[02_Tasks/Specs/27_DocsIntegrity/TASK-101-finding-model-rule-registry-and-formats|TASK-101]] (Фаза 27): `scripts/kb_lint.py` переведён на единую модель находки `Finding(str)` с `rule_id`/`severity`/`file`; реестр `RULES`/`RULE_SEVERITY` на 15 правил, `KB-010` зарезервирован и не эмитится (попытка эмиссии даёт `ValueError`).
