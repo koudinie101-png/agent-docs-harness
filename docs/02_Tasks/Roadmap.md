@@ -366,7 +366,8 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1), [[../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]
 
 - [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
-- [ ] `TASK-105`…`TASK-108` — CI-доставка по [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]: `action.yml`, `.pre-commit-hooks.yaml`, Code Scanning и решение по `DEBT-004`; пермалинки спек добавляются в момент их создания ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
+- [ ] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README «Use as a GitHub Action» (2026-10-25).
+- [ ] `TASK-106`…`TASK-108` — CI-доставка по [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]: `.pre-commit-hooks.yaml`, Code Scanning и решение по `DEBT-004`; пермалинки спек добавляются в момент их создания ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
 
 ---
 

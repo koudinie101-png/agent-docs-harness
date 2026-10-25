@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README (2026-10-25) #task #phase28 #ci #distribution
+
 
 ## ✅ Готово (Done)
 
