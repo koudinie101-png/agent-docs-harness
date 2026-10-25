@@ -1,0 +1,41 @@
+name: Code Scanning
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: "code-scanning-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  kb-lint:
+    name: Knowledge Base Lint (SARIF)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run knowledge base lint
+        id: lint
+        uses: ./
+        with:
+          path: docs
+          format: sarif
+          output-file: kb-lint.sarif
+
+      - name: Upload SARIF to Code Scanning
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.lint.outputs.output-file || 'kb-lint.sarif' }}
+          category: kb-lint

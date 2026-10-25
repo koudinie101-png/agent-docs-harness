@@ -32,8 +32,10 @@ DIST_DIR = REPO_ROOT / "dist"
 DIST_INSTALL_PY = DIST_DIR / "install.py"
 SKILLS_DIR = REPO_ROOT / ".agents" / "skills"
 
-# Harness-only workflows must never ship to client projects (no rules/ corpus there).
-EXCLUDED_WORKFLOWS = {"rules-check.yml"}
+# Harness-only workflows must never ship to client projects: `rules-check.yml` needs the
+# rules/ corpus, `code-scanning.yml` requires `security-events: write` and this repository's
+# own Code Scanning context. Shipping either one turns client CI red.
+EXCLUDED_WORKFLOWS = {"rules-check.yml", "code-scanning.yml"}
 
 
 def bundle_assets() -> dict:

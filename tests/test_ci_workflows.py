@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """TASK-098: Tier 1 guard for the harness-only Rules Check workflow (DEBT-002)."""
 
+import contextlib
+import io
+import sys
 import unittest
 from pathlib import Path
 
@@ -75,6 +78,52 @@ class ActionYmlContractTest(unittest.TestCase):
             text,
             "action.yml must resolve the linter from $GITHUB_ACTION_PATH, not from the workspace",
         )
+
+
+CODE_SCANNING = REPO_ROOT / ".github" / "workflows" / "code-scanning.yml"
+
+
+class CodeScanningWorkflowTest(unittest.TestCase):
+    """TASK-108: Tier 1 guards for the harness-only Code Scanning workflow."""
+
+    def _workflow(self):
+        return CODE_SCANNING.read_text(encoding="utf-8")
+
+    def test_workflow_hardening(self):
+        text = self._workflow()
+        for marker in (
+            "permissions:",
+            "contents: read",
+            "security-events: write",
+            "branches:",
+            "concurrency:",
+            "cancel-in-progress: true",
+            "uses: ./",
+            "upload-sarif",
+            "if: always()",
+            "github.event.pull_request.head.repo.full_name == github.repository",
+            "category: kb-lint",
+        ):
+            self.assertIn(marker, text, "code-scanning.yml lost marker: %s" % marker)
+        self.assertNotIn("tags:", text, "code-scanning.yml must not run on tag pushes (release.yml owns tags)")
+
+    def test_rules_check_keeps_least_privilege(self):
+        text = WORKFLOW.read_text(encoding="utf-8")
+        self.assertNotIn(
+            "security-events",
+            text,
+            "rules-check.yml must not request Code Scanning permissions: use code-scanning.yml",
+        )
+
+    def test_harness_only_workflows_are_not_bundled(self):
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        import build_installer
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            assets = build_installer.bundle_assets()
+        self.assertNotIn(".github/workflows/rules-check.yml", assets)
+        self.assertNotIn(".github/workflows/code-scanning.yml", assets)
+        self.assertIn(".github/workflows/release.yml", assets, "client workflows must still be bundled")
 
 
 if __name__ == "__main__":
