@@ -1066,13 +1066,14 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = canonical_size(skills_dir / "kb-onboard" / "SKILL.md")
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 180 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns,
+            # Installer size check (budget <= 182 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns,
             # UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity
-            # audit, Phase 25 symbolic scope, Phase 27 machine-readable lint contract: Finding model + KB-XXX registry +
-            # text/json/sarif renderers. Re-baselined deliberately: the marginal zlib ratio for these additions is ~1.6
-            # source chars per installer byte, not the ~3.13 isolated-file ratio, so the 176 KB ceiling could not hold.)
+            # audit, Phase 25 symbolic scope, Phase 27 machine-readable lint contract, Phase 29 PLAIN-LANGUAGE rule).
+            # Re-baselined deliberately: the plain-language corpus grew by ~1.5 KB and the previous 180 KB ceiling left
+            # only 21 B of headroom - a tripwire, not headroom, that would fail on the next trivial edit. Token budgets
+            # for templates/skills stay untouched: installer bytes are distribution weight, not context tokens.
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 180000, f"install.py exceeded budget: {installer_size} bytes (budget <= 180 KB)")
+            self.assertLessEqual(installer_size, 182000, f"install.py exceeded budget: {installer_size} bytes (budget <= 182 KB)")
 
     def test_35_task_101_machine_readable_lint_delivery(self):
         """E2E: the installed linter ships the machine-readable output contract (TASK-101/103)."""
@@ -2831,6 +2832,35 @@ class TestAgentDocsHarness(unittest.TestCase):
             refreshed = plan_tpl_path.read_text(encoding="utf-8")
             self.assertIn("Research Basis & Unvalidated Assumptions", refreshed)
             self.assertIn("research_basis", refreshed)
+
+
+    def test_36_task_106_installed_rules_contain_plain_language(self):
+        """TASK-106: installed rule files must carry the Tier 2 PLAIN-LANGUAGE rule (bundle freshness guard)."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "PlainLanguageApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="PlainLanguageApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            agents_md = (target / "AGENTS.md").read_text(encoding="utf-8")
+            claude_md = (target / "CLAUDE.md").read_text(encoding="utf-8")
+            self.assertIn(
+                "Plain-Language Contract",
+                agents_md,
+                "installed AGENTS.md lost the PLAIN-LANGUAGE rule: the bundle is stale, rerun scripts/build_installer.py",
+            )
+            self.assertIn(
+                "Plain-Language Contract",
+                claude_md,
+                "installed CLAUDE.md lost the PLAIN-LANGUAGE rule: the bundle is stale, rerun scripts/build_installer.py",
+            )
 
 
 if __name__ == "__main__":

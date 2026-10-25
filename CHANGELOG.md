@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md` regenerated from `rules/AGENTS_CORE.md`; 24 golden fixtures refreshed; `tests/test_rules_consistency.py` pins updated (adapters 10 → 11 rules).
-- Installer re-bundled: **179 979 B**, SHA-256 `15da1030f66530ef5e8c61cab712eacac36d275d71aace4151a42dcc5313f40b`; limits unchanged (180 000 / 31 000 / 30 000), 21 B of headroom left.
+- Installer re-bundled: **179 979 B**, SHA-256 `15da1030f66530ef5e8c61cab712eacac36d275d71aace4151a42dcc5313f40b`; installer budget re-baselined 180 000 → 182 000 (Phase 29: the previous ceiling left only 21 B, a tripwire rather than headroom), template/skill limits unchanged (31 000 / 30 000).
+- [ADR-0033](docs/03_Decisions_ADR/ADR-0033-plain-language-contract.md) records the decision and its rejected alternatives; the new installer E2E guard `test_36_task_106_installed_rules_contain_plain_language` fails when the bundle is stale.
 - `SPEC.md` §2.4, `README.md` §4 and `docs/Onboarding.md` §17 document the contract; §16 documents adapter/fixture regeneration when adding a rule.
 
 ## [0.27.0] - 2026-10-25

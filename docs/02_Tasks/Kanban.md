@@ -14,11 +14,12 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: Принять правило `PLAIN-LANGUAGE`: ADR-0033, страж свежести бандла и бюджет (2026-10-25) #task #phase29 #rules #installer
 
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: Принять правило `PLAIN-LANGUAGE`: ADR-0033, страж свежести бандла и бюджет (2026-10-25) #task #phase29 #rules #installer
 
 - [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README (2026-10-25) #task #phase28 #ci #distribution
 

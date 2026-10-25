@@ -12,6 +12,7 @@
 - [TRG-03] DSH Sandbox tempfile.mkdtemp Mode 0o700 | Под Windows-песочницей DSH `tempfile.mkdtemp()` (os.mkdir 0o700) создаёт каталог, в котором запрещено создавать дочерние файлы/папки (PermissionError WinError 5), ломая unittest/E2E | Прогонять тесты через обёртку, патчащую `tempfile.mkdtemp` на `os.mkdir(name, 0o777)` | (Count: 2, Sev: High) -> INC-003; promoted: `scripts/run_tests_sandbox.py` (TASK-104)
 - [TRG-04] Path.write_text Invalid Newline Truncation | `Path.write_text(..., newline="<invalid>")` открывает файл на запись (усекая его) и только затем валидирует newline, поэтому `ValueError` оставляет целевой файл пустым | Для скриптовых перезаписей использовать `write_bytes(text.encode("utf-8"))`; после перезаписи проверять размер файла и `git status` | (Count: 1, Sev: High) -> INC-004
 - [TRG-05] Inverse-Transform Restore | При проверке «красного сценария» файл восстанавливался обратной строковой заменой, а не копией: шаблон совпал в другой позиции и разметка корпуса сместилась | Перед мутацией делать копию в `tmp/` и восстанавливать её целиком; после — сверять хэш и структурные инварианты | (Count: 1, Sev: Medium) -> INC-005
+- [TRG-06] Broad git add -A in Shared Workspace | `git add -A` захватил незакоммиченную правку параллельной сессии: корпус ушёл в коммит, сгенерированный `AGENTS.md` и бандл остались старыми, Tier 1-гейт покраснел | Стадировать только явные пути и сверять `git status` с реально правленными файлами; дрейф «корпус → бандл» ловит `test_36` | (Count: 1, Sev: Medium) -> INC-006
 
 ---
 
