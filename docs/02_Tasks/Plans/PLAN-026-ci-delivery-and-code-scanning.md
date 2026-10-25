@@ -23,7 +23,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
 > **ID:** PLAN-026 | **Статус:** Согласовано (2026-10-25)  
 > **Фаза:** 28 | **Спецификация:** [[../../SPEC|SPEC.md]] | **Канбан:** [[../Kanban|Канбан]] | **Дорожная карта:** [[../Roadmap|Roadmap (Фаза 28)]]  
 > **Нормативная база:** [[../../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] (§4 Волна 1, п.1–2), [[../../03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032]]  
-> **Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) — решение принимается в TASK-108
+> **Связанный техдолг:** `DEBT-004` (SARIF без `region.startLine`) — решение принимается в TASK-109
 
 ---
 
@@ -72,7 +72,7 @@ kanban: "[[../Kanban|Канбан-доска]]"
   * **Отклонено:** отдельный workflow «для action» + второй «для SARIF» (дублирование и два места правки).
 
 * **Q5: Что с `DEBT-004`?**
-  * **Решение:** сначала проверка аннотаций в Code Scanning (TASK-107), затем **закрытие как принятого ограничения** (TASK-108): находки привязаны к файлу, а сообщение содержит имя ссылки/поля; трекинг строк потребовал бы переработки 15 проверок ради незначительного UX-выигрыша. Если Code Scanning покажет, что файла недостаточно, заводится отдельная задача на строки для `KB-001`/`KB-006`/`KB-014` — **не** в этой фазе.
+  * **Решение:** сначала проверка аннотаций в Code Scanning (TASK-108), затем **закрытие как принятого ограничения** (TASK-109): находки привязаны к файлу, а сообщение содержит имя ссылки/поля; трекинг строк потребовал бы переработки 15 проверок ради незначительного UX-выигрыша. Если Code Scanning покажет, что файла недостаточно, заводится отдельная задача на строки для `KB-001`/`KB-006`/`KB-014` — **не** в этой фазе.
   * **Отклонено:** реализовывать строки «на всякий случай» до появления потребителя (ровно та ошибка, из-за которой долг и откладывался).
 
 * **Q6: Как не сломать клиентов?**
@@ -83,11 +83,11 @@ kanban: "[[../Kanban|Канбан-доска]]"
 
 * **Известно (проверено 2026-10-25):** видимость репозитория `PUBLIC`; состав и права трёх существующих workflows; `EXCLUDED_WORKFLOWS` и механика бандла; CLI-контракт `kb_lint` (`--format`, `--version`, exit-коды); глобальность проверки ссылок; наличие `tests/test_ci_workflows.py`; бюджет `test_16` = 180 000 B.
 * **Не проверено (гипотезы):**
-  * **H1:** Code Scanning примет наш минимальный SARIF (без `region`, без `informationUri`) → проверка TASK-107 (алерт в Security).
+  * **H1:** Code Scanning примет наш минимальный SARIF (без `region`, без `informationUri`) → проверка TASK-108 (алерт в Security).
   * **H2:** composite-действие корректно резолвит `github.action_path` в `uses: ./` → smoke в том же workflow.
   * **H3:** pre-commit-хук с `language: system` работает из remote `rev:` в проекте-потребителе → ручная проверка на песочнице (установка + `pre-commit run --all-files`), E2E-тест не автоматизируется (внешний инструмент, `pre-commit` не входит в зависимости).
-  * **H4:** annotations file-level достаточно → решение по `DEBT-004` в TASK-108 по фактическому скриншоту Security-панели.
-* **Как закрываем:** H1/H2 — TASK-107 (лог workflow + скриншот алерта в Devlog); H3 — ручная песочница с `pre-commit` (если он есть в окружении) либо честная отметка «проверено статически»; H4 — TASK-108.
+  * **H4:** annotations file-level достаточно → решение по `DEBT-004` в TASK-109 по фактическому скриншоту Security-панели.
+* **Как закрываем:** H1/H2 — TASK-108 (лог workflow + скриншот алерта в Devlog); H3 — ручная песочница с `pre-commit` (если он есть в окружении) либо честная отметка «проверено статически»; H4 — TASK-109.
 * **Обратимость:** добавляются 3 новых файла (`action.yml`, `.pre-commit-hooks.yaml`, `.github/workflows/code-scanning.yml`) и одна строка в `EXCLUDED_WORKFLOWS`; прод-код линтера не меняется, релиз не требуется — откат = удаление файлов.
 
 ## 3. Архитектурное влияние и риски
@@ -120,11 +120,11 @@ graph LR
 | :--- | :--- | :--- |
 | Harness-only workflow уезжает в бандл → красный CI у клиентов | Высокое | `EXCLUDED_WORKFLOWS` + Tier 1-тест на отсутствие в `bundle_assets()` |
 | `upload-sarif` падает на fork-PR (нет `security-events`) | Среднее | Guard по `head.repo.full_name`; загрузка только для своего репозитория |
-| Code Scanning не принимает SARIF без `region` | Среднее | Проверка TASK-107; при отказе — решение по `DEBT-004` меняется (H1 фальсифицирована), фиксируется в Devlog |
+| Code Scanning не принимает SARIF без `region` | Среднее | Проверка TASK-108; при отказе — решение по `DEBT-004` меняется (H1 фальсифицирована), фиксируется в Devlog |
 | Действие не резолвит `github.action_path` | Среднее | Smoke через `uses: ./` в том же workflow; при провале — fallback `${{ github.workspace }}` |
 | pre-commit-хук гоняет полный скан на каждый коммит | Низкое | ~0.4 с, `require_serial: true`; `files: '\.md$'` ограничивает частоту запуска |
 | Права `security-events: write` выданы шире нужного | Среднее | Отдельный workflow, не `rules-check.yml`; `contents: read` рядом |
-| `DEBT-004` закрыт без доказательств | Среднее | Закрытие только после TASK-107 со ссылкой на факт алерта, не «на глаз» |
+| `DEBT-004` закрыт без доказательств | Среднее | Закрытие только после TASK-108 со ссылкой на факт алерта, не «на глаз» |
 
 ### The 4-State UI Matrix (терминальный/GitHub-UI контур)
 
@@ -135,7 +135,7 @@ graph LR
 | **Error** | Находки уровня `error` → job красный + алерты в Security | Ошибки линта и ошибки загрузки SARIF различаются по шагам |
 | **Populated** | Алерты с `ruleId`, файлом и сообщением; summary в README Security-вкладки | Дубли одного правила не схлопываются |
 
-Скриншот Security-панели (TASK-107) сохраняется в `docs/assets/screenshots/code-scanning/TASK-107.png` (≤ 2 MB) либо, при недоступности UI, ASCII-снимок алерта в Devlog.
+Скриншот Security-панели (TASK-108) сохраняется в `docs/assets/screenshots/code-scanning/TASK-108.png` (≤ 2 MB) либо, при недоступности UI, ASCII-снимок алерта в Devlog.
 
 ### Отвергнутые альтернативы
 
@@ -150,14 +150,14 @@ graph LR
 ## 4. Декомпозиция задач (Task Breakdown)
 
 * [ ] `TASK-105` — **`action.yml` (composite)** + раздел README «Use as a GitHub Action»: входы `path`, `format`, `sarif-file`, `python-version`; выход `sarif-file`; корректный exit-код при редиректе вывода; ссылка на `DEBT-004` в описании.
-* [ ] `TASK-106` — **`.pre-commit-hooks.yaml`** + два рецепта в README (`repo: local` и remote `rev:`), объяснение `pass_filenames: false`.
-* [ ] `TASK-107` — **Code Scanning у себя**: `code-scanning.yml` (`uses: ./`, `contents: read` + `security-events: write`, fork-guard), `EXCLUDED_WORKFLOWS += code-scanning.yml`, Tier 1-тесты в `tests/test_ci_workflows.py` (маркеры + отсутствие в бандле + запрет `security-events` в `rules-check.yml`), проверка алерта в Security и скриншот.
-* [ ] `TASK-108` — **Решение по `DEBT-004`**: по итогам TASK-107 закрыть как принятое ограничение (строка в `Resolved Debt` со ссылкой на TASK-107, оговорка в README/ADR-0032) либо завести отдельную задачу на строки; обновить `SPEC.md` (§CI-контур) и `README.md`.
+* [ ] `TASK-107` — **`.pre-commit-hooks.yaml`** + два рецепта в README (`repo: local` и remote `rev:`), объяснение `pass_filenames: false`.
+* [ ] `TASK-108` — **Code Scanning у себя**: `code-scanning.yml` (`uses: ./`, `contents: read` + `security-events: write`, fork-guard), `EXCLUDED_WORKFLOWS += code-scanning.yml`, Tier 1-тесты в `tests/test_ci_workflows.py` (маркеры + отсутствие в бандле + запрет `security-events` в `rules-check.yml`), проверка алерта в Security и скриншот.
+* [ ] `TASK-109` — **Решение по `DEBT-004`**: по итогам TASK-108 закрыть как принятое ограничение (строка в `Resolved Debt` со ссылкой на TASK-108, оговорка в README/ADR-0032) либо завести отдельную задачу на строки; обновить `SPEC.md` (§CI-контур) и `README.md`.
 
 ## 5. Критерии приемки плана (DoD Режима 1)
 
 - [x] Концепция согласована с пользователем (READ-ONLY, без кода) — подтверждено 2026-10-25: DEBT-004 закрываем после проверки; pre-commit `language: system`; `setup-python@v5` в action.
 - [x] Дорожная карта `Roadmap.md` обновлена (Фаза 28 дополнена задачами 105–108, ссылка на PLAN-026).
 - [x] Карточка добавлена в `Kanban.md` в `📥 Бэклог`.
-- [x] `DEBT-004` не регистрируется заново (уже в `Active P3 Debt`), его закрытие запланировано в TASK-108.
+- [x] `DEBT-004` не регистрируется заново (уже в `Active P3 Debt`), его закрытие запланировано в TASK-109.
 - [x] Целостность подтверждена через `scripts/kb_lint.py` (0 битых ссылок, 0 `WARN`).

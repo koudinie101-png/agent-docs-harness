@@ -367,7 +367,16 @@ tags:
 
 - [x] [[Specs/28_GateHygiene/TASK-104-sandbox-test-runner-promotion|TASK-104]]: `DEBT-005` — промоушен sandbox-раннера тестов в `scripts/` (fast-track) (2026-10-25).
 - [x] [[Specs/28_GateHygiene/TASK-105-composite-action-and-readme|TASK-105]]: Composite GitHub Action (`action.yml`) и раздел README «Use as a GitHub Action» (2026-10-25).
-- [ ] `TASK-106`…`TASK-108` — CI-доставка по [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]: `.pre-commit-hooks.yaml`, Code Scanning и решение по `DEBT-004`; пермалинки спек добавляются в момент их создания ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
+- [ ] `TASK-107`…`TASK-109` — CI-доставка по [[Plans/PLAN-026-ci-delivery-and-code-scanning|PLAN-026]]: `.pre-commit-hooks.yaml`, Code Scanning и решение по `DEBT-004`; пермалинки спек добавляются в момент их создания ([[Specs/26_TechDebt/TASK-099-roadmap-permalink-at-spec-creation|TASK-099]]).
+
+---
+
+## Фаза 29: Контракт простого языка и свежесть бандла (Plain-Language Contract & Bundle Freshness)
+**Цель:** Принять правило Tier 2 `PLAIN-LANGUAGE` (пользователь — не разработчик: результат простыми словами, жаргон объясняется или убирается, ошибки как «причина → следствие → исправление») как оформленное решение: запись ADR-0033, Tier 1-страж на присутствие правила в **установленной** копии и безопасный бюджет бандла вместо 21 байта запаса.  
+**Первоисточник:** прямой запрос пользователя вне фазового плана (зафиксирован в `Devlog.md` 2026-10-25); реализация правила уже лежит в рабочем дереве  
+**Нормативная база:** ADR-0033 (создаётся в TASK-106), [[../03_Decisions_ADR/ADR-0025-self-improving-defect-loop-and-quality-gates|ADR-0025]] (Tier 1–2)
+
+- [ ] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: ADR-0033, Tier 1-страж «правило в установленной копии», бюджет 180 000 → 182 000 и приёмка унаследованного набора (2026-10-25).
 
 ---
 

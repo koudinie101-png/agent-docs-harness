@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/29_PlainLanguage/TASK-106-plain-language-acceptance|TASK-106]]: Принять правило `PLAIN-LANGUAGE`: ADR-0033, страж свежести бандла и бюджет (2026-10-25) #task #phase29 #rules #installer
+
 
 
 ## ✅ Готово (Done)
