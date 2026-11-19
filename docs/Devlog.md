@@ -16,6 +16,19 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — BUG-014: Несоответствие количества хуков в test_pre_commit_hooks
+- **Что сделано:**
+  - Устранен регрессионный сбой в `tests/test_pre_commit_hooks.py` ([[02_Tasks/Bugs/BUG-014-pre-commit-hooks-manifest-count-mismatch|BUG-014]]), вызывавший падение CI в GitHub Actions (`Rules Check` / `Unit tests`) после добавления хука `kb-lint-fix` в [[02_Tasks/Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]].
+  - Обновлен тест `test_manifest_structure`: теперь проверяется наличие ровно 2 хуков (`kb-lint` и `kb-lint-fix`), а также обязательные ключи для обоих хуков.
+  - Актуализирован `test_entry_targets_existing_linter`: добавлена проверка ключей `--fix` и `--write` для хука `kb-lint-fix` и отсутствие флага `--fix` у базового `kb-lint`.
+  - Актуализирован `test_files_pattern_matches_markdown`: валидируются регулярные выражения файлов для обоих хуков.
+- **Проверка:**
+  - `python -m unittest tests/test_pre_commit_hooks.py`: 4 теста OK (TDD: RED -> GREEN).
+  - `python -m unittest discover -s tests -q`: 235 тестов OK (100% PASS).
+  - `python scripts/kb_lint.py --path docs`: 286 файлов, 2835 ссылок проверено, 0 ошибок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Выпустить исправление в Git (`fix(tests): update pre-commit hooks manifest test for kb-lint-fix (BUG-014)`), после чего определить следующую задачу по `python scripts/kb_state.py next`.
+
 ### [2026-11-19] — Релиз v0.29.0: Завершение Волны 1 (Фазы 30 и 31, Кумулятивный)
 - **Что сделано:**
   - Опубликован официальный кумулятивный релиз `v0.29.0`, завершающий всю **Волну 1** (**Docs Integrity Gate**, P0):

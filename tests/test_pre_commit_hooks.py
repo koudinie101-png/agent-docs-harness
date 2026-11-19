@@ -43,28 +43,42 @@ class PreCommitManifestTest(unittest.TestCase):
 
     def test_manifest_structure(self):
         hooks = self._hooks()
-        self.assertEqual(len(hooks), 1, "the manifest must declare exactly one hook")
-        hook = hooks[0]
-        self.assertEqual(hook.get("id"), "kb-lint")
-        for key in ("name", "description", "entry", "language", "files", "pass_filenames", "require_serial"):
-            self.assertTrue(hook.get(key), "hook is missing %s" % key)
-        self.assertEqual(hook["language"], "system", "the hook must use the project interpreter, not install a package")
-        self.assertEqual(hook["pass_filenames"].lower(), "false", "link resolution is global; per-file runs are false positives")
-        self.assertEqual(hook["require_serial"].lower(), "true")
+        self.assertEqual(len(hooks), 2, "the manifest must declare kb-lint and kb-lint-fix hooks")
+        hook_by_id = {h.get("id"): h for h in hooks}
+        self.assertIn("kb-lint", hook_by_id)
+        self.assertIn("kb-lint-fix", hook_by_id)
+
+        required_keys = ("name", "description", "entry", "language", "files", "pass_filenames", "require_serial")
+        for hook_id in ("kb-lint", "kb-lint-fix"):
+            hook = hook_by_id[hook_id]
+            for key in required_keys:
+                self.assertTrue(hook.get(key), "hook %s is missing %s" % (hook_id, key))
+            self.assertEqual(hook["language"], "system", "the hook must use the project interpreter, not install a package")
+            self.assertEqual(hook["pass_filenames"].lower(), "false", "link resolution is global; per-file runs are false positives")
+            self.assertEqual(hook["require_serial"].lower(), "true")
 
     def test_entry_targets_existing_linter(self):
-        hook = self._hooks()[0]
-        entry = hook["entry"]
-        self.assertIn("scripts/kb_lint.py", entry, "entry must run the shipped linter")
-        self.assertIn("--path", entry)
-        self.assertIn("docs", entry)
+        hook_by_id = {h.get("id"): h for h in self._hooks()}
         self.assertTrue((REPO_ROOT / "scripts" / "kb_lint.py").is_file(), "entry points to a missing script")
 
+        lint_hook = hook_by_id["kb-lint"]
+        fix_hook = hook_by_id["kb-lint-fix"]
+
+        for hook in (lint_hook, fix_hook):
+            entry = hook["entry"]
+            self.assertIn("scripts/kb_lint.py", entry, "entry must run the shipped linter")
+            self.assertIn("--path", entry)
+            self.assertIn("docs", entry)
+
+        self.assertIn("--fix", fix_hook["entry"])
+        self.assertIn("--write", fix_hook["entry"])
+        self.assertNotIn("--fix", lint_hook["entry"])
+
     def test_files_pattern_matches_markdown(self):
-        hook = self._hooks()[0]
-        pattern = re.compile(hook["files"])
-        self.assertTrue(pattern.search("docs/00_Index.md"), "the hook must run on Markdown")
-        self.assertFalse(pattern.search("scripts/kb_lint.py"), "the hook must not run on Python files")
+        for hook in self._hooks():
+            pattern = re.compile(hook["files"])
+            self.assertTrue(pattern.search("docs/00_Index.md"), "hook %s must run on Markdown" % hook.get("id"))
+            self.assertFalse(pattern.search("scripts/kb_lint.py"), "hook %s must not run on Python files" % hook.get("id"))
 
     def test_manifest_is_not_bundled(self):
         text = INSTALLER.read_text(encoding="utf-8")
