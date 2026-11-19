@@ -409,6 +409,18 @@ tags:
 
 ---
 
+## Фаза 32: Right-Sizing процесса и Spec Quality Gate (P1)
+**Цель:** Снизить процедурное трение на типовых задачах и искоренить спекулятивные галлюцинации агента: внедрить трехтрековую матрицу Right-Sizing (`micro / standard / deep`), правило линтера `KB-020` (контроль deep-тегов без плана), синтаксические маркеры `[NEEDS CLARIFICATION]` с чек-листом качества ТЗ, блокирующее правило `KB-016` в `scripts/kb_lint.py`, синхронизировать скиллы и бандл `install.py`.  
+**Первоисточник плана:** [[Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029]]  
+**Нормативная база:** [[../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031]], [[../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037]]
+
+- [ ] `TASK-116`: Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard).
+- [ ] `TASK-117`: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016.
+- [ ] `TASK-118`: Поведение скиллов, онбординг и корпус правил `rules/AGENTS_CORE.md`.
+- [ ] `TASK-119`: Сборка монолита `install.py`, E2E тесты доставки и актуализация Living Spec.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -421,8 +433,8 @@ tags:
 ### 🌊 Волна 2 — Quality & Evidence (P1)
 > **Исследование архитектуры:** [[../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031: Архитектура Волны 2]], [[../04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028: Двухуровневые релизные записки]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037: Стандарт Quality & Evidence]], [[../03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034: Стандарт релизов]]
 
-* 💡 **[P1] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-020`). Перенесён из проектного бэклога Волны 1.
-* 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта (`KB-016`).
+* 💡 **[P1] Right-sizing процесса (micro/standard/deep):** промоутирован в Фазу 32 — [[Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029]]; матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегов без research/plan (`KB-020`).
+* 💡 **[P1] Spec Quality Gate:** промоутирован в Фазу 32 — [[Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029]]; `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта (`KB-016`).
 * 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (`KB-017`, WARN → ERROR для deep-трека).
 * 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations (`KB-018`).
 * 💡 **[P1] Delta-спеки для brownfield:** `ADDED/MODIFIED/REMOVED` в ТЗ, синхронизация `SPEC.md`/архитектуры при завершении; закрывает разрыв с OpenSpec delta + archive (`KB-019`).

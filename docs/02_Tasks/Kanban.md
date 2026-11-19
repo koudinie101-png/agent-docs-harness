@@ -10,11 +10,13 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-028-kb-lint-safe-autofix|План: Фаза 31 — Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)]] (2026-11-19) #plan #phase31 #wave-1 #lint #autofix #data-integrity
+- [ ] [[Plans/PLAN-029-right-sizing-and-spec-quality-gate|План: Фаза 32 — Right-Sizing процесса и Spec Quality Gate (P1)]] (2026-11-19) #plan #phase32 #wave-2 #right-sizing #spec-quality #quality-gates
 
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)
+
+- [x] [[Plans/PLAN-028-kb-lint-safe-autofix|План: Фаза 31 — Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)]] (2026-11-19) #plan #phase31 #wave-1 #lint #autofix #data-integrity
 
 - [x] [[Bugs/BUG-014-pre-commit-hooks-manifest-count-mismatch|BUG-014]]: Несоответствие количества хуков в test_pre_commit_hooks после добавления kb-lint-fix (2026-11-19) #bug #ci #pre-commit #tests
 
