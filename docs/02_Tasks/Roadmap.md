@@ -405,6 +405,7 @@ tags:
 
 * 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта.
 * 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (WARN → ERROR для deep-трека).
+* 💡 **[P1] Автоматизация двухуровневых релизных записок (`kb_release.py`):** адаптация генераторов `generate_release_markdown()` и `generate_public_release_notes()` под стандарт [[../03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034]] / [[../04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028]]: автоматическая группировка задач под `<details>`, блоки ценности (Value) и формулировки дефектов на простом языке (Value Impact: High, User DX).
 * 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations.
 * 💡 **[P1] Delta-спеки для brownfield:** `ADDED/MODIFIED/REMOVED` в ТЗ, синхронизация `SPEC.md`/архитектуры при завершении; закрывает разрыв с OpenSpec delta + archive.
 
