@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/32_RightSizing/TASK-116-right-sizing-matrix-and-kb020|TASK-116]]: Матрица Right-Sizing, поле track и правило линтера KB-020 (2026-11-19) #task #phase32 #right-sizing #lint #templates
+
 ## ✅ Готово (Done)
 
 - [x] [[Plans/PLAN-028-kb-lint-safe-autofix|План: Фаза 31 — Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)]] (2026-11-19) #plan #phase31 #wave-1 #lint #autofix #data-integrity
