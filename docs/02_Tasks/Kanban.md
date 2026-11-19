@@ -10,6 +10,8 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
+- [ ] [[Plans/PLAN-028-kb-lint-safe-autofix|План: Фаза 31 — Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)]] (2026-11-19) #plan #phase31 #wave-1 #lint #autofix #data-integrity
+
 ## ⏳ В работе (In Progress)
 
 ## ✅ Готово (Done)

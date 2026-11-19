@@ -398,6 +398,17 @@ tags:
 
 ---
 
+## Фаза 31: Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)
+**Цель:** Реализовать детерминированный хирургический автофикс `scripts/kb_lint.py --fix` на чистой стандартной библиотеке Python 3 (Zero-Dependencies): 5 безопасных правил (`KB-004`, `KB-005`, `KB-006`, `KB-007` и дефолтное `depends_on: []`), режим безопасного предпросмотра (`--dry-run`) по умолчанию, подтверждение записи (`--write`), Git-Clean Guard, машиночитаемые форматы отчётов, бандлинг в `install.py` и интеграцию в скиллы.  
+**Первоисточник плана:** [[Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028]]  
+**Нормативная база:** [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]  
+
+- [ ] TASK-113: Ядро хирургического автофикса в `scripts/kb_lint.py` (`--fix`, `--write`, 5 безопасных правил, `unified_diff`, атомарная запись, Git-Clean Guard, модульные тесты).
+- [ ] TASK-114: Машинно-читаемый контракт (JSON/SARIF `fixable`), интеграция в скиллы (`/kb-lint`, `/kb-complete`) и онбординг.
+- [ ] TASK-115: Бандлинг в `install.py`, CI-хуки, Living Spec (`SPEC.md`, `README.md`), ребалансировка бюджетов и E2E-тест доставки.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -408,7 +419,7 @@ tags:
 ### 🌊 Волна 1 — Docs Integrity Gate (P0)
 > **Исследование архитектуры:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029: Архитектура Волны 1]], [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030: Безопасный автофикс kb_lint]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035: Стандарт навигации]], [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036: Стандарт автофикса kb_lint]]
 
-* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** машинно-читаемый контракт (`--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, `--version`) промоутирован в Фазу 27 — [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]; CI-упаковка выполнена в Фазе 28; остаток пункта: безопасный автофикс `kb_lint --fix` (исследование [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], стандарт [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]: режим `--dry-run` по умолчанию, подтверждение `--write`, хирургический строковый патчинг без внешних зависимостей).
+* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** промоутирован в Фазу 31 — [[Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028]]; безопасный автофикс `kb_lint --fix` (исследование [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], стандарт [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]: режим `--dry-run` по умолчанию, подтверждение `--write`, хирургический строковый патчинг без внешних зависимостей).
 * 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** промоутирована в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`.
 * 💡 **[P0] Граф зависимостей задач (`depends_on`):** промоутирован в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`.
 * 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-016`).
