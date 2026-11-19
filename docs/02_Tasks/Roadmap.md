@@ -416,17 +416,12 @@ tags:
 > **Источник:** [[../04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027]] — аудит лучших практик конкурентов и adoption-бэклог.  
 > **Плановый старт:** после завершения Фазы 26 (Tech Debt Hardening). Порядок: P0 → P1 → P2.
 
-### 🌊 Волна 1 — Docs Integrity Gate (P0)
-> **Исследование архитектуры:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029: Архитектура Волны 1]], [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030: Безопасный автофикс kb_lint]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035: Стандарт навигации]], [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036: Стандарт автофикса kb_lint]]
-
-* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** промоутирован в Фазу 31 — [[Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028]]; безопасный автофикс `kb_lint --fix` (исследование [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], стандарт [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]: режим `--dry-run` по умолчанию, подтверждение `--write`, хирургический строковый патчинг без внешних зависимостей).
-* 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** промоутирована в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`.
-* 💡 **[P0] Граф зависимостей задач (`depends_on`):** промоутирован в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`.
-* 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-016`).
+> ℹ️ **Волна 1 — Docs Integrity Gate (P0):** ✅ **Завершена.** Реализована в рамках [[Plans/PLAN-027-deterministic-navigation-and-task-graph|Фазы 30]] (детерминированная навигация `kb_state.py`, граф `depends_on`, `KB-010`) и [[Plans/PLAN-028-kb-lint-safe-autofix|Фазы 31]] (хирургический автофикс `kb_lint --fix`, `--write`, pre-commit, composite Action). Выпущен кумулятивный релиз [[Releases/RELEASE-v0.29.0|v0.29.0]].
 
 ### 🌊 Волна 2 — Quality & Evidence (P1)
 > **Исследование архитектуры:** [[../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031: Архитектура Волны 2]], [[../04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028: Двухуровневые релизные записки]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037: Стандарт Quality & Evidence]], [[../03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034: Стандарт релизов]]
 
+* 💡 **[P1] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-020`). Перенесён из проектного бэклога Волны 1.
 * 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта (`KB-016`).
 * 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (`KB-017`, WARN → ERROR для deep-трека).
 * 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations (`KB-018`).
