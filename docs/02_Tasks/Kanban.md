@@ -10,8 +10,7 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-
-- [ ] [[Plans/PLAN-026-ci-delivery-and-code-scanning|План: Фаза 28 (продолжение) — CI-доставка линта: action.yml, pre-commit, Code Scanning и решение по DEBT-004]] (2026-10-25) #plan #phase28 #ci #distribution #code-scanning
+- [ ] [[Plans/PLAN-027-deterministic-navigation-and-task-graph|План: Фаза 30 — Детерминированная навигация и граф зависимостей задач (Волна 1, P0)]] (2026-11-19) #plan #phase30 #wave-1 #navigation #task-graph
 
 ## ⏳ В работе (In Progress)
 
@@ -22,6 +21,8 @@ kanban-plugin: basic
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Plans/PLAN-026-ci-delivery-and-code-scanning|План: Фаза 28 (продолжение) — CI-доставка линта: action.yml, pre-commit, Code Scanning и решение по DEBT-004]] (2026-10-25) #plan #phase28 #ci #distribution #code-scanning
 
 - [x] [[Bugs/BUG-013-sarif-paths-are-docs-relative|BUG-013]]: SARIF-путь docs-relative вместо repo-relative (2026-10-25) #bug #code-scanning #sarif
 

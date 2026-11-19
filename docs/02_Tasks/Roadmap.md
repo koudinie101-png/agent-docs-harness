@@ -387,6 +387,17 @@ tags:
 
 ---
 
+## Фаза 30: Детерминированная навигация и граф зависимостей задач (Deterministic Navigation & Task Graph, P0)
+**Цель:** Создать детерминированный контур навигации для AI-агентов и разработчиков: граф зависимостей `depends_on` и правило линтера `KB-010` (детекция циклов), автономную Zero-Deps утилиту `scripts/kb_state.py` (`status`, `next`, `--json`), ее интеграцию в скиллы `/kb-complete` и `/kb-onboard`, а также упаковку в `install.py`.  
+**Первоисточник плана:** [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]  
+**Нормативная база:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029]], [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]]  
+
+- [ ] TASK-110: Граф зависимостей `depends_on` и правило линтера `KB-010` (детекция циклов и висячих ID в `kb_lint.py`, поле в `TEMPLATE_TASK.md`, тесты в `test_kb_lint.py`).
+- [ ] TASK-111: Ядро навигации `scripts/kb_state.py` (команды `status`, `next`, флаг `--json`, топологический выбор готовой задачи, фильтрация заблокированных задач, модульные тесты `tests/test_kb_state.py`).
+- [ ] TASK-112: Интеграция `kb_state.py` в скиллы и онбординг, бандлинг в `install.py` / `build_installer.py`, бюджет тестов, актуализация `SPEC.md` и `README.md`.
+
+---
+
 ## 🔮 Перспективные направления (Future Horizons / Icebox)
 *Идеи и гипотезы, находящиеся на стадии осмысления. Номер фазы и декомпозиция на задачи присваиваются при взятии в активную проработку через Режим 1 (`/kb-plan`).*
 <!-- 💡 При появлении новой идеи не вносите сырые пункты вручную! Запустите '/kb-research <идея>', чтобы агент исследовал жизнеспособность, риски и ценность идеи (Режим 0: Discovery), оформил RESEARCH/ADR и автоматически занес валидированную инициативу в Icebox либо отклонил её. -->
@@ -398,8 +409,8 @@ tags:
 > **Исследование архитектуры:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029: Архитектура Волны 1]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035: Стандарт навигации и графа зависимостей]]
 
 * 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** машинно-читаемый контракт (`--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, `--version`) промоутирован в Фазу 27 — [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]; CI-упаковка выполнена в Фазе 28; остаток пункта: безопасный `--fix` (`--dry-run` по умолчанию, backup, только детерминированные правки).
-* 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`; закрывает разрыв с `bmad status`, `openspec status`, `task-master next`.
-* 💡 **[P0] Граф зависимостей задач (`depends_on`):** frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`; защита от преждевременного старта.
+* 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** промоутирована в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`.
+* 💡 **[P0] Граф зависимостей задач (`depends_on`):** промоутирован в Фазу 30 — [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]; frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`.
 * 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-016`).
 
 ### 🌊 Волна 2 — Quality & Evidence (P1)
