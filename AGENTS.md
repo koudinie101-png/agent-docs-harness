@@ -167,4 +167,5 @@ Every feature or architectural initiative follows structured stages:
   7. Defect Loop Reflection: If execution involved errors, failed iterations, or unexpected defects, log an incident report (`docs/06_Memory/Incidents/INC-XXX.md`) and update `docs/06_Memory/patterns.md` according to Tier 2 guidelines.
   8. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
   9. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
-  10. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
+  10. Determine next step deterministically via `python scripts/kb_state.py next` (or `--json`).
+  11. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.

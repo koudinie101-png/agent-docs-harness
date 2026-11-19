@@ -10,13 +10,13 @@ kanban-plugin: basic
 
 ## 📥 Бэклог (Backlog)
 
-- [ ] [[Plans/PLAN-027-deterministic-navigation-and-task-graph|План: Фаза 30 — Детерминированная навигация и граф зависимостей задач (Волна 1, P0)]] (2026-11-19) #plan #phase30 #wave-1 #navigation #task-graph
-
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция kb_state в скиллы, бандлинг в install.py и поставка (2026-11-19) #task #phase30 #navigation #installer #skills
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция kb_state в скиллы, бандлинг в install.py и поставка (2026-11-19) #task #phase30 #navigation #installer #skills
+
+- [x] [[Plans/PLAN-027-deterministic-navigation-and-task-graph|План: Фаза 30 — Детерминированная навигация и граф зависимостей задач (Волна 1, P0)]] (2026-11-19) #plan #phase30 #wave-1 #navigation #task-graph
 
 - [x] [[Specs/30_DeterministicNavigation/TASK-111-deterministic-navigation-kb-state|TASK-111]]: Ядро навигации scripts/kb_state.py (2026-11-19) #task #phase30 #navigation #cli
 

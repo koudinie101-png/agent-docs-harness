@@ -96,6 +96,12 @@ curl -sSL https://raw.githubusercontent.com/koudinie101-png/agent-docs-harness/m
   * Гибкие фильтры инжеста (`--label <NAME>`, `--all-open`) и диагностический дашборд статуса источников (`--status`).
   * Автоматическая дедупликация сигналов на основе персистентного состояния `docs/02_Tasks/Inbox/.inbox_state.json`.
   * Нормализация сигналов в компактные атомарные артефакты `FB-XXX-<slug>.md` по каноническому шаблону `TEMPLATE_FEEDBACK.md`.
+* **`scripts/kb_state.py`:**
+  * Zero dependencies (стандартная библиотека Python: `sys`, `re`, `json`, `argparse`, `pathlib`).
+  * 5-уровневый алгоритм детерминированной резолюции следующего шага (`resolve_next_action`): задача `in-progress` -> критический дефект `release_blocker: true` -> первая готовая плановая задача со всеми закрытыми `depends_on` -> рекомендация к релизу (`/kb-release`) -> детекция взаимной блокировки (deadlock).
+  * Режимы вызова: `next` (единственное следующее действие), `status` (агрегированная сводка прогресса по фазам, задачам и дефектам).
+  * Форматы вывода: структурированный текст для разработчика и строгий JSON (`--json` / `--format json`) для AI-агентов.
+  * Латентность $< 50\text{ мс}$ на базах знаний из 100+ задач ([[03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]]).
 
 ### 2.4. Дисциплина 4 этапов (Modes 0–3) и конфигурация агентов
 * Единый канонический файл правил **`AGENTS.md`** и адаптеры (`GEMINI.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`).

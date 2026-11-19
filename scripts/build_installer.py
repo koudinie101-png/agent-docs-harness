@@ -57,8 +57,8 @@ def bundle_assets() -> dict:
         assets[".obsidian/graph.json"] = graph_json.read_text(encoding="utf-8")
         print(f"  • Bundled: .obsidian/graph.json")
 
-    # 3. Collect scripts (kb_lint.py, kb_release.py, kb_ingest.py)
-    for sname in ["kb_lint.py", "kb_release.py", "kb_ingest.py"]:
+    # 3. Collect scripts (kb_lint.py, kb_release.py, kb_ingest.py, kb_state.py)
+    for sname in ["kb_lint.py", "kb_release.py", "kb_ingest.py", "kb_state.py"]:
         sfile = SCRIPTS_DIR / sname
         if sfile.is_file():
             assets[f"scripts/{sname}"] = sfile.read_text(encoding="utf-8")

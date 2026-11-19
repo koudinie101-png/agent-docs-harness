@@ -227,38 +227,51 @@ class TestKbStateSummary(unittest.TestCase):
 
 
 class TestKbStateCLI(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = Path(tempfile.mkdtemp())
+        self.docs_dir = self.tmp_dir / "docs"
+        self.specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "01_Phase"
+        self.specs_dir.mkdir(parents=True, exist_ok=True)
+        (self.specs_dir / "TASK-001.md").write_text(
+            "---\nid: TASK-001\ntitle: Sample task\nstatus: planned\nphase: 1\n---\n",
+            encoding="utf-8",
+        )
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
     def test_cli_next_json_and_text(self):
         captured_text = io.StringIO()
         with patch("sys.stdout", captured_text):
-            code_text = kb_state.main(["next", "--path", "docs"])
+            code_text = kb_state.main(["next", "--path", str(self.docs_dir)])
         self.assertEqual(code_text, 0)
         out_text = captured_text.getvalue()
-        self.assertIn("TASK-111", out_text)
+        self.assertIn("TASK-001", out_text)
 
         captured_json = io.StringIO()
         with patch("sys.stdout", captured_json):
-            code_json = kb_state.main(["next", "--path", "docs", "--json"])
+            code_json = kb_state.main(["next", "--path", str(self.docs_dir), "--json"])
         self.assertEqual(code_json, 0)
         data = json.loads(captured_json.getvalue())
         self.assertEqual(data["status"], "ready")
-        self.assertEqual(data["target"]["id"], "TASK-111")
+        self.assertEqual(data["target"]["id"], "TASK-001")
 
     def test_cli_status_json_and_text(self):
         captured_text = io.StringIO()
         with patch("sys.stdout", captured_text):
-            code_text = kb_state.main(["status", "--path", "docs"])
+            code_text = kb_state.main(["status", "--path", str(self.docs_dir)])
         self.assertEqual(code_text, 0)
         out_text = captured_text.getvalue()
         self.assertIn("СТАТУС ПРОЕКТА", out_text)
-        self.assertIn("TASK-111", out_text)
+        self.assertIn("TASK-001", out_text)
 
         captured_json = io.StringIO()
         with patch("sys.stdout", captured_json):
-            code_json = kb_state.main(["status", "--path", "docs", "--format", "json"])
+            code_json = kb_state.main(["status", "--path", str(self.docs_dir), "--format", "json"])
         self.assertEqual(code_json, 0)
         data = json.loads(captured_json.getvalue())
-        self.assertGreaterEqual(data["total_tasks"], 110)
-        self.assertEqual(data["current_phase"], 30)
+        self.assertEqual(data["total_tasks"], 1)
+        self.assertEqual(data["current_phase"], 1)
 
     def test_cli_invalid_path_returns_exit_1(self):
         captured_err = io.StringIO()

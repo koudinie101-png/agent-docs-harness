@@ -210,7 +210,7 @@ Run:
 {{test_cmd}}
 python3 scripts/kb_lint.py --path docs
 ```
-Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).
+Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · next step via kb_state · STOP tool calls (Stop & Yield).
 <!-- /RULE: LIFECYCLE -->
 <!-- /DOCUMENT: client-agents -->
 
@@ -462,6 +462,7 @@ Every feature or architectural initiative follows structured stages:
   7. Defect Loop Reflection: If execution involved errors, failed iterations, or unexpected defects, log an incident report (`docs/06_Memory/Incidents/INC-XXX.md`) and update `docs/06_Memory/patterns.md` according to Tier 2 guidelines.
   8. Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
   9. Commit and push to Git (`feat(...)` for tasks, `fix(...)` for bugs).
-  10. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
+  10. Determine next step deterministically via `python scripts/kb_state.py next` (or `--json`).
+  11. **Terminal Step (Stop & Yield):** Output Anti-Echo response, suggest next command to user, and strictly STOP tool calls. Wait for user command.
 <!-- /RULE: LIFECYCLE -->
 <!-- /DOCUMENT: harness-agents -->

@@ -135,6 +135,7 @@ class TestAgentDocsHarness(unittest.TestCase):
         self.assertIn("scripts/kb_lint.py", assets)
         self.assertIn("scripts/kb_release.py", assets)
         self.assertIn("scripts/kb_ingest.py", assets)
+        self.assertIn("scripts/kb_state.py", assets)
         self.assertIn(".agents/skills/kb-release/SKILL.md", assets)
         self.assertIn(".github/workflows/release.yml", assets)
         self.assertNotIn(
@@ -1056,8 +1057,8 @@ class TestAgentDocsHarness(unittest.TestCase):
             total_skills_size = sum(canonical_size(f) for f in skills_dir.rglob("*.md"))
             total_templates_size = sum(canonical_size(f) for f in templates_dir.glob("*.md"))
 
-            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups + Phase 21 tech-debt lifecycle + Phase 24 research evidence + Phase 30 release notes & task graph)
-            self.assertLessEqual(total_skills_size, 31000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 31000)")
+            # Benchmark assertions (ADR-0009 constraints for 12 skills + 16 templates + Living Spec + Guardrails + Spec Genesis + Bug Lifecycle + Feedback Ingestion + Fast-Track + Memory Checkpoints + Phase 20 mockups + Phase 21 tech-debt lifecycle + Phase 24 research evidence + Phase 30 release notes & task graph & navigation engine)
+            self.assertLessEqual(total_skills_size, 33000, f"Skills size exceeded budget: {total_skills_size} bytes (budget <= 33000)")
             self.assertLessEqual(total_templates_size, 35000, f"Templates size exceeded budget: {total_templates_size} bytes (budget <= 35000)")
 
             # Micro-benchmarks for critical files
@@ -1067,12 +1068,12 @@ class TestAgentDocsHarness(unittest.TestCase):
             router_size = canonical_size(skills_dir / "kb-onboard" / "SKILL.md")
             self.assertLessEqual(router_size, 3000, f"kb-onboard hub exceeded budget: {router_size} bytes (budget <= 3000)")
 
-            # Installer size check (budget <= 186 KB with 16 templates, 12 skills, 3 standalone scripts, memory patterns,
-            # UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity
+            # Installer size check (budget <= 210 KB with 16 templates, 12 skills, 4 standalone scripts including kb_state.py,
+            # memory patterns, UI harness, tech debt registry & engineering gates, Phase 21 tech-debt lifecycle, Phase 23 memory integrity
             # audit, Phase 25 symbolic scope, Phase 27 machine-readable lint contract, Phase 29 PLAIN-LANGUAGE rule,
-            # Phase 30 task dependency graph & user-centric release template).
+            # Phase 30 task dependency graph, user-centric release template & deterministic navigation engine).
             installer_size = (REPO_ROOT / "install.py").stat().st_size
-            self.assertLessEqual(installer_size, 186000, f"install.py exceeded budget: {installer_size} bytes (budget <= 186 KB)")
+            self.assertLessEqual(installer_size, 210000, f"install.py exceeded budget: {installer_size} bytes (budget <= 210 KB)")
 
     def test_35_task_101_machine_readable_lint_delivery(self):
         """E2E: the installed linter ships the machine-readable output contract (TASK-101/103)."""
@@ -2877,6 +2878,61 @@ class TestAgentDocsHarness(unittest.TestCase):
             source,
             "install.py embeds a stale kb_lint.py: rerun scripts/build_installer.py",
         )
+
+    def test_38_deterministic_navigation_delivery(self):
+        """TASK-112: verify scripts/kb_state.py is bundled, deployed on install and update, and functional."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "NavApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="NavApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            # 1. Verify scripts/kb_state.py deployed
+            kb_state_path = target / "scripts" / "kb_state.py"
+            self.assertTrue(kb_state_path.is_file(), "scripts/kb_state.py was not deployed on install!")
+
+            # 2. Run deployed kb_state next via subprocess
+            res_next = subprocess.run(
+                [sys.executable, str(kb_state_path), "next", "--json"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_next.returncode, 0, f"kb_state next failed:\n{res_next.stdout}\n{res_next.stderr}")
+            data_next = json.loads(res_next.stdout)
+            self.assertIn("status", data_next)
+
+            # 3. Run deployed kb_state status via subprocess
+            res_status = subprocess.run(
+                [sys.executable, str(kb_state_path), "status"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_status.returncode, 0, f"kb_state status failed:\n{res_status.stdout}\n{res_status.stderr}")
+            self.assertIn("СТАТУС ПРОЕКТА", res_status.stdout)
+
+            # 4. Verify install.py --update refreshes/preserves kb_state.py
+            kb_state_path.unlink()
+            self.assertFalse(kb_state_path.exists())
+
+            res_update = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_update.returncode, 0, f"install.py --update failed:\n{res_update.stdout}\n{res_update.stderr}")
+            self.assertTrue(kb_state_path.is_file(), "scripts/kb_state.py was not restored by install.py --update!")
 
 
 if __name__ == "__main__":

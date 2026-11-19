@@ -4,7 +4,7 @@ title: Дорожная карта разработки (Roadmap)
 status: active
 type: roadmap
 created: 2026-09-30
-updated: 2026-10-25
+updated: 2026-11-19
 tags:
   - roadmap
   - planning
@@ -387,14 +387,14 @@ tags:
 
 ---
 
-## Фаза 30: Детерминированная навигация и граф зависимостей задач (Deterministic Navigation & Task Graph, P0)
+## Фаза 30: Детерминированная навигация и граф зависимостей задач (Deterministic Navigation & Task Graph, P0) — ✅ Завершена
 **Цель:** Создать детерминированный контур навигации для AI-агентов и разработчиков: граф зависимостей `depends_on` и правило линтера `KB-010` (детекция циклов), автономную Zero-Deps утилиту `scripts/kb_state.py` (`status`, `next`, `--json`), ее интеграцию в скиллы `/kb-complete` и `/kb-onboard`, а также упаковку в `install.py`.  
 **Первоисточник плана:** [[Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027]]  
 **Нормативная база:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029]], [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]]  
 
 - [x] [[Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]]: Граф зависимостей `depends_on` и правило линтера `KB-010` (детекция циклов и висячих ID в `kb_lint.py`, поле в `TEMPLATE_TASK.md`, тесты в `test_kb_lint.py`) (2026-11-19).
 - [x] [[Specs/30_DeterministicNavigation/TASK-111-deterministic-navigation-kb-state|TASK-111]]: Ядро навигации `scripts/kb_state.py` (команды `status`, `next`, флаг `--json`, топологический выбор готовой задачи, фильтрация заблокированных задач, модульные тесты `tests/test_kb_state.py`) (2026-11-19).
-- [ ] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция `kb_state.py` в скиллы и онбординг, бандлинг в `install.py` / `build_installer.py`, бюджет тестов, актуализация `SPEC.md` и `README.md`.
+- [x] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция `kb_state.py` в скиллы и онбординг, бандлинг в `install.py` / `build_installer.py`, бюджет тестов, актуализация `SPEC.md` и `README.md` (2026-11-19).
 
 ---
 

@@ -43,6 +43,9 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
    - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.
    - Push to remote if origin exists.
 10. **Next Step (State-Aware) & Stop & Yield Control:**
-   - If all tasks in the current phase are `[x]`: recommend acceptance testing in `docs/05_Testing/` and `/kb-release <vX.Y.Z>`.
-   - Else propose `/kb-implement TASK-YYY` only if its spec exists in `docs/02_Tasks/Specs/`; otherwise `/kb-task TASK-YYY`.
-   - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets) and STOP.
+   - Execute `python scripts/kb_state.py next` (or `--json`) to deterministically resolve the single next action:
+     * If `status: ready`: propose `/kb-implement TASK-YYY` only if its spec exists in `docs/02_Tasks/Specs/`; otherwise `/kb-task TASK-YYY`.
+     * If `status: blocked_by_bug`: propose immediate defect resolution via `/kb-implement BUG-ZZZ`.
+     * If `status: all_done`: recommend acceptance testing in `docs/05_Testing/` and `/kb-release <vX.Y.Z>`.
+     * If `status: deadlock`: alert developer to unresolved dependency blockers.
+   - Render concise Anti-Echo summary (`[FileName](file://...)`, 3–5 bullets) and STOP tool calls immediately.

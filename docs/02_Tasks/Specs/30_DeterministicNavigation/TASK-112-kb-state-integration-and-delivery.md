@@ -1,7 +1,7 @@
 ---
 id: TASK-112
 title: "Интеграция kb_state в скиллы, бандлинг в install.py и поставка"
-status: planned
+status: done
 type: task
 phase: 30
 component:
@@ -26,7 +26,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-112 — Интеграция kb_state в скиллы, бандлинг в install.py и поставка
 
-> **ID:** TASK-112 | **Статус:** К реализации (Planned) | **Фаза:** 30  
+> **ID:** TASK-112 | **Статус:** Выполнено (Done) | **Фаза:** 30  
 > **План:** [[../../Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027: Детерминированная навигация и граф зависимостей]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]] | **Исследование:** [[../../../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029]]  
 > **Зависимости:** [[TASK-111-deterministic-navigation-kb-state|TASK-111 (Ядро навигации scripts/kb_state.py)]]
@@ -129,21 +129,21 @@ def test_38_deterministic_navigation_delivery(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Сборка бандла: `python scripts/build_installer.py` (Exit code 0).
-- [ ] Генерация правил агентов: `python scripts/gen_rules.py --check` (Exit code 0).
-- [ ] Модульные тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% pass).
-- [ ] Полный прогон тестового сьюта: `python -m unittest discover -s tests` (100% pass).
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Сборка бандла: `python scripts/build_installer.py` (Exit code 0).
+- [x] Генерация правил агентов: `python scripts/gen_rules.py --check` (Exit code 0).
+- [x] Модульные тесты инсталлятора: `python -m unittest tests/test_installer.py` (100% pass).
+- [x] Полный прогон тестового сьюта: `python -m unittest discover -s tests` (100% pass).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] `scripts/kb_state.py` включен в `scripts/build_installer.py` и упакован в `install.py`.
-- [ ] Скиллы `.agents/skills/kb-complete/SKILL.md` и `.agents/skills/kb-onboard/SKILL.md` актуализированы.
-- [ ] `SPEC.md`, `README.md`, `docs/Onboarding.md` и `rules/AGENTS_CORE.md` обновлены.
-- [ ] Тест `test_38_deterministic_navigation_delivery` добавлен и проходит.
-- [ ] Бюджет `install.py` в `test_16` скорректирован до $\le 210\text{ КБ}$.
-- [ ] Все пункты Плана верификации пройдены (Exit code 0).
-- [ ] Фаза 30 в Канбане (`Done`) и Дорожной карте (`[x]`) закрыта.
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] `scripts/kb_state.py` включен в `scripts/build_installer.py` и упакован в `install.py`.
+- [x] Скиллы `.agents/skills/kb-complete/SKILL.md` и `.agents/skills/kb-onboard/SKILL.md` актуализированы.
+- [x] `SPEC.md`, `README.md`, `docs/Onboarding.md` и `rules/AGENTS_CORE.md` обновлены.
+- [x] Тест `test_38_deterministic_navigation_delivery` добавлен и проходит.
+- [x] Бюджет `install.py` в `test_16` скорректирован до $\le 210\text{ КБ}$.
+- [x] Все пункты Плана верификации пройдены (Exit code 0).
+- [x] Фаза 30 в Канбане (`Done`) и Дорожной карте (`[x]`) закрыта.
+- [x] Запись добавлена в `Devlog.md`.

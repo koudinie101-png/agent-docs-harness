@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-10-25
+updated: 2026-11-19
 tags:
   - devlog
   - journal
@@ -15,6 +15,24 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-11-19] — TASK-112: Интеграция kb_state в скиллы, бандлинг в install.py и поставка
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]] и успешно завершена Фаза 30 (Волна 1, P0).
+  - Утилита `scripts/kb_state.py` упакована в `install.py` через `scripts/build_installer.py`, гарантируя развертывание и обновление в клиентских проектах.
+  - Интегрирована детерминированная рекомендация `python scripts/kb_state.py next` в скилл финализации `.agents/skills/kb-complete/SKILL.md` (Шаг 10) и онбординга `.agents/skills/kb-onboard/SKILL.md`.
+  - Дополнен раздел навигации в `docs/Onboarding.md` и чек-лист Mode 3 в `rules/AGENTS_CORE.md`, регенерирован корневой `AGENTS.md` через `scripts/gen_rules.py` и актуализированы golden-фикстуры `tests/fixtures/rules/`.
+  - Актуализирован Living Spec: `SPEC.md` (подраздел 2.6 для `kb_state.py` и состав скриптов инсталлятора) и `README.md`.
+  - Добавлен E2E-тест `test_38_deterministic_navigation_delivery` в `tests/test_installer.py`, ребалансирован бюджет инсталлятора ($\le 210\text{ КБ}$, факт 191.1 КБ).
+- **Проверка:**
+  - `python -m unittest tests/test_installer.py`: 48 тестов OK (включая E2E поставки и бенчмарки дистрибутива).
+  - `python -m unittest tests/test_kb_state.py`: 18 тестов OK.
+  - `python -m unittest discover -s tests`: все тесты OK.
+  - `python scripts/kb_lint.py --path docs`: 276 файлов, 2724 ссылки проверено, 0 ошибок.
+  - `python scripts/gen_rules.py --check`: OK (0 drift).
+  - `python scripts/kb_state.py status`: 112 задач (112 готово, 0 открыто).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 30 полностью завершена. Все задачи `TASK-110`, `TASK-111`, `TASK-112` выполнены. Рекомендуется приемочное тестирование и релиз: `/kb-release v0.29.0`.
 
 ### [2026-11-19] — TASK-111: Ядро навигации scripts/kb_state.py
 - **Что сделано:**

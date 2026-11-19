@@ -179,6 +179,12 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
   # Quick paste feedback from clipboard or arguments
   python3 scripts/kb_ingest.py --paste "App crashes when clicking save"
   ```
+* **Deterministic Navigation Engine (`scripts/kb_state.py`):** Resolves the project state and deterministically computes the single next action across 5 priority tiers (in-progress task -> release blocker bug -> ready planned task -> release -> deadlock detection):
+  ```bash
+  python3 scripts/kb_state.py next         # single next action in plain text
+  python3 scripts/kb_state.py next --json  # machine-readable JSON for agents/CI
+  python3 scripts/kb_state.py status       # phase status, progress counts & blockers
+  ```
 
 ### 4. Agent Configuration & Rule Files (Thin Forwarders Pattern)
 Depending on your preference, the installer configures:

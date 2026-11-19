@@ -150,4 +150,4 @@ swift build
 swift test
 python3 scripts/kb_lint.py --path docs
 ```
-Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · STOP tool calls (Stop & Yield).
+Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Done(date) · Roadmap `[x]` · migrate `DEBT-XXX`->Resolved Debt · Devlog · Defect Loop Reflection (log `INC-XXX` & update `patterns.md` if errors occurred) · kb_lint 0 errors · git push · next step via kb_state · STOP tool calls (Stop & Yield).

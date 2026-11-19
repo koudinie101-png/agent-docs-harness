@@ -23,16 +23,18 @@ Use when the user runs `/kb-onboard` or asks how to interact with the project an
 | `/kb-complete` | Mode 3 | Standalone sync: Done, Devlog, git | `kb-complete` |
 | `/kb-release`  | Release | Dual-Mode release, SHA-256, git tag | `kb-release` |
 | `/kb-lint` | Audit | Verify wikilinks and YAML integrity | `kb-lint` |
+| `kb_state next` | Nav | Deterministic next action (`--json`) | CLI |
+| `kb_state status` | Nav | Project status and task graph | CLI |
 
 ## 🏛️ Directory Layout (`docs/`)
 `00_Templates/` (16 templates: 4 Core, 12 Advanced), `01_Architecture/`, `02_Tasks/` (Kanban, Roadmap, Plans, Specs, Bugs, Inbox, Releases), `03_Decisions_ADR/`, `04_Research/`, `05_Testing/`, `06_Memory/` (Incidents, patterns.md), `Devlog.md`, `Onboarding.md`.
 
 ## 🚨 Invariants
-* **Permalinks:** Specs, plans, bugs, and feedback are never moved or renamed when closed.
-* **Regression-First:** Bugs (`BUG-XXX`) closed strictly after automated failing test reproduces defect and passes.
-* **Anti-Echo:** Link + 3–5 bullet summary instead of dumping full file bodies into chat.
+* **Permalinks:** Specs, plans, bugs, and feedback are never moved or renamed.
+* **Regression-First:** Bugs closed strictly after automated failing test reproduces defect and passes.
+* **Anti-Echo:** Link + 3–5 bullet summary instead of dumping full file bodies.
 * **Single-Task Barrier:** `/kb-implement` executes exactly one spec; never auto-chain.
-* **SSOT:** Behavioral standards are defined in `AGENTS.md`.
+* **SSOT:** Standards are defined in `AGENTS.md`.
 
 ## Procedure
 1. **Present Onboarding Cheatsheet:** Display `/kb-*` command router and 4-stage lifecycle (Discovery $\to$ Planning $\to$ Spec $\to$ Verification/TDD $\to$ Release $\to$ Ingestion).
