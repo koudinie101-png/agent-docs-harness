@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.29.0] - 2026-11-19
+
+### Added
+- **Deterministic Navigation & Task Graph Engine** (Phase 30, Wave 1, P0; TASK-110–TASK-112):
+  - `scripts/kb_state.py` utility with `next` (deterministic next-step resolver across 5 priority tiers) and `status` (project state dashboard) commands, with full `--json` support.
+  - Task dependency graph via `depends_on: [TASK-XXX]` in task spec frontmatter, audited mechanically by `KB-010` (no cycles, no missing dependencies).
+  - Integration into agent workflow: `/kb-complete` (Step 10) and `/kb-onboard` now automatically recommend deterministic next steps.
+  - Architecture defined in [ADR-0035](docs/03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard.md).
+- **Safe Deterministic Auto-Fix** (Phase 31, Wave 1, P0; TASK-113–TASK-115):
+  - `scripts/kb_lint.py --fix`: Zero-Data-Loss deterministic surgical auto-fix for safe rules (`KB-004` frontmatter delimiters, `KB-005` ISO-8601 dates, `KB-006` trailing whitespace with CommonMark hard-break preservation, `KB-007` single EOF newline, `KB-010` safe `depends_on: []` injection).
+  - Dry-run preview with colorized unified diff by default; atomic writes via `NamedTemporaryFile` + `os.replace` on `--write`; uncommitted git modifications protected by `git_check_clean` (overridable with `--allow-dirty`).
+  - Machine-readable contracts: `render_json` emits `summary.fixable`, `finding.fixable`, and a detailed `fixes` array under `--fix`; `render_sarif` emits standard SARIF 2.1.0 `fixes` objects.
+  - CI & tooling integration: pre-commit hook `kb-lint-fix`, composite GitHub Action `action.yml` parameter `fix: none | preview | write`, and operator skills (`/kb-lint`, `/kb-complete`).
+  - Architecture defined in [ADR-0036](docs/03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard.md).
+
+### Changed
+- Bundled installer `install.py` & `dist/install.py` updated to deploy `scripts/kb_state.py` and updated `scripts/kb_lint.py` (bundle size: 191.4 KB / 196 000 B target, 210 KB budget).
+- Full test suite expanded to 216+ automated tests (including `test_38` and `test_39` E2E delivery guards).
+- Master Specification (`SPEC.md`), Storefront (`README.md`), and Developer Guide (`docs/Onboarding.md`) fully synchronized.
+
 ## [0.28.0] - 2026-10-25
 
 ### Added

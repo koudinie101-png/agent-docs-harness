@@ -16,6 +16,22 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — Релиз v0.29.0: Завершение Волны 1 (Фазы 30 и 31, Кумулятивный)
+- **Что сделано:**
+  - Опубликован официальный кумулятивный релиз `v0.29.0`, завершающий всю **Волну 1** (**Docs Integrity Gate**, P0):
+    * **Фаза 30:** Детерминированная навигация и граф задач `depends_on` (`kb_state next`, `kb_state status`, валидация циклов `KB-010`, интеграция в скиллы `/kb-complete`, `/kb-onboard`, ADR-0035).
+    * **Фаза 31:** Безопасный детерминированный автофикс `scripts/kb_lint.py --fix` (Zero Data Loss, предпросмотр `--dry-run` по умолчанию, атомарная перезапись `--write`, страж незакоммиченных изменений `git_check_clean` / `--allow-dirty`, машиночитаемые `JSON` / `SARIF 2.1.0` контракты `fixes`, pre-commit hook `kb-lint-fix`, GitHub Action composite `action.yml`, ADR-0036).
+  - Сгенерирован внутренний отчет [[02_Tasks/Releases/RELEASE-v0.29.0|RELEASE-v0.29.0.md]] и внешние примечания к выпуску `dist/RELEASE_NOTES.md`.
+  - Обновлен `CHANGELOG.md` с подробным описанием всех изменений по Keep a Changelog.
+  - Рассчитан и зафиксирован артефакт дистрибутива:
+    * `dist/install.py`: 191.4 КБ, SHA-256 `b060d04ef4870d593d5900c7e55345d20a9cf505a41b7cc25f4b628e99fe24bb`.
+- **Проверка:**
+  - `python scripts/kb_lint.py --path docs`: 283 файла, 2786 ссылок проверено, 0 ошибок.
+  - `python -m unittest discover -s tests`: 216+ автоматических тестов успешно пройдены (100% OK).
+  - `python scripts/kb_state.py status`: 115 задач (115 готово), 13 дефектов исправлено, 0 блокеров.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Волна 1 полностью выпущена. Переход к планированию следующей инициативы из Дорожной карты (Волна 2: Agent Memory & Learning) через `/kb-plan`.
+
 ### [2026-11-19] — TASK-115: Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]], успешно завершившая Фазу 31 (**Безопасный автофикс kb_lint --fix**, P0).
