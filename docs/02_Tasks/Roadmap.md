@@ -425,12 +425,13 @@ tags:
 * 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-016`).
 
 ### 🌊 Волна 2 — Quality & Evidence (P1)
+> **Исследование архитектуры:** [[../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031: Архитектура Волны 2]], [[../04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028: Двухуровневые релизные записки]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037: Стандарт Quality & Evidence]], [[../03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034: Стандарт релизов]]
 
-* 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта.
-* 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (WARN → ERROR для deep-трека).
+* 💡 **[P1] Spec Quality Gate:** `[NEEDS CLARIFICATION: ...]` вместо догадок, чек-лист качества ТЗ, запрет спекулятивных требований; `in-progress/done` с неразрешённым маркером → ошибка линта (`KB-016`).
+* 💡 **[P1] Трассировка «сценарий → тест»:** таблица в `TEMPLATE_TASK`, `/kb-complete` не закрывает задачу с непокрытыми сценариями (`KB-017`, WARN → ERROR для deep-трека).
+* 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations (`KB-018`).
+* 💡 **[P1] Delta-спеки для brownfield:** `ADDED/MODIFIED/REMOVED` в ТЗ, синхронизация `SPEC.md`/архитектуры при завершении; закрывает разрыв с OpenSpec delta + archive (`KB-019`).
 * 💡 **[P1] Автоматизация двухуровневых релизных записок (`kb_release.py`):** адаптация генераторов `generate_release_markdown()` и `generate_public_release_notes()` под стандарт [[../03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034]] / [[../04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028]]: автоматическая группировка задач под `<details>`, блоки ценности (Value) и формулировки дефектов на простом языке (Value Impact: High, User DX).
-* 💡 **[P1] Review & Convergence Gate:** двухстадийное ревью (spec compliance → code quality), `review:`-блок с verdict/evidence, self vs independent vs human; сверка `git diff` ↔ ТЗ ↔ DoD и фиксация deviations.
-* 💡 **[P1] Delta-спеки для brownfield:** `ADDED/MODIFIED/REMOVED` в ТЗ, синхронизация `SPEC.md`/архитектуры при завершении; закрывает разрыв с OpenSpec delta + archive.
 
 ### 🌊 Волна 3 — Context & Ops (P2)
 
