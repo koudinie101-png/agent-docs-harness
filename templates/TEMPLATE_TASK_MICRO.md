@@ -4,6 +4,7 @@ title: "[Краткое действие: 3-7 слов]"
 status: planned # planned | in-progress | done | cancelled
 type: fast-track
 phase: 1 # Номер текущей фазы
+track: micro # micro | standard | deep
 component:
   - core
 parent_plan: "[[../../Plans/PLAN-XXX|PLAN-XXX]]" # Опционально или ссылка на фазовый план

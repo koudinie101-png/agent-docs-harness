@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — TASK-116: Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard)
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/32_RightSizing/TASK-116-right-sizing-matrix-and-kb020|TASK-116]], открывшая Фазу 32 (**Right-Sizing процесса и Spec Quality Gate**, Волна 2, P1).
+  - Введено нормативное frontmatter-поле `track: standard` (`micro / standard / deep`) в канонические шаблоны `TEMPLATE_TASK.md`, `TEMPLATE_TASK_MICRO.md` и `TEMPLATE_PLAN.md` с синхронным паритетом в `docs/00_Templates/` и `templates/` (TASK-092).
+  - В `scripts/kb_lint.py` реализовано правило `KB-020` (`check_deep_risk_tags`): генерация неблокирующего предупреждения (SEVERITY_WARNING), если задача или план помечены тегами глубокого риска (`architecture`, `security`, `migration`, `public-api`), но не имеют ссылки на родительский план (`parent_plan`) или исследовательскую базу (`research_basis`).
+  - Реестр правил `RULES` и `RULE_SEVERITY` в `kb_lint.py` расширен диапазоном `KB-016..KB-020` для поддержки архитектурного стандарта Волны 2 (ADR-0037).
+  - Добавлены комплексные модульные тесты в `tests/test_kb_lint.py` (`TestDeepRiskTags`, 5 сценариев) и актуализирован тест реестра правил.
+  - Синхронизирована Мастер-Спецификация [[SPEC|SPEC.md]] (Living Spec Invariant).
+- **Проверка:**
+  - `python -m py_compile scripts/kb_lint.py`: Exit code 0.
+  - `python -m unittest tests/test_kb_lint.py`: 84 теста успешно пройдены (100% OK).
+  - `python -m unittest tests/test_template_parity.py`: 2 теста OK (паритет 100%).
+  - `python scripts/kb_lint.py --path docs`: 288 файлов, 2859 ссылок проверено, 0 ошибок.
+  - `python scripts/kb_lint.py --path docs --format json` и `--format sarif`: валидный машиночитаемый вывод.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Разработчик может инициировать спецификацию следующей задачи Фазы 32: `/kb-task TASK-117` (Spec Quality Gate, маркеры `[NEEDS CLARIFICATION]` и правило `KB-016`).  
+
 ### [2026-11-19] — BUG-014: Несоответствие количества хуков в test_pre_commit_hooks
 - **Что сделано:**
   - Устранен регрессионный сбой в `tests/test_pre_commit_hooks.py` ([[02_Tasks/Bugs/BUG-014-pre-commit-hooks-manifest-count-mismatch|BUG-014]]), вызывавший падение CI в GitHub Actions (`Rules Check` / `Unit tests`) после добавления хука `kb-lint-fix` в [[02_Tasks/Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]].

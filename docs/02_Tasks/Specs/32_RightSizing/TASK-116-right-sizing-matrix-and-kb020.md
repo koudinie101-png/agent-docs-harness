@@ -1,7 +1,7 @@
 ---
 id: TASK-116
 title: "Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard)"
-status: planned
+status: done
 type: task
 phase: 32
 track: standard
@@ -25,7 +25,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-116 — Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard)
 
-> **ID:** TASK-116 | **Статус:** К реализации (Planned) | **Фаза:** 32 | **Трек:** Standard  
+> **ID:** TASK-116 | **Статус:** Выполнено (Done) | **Фаза:** 32 | **Трек:** Standard  
 > **План:** [[../../Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029: Right-Sizing процесса и Spec Quality Gate]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037]] | **Исследование:** [[../../../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031]]  
 > **Зависимости:** `[]` (первая задача Фазы 32)
@@ -145,27 +145,27 @@ def check_deep_risk_tags(files: List[Path]) -> List[Finding]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] **Компиляция Python:**
+- [x] **Компиляция Python:**
   ```bash
   python -m py_compile scripts/kb_lint.py
   ```
   *Ожидаемый результат:* Exit code 0, отсутствие синтаксических ошибок.
-- [ ] **Юнит-тесты правила KB-020:**
+- [x] **Юнит-тесты правила KB-020:**
   ```bash
   python -m unittest tests/test_kb_lint.py
   ```
   *Ожидаемый результат:* 100% прохождение всех тестов, включая `test_kb020_*`.
-- [ ] **Тесты паритета шаблонов:**
+- [x] **Тесты паритета шаблонов:**
   ```bash
   python -m unittest tests/test_template_parity.py
   ```
   *Ожидаемый результат:* 100% паритет файлов `docs/00_Templates/` и `templates/`.
-- [ ] **Аудит целостности базы знаний:**
+- [x] **Аудит целостности базы знаний:**
   ```bash
   python scripts/kb_lint.py --path docs
   ```
   *Ожидаемый результат:* 0 broken links, 0 errors, 0 ложных срабатываний `KB-020`.
-- [ ] **Проверка контрактов машинного вывода:**
+- [x] **Проверка контрактов машинного вывода:**
   ```bash
   python scripts/kb_lint.py --path docs --format json
   python scripts/kb_lint.py --path docs --format sarif
@@ -176,9 +176,9 @@ def check_deep_risk_tags(files: List[Path]) -> List[Finding]:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Поле `track` добавлено в `TEMPLATE_TASK.md`, `TEMPLATE_TASK_MICRO.md`, `TEMPLATE_PLAN.md` в обеих директориях (`docs/00_Templates/` и `templates/`).
-- [ ] Правило `KB-020` реализовано в `scripts/kb_lint.py` и зарегистрировано в `RULES`.
-- [ ] Написаны и успешно проходят модульные тесты для `KB-020` в `tests/test_kb_lint.py`.
-- [ ] Тесты паритета `test_template_parity.py` и полный аудит `kb_lint.py` завершаются без ошибок.
-- [ ] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Сессия зафиксирована в `docs/Devlog.md`.
+- [x] Поле `track` добавлено в `TEMPLATE_TASK.md`, `TEMPLATE_TASK_MICRO.md`, `TEMPLATE_PLAN.md` в обеих директориях (`docs/00_Templates/` и `templates/`).
+- [x] Правило `KB-020` реализовано в `scripts/kb_lint.py` и зарегистрировано в `RULES`.
+- [x] Написаны и успешно проходят модульные тесты для `KB-020` в `tests/test_kb_lint.py`.
+- [x] Тесты паритета `test_template_parity.py` и полный аудит `kb_lint.py` завершаются без ошибок.
+- [x] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Сессия зафиксирована в `docs/Devlog.md`.

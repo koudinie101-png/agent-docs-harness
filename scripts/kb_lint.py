@@ -65,6 +65,11 @@ RULES: Dict[str, str] = {
     "KB-013": "Memory index consistency",
     "KB-014": "Symbolic scope contract violation",
     "KB-015": "Asset weight budget exceeded",
+    "KB-016": "Spec quality marker or checklist violation",
+    "KB-017": "Scenario-to-test traceability gap",
+    "KB-018": "Review contract or convergence deviation",
+    "KB-019": "Delta-spec convention violation",
+    "KB-020": "Deep-risk tag requires parent plan or research basis",
 }
 
 # KB-010 Ð·Ð°Ñ€ÐµÐ·ÐµÑ€Ð²Ð¸Ñ€Ð¾Ð²Ð°Ð½ Ð¿Ð¾Ð´ depends_on (Ð¤Ð°Ð·Ð° 28+): Ð² Ñ€ÐµÐµÑÑ‚Ñ€Ðµ ÐµÑÑ‚ÑŒ, severity Ð½ÐµÑ‚ â€”
@@ -85,6 +90,11 @@ RULE_SEVERITY: Dict[str, str] = {
     "KB-013": "warning",
     "KB-014": "warning",
     "KB-015": "warning",
+    "KB-016": "error",
+    "KB-017": "warning",
+    "KB-018": "warning",
+    "KB-019": "warning",
+    "KB-020": "warning",
 }
 
 VALID_SEVERITIES = ("error", "warning")
@@ -938,6 +948,117 @@ def check_research_basis(docs_dir: Path) -> List[Finding]:
         note = _normalize_plan_value(note_match.group(1)) if note_match else ""
         if not note:
             warnings.append(make_finding("KB-007", "WARN: plan '%s' sets research_basis: none without basis_note" % plan_file.name, file=_docs_rel(plan_file, docs_dir)))
+    return warnings
+
+
+DEEP_RISK_TAGS: Set[str] = {"architecture", "security", "migration", "public-api"}
+
+
+def _extract_frontmatter_tags(frontmatter_raw: str) -> Set[str]:
+    """Extracts tag identifiers from frontmatter block."""
+    tags: Set[str] = set()
+    list_match = re.search(r"^tags:\s*\n((?:\s*-\s*[^\n]+\n?)+)", frontmatter_raw, re.MULTILINE)
+    if list_match:
+        for line in list_match.group(1).splitlines():
+            clean = line.strip().lstrip("-").strip().lower().lstrip("#")
+            if clean:
+                tags.add(clean)
+    else:
+        inline_match = re.search(r"^tags:\s*\[(.*?)\]", frontmatter_raw, re.MULTILINE)
+        if inline_match:
+            for item in inline_match.group(1).split(","):
+                clean = item.strip().strip("'\"").strip().lower().lstrip("#")
+                if clean:
+                    tags.add(clean)
+    return tags
+
+
+def check_deep_risk_tags(docs_dir: Path) -> List[Finding]:
+    """
+    Tier 1 Quality Gate (Non-blocking): audit deep-risk tasks and plans.
+
+    Rule KB-020 (SEVERITY_WARNING):
+    Tasks or plans tagged with deep-risk identifiers (architecture, security, migration, public-api)
+    should be backed by a parent plan or research basis to ensure architectural due diligence.
+    """
+    warnings: List[Finding] = []
+
+    # 1. Audit Specs
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
+        specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
+
+    if specs_dir.is_dir():
+        for spec_file in sorted(specs_dir.rglob("*.md")):
+            if spec_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                text = spec_file.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if not text.startswith("---"):
+                continue
+            parts = text.split("---", 2)
+            if len(parts) < 3:
+                continue
+            frontmatter = parts[1]
+            tags = _extract_frontmatter_tags(frontmatter)
+            matched = tags & DEEP_RISK_TAGS
+            if not matched:
+                continue
+
+            plan_match = re.search(r"^parent_plan:\s*(.*)", frontmatter, re.MULTILINE)
+            plan_val = plan_match.group(1).strip().strip("'\"") if plan_match else ""
+            if not plan_val or plan_val.lower() in ("none", "null", "[]"):
+                tag_str = ", ".join(sorted(matched))
+                warnings.append(make_finding(
+                    "KB-020",
+                    f"WARN: task '{spec_file.name}' has deep-risk tag(s) [{tag_str}] but lacks parent_plan reference",
+                    file=_docs_rel(spec_file, docs_dir),
+                ))
+
+    # 2. Audit Plans
+    plans_dir = docs_dir / "02_Tasks" / "Plans"
+    if not plans_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Plans").is_dir():
+        plans_dir = docs_dir / "docs" / "02_Tasks" / "Plans"
+
+    if plans_dir.is_dir():
+        for plan_file in sorted(plans_dir.rglob("*.md")):
+            if plan_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                text = plan_file.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if not text.startswith("---"):
+                continue
+            parts = text.split("---", 2)
+            if len(parts) < 3:
+                continue
+            frontmatter = parts[1]
+            tags = _extract_frontmatter_tags(frontmatter)
+            matched = tags & DEEP_RISK_TAGS
+            if not matched:
+                continue
+
+            phase_match = re.search(r"^phase:\s*(\d+)", frontmatter, re.MULTILINE)
+            if phase_match and int(phase_match.group(1)) < 24:
+                # Backward compatibility: ADR-0031 research basis requirement adopted in Phase 24
+                continue
+
+            basis_match = RESEARCH_BASIS_RE.search(frontmatter)
+            basis_val = _normalize_plan_value(basis_match.group(1)).lower() if basis_match else ""
+            note_match = BASIS_NOTE_RE.search(frontmatter)
+            note_val = _normalize_plan_value(note_match.group(1)) if note_match else ""
+
+            if not basis_val or (basis_val == "none" and not note_val):
+                tag_str = ", ".join(sorted(matched))
+                warnings.append(make_finding(
+                    "KB-020",
+                    f"WARN: plan '{plan_file.name}' has deep-risk tag(s) [{tag_str}] but lacks verified research_basis or basis_note",
+                    file=_docs_rel(plan_file, docs_dir),
+                ))
+
     return warnings
 
 
@@ -1864,6 +1985,7 @@ def run_linter(
     )
     findings.extend(check_untracked_todos(docs_dir))
     findings.extend(check_task_dependencies(docs_dir))
+    findings.extend(check_deep_risk_tags(docs_dir))
 
     for finding in findings:
         finding.location = resolve_location(finding.file, docs_dir)

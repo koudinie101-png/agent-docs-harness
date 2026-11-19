@@ -4,6 +4,7 @@ title: "[Краткое название задачи]"
 status: planned # planned | in-progress | done | cancelled
 type: task
 phase: 1
+track: standard # micro | standard | deep
 component:
   - core
 parent_plan: "[[../../Plans/PLAN-XXX|PLAN-XXX]]"

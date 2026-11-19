@@ -4,6 +4,7 @@ title: "[Название концепции или фичи]"
 status: proposed # proposed | accepted | in-progress | completed | rejected
 type: plan
 phase: 1
+track: standard # standard | deep
 # research_basis: "[[../../04_Research/RESEARCH-XXX-<slug>|RESEARCH-XXX]]"  # or: none
 # basis_note: "Почему исследование не требуется и насколько решение обратимо (обязательно при research_basis: none)"
 created: 2026-09-19

@@ -1311,12 +1311,13 @@ class TestLintOutputContract(unittest.TestCase):
     # --- registry ---------------------------------------------------------------
 
     def test_rule_registry_is_complete_and_unique(self):
-        """Registry holds KB-001..KB-015 in order; all have active severity."""
-        expected = ["KB-%03d" % index for index in range(1, 16)]
+        """Registry holds KB-001..KB-020 in order; all have active severity."""
+        expected = ["KB-%03d" % index for index in range(1, 21)]
         self.assertEqual(list(kb_lint.RULES), expected)
         self.assertEqual(set(kb_lint.RULE_SEVERITY), set(expected))
         self.assertTrue(set(kb_lint.RULE_SEVERITY.values()) <= {"error", "warning"})
         self.assertEqual(kb_lint.RULE_SEVERITY["KB-010"], "error")
+        self.assertEqual(kb_lint.RULE_SEVERITY["KB-020"], "warning")
         for rule_id in expected:
             self.assertTrue(kb_lint.RULES[rule_id].strip())
 
@@ -1531,6 +1532,114 @@ class TestTaskDependencies(unittest.TestCase):
         self._write_spec("TASK-002.md", "TASK-002", ["TASK-001"])
         findings = kb_lint.check_task_dependencies(self.docs_dir)
         self.assertTrue(any(f.rule_id == "KB-010" and "cycle detected" in f.message for f in findings))
+
+
+class TestDeepRiskTags(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = Path(tempfile.mkdtemp())
+        self.docs_dir = self.tmp_dir / "docs"
+        self.specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "32_Phase"
+        self.plans_dir = self.docs_dir / "02_Tasks" / "Plans"
+        self.specs_dir.mkdir(parents=True, exist_ok=True)
+        self.plans_dir.mkdir(parents=True, exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def test_kb020_task_deep_risk_without_parent_plan_warns(self):
+        content = (
+            "---\n"
+            "id: TASK-901\n"
+            "title: Deep task\n"
+            "status: planned\n"
+            "type: task\n"
+            "phase: 32\n"
+            "tags:\n"
+            "  - architecture\n"
+            "  - security\n"
+            "---\n"
+            "# Deep Task\n"
+        )
+        (self.specs_dir / "TASK-901.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_deep_risk_tags(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-020")
+        self.assertEqual(findings[0].severity, "warning")
+        self.assertIn("architecture", findings[0].message)
+        self.assertIn("lacks parent_plan", findings[0].message)
+
+    def test_kb020_task_deep_risk_with_parent_plan_passes(self):
+        content = (
+            "---\n"
+            "id: TASK-901\n"
+            "title: Deep task\n"
+            "status: planned\n"
+            "type: task\n"
+            "phase: 32\n"
+            "parent_plan: \"[[../../Plans/PLAN-029|PLAN-029]]\"\n"
+            "tags:\n"
+            "  - architecture\n"
+            "---\n"
+            "# Deep Task\n"
+        )
+        (self.specs_dir / "TASK-901.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_deep_risk_tags(self.docs_dir)
+        self.assertEqual(findings, [])
+
+    def test_kb020_plan_deep_risk_without_research_basis_warns(self):
+        content = (
+            "---\n"
+            "id: PLAN-901\n"
+            "title: Deep plan\n"
+            "status: proposed\n"
+            "type: plan\n"
+            "phase: 32\n"
+            "tags:\n"
+            "  - public-api\n"
+            "---\n"
+            "# Deep Plan\n"
+        )
+        (self.plans_dir / "PLAN-901.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_deep_risk_tags(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-020")
+        self.assertIn("lacks verified research_basis", findings[0].message)
+
+    def test_kb020_plan_deep_risk_with_research_basis_passes(self):
+        content = (
+            "---\n"
+            "id: PLAN-901\n"
+            "title: Deep plan\n"
+            "status: proposed\n"
+            "type: plan\n"
+            "phase: 32\n"
+            "research_basis: \"[[../../04_Research/RESEARCH-031|RESEARCH-031]]\"\n"
+            "tags:\n"
+            "  - public-api\n"
+            "---\n"
+            "# Deep Plan\n"
+        )
+        (self.plans_dir / "PLAN-901.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_deep_risk_tags(self.docs_dir)
+        self.assertEqual(findings, [])
+
+    def test_kb020_standard_task_without_deep_tags_passes(self):
+        content = (
+            "---\n"
+            "id: TASK-902\n"
+            "title: Standard task\n"
+            "status: planned\n"
+            "type: task\n"
+            "phase: 32\n"
+            "tags:\n"
+            "  - feature\n"
+            "  - lint\n"
+            "---\n"
+            "# Standard Task\n"
+        )
+        (self.specs_dir / "TASK-902.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_deep_risk_tags(self.docs_dir)
+        self.assertEqual(findings, [])
 
 
 if __name__ == "__main__":
