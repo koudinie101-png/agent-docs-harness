@@ -14,7 +14,7 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-
+- [ ] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция kb_state в скиллы, бандлинг в install.py и поставка (2026-11-19) #task #phase30 #navigation #installer #skills
 
 ## ✅ Готово (Done)
 

@@ -394,7 +394,7 @@ tags:
 
 - [x] [[Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]]: Граф зависимостей `depends_on` и правило линтера `KB-010` (детекция циклов и висячих ID в `kb_lint.py`, поле в `TEMPLATE_TASK.md`, тесты в `test_kb_lint.py`) (2026-11-19).
 - [x] [[Specs/30_DeterministicNavigation/TASK-111-deterministic-navigation-kb-state|TASK-111]]: Ядро навигации `scripts/kb_state.py` (команды `status`, `next`, флаг `--json`, топологический выбор готовой задачи, фильтрация заблокированных задач, модульные тесты `tests/test_kb_state.py`) (2026-11-19).
-- [ ] TASK-112: Интеграция `kb_state.py` в скиллы и онбординг, бандлинг в `install.py` / `build_installer.py`, бюджет тестов, актуализация `SPEC.md` и `README.md`.
+- [ ] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция `kb_state.py` в скиллы и онбординг, бандлинг в `install.py` / `build_installer.py`, бюджет тестов, актуализация `SPEC.md` и `README.md`.
 
 ---
 
