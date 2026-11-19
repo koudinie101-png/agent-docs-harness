@@ -1,7 +1,7 @@
 ---
 id: TASK-113
 title: "Ядро хирургического автофикса в scripts/kb_lint.py"
-status: planned
+status: done
 type: task
 phase: 31
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-113 — Ядро хирургического автофикса в scripts/kb_lint.py
 
-> **ID:** TASK-113 | **Статус:** К реализации (Planned) | **Фаза:** 31  
+> **ID:** TASK-113 | **Статус:** Выполнено (Done) | **Фаза:** 31  
 > **План:** [[../../Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028: Безопасный автофикс kb_lint --fix]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]] | **Исследование:** [[../../../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]]  
 > **Зависимости:** `[]` (первая задача Фазы 31)
@@ -151,21 +151,21 @@ def atomic_write_file(file_path: Path, content: str) -> None:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая компиляция: `python -m py_compile scripts/kb_lint.py` (Exit code 0).
-- [ ] Запуск модульных тестов ядра автофикса: `python -m unittest tests/test_kb_lint_fix.py` (100% pass).
-- [ ] Запуск полного сьюта существующих тестов: `python -m unittest discover -s tests` (100% pass, без регрессий).
-- [ ] Прогон автофикса на реальной базе знаний в режиме dry-run: `python scripts/kb_lint.py --path docs --fix` (Exit code 0, 0 непреднамеренных мутаций).
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Синтаксическая компиляция: `python -m py_compile scripts/kb_lint.py` (Exit code 0).
+- [x] Запуск модульных тестов ядра автофикса: `python -m unittest tests/test_kb_lint_fix.py` (100% pass).
+- [x] Запуск полного сьюта существующих тестов: `python -m unittest discover -s tests` (100% pass, без регрессий).
+- [x] Прогон автофикса на реальной базе знаний в режиме dry-run: `python scripts/kb_lint.py --path docs --fix` (Exit code 0, 0 непреднамеренных мутаций).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] В `scripts/kb_lint.py` реализованы флаги `--fix`, `--dry-run`, `--write`, `--allow-dirty`.
-- [ ] Реализован алгоритм хирургического строкового патчинга для правил `KB-004`, `KB-005`, `KB-006`, `KB-007`, `KB-010`.
-- [ ] Пользовательские комментарии и форматирование frontmatter сохраняются на 100%.
-- [ ] Атомарная запись через `tempfile` и Git-Clean Guard защищают от повреждения данных.
-- [ ] Набор тестов `tests/test_kb_lint_fix.py` покрывает все правила, флаги и краевые случаи.
-- [ ] Все пункты Плана верификации пройдены.
-- [ ] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] В `scripts/kb_lint.py` реализованы флаги `--fix`, `--dry-run`, `--write`, `--allow-dirty`.
+- [x] Реализован алгоритм хирургического строкового патчинга для правил `KB-004`, `KB-005`, `KB-006`, `KB-007`, `KB-010`.
+- [x] Пользовательские комментарии и форматирование frontmatter сохраняются на 100%.
+- [x] Атомарная запись через `tempfile` и Git-Clean Guard защищают от повреждения данных.
+- [x] Набор тестов `tests/test_kb_lint_fix.py` покрывает все правила, флаги и краевые случаи.
+- [x] Все пункты Плана верификации пройдены.
+- [x] Статус обновлён в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

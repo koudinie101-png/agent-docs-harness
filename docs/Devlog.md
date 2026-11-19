@@ -16,6 +16,30 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — TASK-113: Ядро хирургического автофикса в scripts/kb_lint.py
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]] в рамках Фазы 31 (Волна 1, P0).
+  - В `scripts/kb_lint.py` внедрены структуры данных `Fix` и `FixResult`, а также генератор хирургического строкового патчинга `generate_file_fixes()`.
+  - Реализовано безопасное детерминированное автоисправление 5 правил:
+    * `KB-004`: нормализация маркеров `---` в начале и конце YAML frontmatter.
+    * `KB-005`: приведение форматов дат к стандарту ISO-8601 `YYYY-MM-DD`.
+    * `KB-006`: удаление концевых пробелов и очистка пробельных строк с сохранением стандартных Markdown-переносов (двойные пробелы `  \n`).
+    * `KB-007`: обеспечение ровно одного завершающего перевода строки `\n` EOF.
+    * `KB-010`: безопасная инъекция дефолтного поля `depends_on: []` во frontmatter спецификаций задач (`02_Tasks/Specs/`) с сохранением всех комментариев.
+  - Реализован протокол безопасности Zero Data Loss: безопасный предпросмотр `--dry-run` по умолчанию, атомарная перезапись `atomic_write_file` через `tempfile.NamedTemporaryFile` + `os.replace` при флаге `--write`, и страж незакоммиченных изменений `git_check_clean` с флагом `--allow-dirty`.
+  - Реализован рендерер цветного унифицированного диффа `render_diff()`.
+  - Добавлен тестовый модуль `tests/test_kb_lint_fix.py` (13 тестов): 100% прохождение всех правил, проверка флагов CLI и протокола безопасности.
+  - Обновлён встроенный бандл через `python scripts/build_installer.py`.
+- **Проверка:**
+  - `python -m py_compile scripts/kb_lint.py`: OK.
+  - `python -m unittest tests/test_kb_lint_fix.py`: 13 тестов OK (0.55s).
+  - `python -m unittest tests/test_installer.py`: 48 тестов OK (включая страж свежести бандла `test_37` и размер `test_16`).
+  - `python -m unittest tests/test_kb_lint.py`: 79 тестов OK.
+  - `python scripts/kb_lint.py --path docs`: 280 файлов, 2762 ссылки проверено, 0 ошибок.
+  - `python scripts/gen_rules.py --check`: OK.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-114` — спецификация машиночитаемых форматов отчётов (JSON/SARIF `fixable`) и интеграции автофикса в скиллы (`/kb-lint`, `/kb-complete`).
+
 ### [2026-11-19] — TASK-112: Интеграция kb_state в скиллы, бандлинг в install.py и поставка
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]] и успешно завершена Фаза 30 (Волна 1, P0).

@@ -403,7 +403,7 @@ tags:
 **Первоисточник плана:** [[Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028]]  
 **Нормативная база:** [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]  
 
-- [ ] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в `scripts/kb_lint.py` (`--fix`, `--write`, 5 безопасных правил, `unified_diff`, атомарная запись, Git-Clean Guard, модульные тесты).
+- [x] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в `scripts/kb_lint.py` (`--fix`, `--write`, 5 безопасных правил, `unified_diff`, атомарная запись, Git-Clean Guard, модульные тесты) (2026-11-19).
 - [ ] TASK-114: Машинно-читаемый контракт (JSON/SARIF `fixable`), интеграция в скиллы (`/kb-lint`, `/kb-complete`) и онбординг.
 - [ ] TASK-115: Бандлинг в `install.py`, CI-хуки, Living Spec (`SPEC.md`, `README.md`), ребалансировка бюджетов и E2E-тест доставки.
 

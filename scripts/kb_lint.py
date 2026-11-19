@@ -11,6 +11,10 @@ import re
 import json
 import argparse
 import urllib.parse
+import difflib
+import tempfile
+import subprocess
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Set
 
@@ -141,6 +145,236 @@ class LintReport(object):
 
     def has_errors(self) -> bool:
         return any(f.severity == "error" for f in self.findings)
+
+
+@dataclass
+class Fix:
+    rule_id: str
+    description: str
+    file_path: Path
+    line_number: int  # 1-based (0 if whole-file / EOF)
+    original_text: str
+    replacement_text: str
+
+
+@dataclass
+class FixResult:
+    file_path: Path
+    original_content: str
+    modified_content: str
+    diff_lines: List[str]
+    fixes: List[Fix]
+
+    @property
+    def has_changes(self) -> bool:
+        return self.original_content != self.modified_content
+
+
+COLOR_GREEN = "\033[32m"
+COLOR_RED = "\033[31m"
+COLOR_CYAN = "\033[36m"
+COLOR_RESET = "\033[0m"
+
+
+def render_diff(diff_lines: List[str], use_color: bool = False) -> str:
+    """Renders unified diff lines with optional ANSI color highlighting."""
+    if not diff_lines:
+        return ""
+    if not use_color:
+        return "".join(diff_lines)
+    colored: List[str] = []
+    for line in diff_lines:
+        if line.startswith("+++") or line.startswith("---"):
+            colored.append(line)
+        elif line.startswith("+"):
+            colored.append(f"{COLOR_GREEN}{line}{COLOR_RESET}")
+        elif line.startswith("-"):
+            colored.append(f"{COLOR_RED}{line}{COLOR_RESET}")
+        elif line.startswith("@@"):
+            colored.append(f"{COLOR_CYAN}{line}{COLOR_RESET}")
+        else:
+            colored.append(line)
+    return "".join(colored)
+
+
+def git_check_clean(file_path: Path) -> bool:
+    """Returns True if the file has no uncommitted git changes, or if git is unavailable."""
+    try:
+        resolved = file_path.resolve()
+        proc = subprocess.run(
+            ["git", "status", "--porcelain", "--", str(resolved)],
+            cwd=str(resolved.parent),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        if proc.returncode != 0:
+            return True
+        return len(proc.stdout.strip()) == 0
+    except Exception:
+        return True
+
+
+def atomic_write_file(file_path: Path, content: str) -> None:
+    """Writes content atomically using a temporary file in the same directory and os.replace."""
+    resolved = file_path.resolve()
+    target_dir = resolved.parent
+    target_dir.mkdir(parents=True, exist_ok=True)
+    temp_file = tempfile.NamedTemporaryFile("w", dir=str(target_dir), delete=False, encoding="utf-8", newline="")
+    temp_name = temp_file.name
+    try:
+        temp_file.write(content)
+        temp_file.flush()
+        os.fsync(temp_file.fileno())
+        temp_file.close()
+        os.replace(temp_name, str(resolved))
+    except Exception:
+        try:
+            temp_file.close()
+            if os.path.exists(temp_name):
+                os.remove(temp_name)
+        except Exception:
+            pass
+        raise
+
+
+def generate_file_fixes(content: str, file_path: Path) -> FixResult:
+    """Generates surgical deterministic fixes for safe rules (KB-004, KB-005, KB-006, KB-007, KB-010)."""
+    fixes: List[Fix] = []
+    if not content:
+        return FixResult(file_path=file_path, original_content=content, modified_content=content, diff_lines=[], fixes=[])
+
+    raw_lines = content.splitlines(keepends=True)
+    lines = list(raw_lines)
+
+    # 1. Frontmatter delimiter check (KB-004) & detection
+    fm_start = -1
+    fm_end = -1
+    if lines and re.match(r"^---\s*$", lines[0]):
+        fm_start = 0
+        if lines[0] != "---\n":
+            old_line = lines[0]
+            lines[0] = "---\n"
+            fixes.append(Fix(
+                rule_id="KB-004",
+                description="Normalize frontmatter opening delimiter",
+                file_path=file_path,
+                line_number=1,
+                original_text=old_line,
+                replacement_text="---\n",
+            ))
+        for idx in range(1, len(lines)):
+            if re.match(r"^---\s*$", lines[idx]):
+                fm_end = idx
+                if lines[idx] != "---\n":
+                    old_line = lines[idx]
+                    lines[idx] = "---\n"
+                    fixes.append(Fix(
+                        rule_id="KB-004",
+                        description="Normalize frontmatter closing delimiter",
+                        file_path=file_path,
+                        line_number=idx + 1,
+                        original_text=old_line,
+                        replacement_text="---\n",
+                    ))
+                break
+
+    # 2. Date format normalization inside frontmatter (KB-005)
+    if fm_start != -1 and fm_end != -1:
+        for idx in range(fm_start + 1, fm_end):
+            line = lines[idx]
+            clean = line.rstrip("\r\n")
+            m = re.match(r"^(\s*(?:created|updated|date):\s*)(['\"]?)(\d{4})[./](\d{2})[./](\d{2})\2(\s*(?:#.*)?)$", clean)
+            if m:
+                prefix, quote, y, m_month, d, comment = m.groups()
+                norm_date = f"{prefix}{quote}{y}-{m_month}-{d}{quote}{comment}\n"
+                if norm_date != line:
+                    old_line = line
+                    lines[idx] = norm_date
+                    fixes.append(Fix(
+                        rule_id="KB-005",
+                        description=f"Normalize date to ISO-8601 YYYY-MM-DD ({y}-{m_month}-{d})",
+                        file_path=file_path,
+                        line_number=idx + 1,
+                        original_text=old_line,
+                        replacement_text=norm_date,
+                    ))
+
+    # 3. Default depends_on: [] injection in task specs (KB-010)
+    posix_path = file_path.as_posix()
+    is_task_spec = (
+        ("02_Tasks/Specs/" in posix_path or bool(re.match(r"^TASK-\d{3,}", file_path.name)))
+        and not file_path.name.startswith("TEMPLATE_")
+    )
+    if is_task_spec and fm_start != -1 and fm_end != -1:
+        has_depends_on = any(re.match(r"^\s*depends_on\s*:", lines[i]) for i in range(fm_start + 1, fm_end))
+        if not has_depends_on:
+            lines.insert(fm_end, "depends_on: []\n")
+            fixes.append(Fix(
+                rule_id="KB-010",
+                description="Inject default 'depends_on: []' in task specification frontmatter",
+                file_path=file_path,
+                line_number=fm_end + 1,
+                original_text="",
+                replacement_text="depends_on: []\n",
+            ))
+            fm_end += 1
+
+    # 4. Trailing whitespace removal (KB-006)
+    for idx in range(len(lines)):
+        line = lines[idx]
+        clean_nl = line.rstrip("\r\n")
+        in_fm = (fm_start != -1 and idx > fm_start and (fm_end == -1 or idx < fm_end))
+        if in_fm:
+            stripped = clean_nl.rstrip(" \t")
+        else:
+            # In Markdown body, exactly two spaces at the end of a non-empty line indicates a hard line break (<br>)
+            if clean_nl.endswith("  ") and not clean_nl.endswith("   ") and clean_nl.strip() != "":
+                stripped = clean_nl
+            else:
+                stripped = clean_nl.rstrip(" \t")
+
+        if stripped != clean_nl:
+            new_line = stripped + "\n"
+            old_line = line
+            lines[idx] = new_line
+            fixes.append(Fix(
+                rule_id="KB-006",
+                description="Remove trailing whitespace",
+                file_path=file_path,
+                line_number=idx + 1,
+                original_text=old_line,
+                replacement_text=new_line,
+            ))
+
+    # 5. Ensure single EOF newline (KB-007)
+    intermediate = "".join(lines)
+    ensured = intermediate.rstrip("\r\n") + "\n"
+    if ensured != intermediate:
+        fixes.append(Fix(
+            rule_id="KB-007",
+            description="Ensure single trailing newline at EOF",
+            file_path=file_path,
+            line_number=len(lines),
+            original_text=intermediate[len(ensured.rstrip("\r\n")):],
+            replacement_text="\n",
+        ))
+        intermediate = ensured
+
+    diff_lines = list(difflib.unified_diff(
+        content.splitlines(keepends=True),
+        intermediate.splitlines(keepends=True),
+        fromfile=f"a/{file_path.name}",
+        tofile=f"b/{file_path.name}",
+    ))
+
+    return FixResult(
+        file_path=file_path,
+        original_content=content,
+        modified_content=intermediate,
+        diff_lines=diff_lines,
+        fixes=fixes,
+    )
 
 
 
@@ -1354,7 +1588,14 @@ def render_sarif(report: LintReport) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=False)
 
 
-def run_linter(docs_dir: Path, verbose: bool = False, output_format: str = "text") -> int:
+def run_linter(
+    docs_dir: Path,
+    verbose: bool = False,
+    output_format: str = "text",
+    fix: bool = False,
+    write: bool = False,
+    allow_dirty: bool = False,
+) -> int:
     if verbose and output_format == "text":
         print(f"🔍 Auditing Knowledge Base at: {docs_dir.resolve()}\n")
     if not docs_dir.exists():
@@ -1368,6 +1609,65 @@ def run_linter(docs_dir: Path, verbose: bool = False, output_format: str = "text
     for root_doc in ["SPEC.md", "README.md", "AGENTS.md", "CLAUDE.md", "GEMINI.md"]:
         if (repo_root / root_doc).is_file():
             all_md_files.append(repo_root / root_doc)
+
+    if fix:
+        fix_results: List[FixResult] = []
+        for f in all_md_files:
+            try:
+                content = f.read_text(encoding="utf-8")
+            except Exception:
+                continue
+            res = generate_file_fixes(content, f)
+            if res.has_changes:
+                fix_results.append(res)
+
+        applied_files = 0
+        applied_fixes = 0
+        skipped_files = 0
+
+        if write:
+            for res in fix_results:
+                if not allow_dirty and not git_check_clean(res.file_path):
+                    if output_format == "text":
+                        sys.stdout.write(
+                            "WARNING: Skipping %s (has uncommitted changes in git. Use --allow-dirty to overwrite).\n"
+                            % res.file_path.name
+                        )
+                    skipped_files += 1
+                    continue
+                atomic_write_file(res.file_path, res.modified_content)
+                applied_files += 1
+                applied_fixes += len(res.fixes)
+
+        if output_format == "text":
+            use_color = sys.stdout.isatty() and not os.environ.get("NO_COLOR")
+            for res in fix_results:
+                diff_str = render_diff(res.diff_lines, use_color=use_color)
+                if diff_str:
+                    sys.stdout.write(diff_str + "\n")
+
+            total_fixes = sum(len(r.fixes) for r in fix_results)
+            if not write:
+                if fix_results:
+                    sys.stdout.write(
+                        "[DRY-RUN] Found %d fixable issue(s) in %d file(s). Run with '--fix --write' to apply.\n"
+                        % (total_fixes, len(fix_results))
+                    )
+                else:
+                    sys.stdout.write("[DRY-RUN] No fixable issues found.\n")
+            else:
+                if applied_files > 0:
+                    sys.stdout.write(
+                        "[FIXED] Successfully applied %d fix(es) in %d file(s).\n"
+                        % (applied_fixes, applied_files)
+                    )
+                elif skipped_files > 0:
+                    sys.stdout.write(
+                        "[FIXED] All %d fixable file(s) were skipped due to uncommitted git changes.\n"
+                        % skipped_files
+                    )
+                else:
+                    sys.stdout.write("[FIXED] No fixable issues found.\n")
 
     # Collect map of base names and relative paths
     file_map = build_file_map(docs_dir, repo_root)
@@ -1541,6 +1841,26 @@ if __name__ == "__main__":
         help="Output format: text (default), json (machine-readable), sarif (SARIF 2.1.0)",
     )
     parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Analyze and preview safe autofixes (dry-run by default)",
+    )
+    parser.add_argument(
+        "--write",
+        action="store_true",
+        help="Apply autofixes to files on disk (use with --fix)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Explicitly run in dry-run preview mode (default behavior of --fix)",
+    )
+    parser.add_argument(
+        "--allow-dirty",
+        action="store_true",
+        help="Allow autofixing files with uncommitted git modifications",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version="kb_lint %d" % RULESET_VERSION,
@@ -1556,5 +1876,13 @@ if __name__ == "__main__":
     else:
         vault = find_vault_root(start)
 
-    exit_code = run_linter(vault, verbose=args.verbose, output_format=args.output_format)
+    effective_write = bool(args.write and not args.dry_run)
+    exit_code = run_linter(
+        vault,
+        verbose=args.verbose,
+        output_format=args.output_format,
+        fix=args.fix,
+        write=effective_write,
+        allow_dirty=args.allow_dirty,
+    )
     sys.exit(exit_code)

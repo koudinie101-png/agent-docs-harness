@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в scripts/kb_lint.py (2026-11-19) #task #phase31 #lint #autofix #safety
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в scripts/kb_lint.py (2026-11-19) #task #phase31 #lint #autofix #safety
 
 - [x] [[Specs/30_DeterministicNavigation/TASK-112-kb-state-integration-and-delivery|TASK-112]]: Интеграция kb_state в скиллы, бандлинг в install.py и поставка (2026-11-19) #task #phase30 #navigation #installer #skills
 
