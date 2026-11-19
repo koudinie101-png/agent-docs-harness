@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/31_SafeAutoFix/TASK-114-autofix-formats-and-skills-integration|TASK-114]]: Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы (2026-11-19) #task #phase31 #lint #autofix #skills
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в scripts/kb_lint.py (2026-11-19) #task #phase31 #lint #autofix #safety
