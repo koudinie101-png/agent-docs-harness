@@ -395,11 +395,12 @@ tags:
 > **Плановый старт:** после завершения Фазы 26 (Tech Debt Hardening). Порядок: P0 → P1 → P2.
 
 ### 🌊 Волна 1 — Docs Integrity Gate (P0)
+> **Исследование архитектуры:** [[../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029: Архитектура Волны 1]] | **Стандарт:** [[../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035: Стандарт навигации и графа зависимостей]]
 
-* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** машинно-читаемый контракт (`--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, `--version`) промоутирован в Фазу 27 — [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]; остаток пункта: безопасный `--fix` (`--dry-run` по умолчанию, backup, только детерминированные правки) и упаковка линта для CI/pre-commit.
+* 💡 **[P0] `kb_lint --fix` и CI-упаковка (`action.yml`, `.pre-commit-hooks.yaml`):** машинно-читаемый контракт (`--format {text,json,sarif}`, стабильные `KB-XXX` rule-id, `--version`) промоутирован в Фазу 27 — [[Plans/PLAN-025-docs-integrity-gate-kb-lint-productization|PLAN-025]]; CI-упаковка выполнена в Фазе 28; остаток пункта: безопасный `--fix` (`--dry-run` по умолчанию, backup, только детерминированные правки).
 * 💡 **[P0] Детерминированная навигация (`kb_state.py next/status/context`):** один ответ «что дальше» из `Specs/Bugs/Plans/Kanban/Inbox/TechDebt`, `--json`, интеграция в `kb-onboard` и `/kb-complete`; закрывает разрыв с `bmad status`, `openspec status`, `task-master next`.
 * 💡 **[P0] Граф зависимостей задач (`depends_on`):** frontmatter-поле, проверка циклов/висячих ID в `kb_lint` (`KB-010`), blocked-by в Kanban, учёт в `next`; защита от преждевременного старта.
-* 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan.
+* 💡 **[P0] Right-sizing процесса (micro/standard/deep):** матрица риска в `/kb-plan`, `/kb-task`, `Onboarding.md`; standard-трек не требует полного research/plan, deep-трек требует human/independent review; линт предупреждает о deep-тегах без research/plan (`KB-016`).
 
 ### 🌊 Волна 2 — Quality & Evidence (P1)
 

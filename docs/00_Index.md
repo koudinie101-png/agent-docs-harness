@@ -99,6 +99,7 @@ flowchart TD
 * [[03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry|ADR-0032: Машинно-читаемый контракт линтера: модель Finding, реестр KB-XXX и три рендерера]]
 * [[03_Decisions_ADR/ADR-0033-plain-language-contract|ADR-0033: Контракт простого языка: пользователь — не разработчик]]
 * [[03_Decisions_ADR/ADR-0034-user-centric-release-notes-and-collapsible-audit-standard|ADR-0034: Стандарт двухуровневых релизных записок: ориентация на пользователя и сворачиваемый технический аудит]]
+* [[03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035: Архитектурный стандарт Волны 1: детерминированная навигация (kb_state), граф зависимостей (depends_on) и консервативный автофикс]]
 
 ### 4. Исследования платформы (`04_Research/`)
 * [[04_Research/RESEARCH-001-ai-agent-ecosystem-and-ide-matrix|RESEARCH-001: Экосистема AI-агентов, сред разработки и открытых моделей]]
@@ -129,6 +130,7 @@ flowchart TD
 * [[04_Research/RESEARCH-026-competitive-landscape-and-differentiation|RESEARCH-026: Конкурентный ландшафт фреймворков для AI-агентов и дифференциация agent-docs-harness]]
 * [[04_Research/RESEARCH-027-competitor-best-practices-and-adoption-backlog|RESEARCH-027: Что перенять у конкурентов: аудит лучших практик и adoption-бэклог]]
 * [[04_Research/RESEARCH-028-user-centric-release-notes-and-audit-separation|RESEARCH-028: Разделение пользовательского описания и технического аудита в релизных записках]]
+* [[04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029: Инженерная архитектура Волны 1: детерминированная навигация, граф зависимостей и безопасное автоисправление]]
 
 ### 5. Тестирование и верификация (`05_Testing/`)
 * Чек-листы E2E UX, матрица тестирования инсталлятора на разных ОС и с разными стеками.
