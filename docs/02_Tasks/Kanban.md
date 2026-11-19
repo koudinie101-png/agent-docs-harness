@@ -14,11 +14,7 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-
-
-
-
-
+- [ ] [[Specs/30_DeterministicNavigation/TASK-111-deterministic-navigation-kb-state|TASK-111]]: Ядро навигации scripts/kb_state.py (2026-11-19) #task #phase30 #navigation #cli
 
 ## ✅ Готово (Done)
 
