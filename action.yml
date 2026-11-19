@@ -25,6 +25,10 @@ inputs:
     description: 'Additional kb_lint.py arguments (space separated)'
     required: false
     default: ''
+  fix:
+    description: 'Safe autofix mode: none (default), preview (dry-run diff), or write'
+    required: false
+    default: 'none'
 outputs:
   output-file:
     description: 'Path to the machine-readable report (json/sarif only)'
@@ -44,18 +48,25 @@ runs:
         KB_FORMAT: ${{ inputs.format }}
         KB_OUTPUT: ${{ inputs.output-file }}
         KB_EXTRA: ${{ inputs.extra-args }}
+        KB_FIX: ${{ inputs.fix }}
       run: |
         set -u
         python_bin="$(command -v python3 || command -v python)"
         lint="${GITHUB_ACTION_PATH}/scripts/kb_lint.py"
+        fix_args=""
+        if [ "${KB_FIX}" = "preview" ] || [ "${KB_FIX}" = "true" ]; then
+          fix_args="--fix"
+        elif [ "${KB_FIX}" = "write" ]; then
+          fix_args="--fix --write --allow-dirty"
+        fi
         if [ "${KB_FORMAT}" = "text" ]; then
           # shellcheck disable=SC2086
-          exec "${python_bin}" "${lint}" --path "${KB_PATH}" --format text ${KB_EXTRA}
+          exec "${python_bin}" "${lint}" --path "${KB_PATH}" --format text ${fix_args} ${KB_EXTRA}
         fi
         mkdir -p "$(dirname "${KB_OUTPUT}")"
         rc=0
         # shellcheck disable=SC2086
-        "${python_bin}" "${lint}" --path "${KB_PATH}" --format "${KB_FORMAT}" ${KB_EXTRA} > "${KB_OUTPUT}" || rc=$?
+        "${python_bin}" "${lint}" --path "${KB_PATH}" --format "${KB_FORMAT}" ${fix_args} ${KB_EXTRA} > "${KB_OUTPUT}" || rc=$?
         echo "output-file=${KB_OUTPUT}" >> "${GITHUB_OUTPUT}"
         if [ "${rc}" -ne 0 ]; then
           echo "::error::kb_lint reported errors (exit ${rc}); see ${KB_OUTPUT}"

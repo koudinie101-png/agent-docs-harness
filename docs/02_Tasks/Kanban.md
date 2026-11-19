@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]]: Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса (2026-11-19) #task #phase31 #installer #autofix #ci #living-spec #tests
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]]: Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса (2026-11-19) #task #phase31 #installer #autofix #ci #living-spec #tests
 
 - [x] [[Specs/31_SafeAutoFix/TASK-114-autofix-formats-and-skills-integration|TASK-114]]: Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы (2026-11-19) #task #phase31 #lint #autofix #skills
 

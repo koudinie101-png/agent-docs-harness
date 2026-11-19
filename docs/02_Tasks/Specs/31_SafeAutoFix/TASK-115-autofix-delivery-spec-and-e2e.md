@@ -1,7 +1,7 @@
 ---
 id: TASK-115
 title: "Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса"
-status: in-progress
+status: done
 type: task
 phase: 31
 component:
@@ -29,7 +29,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-115 — Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса
 
-> **ID:** TASK-115 | **Статус:** В работе (In Progress) | **Фаза:** 31  
+> **ID:** TASK-115 | **Статус:** Выполнено (Done) | **Фаза:** 31  
 > **План:** [[../../Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028: Безопасный автофикс kb_lint --fix]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]] | **Исследование:** [[../../../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]]  
 > **Зависимости:** [[TASK-113-kb-lint-autofix-core|TASK-113]], [[TASK-114-autofix-formats-and-skills-integration|TASK-114]]
@@ -148,24 +148,24 @@ def test_39_kb_lint_autofix_delivery(self):
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая компиляция: `python -m py_compile scripts/build_installer.py` (Exit code 0).
-- [ ] Пересборка монолитного инсталлятора: `python scripts/build_installer.py` (Exit code 0, размер $\le 210\text{ КБ}$).
-- [ ] Полный прогон тестов инсталлятора: `python -m unittest tests/test_installer.py` (100% pass, все 49 тестов).
-- [ ] Модульные тесты автофикса: `python -m unittest tests/test_kb_lint_fix.py` (100% pass, 17 тестов).
-- [ ] Проверка регрессий основного линтера: `python -m unittest tests/test_kb_lint.py` (100% pass, 79 тестов).
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
-- [ ] Проверка синхронизации правил: `python scripts/gen_rules.py --check` (Exit code 0).
-- [ ] Проверка состояния графа навигации: `python scripts/kb_state.py status`.
+- [x] Синтаксическая компиляция: `python -m py_compile scripts/build_installer.py` (Exit code 0).
+- [x] Пересборка монолитного инсталлятора: `python scripts/build_installer.py` (Exit code 0, размер $\le 210\text{ КБ}$).
+- [x] Полный прогон тестов инсталлятора: `python -m unittest tests/test_installer.py` (100% pass, все 49 тестов).
+- [x] Модульные тесты автофикса: `python -m unittest tests/test_kb_lint_fix.py` (100% pass, 17 тестов).
+- [x] Проверка регрессий основного линтера: `python -m unittest tests/test_kb_lint.py` (100% pass, 79 тестов).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Проверка синхронизации правил: `python scripts/gen_rules.py --check` (Exit code 0).
+- [x] Проверка состояния графа навигации: `python scripts/kb_state.py status`.
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Хук `kb-lint-fix` добавлен в `.pre-commit-hooks.yaml`.
-- [ ] Параметр `fix` документирован и поддержан в `action.yml`.
-- [ ] Документация `SPEC.md` и `README.md` синхронизирована с фактическим поведением `kb_lint.py --fix`.
-- [ ] Добавлен сквозной E2E-тест `test_39_kb_lint_autofix_delivery` в `tests/test_installer.py`.
-- [ ] Инсталлятор `install.py` и дистрибутив `dist/install.py` актуализированы и укладываются в бюджет $\le 210\text{ КБ}$.
-- [ ] Все тесты из плана верификации выполнены со статусом `OK`.
-- [ ] Фаза 31 закрыта в `Kanban.md` (`Done`) и `Roadmap.md` (`[x]`).
-- [ ] Итоговая запись внесена в `Devlog.md`.
+- [x] Хук `kb-lint-fix` добавлен в `.pre-commit-hooks.yaml`.
+- [x] Параметр `fix` документирован и поддержан в `action.yml`.
+- [x] Документация `SPEC.md` и `README.md` синхронизирована с фактическим поведением `kb_lint.py --fix`.
+- [x] Добавлен сквозной E2E-тест `test_39_kb_lint_autofix_delivery` в `tests/test_installer.py`.
+- [x] Инсталлятор `install.py` и дистрибутив `dist/install.py` актуализированы и укладываются в бюджет $\le 210\text{ КБ}$.
+- [x] Все тесты из плана верификации выполнены со статусом `OK`.
+- [x] Фаза 31 закрыта в `Kanban.md` (`Done`) и `Roadmap.md` (`[x]`).
+- [x] Итоговая запись внесена в `Devlog.md`.

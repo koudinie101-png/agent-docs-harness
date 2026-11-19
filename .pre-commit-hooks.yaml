@@ -6,3 +6,12 @@
   files: '\.md$'
   pass_filenames: false
   require_serial: true
+
+- id: kb-lint-fix
+  name: Docs-as-Code safe autofix
+  description: Deterministic autofix for frontmatter delimiters, ISO dates, trailing whitespace and task dependencies
+  entry: python3 scripts/kb_lint.py --path docs --fix --write
+  language: system
+  files: '\.md$'
+  pass_filenames: false
+  require_serial: true

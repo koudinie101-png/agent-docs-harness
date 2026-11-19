@@ -152,19 +152,30 @@ The harness bundles and automatically deploys 12 canonical AI agent skills into 
 
 ### 3. Autonomous Knowledge Base Linter, Release & Ingest Utilities (`scripts/`)
 * **Zero external dependencies** (standard Python 3 stdlib only).
-* **Linter (`scripts/kb_lint.py`):** Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter (tasks, bugs, ADRs, feedback items), and detects link rot instantly:
+* **Linter & Safe Auto-Fix (`scripts/kb_lint.py`):** Scans all markdown documents, cross-validates internal wiki-style links, verifies YAML frontmatter (tasks, bugs, ADRs, feedback items), and detects link rot instantly:
   ```bash
   python3 scripts/kb_lint.py --path docs
+  ```
+  **Deterministic Safe Auto-Fix (`--fix`, `--write`)** ([ADR-0036](docs/03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard.md)):
+  ```bash
+  # Safe preview (Dry-Run): displays colorized unified diff without disk modifications
+  python3 scripts/kb_lint.py --path docs --fix
+
+  # In-place atomic repair of safe deterministic defects (KB-004, KB-005, KB-006, KB-007, KB-010)
+  python3 scripts/kb_lint.py --path docs --fix --write
+
+  # Force write even if Git working tree has uncommitted modifications
+  python3 scripts/kb_lint.py --path docs --fix --write --allow-dirty
   ```
   It also performs an advisory plan-provenance check: a plan declaring `research_basis: none` without `basis_note` prints a `WARN:` without failing the build.
   It also performs an advisory symbolic-scope check: an active task spec that lists a code file without a nested symbol, or uses `:L10-L20` anchors, prints a `WARN:` without failing the build (ADR-0029).
   Machine-readable diagnostics for CI, pre-commit and code scanning ([ADR-0032](docs/03_Decisions_ADR/ADR-0032-machine-readable-lint-contract-and-rule-registry.md)):
   ```bash
-  python3 scripts/kb_lint.py --path docs --format json     # structured findings, schema v1
-  python3 scripts/kb_lint.py --path docs --format sarif > kb.sarif
+  python3 scripts/kb_lint.py --path docs --format json     # structured findings, schema v1 (includes fixable & fixes with --fix)
+  python3 scripts/kb_lint.py --path docs --format sarif > kb.sarif  # SARIF 2.1.0 with fixes objects
   python3 scripts/kb_lint.py --version                     # rule-set version: kb_lint 1
   ```
-  Every finding carries a stable rule id (`KB-001`…`KB-015`, `KB-010` reserved), a severity (`error`/`warning`) and the owning file. `text` output stays byte-identical for humans and exit codes (`0`/`1`) are identical in all formats; SARIF deliberately omits `region.startLine` (`DEBT-004`).
+  Every finding carries a stable rule id (`KB-001`…`KB-015`), a severity (`error`/`warning`), the owning file, and an optional `fixable: true` indicator. `text` output stays byte-identical for humans and exit codes (`0`/`1`) are identical in all formats; SARIF deliberately omits `region.startLine` (`DEBT-004`).
 * **Release Manager (`scripts/kb_release.py`):** Inspects `dist/` directory, computes streaming SHA-256 checksums, extracts phase tasks/bugs/ADRs from knowledge base, and writes canonical release notes:
   ```bash
   python3 scripts/kb_release.py --version v1.0.0 --phase 1

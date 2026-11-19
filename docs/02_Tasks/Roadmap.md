@@ -398,14 +398,14 @@ tags:
 
 ---
 
-## Фаза 31: Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0)
+## Фаза 31: Безопасный автофикс kb_lint --fix (Safe Auto-Fix, P0) — ✅ Завершена
 **Цель:** Реализовать детерминированный хирургический автофикс `scripts/kb_lint.py --fix` на чистой стандартной библиотеке Python 3 (Zero-Dependencies): 5 безопасных правил (`KB-004`, `KB-005`, `KB-006`, `KB-007` и дефолтное `depends_on: []`), режим безопасного предпросмотра (`--dry-run`) по умолчанию, подтверждение записи (`--write`), Git-Clean Guard, машиночитаемые форматы отчётов, бандлинг в `install.py` и интеграцию в скиллы.  
 **Первоисточник плана:** [[Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028]]  
 **Нормативная база:** [[../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]], [[../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]]  
 
 - [x] [[Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]]: Ядро хирургического автофикса в `scripts/kb_lint.py` (`--fix`, `--write`, 5 безопасных правил, `unified_diff`, атомарная запись, Git-Clean Guard, модульные тесты) (2026-11-19).
 - [x] [[Specs/31_SafeAutoFix/TASK-114-autofix-formats-and-skills-integration|TASK-114]]: Машинно-читаемый контракт (JSON/SARIF `fixable`), интеграция в скиллы (`/kb-lint`, `/kb-complete`) и онбординг (2026-11-19).
-- [ ] [[Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]]: Бандлинг в `install.py`, CI-хуки, Living Spec (`SPEC.md`, `README.md`), ребалансировка бюджетов и E2E-тест доставки.
+- [x] [[Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]]: Бандлинг в `install.py`, CI-хуки, Living Spec (`SPEC.md`, `README.md`), ребалансировка бюджетов и E2E-тест доставки (2026-11-19).
 
 ---
 

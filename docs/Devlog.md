@@ -16,6 +16,29 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — TASK-115: Бандлинг в install.py, CI-хуки, Living Spec и E2E-тесты поставки автофикса
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-115-autofix-delivery-spec-and-e2e|TASK-115]], успешно завершившая Фазу 31 (**Безопасный автофикс kb_lint --fix**, P0).
+  - В `.pre-commit-hooks.yaml` зарегистрирован новый хук `kb-lint-fix` (`entry: python3 scripts/kb_lint.py --path docs --fix --write`).
+  - В composite GitHub Action `action.yml` добавлен входной параметр `fix: none | preview | write` с автоматическим пробросом флагов `--fix` и `--write`.
+  - Синхронизирована мастер-спецификация `SPEC.md`: подраздел 2.3 дополнен описанием безопасного автофикса `scripts/kb_lint.py`, в раздел 5 («История фаз») внесены записи обо всех фазах с 22 по 31.
+  - Актуализирован `README.md` (секция инструментов качества с примерами вызова `--fix` и `--write`).
+  - Добавлен сквозной интеграционный тест `test_39_kb_lint_autofix_delivery` в `tests/test_installer.py`, проверяющий развертывание линтера в новом проекте через `install_harness`, превью `--fix`, атомарную перезапись `--fix --write --allow-dirty` и сохранность при обновлении через `install.py --update`.
+  - Монолитный инсталлятор `install.py` и `dist/install.py` скомпилированы через `scripts/build_installer.py` (размер 191.4 КБ, бюджет соблюден).
+  - Фаза 31 полностью завершена (задачи `TASK-113`, `TASK-114`, `TASK-115` выполнены).
+- **Проверка:**
+  - `python -m py_compile scripts/build_installer.py`: OK.
+  - `python scripts/build_installer.py`: OK (191.4 КБ).
+  - `python -m unittest tests.test_installer.TestAgentDocsHarness.test_39_kb_lint_autofix_delivery`: OK (3.0s).
+  - `python -m unittest tests/test_installer.py`: 49 тестов OK.
+  - `python -m unittest tests/test_kb_lint_fix.py`: 17 тестов OK.
+  - `python -m unittest tests/test_kb_lint.py`: 79 тестов OK.
+  - `python scripts/kb_lint.py --path docs`: 282 файла, 2783 ссылки проверено, 0 ошибок.
+  - `python scripts/gen_rules.py --check`: OK.
+  - `python scripts/kb_state.py status`: 115 задач (115 готово, 0 открыто).
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Фаза 31 и Волна 1 полностью завершены. Рекомендуется приёмочное E2E тестирование и выпуск релиза: `/kb-release v0.29.0`.
+
 ### [2026-11-19] — TASK-114: Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-114-autofix-formats-and-skills-integration|TASK-114]] в рамках Фазы 31 (Волна 1, P0).

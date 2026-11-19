@@ -2934,6 +2934,83 @@ class TestAgentDocsHarness(unittest.TestCase):
             self.assertEqual(res_update.returncode, 0, f"install.py --update failed:\n{res_update.stdout}\n{res_update.stderr}")
             self.assertTrue(kb_state_path.is_file(), "scripts/kb_state.py was not restored by install.py --update!")
 
+    def test_39_kb_lint_autofix_delivery(self):
+        """TASK-115: verify safe autofix (--fix, --write) is deployed, functional, and preserved on update."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target = Path(tmp_dir) / "FixApp"
+            target.mkdir()
+
+            install.install_harness(
+                target_dir=target,
+                project_name="FixApp",
+                stack_key="python",
+                agent_choice="all",
+                git_choice="none",
+                force=True,
+            )
+
+            kb_lint_path = target / "scripts" / "kb_lint.py"
+            self.assertTrue(kb_lint_path.is_file(), "scripts/kb_lint.py was not deployed on install!")
+
+            # 1. Create a spec with fixable defects (date format, delimiter trailing space, missing depends_on)
+            specs_dir = target / "docs" / "02_Tasks" / "Specs"
+            specs_dir.mkdir(parents=True, exist_ok=True)
+            plans_dir = target / "docs" / "02_Tasks" / "Plans"
+            plans_dir.mkdir(parents=True, exist_ok=True)
+            (plans_dir / "PLAN-001.md").write_text("---\nid: PLAN-001\ntitle: Plan\n---\n# Plan\n", encoding="utf-8")
+
+            spec_file = specs_dir / "TASK-001.md"
+            spec_file.write_text(
+                "---\n"
+                "id: TASK-001\n"
+                "title: Test Task\n"
+                "type: task\n"
+                "phase: 1\n"
+                "parent_plan: \"[[PLAN-001]]\"\n"
+                "created: 2026.11.19\n"
+                "status: planned\n"
+                "--- \n"
+                "\n"
+                "# Content with trailing space \n",
+                encoding="utf-8",
+            )
+
+            # 2. Dry-run preview: disk must remain untouched
+            res_dry = subprocess.run(
+                [sys.executable, str(kb_lint_path), "--path", "docs", "--fix"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_dry.returncode, 0, f"kb_lint --fix failed:\n{res_dry.stdout}\n{res_dry.stderr}")
+            self.assertIn("[DRY-RUN]", res_dry.stdout)
+            self.assertIn("created: 2026.11.19", spec_file.read_text(encoding="utf-8"))
+
+            # 3. Write mode: disk must be updated atomically
+            res_write = subprocess.run(
+                [sys.executable, str(kb_lint_path), "--path", "docs", "--fix", "--write", "--allow-dirty"],
+                cwd=str(target),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_write.returncode, 0, f"kb_lint --fix --write failed:\n{res_write.stdout}\n{res_write.stderr}")
+            self.assertIn("[FIXED]", res_write.stdout)
+            content_after = spec_file.read_text(encoding="utf-8")
+            self.assertIn("created: 2026-11-19", content_after)
+            self.assertIn("depends_on: []", content_after)
+
+            # 4. Update mode: install.py --update refreshes/preserves autofix capabilities
+            res_update = subprocess.run(
+                [sys.executable, str(REPO_ROOT / "install.py"), "--update", "--target-dir", str(target)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(res_update.returncode, 0, f"install.py --update failed:\n{res_update.stdout}\n{res_update.stderr}")
+            self.assertTrue(kb_lint_path.is_file())
+
 
 if __name__ == "__main__":
     unittest.main()
