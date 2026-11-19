@@ -98,14 +98,15 @@ class Finding(str):
     JSON/SARIF-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€Ñ‹ Ñ‡Ð¸Ñ‚Ð°ÑŽÑ‚ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, text-Ñ€ÐµÐ½Ð´ÐµÑ€ÐµÑ€ Ð¿ÐµÑ‡Ð°Ñ‚Ð°ÐµÑ‚ ``str(finding)``.
     """
 
-    __slots__ = ("rule_id", "severity", "file", "location")
+    __slots__ = ("rule_id", "severity", "file", "location", "fixable")
 
-    def __new__(cls, rule_id: str, message: str, severity: str, file: str = "", location: str = ""):
+    def __new__(cls, rule_id: str, message: str, severity: str, file: str = "", location: str = "", fixable: bool = False):
         obj = super().__new__(cls, message)
         obj.rule_id = rule_id
         obj.severity = severity
         obj.file = file or ""
         obj.location = location or ""
+        obj.fixable = bool(fixable)
         return obj
 
     @property
@@ -114,14 +115,21 @@ class Finding(str):
 
 
 def make_finding(rule_id: str, message: str, file: str = "", severity: Optional[str] = None,
-                 location: str = "") -> Finding:
+                 location: str = "", fixable: Optional[bool] = None) -> Finding:
     """Creates a finding after validating rule id and severity against the registry."""
     if rule_id not in RULES:
         raise ValueError("Unknown lint rule: %s" % rule_id)
     resolved = severity or RULE_SEVERITY.get(rule_id)
     if resolved not in VALID_SEVERITIES:
         raise ValueError("Rule %s is reserved and cannot be emitted yet" % rule_id)
-    return Finding(rule_id, message, resolved, file, location)
+    if fixable is None:
+        msg_l = message.lower()
+        fixable = False
+        if rule_id == "KB-002" and ("missing closing ---" in msg_l or "starts without ---" in msg_l or "delimiter" in msg_l or "invalid date format" in msg_l or "missing '#'" in msg_l):
+            fixable = True
+        elif rule_id in ("KB-004", "KB-005", "KB-006", "KB-007") and ("date format" in msg_l or "delimiter" in msg_l or "trailing whitespace" in msg_l or "tag format" in msg_l):
+            fixable = True
+    return Finding(rule_id, message, resolved, file, location, fixable=bool(fixable))
 
 
 class LintReport(object):
@@ -1521,36 +1529,69 @@ def render_text(report: LintReport, verbose: bool) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _finding_payload(finding: Finding) -> dict:
-    return {
+def _finding_payload(finding: Finding, include_fix: bool = False) -> dict:
+    payload = {
         "rule_id": finding.rule_id,
         "severity": finding.severity,
         "file": finding.file or None,
         "location": finding.location or None,
         "message": finding.message,
     }
+    if include_fix:
+        payload["fixable"] = getattr(finding, "fixable", False)
+    return payload
 
 
-def render_json(report: LintReport) -> str:
+def render_json(
+    report: LintReport,
+    fix_results: Optional[List[FixResult]] = None,
+    include_fix: bool = False,
+) -> str:
     """Machine-readable contract: schema version, summary counters, findings by severity."""
     errors = sorted(report.by_rule_severity("error"), key=lambda f: (f.rule_id, f.file, f.message))
     warnings = sorted(report.by_rule_severity("warning"), key=lambda f: (f.rule_id, f.file, f.message))
+    with_fix = include_fix or (fix_results is not None)
+
+    summary = {
+        "files": report.files,
+        "wikilinks": report.wikilinks,
+        "errors": len(errors),
+        "warnings": len(warnings),
+    }
+    if with_fix:
+        summary["fixable"] = sum(1 for f in report.findings if getattr(f, "fixable", False))
+
     payload = {
         "version": RULESET_VERSION,
-        "summary": {
-            "files": report.files,
-            "wikilinks": report.wikilinks,
-            "errors": len(errors),
-            "warnings": len(warnings),
-        },
-        "errors": [_finding_payload(f) for f in errors],
-        "warnings": [_finding_payload(f) for f in warnings],
+        "summary": summary,
+        "errors": [_finding_payload(f, include_fix=with_fix) for f in errors],
+        "warnings": [_finding_payload(f, include_fix=with_fix) for f in warnings],
     }
+
+    if with_fix and fix_results is not None:
+        all_fixes = []
+        for r in fix_results:
+            for fix in r.fixes:
+                all_fixes.append({
+                    "rule_id": fix.rule_id,
+                    "file": str(fix.file_path.as_posix() if hasattr(fix.file_path, "as_posix") else fix.file_path),
+                    "line": fix.line_number,
+                    "description": fix.description,
+                    "original": fix.original_text,
+                    "replacement": fix.replacement_text,
+                })
+        payload["fixes"] = all_fixes
+
     return json.dumps(payload, indent=2, ensure_ascii=False)
 
 
-def render_sarif(report: LintReport) -> str:
+def render_sarif(
+    report: LintReport,
+    fix_results: Optional[List[FixResult]] = None,
+    include_fix: bool = False,
+) -> str:
     """Minimal valid SARIF 2.1.0 document (no line regions, no project-origin metadata)."""
+    with_fix = include_fix or (fix_results is not None)
     used_rules: List[str] = []
     for finding in report.findings:
         if finding.rule_id not in used_rules:
@@ -1567,6 +1608,14 @@ def render_sarif(report: LintReport) -> str:
         }
         if finding.file:
             result["locations"] = [{"physicalLocation": {"artifactLocation": {"uri": finding.location or finding.file}}}]
+        if with_fix and getattr(finding, "fixable", False):
+            result["fixes"] = [
+                {
+                    "description": {
+                        "text": "Deterministic autofix available via 'kb_lint.py --fix --write'"
+                    }
+                }
+            ]
         results.append(result)
 
     payload = {
@@ -1610,8 +1659,9 @@ def run_linter(
         if (repo_root / root_doc).is_file():
             all_md_files.append(repo_root / root_doc)
 
+    fix_results: Optional[List[FixResult]] = None
     if fix:
-        fix_results: List[FixResult] = []
+        fix_results = []
         for f in all_md_files:
             try:
                 content = f.read_text(encoding="utf-8")
@@ -1821,9 +1871,9 @@ def run_linter(
     report = LintReport(files=len(all_md_files), wikilinks=checked_links_count, findings=findings)
 
     if output_format == "json":
-        sys.stdout.write(render_json(report) + "\n")
+        sys.stdout.write(render_json(report, fix_results=fix_results if fix else None, include_fix=fix) + "\n")
     elif output_format == "sarif":
-        sys.stdout.write(render_sarif(report) + "\n")
+        sys.stdout.write(render_sarif(report, fix_results=fix_results if fix else None, include_fix=fix) + "\n")
     else:
         sys.stdout.write(render_text(report, verbose))
     return 1 if report.has_errors() else 0

@@ -6,6 +6,7 @@ Verifies deterministic rules, surgical string patching, atomic writes, and git-c
 
 import os
 import sys
+import json
 import tempfile
 import unittest
 import subprocess
@@ -19,8 +20,13 @@ if str(REPO_ROOT) not in sys.path:
 from scripts.kb_lint import (
     Fix,
     FixResult,
+    Finding,
+    LintReport,
+    make_finding,
     generate_file_fixes,
     render_diff,
+    render_json,
+    render_sarif,
     git_check_clean,
     atomic_write_file,
     run_linter,
@@ -271,6 +277,103 @@ class TestKbLintSafetyProtocol(unittest.TestCase):
             except (subprocess.CalledProcessError, FileNotFoundError):
                 # If git is not installed in the testing environment, it safely falls back to True
                 self.assertTrue(git_check_clean(Path("some_file.md")))
+
+
+class TestKbLintContractFormats(unittest.TestCase):
+    """Tests machine-readable format extensions (JSON fixable / fixes and SARIF 2.1.0 fixes array)."""
+
+    def test_finding_fixable_attribute(self):
+        """Finding supports fixable flag with explicit and auto-detection behaviors."""
+        f1 = Finding("KB-001", "Broken link", "error", fixable=False)
+        self.assertFalse(f1.fixable)
+
+        f2 = Finding("KB-004", "Tag missing #", "warning", fixable=True)
+        self.assertTrue(f2.fixable)
+
+        # make_finding auto-detection
+        mf_unfixable = make_finding("KB-001", "Missing link")
+        self.assertFalse(mf_unfixable.fixable)
+
+        mf_fixable = make_finding("KB-002", "Malformed YAML frontmatter (missing closing ---)")
+        self.assertTrue(mf_fixable.fixable)
+
+    def test_json_contract_without_fix_preserves_strict_v1_keys(self):
+        """Without --fix, render_json preserves exact v1 schema without extra keys."""
+        f_err = make_finding("KB-001", "Missing link [[Target]]", file="doc.md", location="docs/doc.md")
+        f_warn = make_finding("KB-005", "Asset layout violation", file="doc.md", location="docs/doc.md")
+        report = LintReport(files=1, wikilinks=1, findings=[f_err, f_warn])
+
+        out = render_json(report, include_fix=False)
+        data = json.loads(out)
+        self.assertEqual(sorted(data["summary"]), ["errors", "files", "warnings", "wikilinks"])
+        self.assertNotIn("fixable", data["summary"])
+        self.assertNotIn("fixes", data)
+
+        err_item = data["errors"][0]
+        self.assertEqual(sorted(err_item), ["file", "location", "message", "rule_id", "severity"])
+        self.assertNotIn("fixable", err_item)
+
+    def test_json_contract_with_fix_includes_fixable_and_fixes(self):
+        """With include_fix=True, render_json includes fixable in summary and findings, plus fixes array."""
+        f_err = make_finding("KB-001", "Missing link [[Target]]", file="doc.md", location="docs/doc.md")
+        f_fix_err = make_finding("KB-002", "Malformed YAML frontmatter (missing closing ---)", file="doc.md", location="docs/doc.md")
+        f_fix_warn = make_finding("KB-006", "Tag format error", severity="warning", file="doc.md", location="docs/doc.md", fixable=True)
+        report = LintReport(files=1, wikilinks=1, findings=[f_err, f_fix_err, f_fix_warn])
+
+        dummy_fix = Fix(
+            rule_id="KB-004",
+            description="Normalized delimiter",
+            file_path=Path("docs/doc.md"),
+            line_number=1,
+            original_text="--- ",
+            replacement_text="---",
+        )
+        fix_res = FixResult(
+            file_path=Path("docs/doc.md"),
+            original_content="---\n",
+            modified_content="---\n",
+            fixes=[dummy_fix],
+            diff_lines=["-old\n", "+new\n"],
+        )
+
+        out = render_json(report, fix_results=[fix_res], include_fix=True)
+        data = json.loads(out)
+        self.assertIn("fixable", data["summary"])
+        self.assertEqual(data["summary"]["fixable"], 2)
+
+        err_item = data["errors"][0]
+        self.assertIn("fixable", err_item)
+        self.assertFalse(err_item["fixable"])
+
+        warn_item = data["warnings"][0]
+        self.assertIn("fixable", warn_item)
+        self.assertTrue(warn_item["fixable"])
+
+        self.assertIn("fixes", data)
+        self.assertEqual(len(data["fixes"]), 1)
+        self.assertEqual(data["fixes"][0]["rule_id"], "KB-004")
+        self.assertEqual(data["fixes"][0]["line"], 1)
+
+    def test_sarif_contract_with_fix_includes_fixes_block(self):
+        """With include_fix=True, render_sarif attaches fixes array to fixable results only."""
+        f_unfix = make_finding("KB-001", "Broken link", file="broken.md")
+        f_fix = make_finding("KB-002", "Malformed YAML frontmatter (missing closing ---)", file="fixed.md")
+        report = LintReport(files=2, wikilinks=1, findings=[f_unfix, f_fix])
+
+        # Without fix: no fixes property
+        sarif_plain = json.loads(render_sarif(report, include_fix=False))
+        results_plain = sarif_plain["runs"][0]["results"]
+        for res in results_plain:
+            self.assertNotIn("fixes", res)
+
+        # With fix: fixes present for fixable rule only
+        sarif_fixed = json.loads(render_sarif(report, include_fix=True))
+        results_fixed = sarif_fixed["runs"][0]["results"]
+        self.assertEqual(len(results_fixed), 2)
+        res_by_id = {r["ruleId"]: r for r in results_fixed}
+        self.assertNotIn("fixes", res_by_id["KB-001"])
+        self.assertIn("fixes", res_by_id["KB-002"])
+        self.assertIn("kb_lint.py --fix --write", res_by_id["KB-002"]["fixes"][0]["description"]["text"])
 
 
 if __name__ == "__main__":

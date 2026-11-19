@@ -16,6 +16,30 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — TASK-114: Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-114-autofix-formats-and-skills-integration|TASK-114]] в рамках Фазы 31 (Волна 1, P0).
+  - В `scripts/kb_lint.py`:
+    * Модель находок `Finding` расширена полем `fixable: bool = False` в `__slots__` и конструкторе `__new__`.
+    * Функция `make_finding()` наделена возможностью автоопределения исправляемости для детерминированных правил (`KB-004`, `KB-005`, `KB-006`, `KB-007` и разделителей `KB-002`).
+    * Актуализирован сериализатор `render_json`: при вызове без `--fix` сохраняет строгий контракт v1 (точно 4 ключа в `summary` и 5 ключей в findings); при флаге `--fix` (`include_fix=True`) добавляет счётчик `summary.fixable`, признак `finding.fixable` и массив запланированных атомарных правок `fixes`.
+    * Актуализирован сериализатор `render_sarif`: для исправляемых находок генерирует стандартный объект `fixes` спецификации SARIF 2.1.0 с описанием команды применения (`kb_lint.py --fix --write`).
+  - Интегрирован автофикс в скиллы:
+    * `.agents/skills/kb-lint/SKILL.md`: документированы режимы `--fix` (Dry-Run), `--write` и `--allow-dirty`.
+    * `.agents/skills/kb-complete/SKILL.md`: в Шаге 8 добавлена рекомендация автоматического устранения тривиальных дефектов перед закрытием задачи (`python scripts/kb_lint.py --path docs --fix --write`) с сохранением всех инвариантов и сенситивных строк.
+  - Обновлено руководство `docs/Onboarding.md` (Раздел 18): приведены примеры вызова и описания параметров безопасного автофикса.
+  - Расширен тестовый набор `tests/test_kb_lint_fix.py` классом `TestKbLintContractFormats` (4 новых контрактных теста, всего 17 тестов).
+  - Инсталлятор `install.py` и `dist/install.py` пересобраны через `python scripts/build_installer.py` (размер 191.4 КБ, бюджет соблюден, размер скиллов 31 875 байт из 33 000).
+- **Проверка:**
+  - `python -m py_compile scripts/kb_lint.py`: OK.
+  - `python -m unittest tests/test_kb_lint_fix.py`: 17 тестов OK.
+  - `python -m unittest tests/test_kb_lint.py`: 79 тестов OK.
+  - `python -m unittest tests/test_installer.py`: 48 тестов OK.
+  - `python scripts/kb_lint.py --path docs`: 281 файл, 2772 ссылки проверено, 0 ошибок.
+  - `python scripts/gen_rules.py --check`: OK.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-115` — финальная E2E валидация поставки, актуализация `SPEC.md` / `README.md`, ребалансировка бюджетов и завершение Фазы 31.
+
 ### [2026-11-19] — TASK-113: Ядро хирургического автофикса в scripts/kb_lint.py
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/31_SafeAutoFix/TASK-113-kb-lint-autofix-core|TASK-113]] в рамках Фазы 31 (Волна 1, P0).

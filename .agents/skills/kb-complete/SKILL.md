@@ -38,6 +38,8 @@ Use when the user runs `/kb-complete <TASK-XXX | BUG-XXX>` after all verificatio
    - Если сессия прошла чисто: зафиксировать отсутствие инцидентов.
 8. **Lint Verification:**
    - Run `python scripts/kb_lint.py --path docs` to confirm 0 broken links.
+   - If fixable frontmatter or whitespace warnings occur, resolve automatically:
+     `python scripts/kb_lint.py --path docs --fix --write`
 9. **Git Commit & Sync:**
    - **Task Commit:** `git commit -m "feat(<scope>): complete TASK-XXX <summary> and sync docs"`.
    - **Bug Commit:** `git commit -m "fix(<scope>): resolve BUG-XXX <summary> with regression test"`.

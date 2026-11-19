@@ -1,7 +1,7 @@
 ---
 id: TASK-114
 title: "Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы"
-status: planned
+status: done
 type: task
 phase: 31
 component:
@@ -26,7 +26,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-114 — Машинно-читаемый контракт (JSON/SARIF fixable) и интеграция автофикса в скиллы
 
-> **ID:** TASK-114 | **Статус:** К реализации (Planned) | **Фаза:** 31  
+> **ID:** TASK-114 | **Статус:** Выполнено (Done) | **Фаза:** 31  
 > **План:** [[../../Plans/PLAN-028-kb-lint-safe-autofix|PLAN-028: Безопасный автофикс kb_lint --fix]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0036-kb-lint-safe-autofix-standard|ADR-0036]] | **Исследование:** [[../../../04_Research/RESEARCH-030-kb-lint-safe-autofix|RESEARCH-030]]  
 > **Зависимости:** [[TASK-113-kb-lint-autofix-core|TASK-113 (Ядро автофикса)]]
@@ -156,20 +156,20 @@ if finding.fixable:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая компиляция: `python -m py_compile scripts/kb_lint.py` (Exit code 0).
-- [ ] Контрактные тесты форматов: `python -m unittest tests/test_kb_lint_fix.py` (100% pass).
-- [ ] Тесты существующих форматов вывода: `python -m unittest tests/test_kb_lint.py` (100% pass).
-- [ ] Проверка бюджета размера скиллов: `python -m unittest tests/test_installer.py` (размер $\le 33000$ байт).
-- [ ] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Синтаксическая компиляция: `python -m py_compile scripts/kb_lint.py` (Exit code 0).
+- [x] Контрактные тесты форматов: `python -m unittest tests/test_kb_lint_fix.py` (100% pass).
+- [x] Тесты существующих форматов вывода: `python -m unittest tests/test_kb_lint.py` (100% pass).
+- [x] Проверка бюджета размера скиллов: `python -m unittest tests/test_installer.py` (размер $\le 33000$ байт).
+- [x] Проверка базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] В `Finding` добавлено поле `fixable: bool`.
-- [ ] В `render_json` и `render_sarif` интегрирован признак исправляемости `fixable` и объект `fixes`.
-- [ ] Скиллы `.agents/skills/kb-lint/SKILL.md` и `.agents/skills/kb-complete/SKILL.md` дополнены инструкциями по автофиксу.
-- [ ] Руководство `docs/Onboarding.md` обновлено.
-- [ ] Все тесты верификационного плана пройдены со статусом `OK`.
-- [ ] Статус задачи обновлён в Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] В `Finding` добавлено поле `fixable: bool`.
+- [x] В `render_json` и `render_sarif` интегрирован признак исправляемости `fixable` и объект `fixes`.
+- [x] Скиллы `.agents/skills/kb-lint/SKILL.md` и `.agents/skills/kb-complete/SKILL.md` дополнены инструкциями по автофиксу.
+- [x] Руководство `docs/Onboarding.md` обновлено.
+- [x] Все тесты верификационного плана пройдены со статусом `OK`.
+- [x] Статус задачи обновлён в Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

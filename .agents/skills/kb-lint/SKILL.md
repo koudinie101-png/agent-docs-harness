@@ -24,3 +24,8 @@ Use when the user runs `/kb-lint` or asks to check the integrity of the document
 3. **Resolve Findings:**
    - If broken links are detected, fix typos, create missing placeholder specs, or adjust relative paths.
    - Exit code 0 confirms a healthy and consistent knowledge base.
+
+## Safe Auto-Fix Mode (--fix, --write)
+- `python scripts/kb_lint.py --fix`: Safe Preview (Dry-Run). Shows unified diff without modifying files.
+- `python scripts/kb_lint.py --fix --write`: In-place atomic modification of safe rules (KB-004, KB-005, KB-006, KB-007).
+- `python scripts/kb_lint.py --fix --write --allow-dirty`: Force write even if Git working tree has unstaged edits.

@@ -148,16 +148,26 @@ flowchart LR
 ## 4. Стек технологий и команды проекта
 
 * **Язык разработки:** Python 3 (Python 3.8+) без внешних зависимостей.
-* **Проверка линтером:**
+* **Проверка линтером и безопасный автофикс:**
   ```bash
+  # Стандартная проверка базы знаний
   python scripts/kb_lint.py --path docs
+
+  # Безопасный превью автофикса (Dry-Run, цветной unified diff)
+  python scripts/kb_lint.py --path docs --fix
+
+  # Атомарное применение исправлений детерминированных дефектов
+  python scripts/kb_lint.py --path docs --fix --write
+
+  # Принудительное применение при незакоммиченных изменениях в git
+  python scripts/kb_lint.py --path docs --fix --write --allow-dirty
   ```
 * **Машинно-читаемая диагностика (CI, pre-commit, code scanning):**
   ```bash
-  # Стабильные KB-XXX и схема version: 1
+  # Стабильные KB-XXX и схема version: 1 (с --fix добавляется блок fixes и признак fixable)
   python scripts/kb_lint.py --path docs --format json
 
-  # SARIF 2.1.0 для GitHub Code Scanning
+  # SARIF 2.1.0 для GitHub Code Scanning (с --fix генерируется массив fixes)
   python scripts/kb_lint.py --path docs --format sarif > kb.sarif
   ```
   `text` — для человека (байт-в-байт прежний вывод), `json`/`sarif` — для машин; exit-коды одинаковы (`0` — чисто или только warnings, `1` — есть errors).
