@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]]: Граф зависимостей `depends_on` и правило линтера `KB-010` (2026-11-19) #task #phase30 #navigation #task-graph #lint
+
 
 
 
