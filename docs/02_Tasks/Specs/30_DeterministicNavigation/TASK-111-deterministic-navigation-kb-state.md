@@ -1,7 +1,7 @@
 ---
 id: TASK-111
 title: "Ядро навигации scripts/kb_state.py"
-status: planned
+status: done
 type: task
 phase: 30
 component:
@@ -24,7 +24,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-111 — Ядро навигации scripts/kb_state.py
 
-> **ID:** TASK-111 | **Статус:** К реализации (Planned) | **Фаза:** 30  
+> **ID:** TASK-111 | **Статус:** Выполнено (Done) | **Фаза:** 30  
 > **План:** [[../../Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027: Детерминированная навигация и граф зависимостей]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]] | **Исследование:** [[../../../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029]]  
 > **Зависимости:** [[TASK-110-task-dependency-graph-and-kb010|TASK-110 (Граф зависимостей depends_on)]]
@@ -135,28 +135,31 @@ def resolve_next_action(docs_root: Path) -> Dict[str, Any]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Синтаксическая валидация: `python -m py_compile scripts/kb_state.py tests/test_kb_state.py` (Exit code 0).
-- [ ] Модульные тесты: `python -m unittest tests/test_kb_state.py` (100% pass).
-- [ ] Комплексный прогон тестов проекта: `python -m unittest discover -s tests` (100% pass).
-- [ ] Интеграционная проверка CLI:
+- [x] Синтаксическая валидация: `python -m py_compile scripts/kb_state.py tests/test_kb_state.py` (Exit code 0).
+- [x] Модульные тесты: `python -m unittest tests/test_kb_state.py` (18 тестов, 100% pass).
+- [x] Комплексный прогон тестов проекта: `python -m unittest discover -s tests` (216 тестов, 100% pass).
+- [x] Интеграционная проверка CLI:
   - `python scripts/kb_state.py next` — возвращает рекомендацию по `TASK-111`.
   - `python scripts/kb_state.py next --json` — возвращает валидный JSON.
   - `python scripts/kb_state.py status` — выводит корректную сводку фаз и задач.
-- [ ] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (0 broken links).
+- [x] Проверка целостности базы знаний: `python scripts/kb_lint.py --path docs` (275 файлов, 2710 ссылок, 0 broken).
 
 ### Visual DoD (CLI UX)
-- Зафиксировать вывод команд `python scripts/kb_state.py status` и `python scripts/kb_state.py next` в отчете завершения задачи.
+- Зафиксирован вывод команд `python scripts/kb_state.py status` и `python scripts/kb_state.py next` в отчете завершения задачи.
 
 ### Замеры производительности ($\ge 3$ прогонов):
-- Замерить среднее время выполнения команды `python scripts/kb_state.py next --path docs` на боевом репозитории (целевой порог: $\le 100\text{ мс}$).
+* **Команда:** `python scripts/kb_state.py next --path docs`
+* **Среда:** Windows 11 / Python 3.12 / 111 спецификаций задач
+* **Прогоны (мс):** `[29.27, 30.09, 31.35, 30.63, 27.51]` (холодный старт отброшен)
+* **Среднее значение ($\bar{X}$):** $29.77\text{ мс}$ (порог $\le 100\text{ мс}$ выполнен с запасом $3.3\times$).
 
 ---
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код `scripts/kb_state.py` написан строго по ТЗ без внешних зависимостей (Zero-Deps: stdlib only).
-- [ ] Реализованы команды `status` и `next`, флаги `--path`, `--json`, `--format`.
-- [ ] Тестовый набор `tests/test_kb_state.py` покрывает все 5 уровней приоритетов и краевые состояния.
-- [ ] Все пункты Плана верификации пройдены (Exit code 0).
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код `scripts/kb_state.py` написан строго по ТЗ без внешних зависимостей (Zero-Deps: stdlib only).
+- [x] Реализованы команды `status` и `next`, флаги `--path`, `--json`, `--format`.
+- [x] Тестовый набор `tests/test_kb_state.py` покрывает все 5 уровней приоритетов и краевые состояния.
+- [x] Все пункты Плана верификации пройдены (Exit code 0).
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.
