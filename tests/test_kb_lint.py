@@ -1311,11 +1311,12 @@ class TestLintOutputContract(unittest.TestCase):
     # --- registry ---------------------------------------------------------------
 
     def test_rule_registry_is_complete_and_unique(self):
-        """Registry holds KB-001..KB-015 in order; KB-010 is reserved (no severity)."""
+        """Registry holds KB-001..KB-015 in order; all have active severity."""
         expected = ["KB-%03d" % index for index in range(1, 16)]
         self.assertEqual(list(kb_lint.RULES), expected)
-        self.assertEqual(set(kb_lint.RULE_SEVERITY), set(expected) - {"KB-010"})
+        self.assertEqual(set(kb_lint.RULE_SEVERITY), set(expected))
         self.assertTrue(set(kb_lint.RULE_SEVERITY.values()) <= {"error", "warning"})
+        self.assertEqual(kb_lint.RULE_SEVERITY["KB-010"], "error")
         for rule_id in expected:
             self.assertTrue(kb_lint.RULES[rule_id].strip())
 
@@ -1324,10 +1325,11 @@ class TestLintOutputContract(unittest.TestCase):
         with self.assertRaises(ValueError):
             kb_lint.make_finding("KB-999", "unknown rule")
 
-    def test_make_finding_rejects_reserved_rule(self):
-        """KB-010 is reserved for depends_on and cannot be emitted yet."""
-        with self.assertRaises(ValueError):
-            kb_lint.make_finding("KB-010", "dependency cycle")
+    def test_make_finding_accepts_kb_010(self):
+        """KB-010 is active for depends_on and can be emitted with severity error."""
+        finding = kb_lint.make_finding("KB-010", "dependency cycle")
+        self.assertEqual(finding.rule_id, "KB-010")
+        self.assertEqual(finding.severity, "error")
 
     def test_finding_keeps_message_string_contract(self):
         """A finding compares equal to its message (legacy helper API compatibility)."""
@@ -1463,6 +1465,72 @@ class TestLintOutputContract(unittest.TestCase):
         exit_code, stdout = self._run_cli("--version")
         self.assertEqual(exit_code, 0)
         self.assertEqual(stdout.strip(), "kb_lint 1")
+
+
+class TestTaskDependencies(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = Path(tempfile.mkdtemp())
+        self.docs_dir = self.tmp_dir / "docs"
+        self.specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "01_Phase"
+        self.specs_dir.mkdir(parents=True, exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def _write_spec(self, filename: str, task_id: str, depends_on: list = None):
+        deps_yaml = ""
+        if depends_on is not None:
+            deps_yaml = "depends_on: [" + ", ".join(depends_on) + "]\n"
+        content = f"---\nid: {task_id}\ntitle: \"{task_id} title\"\nstatus: planned\ntype: task\nphase: 1\n{deps_yaml}---\n# {task_id}\n"
+        (self.specs_dir / filename).write_text(content, encoding="utf-8")
+
+    def test_parse_task_dependencies_inline_and_block(self):
+        inline_doc = "---\nid: TASK-001\ndepends_on: [TASK-002, 'TASK-003', \"[[TASK-004|Label]]\"]\n---\n"
+        deps = kb_lint.parse_task_dependencies(inline_doc)
+        self.assertEqual(deps, ["TASK-002", "TASK-003", "TASK-004"])
+
+        block_doc = "---\nid: TASK-001\ndepends_on:\n  - TASK-002\n  - \"[[Specs/01_Phase/TASK-003]]\"\n---\n"
+        deps_block = kb_lint.parse_task_dependencies(block_doc)
+        self.assertEqual(deps_block, ["TASK-002", "TASK-003"])
+
+        empty_doc = "---\nid: TASK-001\n---\n"
+        self.assertEqual(kb_lint.parse_task_dependencies(empty_doc), [])
+
+    def test_find_dependency_cycles_cases(self):
+        # Acyclic
+        dag = {"TASK-001": [], "TASK-002": ["TASK-001"], "TASK-003": ["TASK-002"]}
+        self.assertIsNone(kb_lint.find_dependency_cycles(dag))
+
+        # Direct cycle
+        direct = {"TASK-A": ["TASK-B"], "TASK-B": ["TASK-A"]}
+        cycle = kb_lint.find_dependency_cycles(direct)
+        self.assertIsNotNone(cycle)
+        self.assertEqual(cycle, ["TASK-A", "TASK-B", "TASK-A"])
+
+        # Transitive cycle
+        transitive = {"TASK-A": ["TASK-B"], "TASK-B": ["TASK-C"], "TASK-C": ["TASK-A"]}
+        cycle_tr = kb_lint.find_dependency_cycles(transitive)
+        self.assertIsNotNone(cycle_tr)
+        self.assertEqual(cycle_tr, ["TASK-A", "TASK-B", "TASK-C", "TASK-A"])
+
+    def test_check_task_dependencies_valid_dag(self):
+        self._write_spec("TASK-001.md", "TASK-001")
+        self._write_spec("TASK-002.md", "TASK-002", ["TASK-001"])
+        findings = kb_lint.check_task_dependencies(self.docs_dir)
+        self.assertEqual(findings, [])
+
+    def test_check_task_dependencies_unknown_dependency(self):
+        self._write_spec("TASK-001.md", "TASK-001", ["TASK-999"])
+        findings = kb_lint.check_task_dependencies(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-010")
+        self.assertIn("depends on unknown task 'TASK-999'", findings[0].message)
+
+    def test_check_task_dependencies_detects_cycle(self):
+        self._write_spec("TASK-001.md", "TASK-001", ["TASK-002"])
+        self._write_spec("TASK-002.md", "TASK-002", ["TASK-001"])
+        findings = kb_lint.check_task_dependencies(self.docs_dir)
+        self.assertTrue(any(f.rule_id == "KB-010" and "cycle detected" in f.message for f in findings))
 
 
 if __name__ == "__main__":

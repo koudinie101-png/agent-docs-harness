@@ -1,7 +1,7 @@
 ---
 id: TASK-110
 title: "Граф зависимостей задач (depends_on) и правило линтера KB-010"
-status: planned
+status: done
 type: task
 phase: 30
 component:
@@ -23,7 +23,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-110 — Граф зависимостей задач (depends_on) и правило линтера KB-010
 
-> **ID:** TASK-110 | **Статус:** К реализации (Planned) | **Фаза:** 30  
+> **ID:** TASK-110 | **Статус:** Выполнено (Done) | **Фаза:** 30  
 > **План:** [[../../Plans/PLAN-027-deterministic-navigation-and-task-graph|PLAN-027: Детерминированная навигация и граф зависимостей]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0035-wave-1-deterministic-navigation-and-task-graph-standard|ADR-0035]] | **Исследование:** [[../../../04_Research/RESEARCH-029-wave-1-docs-integrity-and-deterministic-navigation|RESEARCH-029]]
 
@@ -131,17 +131,17 @@ def find_dependency_cycles(graph: Dict[str, List[str]]) -> Optional[List[str]]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] Контрактные и юнит-тесты:
+- [x] Контрактные и юнит-тесты:
   ```bash
   python -m unittest tests/test_kb_lint.py
   ```
   *Ожидаемый результат:* 100% тестов проходят, включая новый класс `TestTaskDependencies` и обновленный контракт `TestRuleRegistry`.
-- [ ] Паритет шаблонов:
+- [x] Паритет шаблонов:
   ```bash
   python -m unittest tests/test_template_parity.py
   ```
   *Ожидаемый результат:* 16 шаблонов идентичны, побайтовый паритет сохранен.
-- [ ] Аудит целостности базы знаний:
+- [x] Аудит целостности базы знаний:
   ```bash
   python scripts/kb_lint.py --path docs
   ```
@@ -151,8 +151,8 @@ def find_dependency_cycles(graph: Dict[str, List[str]]) -> Optional[List[str]]:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Код в `scripts/kb_lint.py` написан строго без сторонних зависимостей (Python 3 stdlib).
-- [ ] Правило `KB-010` активировано в `RULE_SEVERITY` и включено в общий pipeline проверок.
-- [ ] Все пункты Плана верификации пройдены с кодом возврата 0.
-- [ ] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Запись добавлена в `Devlog.md`.
+- [x] Код в `scripts/kb_lint.py` написан строго без сторонних зависимостей (Python 3 stdlib).
+- [x] Правило `KB-010` активировано в `RULE_SEVERITY` и включено в общий pipeline проверок.
+- [x] Все пункты Плана верификации пройдены с кодом возврата 0.
+- [x] Статус обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Запись добавлена в `Devlog.md`.

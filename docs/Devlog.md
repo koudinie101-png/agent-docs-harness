@@ -16,6 +16,23 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-19] — TASK-110: Граф зависимостей depends_on и правило линтера KB-010
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]] в рамках Фазы 30 (Волна 1, P0).
+  - Активировано зарезервированное правило **`KB-010`** в `scripts/kb_lint.py` с уровнем строгости `error`.
+  - Реализован парсинг поля `depends_on` из YAML frontmatter спецификаций задач (`parse_task_dependencies`).
+  - Реализован алгоритм детекции циклических зависимостей на основе обхода в глубину (DFS coloring) с точным возвратом цепочки цикла (`find_dependency_cycles`).
+  - Добавлена функция проверки целостности графа `check_task_dependencies`: выявляет ссылки на неизвестные задачи и циклические зависимости.
+  - Поле `# depends_on: []` синхронно добавлено в `docs/00_Templates/TEMPLATE_TASK.md` и `templates/TEMPLATE_TASK.md` с сохранением побайтового паритета.
+  - В `tests/test_kb_lint.py` добавлен набор тестов `TestTaskDependencies` (7 тестов: inline/block парсинг, ациклические графы, прямые и транзитивные циклы, висячие ID).
+  - Актуализирован Living Spec: `SPEC.md` отражает статус правила `KB-010` как активного.
+- **Проверка:**
+  - `python -m unittest tests/test_kb_lint.py`: 79 тестов OK.
+  - `python -m unittest tests/test_template_parity.py`: 2 теста OK (побайтовый паритет 16 шаблонов сохранен).
+  - `python scripts/kb_lint.py --path docs`: 274 файла, 2699 ссылок проверено, 0 ошибок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - `/kb-task TASK-111` — спецификация ядра утилиты навигации `scripts/kb_state.py` (`status`, `next`, `--json`).  
+
 ### [2026-10-25] — Релиз v0.28.0: Фазы 28 и 29 (кумулятивный)
 - **Что сделано:**
   - Выпущен [[02_Tasks/Releases/RELEASE-v0.28.0|RELEASE-v0.28.0]] по завершении Фаз 28 (CI-доставка линта) и 29 (правило `PLAIN-LANGUAGE`).

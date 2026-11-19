@@ -75,6 +75,7 @@ RULE_SEVERITY: Dict[str, str] = {
     "KB-007": "warning",
     "KB-008": "warning",
     "KB-009": "warning",
+    "KB-010": "error",
     "KB-011": "warning",
     "KB-012": "warning",
     "KB-013": "warning",
@@ -1006,6 +1007,157 @@ def check_untracked_todos(docs_dir: Path) -> List[Finding]:
     return warnings
 
 
+def parse_task_dependencies(content: str) -> List[str]:
+    """Extracts a list of task/bug IDs from YAML frontmatter 'depends_on' field."""
+    if not content.startswith("---"):
+        return []
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        return []
+    fm = parts[1]
+
+    m_inline = re.search(r"^\s*depends_on:\s*\[(.*)\]\s*$", fm, re.MULTILINE)
+    deps: List[str] = []
+    if m_inline:
+        raw_items = m_inline.group(1).split(",")
+        for item in raw_items:
+            clean = _clean_task_dep_id(item)
+            if clean:
+                deps.append(clean)
+        return deps
+
+    m_block = re.search(r"^\s*depends_on:\s*\n((?:\s*-\s*[^\n]+\n?)+)", fm, re.MULTILINE)
+    if m_block:
+        for line in m_block.group(1).splitlines():
+            m_item = re.match(r"^\s*-\s*(.+)$", line)
+            if m_item:
+                clean = _clean_task_dep_id(m_item.group(1))
+                if clean:
+                    deps.append(clean)
+        return deps
+
+    return []
+
+
+def _clean_task_dep_id(raw: str) -> str:
+    cleaned = raw.strip().strip("'\"")
+    if cleaned.startswith("[[") and cleaned.endswith("]]"):
+        cleaned = cleaned[2:-2].strip()
+        if "|" in cleaned:
+            cleaned = cleaned.split("|", 1)[0].strip()
+    if "/" in cleaned or "\\" in cleaned:
+        cleaned = Path(cleaned).stem
+    m_id = re.match(r"^((?:TASK|BUG)-[0-9A-Za-z_-]+)", cleaned)
+    if m_id:
+        return m_id.group(1)
+    return cleaned.strip()
+
+
+def find_dependency_cycles(graph: Dict[str, List[str]]) -> Optional[List[str]]:
+    """Detects cycles in directed dependency graph using DFS coloring. Returns cycle path or None."""
+    color: Dict[str, int] = {}
+
+    def dfs(node: str, path: List[str]) -> Optional[List[str]]:
+        color[node] = 1
+        for dep in graph.get(node, []):
+            if color.get(dep, 0) == 1:
+                idx = path.index(dep) if dep in path else 0
+                return path[idx:] + [dep]
+            if color.get(dep, 0) == 0:
+                cycle = dfs(dep, path + [dep])
+                if cycle:
+                    return cycle
+        color[node] = 2
+        return None
+
+    for n in sorted(graph.keys()):
+        if color.get(n, 0) == 0:
+            c = dfs(n, [n])
+            if c:
+                return c
+    return None
+
+
+def check_task_dependencies(docs_dir: Path) -> List[Finding]:
+    """
+    Tier 1 Blocking Quality Gate (KB-010):
+    Audits task dependencies (depends_on):
+    - Validates that every dependency targets a known TASK-XXX or BUG-XXX.
+    - Validates absence of dependency cycles (DFS cycle detection).
+    """
+    findings: List[Finding] = []
+    specs_dir = docs_dir / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Specs").is_dir():
+        specs_dir = docs_dir / "docs" / "02_Tasks" / "Specs"
+    if not specs_dir.is_dir():
+        return findings
+
+    known_ids: Set[str] = set()
+    spec_files: List[Tuple[str, Path, str]] = []
+
+    for sf in sorted(specs_dir.rglob("*.md")):
+        if sf.name.startswith("TEMPLATE_") or "00_Templates" in sf.parts:
+            continue
+        try:
+            content = sf.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        m = re.search(r"^id:\s*([^\s#]+)", content, re.MULTILINE)
+        task_id = m.group(1).strip() if m else sf.stem
+        m_canonical = re.match(r"^((?:TASK|BUG)-[0-9A-Za-z_-]+)", task_id)
+        canon_id = m_canonical.group(1) if m_canonical else task_id
+        known_ids.add(canon_id)
+        spec_files.append((canon_id, sf, content))
+
+    bugs_dir = docs_dir / "02_Tasks" / "Bugs"
+    if not bugs_dir.is_dir() and (docs_dir / "docs" / "02_Tasks" / "Bugs").is_dir():
+        bugs_dir = docs_dir / "docs" / "02_Tasks" / "Bugs"
+    if bugs_dir.is_dir():
+        for bf in bugs_dir.rglob("*.md"):
+            if not bf.name.startswith("TEMPLATE_") and "00_Templates" not in bf.parts:
+                m_bug = re.match(r"^(BUG-[0-9A-Za-z_-]+)", bf.stem)
+                if m_bug:
+                    known_ids.add(m_bug.group(1))
+
+    graph: Dict[str, List[str]] = {}
+    task_file_map: Dict[str, str] = {}
+
+    for task_id, sf, content in spec_files:
+        rel_path = _docs_rel(sf, docs_dir)
+        task_file_map[task_id] = rel_path
+
+        deps = parse_task_dependencies(content)
+        valid_deps: List[str] = []
+        for dep in deps:
+            if dep not in known_ids:
+                findings.append(
+                    make_finding(
+                        "KB-010",
+                        f"Task '{task_id}' depends on unknown task '{dep}'",
+                        file=rel_path,
+                    )
+                )
+            else:
+                valid_deps.append(dep)
+        graph[task_id] = valid_deps
+
+    cycle = find_dependency_cycles(graph)
+    if cycle:
+        cycle_head = cycle[0]
+        file_loc = task_file_map.get(cycle_head, "02_Tasks/Specs")
+        cycle_str = " -> ".join(cycle)
+        findings.append(
+            make_finding(
+                "KB-010",
+                f"Task dependency cycle detected: {cycle_str}",
+                file=file_loc,
+            )
+        )
+
+    return findings
+
+
 def build_file_map(docs_dir: Path, repo_root: Optional[Path] = None) -> Dict[str, Path]:
     if repo_root is None:
         repo_root = docs_dir.parent if docs_dir.name == "docs" else docs_dir
@@ -1361,6 +1513,7 @@ def run_linter(docs_dir: Path, verbose: bool = False, output_format: str = "text
         and (not f.message.startswith("Tech debt registry not found") or has_tasks_harness)
     )
     findings.extend(check_untracked_todos(docs_dir))
+    findings.extend(check_task_dependencies(docs_dir))
 
     for finding in findings:
         finding.location = resolve_location(finding.file, docs_dir)

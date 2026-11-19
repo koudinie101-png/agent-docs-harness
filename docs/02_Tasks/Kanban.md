@@ -14,8 +14,6 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]]: Граф зависимостей `depends_on` и правило линтера `KB-010` (2026-11-19) #task #phase30 #navigation #task-graph #lint
-
 
 
 
@@ -23,6 +21,8 @@ kanban-plugin: basic
 
 
 ## ✅ Готово (Done)
+
+- [x] [[Specs/30_DeterministicNavigation/TASK-110-task-dependency-graph-and-kb010|TASK-110]]: Граф зависимостей `depends_on` и правило линтера `KB-010` (2026-11-19) #task #phase30 #navigation #task-graph #lint
 
 - [x] [[Plans/PLAN-026-ci-delivery-and-code-scanning|План: Фаза 28 (продолжение) — CI-доставка линта: action.yml, pre-commit, Code Scanning и решение по DEBT-004]] (2026-10-25) #plan #phase28 #ci #distribution #code-scanning
 

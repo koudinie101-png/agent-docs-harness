@@ -7,6 +7,7 @@ phase: 1
 component:
   - core
 parent_plan: "[[../../Plans/PLAN-XXX|PLAN-XXX]]"
+# depends_on: [] # list of TASK-XXX IDs that must be completed first
 created: 2026-09-19
 updated: 2026-09-19
 tags:
