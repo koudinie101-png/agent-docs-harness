@@ -14,6 +14,8 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
+- [ ] [[Specs/32_RightSizing/TASK-118-skills-behavior-and-rules-corpus|TASK-118]]: Поведение скиллов, онбординг и корпус правил rules/AGENTS_CORE.md (2026-11-20) #task #phase32 #skills #onboarding #rules #right-sizing #spec-quality
+
 ## ✅ Готово (Done)
 
 - [x] [[Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]]: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016 (2026-11-20) #task #phase32 #spec-quality #lint #quality-gates

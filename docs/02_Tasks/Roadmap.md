@@ -416,7 +416,7 @@ tags:
 
 - [x] [[Specs/32_RightSizing/TASK-116-right-sizing-matrix-and-kb020|TASK-116]]: Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard) (2026-11-19).
 - [x] [[Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]]: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016 (2026-11-20).
-- [ ] `TASK-118`: Поведение скиллов, онбординг и корпус правил `rules/AGENTS_CORE.md`.
+- [ ] [[Specs/32_RightSizing/TASK-118-skills-behavior-and-rules-corpus|TASK-118]]: Поведение скиллов, онбординг и корпус правил `rules/AGENTS_CORE.md`.
 - [ ] `TASK-119`: Сборка монолита `install.py`, E2E тесты доставки и актуализация Living Spec.
 
 ---
