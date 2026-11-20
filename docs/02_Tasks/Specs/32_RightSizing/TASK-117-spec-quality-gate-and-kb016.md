@@ -1,7 +1,7 @@
 ---
 id: TASK-117
 title: "Spec Quality Gate: маркеры [NEEDS CLARIFICATION], чек-лист ТЗ и правило KB-016"
-status: planned
+status: done
 type: task
 phase: 32
 track: standard
@@ -23,9 +23,9 @@ tags:
 kanban: "[[../../Kanban|Канбан-доска]]"
 ---
 
-# 🛠️ Спецификация: TASK-117 — Spec Quality Gate: маркеры [NEEDS CLARIFICATION], чек-лист ТЗ и правило KB-016
+# 🛠️ Спецификация: TASK-117 — Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016
 
-> **ID:** TASK-117 | **Статус:** К реализации (Planned) | **Фаза:** 32 | **Трек:** Standard  
+> **ID:** TASK-117 | **Статус:** Выполнено (Done) | **Фаза:** 32 | **Трек:** Standard  
 > **План:** [[../../Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029: Right-Sizing процесса и Spec Quality Gate]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037]] | **Исследование:** [[../../../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031]]  
 > **Зависимости:** [[TASK-116-right-sizing-matrix-and-kb020|TASK-116]]
@@ -158,27 +158,27 @@ def check_spec_quality_markers(docs_dir: Path) -> List[Finding]:
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] **Синтаксический контроль Python:**
+- [x] **Синтаксический контроль Python:**
   ```bash
   python -m py_compile scripts/kb_lint.py
   ```
   *Ожидаемый результат:* Exit code 0, компиляция без ошибок.
-- [ ] **Юнит-тесты правила KB-016:**
+- [x] **Юнит-тесты правила KB-016:**
   ```bash
   python -m unittest tests/test_kb_lint.py
   ```
   *Ожидаемый результат:* 100% прохождение всех тестов, включая класс `TestSpecQualityGate`.
-- [ ] **Тесты паритета шаблонов:**
+- [x] **Тесты паритета шаблонов:**
   ```bash
   python -m unittest tests/test_template_parity.py
   ```
   *Ожидаемый результат:* 100% паритет `docs/00_Templates/` и `templates/`.
-- [ ] **Аудит целостности базы знаний:**
+- [x] **Аудит целостности базы знаний:**
   ```bash
   python scripts/kb_lint.py --path docs
   ```
   *Ожидаемый результат:* 0 broken links, 0 errors, 0 ложных срабатываний `KB-016`.
-- [ ] **Проверка контрактов машинного вывода (JSON и SARIF):**
+- [x] **Проверка контрактов машинного вывода (JSON и SARIF):**
   ```bash
   python scripts/kb_lint.py --path docs --format json
   python scripts/kb_lint.py --path docs --format sarif
@@ -189,9 +189,9 @@ def check_spec_quality_markers(docs_dir: Path) -> List[Finding]:
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Раздел `## 0. Чек-лист качества ТЗ` добавлен в `TEMPLATE_TASK.md` в обеих директориях (`docs/00_Templates/` и `templates/`).
-- [ ] Правило `KB-016` реализовано в `scripts/kb_lint.py` с градацией `planned` $\to$ WARN, `in-progress/done` $\to$ ERROR.
-- [ ] Написаны и проходят модульные тесты для `KB-016` в `tests/test_kb_lint.py`.
-- [ ] Паритет шаблонов и полный аудит документации завершаются с кодом 0.
-- [ ] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Сессия зафиксирована в `docs/Devlog.md`.
+- [x] Раздел `## 0. Чек-лист качества ТЗ` добавлен в `TEMPLATE_TASK.md` в обеих директориях (`docs/00_Templates/` и `templates/`).
+- [x] Правило `KB-016` реализовано в `scripts/kb_lint.py` с градацией `planned` $\to$ WARN, `in-progress/done` $\to$ ERROR.
+- [x] Написаны и проходят модульные тесты для `KB-016` в `tests/test_kb_lint.py`.
+- [x] Паритет шаблонов и полный аудит документации завершаются с кодом 0.
+- [x] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Сессия зафиксирована в `docs/Devlog.md`.

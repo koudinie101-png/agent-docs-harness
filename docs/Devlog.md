@@ -4,7 +4,7 @@ title: Журнал разработки (Devlog)
 status: active
 type: devlog
 created: 2026-09-30
-updated: 2026-11-19
+updated: 2026-11-20
 tags:
   - devlog
   - journal
@@ -15,6 +15,25 @@ tags:
 
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
+
+### [2026-11-20] — TASK-117: Spec Quality Gate: маркеры [NEEDS CLARIFICATION], чек-лист ТЗ и правило KB-016
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]] (вторая задача Фазы 32: **Right-Sizing процесса и Spec Quality Gate**, Волна 2, P1).
+  - В канонический шаблон `TEMPLATE_TASK.md` добавлен раздел `## 0. Чек-лист качества ТЗ (Spec Quality Checklist)` с интерактивными пунктами проверки ясности, отсутствия домыслов и локализации скоупа, а также инструкция по синтаксическому маркеру `[NEEDS CLARIFICATION: ...]`.
+  - Обеспечен 100% паритет шаблонов между `docs/00_Templates/` и `templates/` (TASK-092).
+  - В `scripts/kb_lint.py` реализована функция `check_spec_quality_markers` и валидация правила `KB-016`:
+    * Статус `planned` / `draft`: генерация предупреждения (`warning`), напоминающего о необходимости уточнения открытых вопросов.
+    * Статус `in-progress` / `done` / `fixed`: генерация блокирующей ошибки (`error`), физически запрещающей взятие в реализацию или закрытие задач с неразрешенными неопределенностями.
+    * Исключение блоков кода (fenced / inline), HTML-комментариев и маскирование frontmatter для предотвращения ложных срабатываний и точного сохранения номеров строк.
+  - Добавлен тестовый класс `TestSpecQualityGate` (6 сценариев) в `tests/test_kb_lint.py`.
+- **Проверка:**
+  - `python -m py_compile scripts/kb_lint.py`: Exit code 0.
+  - `python -m unittest tests/test_kb_lint.py`: 90 тестов успешно пройдены (100% OK).
+  - `python -m unittest tests/test_template_parity.py`: 2 теста OK (паритет 100%).
+  - `python scripts/kb_lint.py --path docs`: 289 файлов, 2871 ссылка проверено, 0 ошибок.
+  - `python scripts/kb_lint.py --path docs --format json` и `--format sarif`: валидный машиночитаемый вывод с 0 ошибок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Разработчик может инициировать спецификацию следующей задачи Фазы 32: `/kb-task TASK-118` (Поведение скиллов, онбординг и корпус правил `rules/AGENTS_CORE.md`).
 
 ### [2026-11-19] — TASK-116: Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard)
 - **Что сделано:**

@@ -1642,6 +1642,61 @@ class TestDeepRiskTags(unittest.TestCase):
         self.assertEqual(findings, [])
 
 
+class TestSpecQualityGate(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = Path(tempfile.mkdtemp())
+        self.docs_dir = self.tmp_dir / "docs"
+        self.specs_dir = self.docs_dir / "02_Tasks" / "Specs" / "32_Phase"
+        self.specs_dir.mkdir(parents=True, exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def test_kb016_planned_task_with_marker_emits_warning(self):
+        content = "---\nid: TASK-901\nstatus: planned\n---\n* Item: [NEEDS CLARIFICATION: A or B?]\n"
+        (self.specs_dir / "TASK-901.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-016")
+        self.assertEqual(findings[0].severity, "warning")
+        self.assertIn("A or B?", findings[0].message)
+
+    def test_kb016_in_progress_task_with_marker_emits_error(self):
+        content = "---\nid: TASK-902\nstatus: in-progress\n---\n* Item: [NEEDS CLARIFICATION: Choose DB]\n"
+        (self.specs_dir / "TASK-902.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-016")
+        self.assertEqual(findings[0].severity, "error")
+
+    def test_kb016_done_task_with_marker_emits_error(self):
+        content = "---\nid: TASK-903\nstatus: done\n---\n* Item: [NEEDS CLARIFICATION: Port]\n"
+        (self.specs_dir / "TASK-903.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].rule_id, "KB-016")
+        self.assertEqual(findings[0].severity, "error")
+
+    def test_kb016_clean_task_passes(self):
+        content = "---\nid: TASK-904\nstatus: planned\n---\n* Item: Plain text\n"
+        (self.specs_dir / "TASK-904.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(findings, [])
+
+    def test_kb016_codeblock_and_comments_ignored(self):
+        content = "---\nid: TASK-905\nstatus: in-progress\n---\n```\n[NEEDS CLARIFICATION: in block]\n```\n`[NEEDS CLARIFICATION: inline]`\n<!-- [NEEDS CLARIFICATION: comment] -->\n"
+        (self.specs_dir / "TASK-905.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(findings, [])
+
+    def test_kb016_cancelled_task_ignored(self):
+        content = "---\nid: TASK-906\nstatus: cancelled\n---\n* Item: [NEEDS CLARIFICATION: question]\n"
+        (self.specs_dir / "TASK-906.md").write_text(content, encoding="utf-8")
+        findings = kb_lint.check_spec_quality_markers(self.docs_dir)
+        self.assertEqual(findings, [])
+
+
+
 if __name__ == "__main__":
     unittest.main()
 

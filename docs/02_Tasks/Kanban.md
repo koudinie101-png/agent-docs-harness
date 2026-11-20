@@ -14,9 +14,9 @@ kanban-plugin: basic
 
 ## ⏳ В работе (In Progress)
 
-- [ ] [[Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]]: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016 (2026-11-20) #task #phase32 #spec-quality #lint #quality-gates
-
 ## ✅ Готово (Done)
+
+- [x] [[Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]]: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016 (2026-11-20) #task #phase32 #spec-quality #lint #quality-gates
 
 - [x] [[Specs/32_RightSizing/TASK-116-right-sizing-matrix-and-kb020|TASK-116]]: Матрица Right-Sizing, поле track и правило линтера KB-020 (2026-11-19) #task #phase32 #right-sizing #lint #templates
 

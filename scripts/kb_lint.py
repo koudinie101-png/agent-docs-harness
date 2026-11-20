@@ -34,6 +34,7 @@ LINE_ANCHOR_RE = re.compile(
 )
 FILE_CONTRACT_RE = re.compile(r"^\s*[\*\-]\s*`?\[(NEW|MODIFY|DELETE)\]`?\s*`([^`]+)`")
 NESTED_SYMBOL_RE = re.compile(r"^\s{2,}[\*\-]\s+\S")
+CLARIFICATION_MARKER_RE = re.compile(r"\[NEEDS CLARIFICATION(?::\s*([^\]]+))?\]", re.IGNORECASE)
 HARNESS_META_TECHDEBT_IDS = {
     "PLAN-019",
     "PLAN-021",
@@ -1062,6 +1063,84 @@ def check_deep_risk_tags(docs_dir: Path) -> List[Finding]:
     return warnings
 
 
+def check_spec_quality_markers(docs_dir: Path) -> List[Finding]:
+    """
+    Tier 1 Quality Gate: audit clarification markers in tasks and bugs.
+
+    Rule KB-016:
+    - Status 'planned': SEVERITY_WARNING (reminder that task needs user refinement).
+    - Status 'in-progress' or 'done': SEVERITY_ERROR (hard block: cannot implement or complete with open ambiguities).
+    - Status 'cancelled' or 'rejected': ignored.
+    """
+    findings: List[Finding] = []
+    scan_dirs = []
+    for rel_parts in [("02_Tasks", "Specs"), ("02_Tasks", "Bugs")]:
+        target = docs_dir.joinpath(*rel_parts)
+        if not target.is_dir() and (docs_dir / "docs").joinpath(*rel_parts).is_dir():
+            target = (docs_dir / "docs").joinpath(*rel_parts)
+        if target.is_dir():
+            scan_dirs.append(target)
+
+    for target_dir in scan_dirs:
+        if not target_dir.is_dir():
+            continue
+        for md_file in sorted(target_dir.rglob("*.md")):
+            if md_file.name.startswith("TEMPLATE_"):
+                continue
+            try:
+                content = md_file.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+
+            # Extract status from frontmatter and mask frontmatter to preserve line numbers
+            status = "planned"
+            body_content = content
+            if content.startswith("---"):
+                parts = content.split("---", 2)
+                if len(parts) >= 3:
+                    st_m = re.search(r"^status:\s*([^\s#]+)", parts[1], re.MULTILINE)
+                    if st_m:
+                        status = st_m.group(1).strip().lower()
+                    # Mask frontmatter with newlines so line numbers in body match exactly
+                    header_lines = parts[0].count("\n") + 1 + parts[1].count("\n") + 1
+                    body_content = ("\n" * header_lines) + parts[2]
+
+            if status in ("cancelled", "rejected"):
+                continue
+
+            # Strip code blocks, inline code, and HTML comments to avoid false positives on documentation / examples
+            clean_content = re.sub(r'```[\s\S]*?```', '', body_content)
+            clean_content = re.sub(r'`[^`\n]*`', '', clean_content)
+            clean_content = re.sub(r'<!--[\s\S]*?-->', '', clean_content)
+
+            matches = list(CLARIFICATION_MARKER_RE.finditer(clean_content))
+            if not matches:
+                continue
+
+            for match in matches:
+                marker_detail = match.group(1).strip() if match.group(1) else "unspecified question"
+                line_no = clean_content[:match.start()].count("\n") + 1
+
+                if status in ("in-progress", "done", "fixed"):
+                    findings.append(make_finding(
+                        "KB-016",
+                        f"ERROR: file '{md_file.name}' with status '{status}' contains unresolved marker [NEEDS CLARIFICATION: {marker_detail}]",
+                        file=_docs_rel(md_file, docs_dir),
+                        severity="error",
+                        location=f"{_docs_rel(md_file, docs_dir)}:L{line_no}",
+                    ))
+                else:  # planned / draft / proposed
+                    findings.append(make_finding(
+                        "KB-016",
+                        f"WARN: file '{md_file.name}' contains open marker [NEEDS CLARIFICATION: {marker_detail}]",
+                        file=_docs_rel(md_file, docs_dir),
+                        severity="warning",
+                        location=f"{_docs_rel(md_file, docs_dir)}:L{line_no}",
+                    ))
+
+    return findings
+
+
 def check_symbolic_scope(docs_dir: Path) -> List[Finding]:
     """ADR-0029: active task specs must name nested code symbols."""
     warnings = []
@@ -1986,6 +2065,7 @@ def run_linter(
     findings.extend(check_untracked_todos(docs_dir))
     findings.extend(check_task_dependencies(docs_dir))
     findings.extend(check_deep_risk_tags(docs_dir))
+    findings.extend(check_spec_quality_markers(docs_dir))
 
     for finding in findings:
         finding.location = resolve_location(finding.file, docs_dir)
