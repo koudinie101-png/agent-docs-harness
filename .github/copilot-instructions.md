@@ -20,3 +20,5 @@
 9. **Prior-Art Gate & Wheel Reinvention Prevention:** Inspect existing codebase before designing new modules.
 10. **Traceable Backlog Tags & Benchmark Persistence:** Annotate deferred items as `// ROADMAP-<ID>` or `// DEBT-XXX` (never hanging TODOs); verify benchmarks with >= 3 runs.
 11. **Plain-Language Contract (User Is Not a Developer):** Lead with the outcome, gloss or drop jargon ("миграция — разовое изменение структуры базы"), explain failures as cause -> fix, offer options with consequences; deep detail is optional.
+12. **Right-Sizing Matrix:** Classify work as `micro` (≤ 30 LOC, ≤ 2 files), `standard` (default), or `deep` (`architecture`, `security`, `migration`, `public-api`). Enforce `parent_plan` and `research_basis` on deep items (KB-020).
+13. **Spec Quality Gate & Clarification Markers:** Never invent ambiguous requirements; flag open questions as `[NEEDS CLARIFICATION: <question>]`. KB-016 blocks implementation and completion if unresolved markers exist.

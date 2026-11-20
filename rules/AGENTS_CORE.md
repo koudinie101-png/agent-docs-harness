@@ -87,6 +87,12 @@ Language: {{lang_instruction}}
 <!-- RULE: PLAIN-LANGUAGE -->
 25. **Plain-Language Contract (User Is Not a Developer):** Assume zero engineering background: lead with the outcome in one plain sentence, gloss or drop every technical term ("миграция — разовое изменение структуры базы"), translate failures as cause -> consequence -> fix, and offer 1–2 options with their practical consequences. Deep technical detail is optional, never the default voice.
 <!-- /RULE: PLAIN-LANGUAGE -->
+<!-- RULE: RIGHT-SIZING -->
+26. **Right-Sizing Matrix:** Work is categorized into `micro` (Fast-Track), `standard` (default), and `deep` (`architecture`, `security`, `migration`, `public-api`). Deep work requires verified `parent_plan` and `research_basis` (KB-020).
+<!-- /RULE: RIGHT-SIZING -->
+<!-- RULE: SPEC-QUALITY -->
+27. **Spec Quality Gate & Clarification Markers:** Never guess requirements; mark ambiguities as `[NEEDS CLARIFICATION: <question>]`. KB-016 blocks implementation/completion when markers are unresolved.
+<!-- /RULE: SPEC-QUALITY -->
 
 ### 🎨 Obsidian Graph & Taxonomy
 Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).
@@ -249,6 +255,12 @@ Completion checklist: spec->done / bug->fixed · Living Spec sync · Kanban->Don
 <!-- RULE: PLAIN-LANGUAGE -->
 11. **Plain-Language Contract (User Is Not a Developer):** Lead with the outcome, gloss or drop jargon ("миграция — разовое изменение структуры базы"), explain failures as cause -> fix, offer options with consequences; deep detail is optional.
 <!-- /RULE: PLAIN-LANGUAGE -->
+<!-- RULE: RIGHT-SIZING -->
+12. **Right-Sizing Matrix:** Classify work as `micro` (≤ 30 LOC, ≤ 2 files), `standard` (default), or `deep` (`architecture`, `security`, `migration`, `public-api`). Enforce `parent_plan` and `research_basis` on deep items (KB-020).
+<!-- /RULE: RIGHT-SIZING -->
+<!-- RULE: SPEC-QUALITY -->
+13. **Spec Quality Gate & Clarification Markers:** Never invent ambiguous requirements; flag open questions as `[NEEDS CLARIFICATION: <question>]`. KB-016 blocks implementation and completion if unresolved markers exist.
+<!-- /RULE: SPEC-QUALITY -->
 <!-- /DOCUMENT: adapters -->
 
 <!-- DOCUMENT: harness-agents -->
@@ -370,6 +382,19 @@ All project knowledge, task tracking, and architectural decisions are maintained
     - Deep detail stays optional in a short "Technical details" block, never the default voice; simple is not childish (no "just"/"simply"/"obviously"); mirror the user's language.
     - Scope: chat explanations only; code, commits and `docs/` keep technical precision.
 <!-- /RULE: PLAIN-LANGUAGE -->
+<!-- RULE: RIGHT-SIZING -->
+18. **Right-Sizing Matrix & Deep-Risk Guard:**
+    - Tasks and plans define `track: micro | standard | deep`.
+    - `micro`: trivial changes (≤ 30 LOC, ≤ 2 files) via Fast-Track (`/kb-task --fast`).
+    - `standard`: standard feature/refactoring cycle with RFC plan (`/kb-plan`) and task spec (`/kb-task`).
+    - `deep`: high-risk changes touching critical subsystems (`architecture`, `security`, `migration`, `public-api`). Mechanized by `KB-020`: requires explicit `parent_plan` and `research_basis`.
+<!-- /RULE: RIGHT-SIZING -->
+<!-- RULE: SPEC-QUALITY -->
+19. **Spec Quality Gate & Clarification Markers:**
+    - Speculating or inventing ambiguous requirements is strictly prohibited (Zero Speculation Invariant).
+    - Unresolved architectural choices or questions must be explicitly annotated as `[NEEDS CLARIFICATION: <question>]`.
+    - Mechanized by `KB-016`: emits warning in `status: planned`, blocks in `in-progress` and `done`. `/kb-implement` immediately yields control (Stop & Yield) upon encountering open markers.
+<!-- /RULE: SPEC-QUALITY -->
 
 ---
 

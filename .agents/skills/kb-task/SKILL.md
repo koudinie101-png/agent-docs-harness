@@ -10,17 +10,20 @@ Use when the user runs `/kb-task <name>`, asks to create a specification/ТЗ, o
 ## 🚨 Constraints
 * **READ-ONLY:** Modifying or creating project code files is STRICTLY PROHIBITED.
 * **Exact Contracts:** Mark changes as `[NEW]`, `[MODIFY]`, or `[DELETE]`; for code, name nested symbols (`Class.method()`), never line numbers (ADR-0029).
+* **Zero Speculation Invariant:** Guessing or inventing ambiguous user requirements is STRICTLY PROHIBITED. If an architectural decision or requirement is unclear, place an explicit marker `[NEEDS CLARIFICATION: <question>]`.
 
 ## Procedure
 1. **Spec Status Check (Zero-State Guard):**
    - Verify `SPEC.md` is present and not in `status: discovery`. If it is in discovery, issue a Soft Nudge warning that engineering task specs should align with an active Master Spec, or confirm user intent before proceeding.
 2. **Calculate Task ID:**
    - Scan `docs/02_Tasks/Specs/` to determine the next available `TASK-XXX` ID.
-3. **Identify Target Phase:**
+3. **Identify Target Phase & Track:**
    - Locate or create the target phase directory `docs/02_Tasks/Specs/<Phase_Folder>/`.
+   - Determine Right-Sizing track: `micro` (Fast-Track), `standard` (default), or `deep` (deep-risk tags: `architecture`, `security`, `migration`, `public-api` with mandatory `parent_plan` to satisfy `KB-020`).
 4. **Draft Specification:**
-   - **Fast-Track Mode (`--fast` / micro-scope ≤ 30 LOC):** If called with `--fast` or targeting a trivial micro-task, use `docs/00_Templates/TEMPLATE_TASK_MICRO.md`. Guardrails: if scope exceeds 30 LOC or 2 files, warn user and fallback to standard spec.
-   - **Standard Mode:** Create `docs/02_Tasks/Specs/<Phase_Folder>/TASK-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_TASK.md`.
+   - **Fast-Track Mode (`--fast` / micro-scope ≤ 30 LOC):** If called with `--fast` or targeting a trivial micro-task, use `docs/00_Templates/TEMPLATE_TASK_MICRO.md` with `track: micro`. Guardrails: if scope exceeds 30 LOC or 2 files, warn user and fallback to standard spec.
+   - **Standard Mode:** Create `docs/02_Tasks/Specs/<Phase_Folder>/TASK-XXX-<slug>.md` using `docs/00_Templates/TEMPLATE_TASK.md` with `track: standard` (or `track: deep`).
+   - Validate `## 0. Чек-лист качества ТЗ (Spec Quality Checklist)`: ensure requirements are clear, scope is localized, and any ambiguities are flagged with `[NEEDS CLARIFICATION: ...]`.
    - Specify file contracts (`[NEW]`, `[MODIFY]`, `[DELETE]`), data structures, API signatures, and exception handling.
    - Define explicit **Verification Plan** (compilation commands, automated test suites, manual verification).
    - Define **Definition of Done (DoD)**.

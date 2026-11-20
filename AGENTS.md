@@ -80,6 +80,15 @@ All project knowledge, task tracking, and architectural decisions are maintained
     - Outcome first: what happened -> what it means for the user -> the single next action (or 1–2 options with their practical consequences). Failures: cause -> consequence -> fix.
     - Deep detail stays optional in a short "Technical details" block, never the default voice; simple is not childish (no "just"/"simply"/"obviously"); mirror the user's language.
     - Scope: chat explanations only; code, commits and `docs/` keep technical precision.
+18. **Right-Sizing Matrix & Deep-Risk Guard:**
+    - Tasks and plans define `track: micro | standard | deep`.
+    - `micro`: trivial changes (≤ 30 LOC, ≤ 2 files) via Fast-Track (`/kb-task --fast`).
+    - `standard`: standard feature/refactoring cycle with RFC plan (`/kb-plan`) and task spec (`/kb-task`).
+    - `deep`: high-risk changes touching critical subsystems (`architecture`, `security`, `migration`, `public-api`). Mechanized by `KB-020`: requires explicit `parent_plan` and `research_basis`.
+19. **Spec Quality Gate & Clarification Markers:**
+    - Speculating or inventing ambiguous requirements is strictly prohibited (Zero Speculation Invariant).
+    - Unresolved architectural choices or questions must be explicitly annotated as `[NEEDS CLARIFICATION: <question>]`.
+    - Mechanized by `KB-016`: emits warning in `status: planned`, blocks in `in-progress` and `done`. `/kb-implement` immediately yields control (Stop & Yield) upon encountering open markers.
 
 ---
 

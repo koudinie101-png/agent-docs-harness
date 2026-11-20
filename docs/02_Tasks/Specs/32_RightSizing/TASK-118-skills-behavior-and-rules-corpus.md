@@ -1,7 +1,7 @@
 ---
 id: TASK-118
 title: "Поведение скиллов, онбординг и корпус правил rules/AGENTS_CORE.md"
-status: in-progress
+status: done
 type: task
 phase: 32
 track: standard
@@ -27,7 +27,7 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 # 🛠️ Спецификация: TASK-118 — Поведение скиллов, онбординг и корпус правил rules/AGENTS_CORE.md
 
-> **ID:** TASK-118 | **Статус:** В работе (In Progress) | **Фаза:** 32 | **Трек:** Standard  
+> **ID:** TASK-118 | **Статус:** Выполнено (Done) | **Фаза:** 32 | **Трек:** Standard  
 > **План:** [[../../Plans/PLAN-029-right-sizing-and-spec-quality-gate|PLAN-029: Right-Sizing процесса и Spec Quality Gate]] | **Канбан:** [[../../Kanban|Канбан-доска]]  
 > **Нормативная база:** [[../../../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037]] | **Исследование:** [[../../../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031]]  
 > **Зависимости:** [[TASK-117-spec-quality-gate-and-kb016|TASK-117]]
@@ -110,27 +110,27 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 4. План верификации (Verification Plan)
 
-- [ ] **Контроль генерации правил и отсутствия дрифта:**
+- [x] **Контроль генерации правил и отсутствия дрифта:**
   ```bash
   python scripts/gen_rules.py --check
   ```
   *Ожидаемый результат:* Exit code 0, полное соответствие `AGENTS.md` и `rules/AGENTS_CORE.md`.
-- [ ] **Модульные тесты правил линтера:**
+- [x] **Модульные тесты правил линтера:**
   ```bash
   python -m unittest tests/test_kb_lint.py
   ```
   *Ожидаемый результат:* 100% успешное прохождение всех тестов (включая `KB-016` и `KB-020`).
-- [ ] **Тесты паритета шаблонов:**
+- [x] **Тесты паритета шаблонов:**
   ```bash
   python -m unittest tests/test_template_parity.py
   ```
   *Ожидаемый результат:* 100% паритет шаблонов.
-- [ ] **Аудит целостности базы знаний:**
+- [x] **Аудит целостности базы знаний:**
   ```bash
   python scripts/kb_lint.py --path docs
   ```
   *Ожидаемый результат:* 0 broken links, 0 errors, 0 warnings.
-- [ ] **Контроль навигации kb_state:**
+- [x] **Контроль навигации kb_state:**
   ```bash
   python scripts/kb_state.py status
   ```
@@ -140,9 +140,9 @@ kanban: "[[../../Kanban|Канбан-доска]]"
 
 ## 5. Критерии готовности (DoD)
 
-- [ ] Скиллы `/kb-plan`, `/kb-task`, `/kb-implement` обновлены и поддерживают матрицу Right-Sizing и Spec Quality Gate.
-- [ ] Руководство `docs/Onboarding.md` дополнено разделами о Right-Sizing и маркерах `[NEEDS CLARIFICATION]`.
-- [ ] Первоисточник правил `rules/AGENTS_CORE.md` дополнен Tier 2 инвариантами, `AGENTS.md` синхронизирован без дрифта (`gen_rules.py --check`).
-- [ ] Все тесты и аудит базы знаний (`kb_lint.py`) проходят с кодом 0.
-- [ ] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
-- [ ] Сессия зафиксирована в `docs/Devlog.md`.
+- [x] Скиллы `/kb-plan`, `/kb-task`, `/kb-implement` обновлены и поддерживают матрицу Right-Sizing и Spec Quality Gate.
+- [x] Руководство `docs/Onboarding.md` дополнено разделами о Right-Sizing и маркерах `[NEEDS CLARIFICATION]`.
+- [x] Первоисточник правил `rules/AGENTS_CORE.md` дополнен Tier 2 инвариантами, `AGENTS.md` синхронизирован без дрифта (`gen_rules.py --check`).
+- [x] Все тесты и аудит базы знаний (`kb_lint.py`) проходят с кодом 0.
+- [x] Статус задачи обновлен в ТЗ (`Выполнено`), Канбане (`Done`) и Дорожной карте (`[x]`).
+- [x] Сессия зафиксирована в `docs/Devlog.md`.

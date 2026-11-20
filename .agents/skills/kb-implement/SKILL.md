@@ -19,6 +19,8 @@ Use when the user runs `/kb-implement <TASK-XXX | BUG-XXX>` or begins implementa
    - Учесть защитные правила (Windows paths, mock leaks, API drifts).
 1. **Sync & Context:**
    - If `TASK-XXX`: read `docs/02_Tasks/Specs/<Phase>/TASK-XXX-<slug>.md`. Confirm affected files, symbols, and Verification Plan.
+     * **Spec Quality Gate (KB-016 Preflight):** Check for unresolved markers `[NEEDS CLARIFICATION: ...]`. If found, **STOP IMMEDIATELY (Stop & Yield)**: do NOT touch any code. Present the open questions to the user and request clarification before proceeding.
+     * **Deep-Risk Check (KB-020):** If task carries deep-risk tags (`architecture`, `security`, `migration`, `public-api`), confirm `parent_plan` is defined.
    - If `BUG-XXX`: read `docs/02_Tasks/Bugs/BUG-XXX-<slug>.md`. Confirm reproduction steps and Root Cause Analysis (RCA).
    - Sync base branch: `git pull --rebase` (if remote exists).
 2. **Branching Strategy:**

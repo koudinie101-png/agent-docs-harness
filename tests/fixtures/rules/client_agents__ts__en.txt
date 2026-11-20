@@ -32,6 +32,8 @@ Language: All documentation **English**.
 23. **Traceable Backlog Tags:** Untracked `TODO` / `FIXME` comments are prohibited; annotate deferred work as `// ROADMAP-<ID>` or `// DEBT-XXX`.
 24. **Benchmark Persistence:** Performance, latency, memory or token claims require >= 3 reproducible runs; discard the first (cold start) and record the command, environment and average metric.
 25. **Plain-Language Contract (User Is Not a Developer):** Assume zero engineering background: lead with the outcome in one plain sentence, gloss or drop every technical term ("миграция — разовое изменение структуры базы"), translate failures as cause -> consequence -> fix, and offer 1–2 options with their practical consequences. Deep technical detail is optional, never the default voice.
+26. **Right-Sizing Matrix:** Work is categorized into `micro` (Fast-Track), `standard` (default), and `deep` (`architecture`, `security`, `migration`, `public-api`). Deep work requires verified `parent_plan` and `research_basis` (KB-020).
+27. **Spec Quality Gate & Clarification Markers:** Never guess requirements; mark ambiguities as `[NEEDS CLARIFICATION: <question>]`. KB-016 blocks implementation/completion when markers are unresolved.
 
 ### 🎨 Obsidian Graph & Taxonomy
 Visual graph taxonomy is configured in `.obsidian/graph.json`. Place notes in designated directories with canonical tags (`#arch`, `#adr`, `#research`, `#task`, `#bug`, `#techdebt`, `#testing`).

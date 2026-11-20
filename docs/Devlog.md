@@ -16,6 +16,26 @@ tags:
 > **Теги:** #devlog #journal #agent-docs-harness  
 > **Родительская заметка:** [[00_Index|00_Index]]  
 
+### [2026-11-20] — TASK-118: Поведение скиллов, онбординг и корпус правил rules/AGENTS_CORE.md
+- **Что сделано:**
+  - Реализована спецификация [[02_Tasks/Specs/32_RightSizing/TASK-118-skills-behavior-and-rules-corpus|TASK-118]] (третья задача Фазы 32: **Right-Sizing процесса и Spec Quality Gate**, Волна 2, P1).
+  - Актуализированы операционные скиллы:
+    * `/kb-plan` (`.agents/skills/kb-plan/SKILL.md`): маршрутизация трех треков (`micro`, `standard`, `deep`) и префлайт-проверка Deep-Risk Guard (`KB-020`) для предотвращения несанкционированного планирования глубоких архитектурных изменений без исследовательской базы.
+    * `/kb-task` (`.agents/skills/kb-task/SKILL.md`): обязательное указание поля `track`, проверка чек-листа качества ТЗ и запрет домысливания неясных требований с принудительной расстановкой маркеров `[NEEDS CLARIFICATION: <вопрос>]`.
+    * `/kb-implement` (`.agents/skills/kb-implement/SKILL.md`): блокирующий префлайт при наличии активных маркеров `[NEEDS CLARIFICATION: ...]` (Stop & Yield в соответствии с правилом `KB-016`).
+  - Дополнено руководство по онбордингу [[Onboarding|docs/Onboarding.md]]: описана матрица Right-Sizing процессов (`micro/standard/deep`), чек-лист качества ТЗ и регламент работы со Spec Quality Gate.
+  - Актуализирован нормативный первоисточник правил `rules/AGENTS_CORE.md` (добавлены Tier 2 инварианты `RIGHT-SIZING` и `SPEC-QUALITY` в секции `client-agents`, `adapters` и `harness-agents`).
+  - Автогенерирован `AGENTS.md` через `scripts/gen_rules.py` (с подтверждением отсутствия расхождений через `--check`), обновлены 6 IDE-адаптеров (`GEMINI.md`, `CLAUDE.md`, `.clinerules`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`), 24 golden-фикстуры в `tests/fixtures/rules/` и тесты инвариантов `tests/test_rules_consistency.py`.
+- **Проверка:**
+  - `python scripts/gen_rules.py --check`: Exit code 0, полное соответствие без дрифта.
+  - `python -m unittest tests/test_kb_lint.py`: 90 тестов OK.
+  - `python -m unittest tests/test_template_parity.py`: 2 теста OK (паритет 100%).
+  - `python -m unittest tests/test_rules_consistency.py`: 14 тестов OK.
+  - `python -m unittest tests/test_rules_golden.py`: 3 теста (все фикстуры) OK.
+  - `python scripts/kb_lint.py --path docs`: 290 файлов, 2881 ссылка проверено, 0 ошибок.
+- **Рекомендуемый следующий шаг (Ожидает команды пользователя):**
+  - Разработчик может инициировать спецификацию финальной задачи Фазы 32: `/kb-task TASK-119` (Сборка монолита `install.py`, E2E тесты доставки и актуализация Living Spec).
+
 ### [2026-11-20] — TASK-117: Spec Quality Gate: маркеры [NEEDS CLARIFICATION], чек-лист ТЗ и правило KB-016
 - **Что сделано:**
   - Реализована спецификация [[02_Tasks/Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]] (вторая задача Фазы 32: **Right-Sizing процесса и Spec Quality Gate**, Волна 2, P1).
