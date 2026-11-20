@@ -415,7 +415,7 @@ tags:
 **Нормативная база:** [[../04_Research/RESEARCH-031-wave-2-quality-and-evidence-architecture|RESEARCH-031]], [[../03_Decisions_ADR/ADR-0037-wave-2-quality-and-evidence-standard|ADR-0037]]
 
 - [x] [[Specs/32_RightSizing/TASK-116-right-sizing-matrix-and-kb020|TASK-116]]: Матрица Right-Sizing, поле track и правило линтера KB-020 (Deep-Risk Guard) (2026-11-19).
-- [ ] `TASK-117`: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016.
+- [ ] [[Specs/32_RightSizing/TASK-117-spec-quality-gate-and-kb016|TASK-117]]: Spec Quality Gate: маркеры `[NEEDS CLARIFICATION]`, чек-лист ТЗ и правило KB-016.
 - [ ] `TASK-118`: Поведение скиллов, онбординг и корпус правил `rules/AGENTS_CORE.md`.
 - [ ] `TASK-119`: Сборка монолита `install.py`, E2E тесты доставки и актуализация Living Spec.
 
